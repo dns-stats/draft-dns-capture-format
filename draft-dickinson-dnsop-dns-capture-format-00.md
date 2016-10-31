@@ -527,7 +527,7 @@ RR | The index in the Resource Record table of the individual Resource Record.
 
 ### Query/Response data
 
-The block Q/R data is a CBOR array of individual Q/R items. Each item in the array is a CBOR map containing details on the individual Q/R pair. Each item in the map has an unsigned value and an unsigned key.
+The block Q/R data is a CBOR array of individual Q/R items. Each item in the array is a CBOR map containing details on the individual Q/R pair. 
 
 The following abbreviations are used in the Present (P) column 
 
@@ -538,7 +538,7 @@ The following abbreviations are used in the Present (P) column
 * QR = QUERY & RESPONSE
 * R = RESPONSE
 
-All fields are unsigned with the exception of 
+Each item in the map has an unsigned value (with the exception of those listed below) and an unsigned key.
 
 * Query extended information and Response extended information which are of Type Extended Information.
 * Time offset and Response delay which are integers (These can be negative if the network stack/capture library returns them out of order. TODO: describe in more detail)

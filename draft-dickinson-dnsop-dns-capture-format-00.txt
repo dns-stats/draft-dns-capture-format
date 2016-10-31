@@ -941,11 +941,11 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
    The block Q/R data is a CBOR array of individual Q/R items.  Each
    item in the array is a CBOR map containing details on the individual
-   Q/R pair.  Each item in the map has an unsigned value and an unsigned
-   key.
+   Q/R pair.
 
    The following abbreviations are used in the Present (P) column
 
+   o  Q = QUERY
 
 
 
@@ -953,8 +953,6 @@ Dickinson, et al.          Expires May 4, 2017                 [Page 17]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
-
-   o  Q = QUERY
 
    o  A = Always
 
@@ -966,7 +964,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
    o  R = RESPONSE
 
-   All fields are unsigned with the exception of
+   Each item in the map has an unsigned value (with the exception of
+   those listed below) and an unsigned key.
 
    o  Query extended information and Response extended information which
       are of Type Extended Information.
@@ -974,6 +973,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
    o  Time offset and Response delay which are integers (These can be
       negative if the network stack/capture library returns them out of
       order.  TODO: describe in more detail)
+
 
 
 

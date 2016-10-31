@@ -371,7 +371,7 @@ The block preamble map contains overall information for the block.
 
 Field | Type | Description
 :-----|:-----|:-----------
-Timestamp | Array of unsigned | A timestamp for the start of the block. The timestamp is specified as a CBOR array with two elements as in Posix struct timeval. The first element is an unsigned integer time_t and the second is an unsigned integer number of microseconds. The latter is always a value between 0 and 999,999.
+Timestamp | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two elements as in Posix struct timeval. The first element is an unsigned integer time_t and the second is an unsigned integer number of microseconds. The latter is always a value between 0 and 999,999.
 
 ### Block table map
 
@@ -529,6 +529,8 @@ RR | The index in the Resource Record table of the individual Resource Record.
 
 The block Q/R data is a CBOR array of individual Q/R items. Each item in the array is a CBOR map containing details on the individual Q/R pair. 
 
+Note that there is no requirement that the elements of the Q/R array are presented in strict chronological order.
+
 The following abbreviations are used in the Present (P) column 
 
 * Q = QUERY
@@ -541,11 +543,11 @@ The following abbreviations are used in the Present (P) column
 Each item in the map has an unsigned value (with the exception of those listed below) and an unsigned key.
 
 * Query extended information and Response extended information which are of Type Extended Information.
-* Time offset and Response delay which are integers (These can be negative if the network stack/capture library returns them out of order. TODO: describe in more detail)
+* Response delay which is an integer (This can be negative if the network stack/capture library returns them out of order.)
 
 Field | P | Description
 :-----|:--------|:-----------
-Time offset | A | Q/R timestamp as an offset in microseconds from the start of block time. The timestamp is the timestamp of the Query, or the Response if there is no Query.
+Time offset | A | Q/R timestamp as an offset in microseconds from the Block pre-amble Timestamp. The timestamp is the timestamp of the Query, or the Response if there is no Query.
 ||
 Client address | A | The index in the IP address table of the client IP address.
 ||
@@ -868,7 +870,7 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
     <front>
         <title>PCAP</title>
         <author>
-            <organization>tcpdump.orgC</organization>
+            <organization>tcpdump.org</organization>
         </author>
         <date year='2016'/>
     </front>

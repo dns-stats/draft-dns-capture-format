@@ -645,14 +645,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
    +-----------+----------+--------------------------------------------+
    | Field     | Type     | Description                                |
    +-----------+----------+--------------------------------------------+
-   | Timestamp | Array of | A timestamp for the start of the block.    |
-   |           | unsigned | The timestamp is specified as a CBOR array |
-   |           |          | with two elements as in Posix struct       |
-   |           |          | timeval. The first element is an unsigned  |
-   |           |          | integer time_t and the second is an        |
-   |           |          | unsigned integer number of microseconds.   |
-   |           |          | The latter is always a value between 0 and |
-   |           |          | 999,999.                                   |
+   | Timestamp | Array of | A timestamp for the earliest record in the |
+   |           | unsigned | block. The timestamp is specified as a     |
+   |           |          | CBOR array with two elements as in Posix   |
+   |           |          | struct timeval. The first element is an    |
+   |           |          | unsigned integer time_t and the second is  |
+   |           |          | an unsigned integer number of              |
+   |           |          | microseconds. The latter is always a value |
+   |           |          | between 0 and 999,999.                     |
    +-----------+----------+--------------------------------------------+
 
 7.1.7.  Block table map
@@ -943,9 +943,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
    item in the array is a CBOR map containing details on the individual
    Q/R pair.
 
-   The following abbreviations are used in the Present (P) column
+   Note that there is no requirement that the elements of the Q/R array
+   are presented in strict chronological order.
 
-   o  Q = QUERY
 
 
 
@@ -953,6 +953,10 @@ Dickinson, et al.          Expires May 4, 2017                 [Page 17]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
+
+   The following abbreviations are used in the Present (P) column
+
+   o  Q = QUERY
 
    o  A = Always
 
@@ -970,12 +974,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
    o  Query extended information and Response extended information which
       are of Type Extended Information.
 
-   o  Time offset and Response delay which are integers (These can be
-      negative if the network stack/capture library returns them out of
-      order.  TODO: describe in more detail)
-
-
-
+   o  Response delay which is an integer (This can be negative if the
+      network stack/capture library returns them out of order.)
 
 
 
@@ -1014,9 +1014,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
    | Field       | P  | Description                                    |
    +-------------+----+------------------------------------------------+
    | Time offset | A  | Q/R timestamp as an offset in microseconds     |
-   |             |    | from the start of block time. The timestamp is |
-   |             |    | the timestamp of the Query, or the Response if |
-   |             |    | there is no Query.                             |
+   |             |    | from the Block pre-amble Timestamp. The        |
+   |             |    | timestamp is the timestamp of the Query, or    |
+   |             |    | the Response if there is no Query.             |
    |             |    |                                                |
    | Client      | A  | The index in the IP address table of the       |
    | address     |    | client IP address.                             |
@@ -1461,7 +1461,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
    [packetq]  .SE - The Internet Infrastructure Foundation, "PacketQ",
               2014, <https://github.com/dotse/PacketQ>.
 
-   [pcap]     tcpdump.orgC, "PCAP", 2016, <http://www.tcpdump.org/>.
+   [pcap]     tcpdump.org, "PCAP", 2016, <http://www.tcpdump.org/>.
 
    [pcapng]   Tuexen, M., Risso, F., Bongertz, J., Combs, G., and G.
               Harris, "pcap-ng", 2016, <https://github.com/pcapng/

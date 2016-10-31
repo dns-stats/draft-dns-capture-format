@@ -261,7 +261,7 @@ JSON text format, requires very little familiarization for those in the wider in
 
 The CDDL definition for the C-DNS format is given in (#cddl).
 
-### Format overview
+## Format overview
 
 A C-DNS file begins with a file header containing a file type identifier and
 preamble. The preamble contains information on the collection settings.
@@ -287,7 +287,7 @@ In the following
 * Items described as indexes are the index of the data item in the referenced table.
 Indexes are 1-based. An index value of 0 is reserved to mean not present.
 
-### File header contents
+## File header contents
 
 The file header contains the following:
 
@@ -299,7 +299,7 @@ File preamble | Map of items | Collection information for the whole file.
 ||
 File Blocks | Array of Blocks | The data blocks
 
-### File preamble contents
+## File preamble contents
 
 The file preamble contains the following:
 
@@ -313,7 +313,7 @@ Generator ID | Text string | String identifying the collection program. Optional
 ||
 Host ID | Text string | String identifying the collecting host. Blank if converting an existing PCAP file. Optional.
 
-### Configuration contents
+## Configuration contents
 
 The collection configuration contains the following items. All are optional.
 
@@ -349,7 +349,7 @@ Accept RR types | Array of text strings | A set of RR type names [@rrtypes]. If 
 ||
 Ignore RR types | Array of text strings | A set of RR type names [@rrtypes]. If not empty, all RR types are collected except those listed. If present, this item must be empty if a non-empty list of Accept RR types is present.
 
-### Block contents
+## Block contents
 
 Each block contains the following:
 
@@ -365,7 +365,7 @@ Q/Rs | Array of Q/Rs | Details of individual Q/R pairs.
 ||
 Address Event Counts | Array of Address Event counts | Per client counts of ICMP messages and TCP resets.
 
-### Block preamble map
+## Block preamble map
 
 The block preamble map contains overall information for the block.
 
@@ -373,7 +373,7 @@ Field | Type | Description
 :-----|:-----|:-----------
 Timestamp | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two elements as in Posix struct timeval. The first element is an unsigned integer time_t and the second is an unsigned integer number of microseconds. The latter is always a value between 0 and 999,999.
 
-### Block table map
+## Block table map
 
 The block table map contains the block tables. Each element, or table, is an array. The following tables detail the contents of each block table.
 
@@ -390,14 +390,14 @@ Also:
 
 So, for example, a field listed with a Present value of QUERY is present whenever the Q/R pair contains a Query. If the pair contains a Response only, the field will not be present.
 
-### IP address table
+## IP address table
 This table holds all client and server IP addresses in the block. Each item in the table is a single IP address.
 
 Field | Type | Description
 :-----|:-----|:-----------
 Address | Byte string | The IP address, in network byte order. The string is 4 bytes long for an IPv4 address, 16 bytes long for an IPv6 address.
 
-### Class/Type table
+## Class/Type table
 
 This table holds pairs of RR CLASS and TYPE values. Each item in the table is a CBOR map.
 
@@ -407,7 +407,7 @@ Class | CLASS value.
 ||
 Type | TYPE value.
 
-### Name/RDATA table
+## Name/RDATA table
 
 This table holds the contents of all NAME or RDATA items in the block. Each item in the table is the content of a single NAME or RDATA.
 
@@ -415,7 +415,7 @@ Field | Type | Description
 :-----|:-----|:-----------
 Data | Byte string | The NAME or RDATA contents. NAMEs, and labels within RDATA contents, are in uncompressed label format.
 
-### Query Signature table
+## Query Signature table
 
 This table holds elements of the Q/R data that are often common to between different individual Q/R records. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned key.
 
@@ -485,7 +485,7 @@ Query OPT RDATA | QO | The index in the NAME/RDATA table of the OPT RDATA.
 ||
 Response RCODE | R | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 
-### Question table
+## Question table
 
 This table holds details on individual Questions in a Question section. Each item in the table is a CBOR map containing a single Question. Each item in the map has an unsigned value and an unsigned key. This data is optionally collected.
 
@@ -495,7 +495,7 @@ QNAME | The index in the NAME/RDATA table of the QNAME.
 ||
 Class/Type | The index in the Class/Type table of the CLASS and TYPE of the Question.
 
-### Resource Record (RR) table
+## Resource Record (RR) table
 
 This table holds details on individual Resource Records in RR sections. Each item in the table is a CBOR map containing a single Resource Record. This data is optionally collected.
 
@@ -509,7 +509,7 @@ TTL | The RR Time to Live.
 ||
 RDATA | The index in the NAME/RDATA table of the RR RDATA.
 
-### Question list table
+## Question list table
 
 This table holds a list of second and subsequent individual Questions in a Question section. Each item in the table is a CBOR unsigned. This data is optionally collected.
 
@@ -517,7 +517,7 @@ Field | Description
 :-----|:-----------
 Question | The index in the Question table of the individual Question.
 
-### Resource Record list table
+## Resource Record list table
 
 This table holds a list of individual Resource Records in a Answer, Authority or Additional section. Each item in the table is a CBOR unsigned. This data is optionally collected.
 
@@ -525,7 +525,7 @@ Field | Description
 :-----|:-----------
 RR | The index in the Resource Record table of the individual Resource Record.
 
-### Query/Response data
+## Query/Response data
 
 The block Q/R data is a CBOR array of individual Q/R items. Each item in the array is a CBOR map containing details on the individual Q/R pair. 
 
@@ -583,7 +583,7 @@ Authority | The index in the RR list table of the entry listing the Authority Re
 ||
 Additional | The index in the RR list table of the entry listing the Additional Resource Record sections for the Query or Response.
 
-### Address Event counts
+## Address Event counts
 
 This table holds counts of various IP related events relating to traffic
 with individual client addresses.
@@ -736,7 +736,7 @@ The algorithm is designed to handle the following input data:
 For cases 1 and 2 listed in the above requirements, it is not possible to unambiguously match queries with responses.
 The solution to this employed in this algorithm is to match to the earliest query with the correct Primary and Secondary ID.
 
-### Workspace
+## Workspace
 
 A FIFO structure is used to hold the Q/R items during processing.
 

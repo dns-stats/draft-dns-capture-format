@@ -813,7 +813,7 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
     <front>
         <title>dnstap</title>
         <author>
-            <organization>dnstap.io</organization>
+            <organization>dnstap.info</organization>
         </author>
         <date year='2016'/>
     </front>

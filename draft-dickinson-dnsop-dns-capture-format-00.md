@@ -2,7 +2,7 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-dickinson-dnsop-dns-capture-format-00"
+    docName= "draft-ietf-dnsop-dns-capture-format-00"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"
@@ -54,6 +54,10 @@
     organization = "ICANN"
       [author.address]
       email = "terry.manderson@icann.org"
+      [author.address.postal]
+      streets = ["12025 Waterfront Drive", " Suite 300"]
+      city = "Los Angeles"
+      code = "CA 90094-2536"
     [[author]]
     initials="J."
     surname="Bond"
@@ -61,17 +65,20 @@
     organization = "ICANN"
       [author.address]
       email = "john.bond@icann.org"
+      [author.address.postal]
+      streets = ["12025 Waterfront Drive", " Suite 300"]
+      city = "Los Angeles"
+      code = "CA 90094-2536"
 %%%
 
 .# Abstract
 This document describes a data representation for collections of 
 DNS messages.
-The format is designed for efficient storage of large packet captures of DNS traffic;
+The format is designed for efficient storage and transmission of large packet captures of DNS traffic;
 it attempts to minimize the size of such packet capture files but retain the 
 full DNS message contents along with the most useful transport meta data. 
 It is intended to assist with 
-the development of DNS traffic monitoring applications and provide a more efficient
-data exchange format than alternatives such as PCAP files.
+the development of DNS traffic monitoring applications.
 
 {mainmatter}
 
@@ -85,7 +92,9 @@ analyzing network attacks and DITL [@ditl].
 A wide variety of tools already exist to facilitate the collection of
 DNS traffic data. DSC [@dsc], packetq [@packetq], dnscap [@dnscap] and dnstap [@dnstap].
 However, there is no standard exchange format for large DNS packet captures and
-PCAP [@pcap] or PCAP-NG [@pcapng] are typically used in practice.
+PCAP [@pcap] or PCAP-NG [@pcapng] are typically used in practice. Such file
+formats can contain much additional information not directly pertinent to DNS traffic analysis
+which unnecessarily increases the capture file size.
 
 There has also been work on using other text based formats to describe 
 DNS packets [@?I-D.daley-dnsxml#00], [@?I-D.hoffman-dns-in-json#09] but these are largely 
@@ -97,7 +106,10 @@ a mechanism to minimize the storage size (and therefore upload overhead) of the
 data collected is highly desirable.
 
 This documents focusses on the problem of capturing and storing large packet capture
-files of DNS traffic. 
+files of DNS traffic. with the following goals in mind:
+
+* Minimize the file size for storage and transmission
+* Minimizing the overhead of producing the packet capture file and the cost of any further (general purpose) compression of the file to minimise the size
 
 This document contains
 
@@ -220,6 +232,9 @@ that it cannot represent 'malformed' DNS packets. Only those packets that can be
 can be represented by it. So if a query is malformed this will lead to the (well formed) DNS responses with error code FORMERR appearing as 'unmatched'.
 
 [TODO: Need further discussion of well-formed vs malformed packets and how name servers view this definition.]
+
+[TODO: Need to develop optional representation of malformed packets within CBOR and what this means for packet matching.
+This may influence which fields are optional in the rest of the representation.]
 
 <!--Include in the discussion that e.g. trailing bytes on a well-formed query are not retained-->
 
@@ -373,6 +388,12 @@ Field | Type | Description
 :-----|:-----|:-----------
 Timestamp | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two elements as in Posix struct timeval. The first element is an unsigned integer time_t and the second is an unsigned integer number of microseconds. The latter is always a value between 0 and 999,999.
 
+[TODO: Add extend to support pico/nano. Also do this for Time offset and Response delay]
+
+## Block statistics
+
+[TODO: Add block statistics]
+
 ## Block table map
 
 The block table map contains the block tables. Each element, or table, is an array. The following tables detail the contents of each block table.
@@ -406,6 +427,8 @@ Field | Description
 Class | CLASS value.
 ||
 Type | TYPE value.
+
+[TODO: Can this be optimized? Should a class of IN be inferred if not present?]
 
 ## Name/RDATA table
 
@@ -773,8 +796,28 @@ The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful
 formats, compression and packet matching. Also Jan Vcelak and Wouter Wijngaards for discussions on
 name compression.
 
+Thanks to Robert Edmonds, Paul Hoffman and Jerry Lundström for review.
+
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
+# Changelog
+draft-ietf-dnsop-dns-capture-format-00
+
+* Changed dnstap.io to dnstap.info
+* qr_data_format.png was cut off at the bottom
+* Update authors address
+* Improve wording in Abstract
+* Changed DNS-STAT to C-DNS in CDDL
+* Set the format version in the CDDL
+* Added a TODO: Add block statistics
+* Added a TODO: Add extend to support pico/nano. Also do this for Time offset and Response delay
+* Added a TODO: Need to develop optional representation of malformed packets within CBOR and what this means for packet matching.  This may influence which fields are optional in the rest of the representation.
+* Added section on design goals to Introduction
+* Added a TODO: Can Class be optimised?  Should a class of IN be inferred if not present?
+
+draft-dickinson-dnsop-dns-capture-format-00
+
+* Initial commit
 
 <reference anchor='dsc' target='https://www.dns-oarc.net/tools/dsc'>
     <front>
@@ -895,13 +938,13 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
     ; which describes a collection of DNS Query/Response pairs.
 
     File = [
-        file-type-id  : tstr,          ; "DNS-STAT"
+        file-type-id  : tstr,          ; "C-DNS"
         file-preamble : FilePreamble,
         file-blocks   : [* Block],
     ]
 
     FilePreamble = {
-        format-version  => uint,
+        format-version  => uint, ; 0
         ? configuration => Configuration,
         ? generator-id  => tstr,
         ? host-id       => tstr,
@@ -1017,7 +1060,7 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
     rr         = 7
 
     QueryResponse = {
-        time-useconds         => int,        ; Time offset from start of block
+        time-useconds         => uint,        ; Time offset from earliest record
         client-address-index  => uint,
         client-port           => uint,
         transaction-id        => uint,

@@ -1,5 +1,5 @@
 To generate the txt from the markdown use something like:
 
-mmark -xml2 -page draft-dickinson-dnsop-dns-capture-format-00.md > draft-dickinson-dnsop-dns-capture-format-00.xml && xml2rfc --text draft-dickinson-dnsop-dns-capture-format-00.xml
+mmark -xml2 -page draft-ietf-dnsop-dns-capture-format-00.md > draft-ietf-dnsop-dns-capture-format-00.xml && xml2rfc --text draft-ietf-dnsop-dns-capture-format-00.xml && rm draft-ietf-dnsop-dns-capture-format-00.xml
 
 mmark can be found here https://github.com/miekg/mmark

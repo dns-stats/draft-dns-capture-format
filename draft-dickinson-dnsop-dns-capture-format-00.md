@@ -388,7 +388,7 @@ Field | Type | Description
 :-----|:-----|:-----------
 Timestamp | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two elements as in Posix struct timeval. The first element is an unsigned integer time_t and the second is an unsigned integer number of microseconds. The latter is always a value between 0 and 999,999.
 
-[TODO: Add extend to support pico/nano. Also do this for Time offset and Response delay]
+[TODO: Extend to support pico/nano. Also do this for Time offset and Response delay]
 
 ## Block statistics
 
@@ -944,7 +944,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     ]
 
     FilePreamble = {
-        format-version  => uint, ; 0
+        format-version  => uint, ; 2 (Will change to major/minor/private)
         ? configuration => Configuration,
         ? generator-id  => tstr,
         ? host-id       => tstr,

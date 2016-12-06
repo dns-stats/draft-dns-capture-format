@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2016-10-31T00:00:00Z
+    date = 2016-12-06T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -944,7 +944,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     ]
 
     FilePreamble = {
-        format-version  => uint, ; 2 (Will change to major/minor/private)
+        format-version  => uint, ; 1
         ? configuration => Configuration,
         ? generator-id  => tstr,
         ? host-id       => tstr,

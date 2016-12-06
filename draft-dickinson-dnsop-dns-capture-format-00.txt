@@ -5,11 +5,11 @@
 dnsop                                                       J. Dickinson
 Internet-Draft                                                  J. Hague
 Intended status: Standards Track                            S. Dickinson
-Expires: May 4, 2017                                          Sinodun IT
+Expires: June 9, 2017                                         Sinodun IT
                                                             T. Manderson
                                                                  J. Bond
                                                                    ICANN
-                                                        October 31, 2016
+                                                        December 6, 2016
 
 
                    C-DNS: A DNS Packet Capture Format
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on May 4, 2017.
+   This Internet-Draft will expire on June 9, 2017.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Dickinson, et al.          Expires May 4, 2017                  [Page 1]
+Dickinson, et al.         Expires June 9, 2017                  [Page 1]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    publication of this document.  Please review these documents
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Dickinson, et al.          Expires May 4, 2017                  [Page 2]
+Dickinson, et al.         Expires June 9, 2017                  [Page 2]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  25
@@ -165,9 +165,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                  [Page 3]
+Dickinson, et al.         Expires June 9, 2017                  [Page 3]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    o  Minimize the file size for storage and transmission
@@ -221,9 +221,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                  [Page 4]
+Dickinson, et al.         Expires June 9, 2017                  [Page 4]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
       *  On well provisioned servers running in a steady state.
@@ -277,9 +277,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                  [Page 5]
+Dickinson, et al.         Expires June 9, 2017                  [Page 5]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    o  Collected data being returned to some central analysis system will
@@ -333,9 +333,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                  [Page 6]
+Dickinson, et al.         Expires June 9, 2017                  [Page 6]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    Resource Records from a Response will reduce the files size, and in
@@ -389,9 +389,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                  [Page 7]
+Dickinson, et al.         Expires June 9, 2017                  [Page 7]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 5.  C-DNS conceptual overview
@@ -445,9 +445,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                  [Page 8]
+Dickinson, et al.         Expires June 9, 2017                  [Page 8]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 7.2.  Format overview
@@ -501,9 +501,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                  [Page 9]
+Dickinson, et al.         Expires June 9, 2017                  [Page 9]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 7.4.  File preamble contents
@@ -557,9 +557,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 10]
+Dickinson, et al.         Expires June 9, 2017                 [Page 10]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    |             |          |                                          |
@@ -613,9 +613,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 11]
+Dickinson, et al.         Expires June 9, 2017                 [Page 11]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    +-------------+------------------+----------------------------------+
@@ -669,9 +669,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 12]
+Dickinson, et al.         Expires June 9, 2017                 [Page 12]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 7.9.  Block table map
@@ -725,9 +725,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 13]
+Dickinson, et al.         Expires June 9, 2017                 [Page 13]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
                          +-------+--------------+
@@ -781,9 +781,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 14]
+Dickinson, et al.         Expires June 9, 2017                 [Page 14]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    +------------+----+-------------------------------------------------+
@@ -837,9 +837,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 15]
+Dickinson, et al.         Expires June 9, 2017                 [Page 15]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    |            |    | flag.                                           |
@@ -893,9 +893,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 16]
+Dickinson, et al.         Expires June 9, 2017                 [Page 16]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    +------------+------------------------------------------------------+
@@ -949,9 +949,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 17]
+Dickinson, et al.         Expires June 9, 2017                 [Page 17]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    +-------+-----------------------------------------------------------+
@@ -1005,9 +1005,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 18]
+Dickinson, et al.         Expires June 9, 2017                 [Page 18]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    +-------------+----+------------------------------------------------+
@@ -1061,9 +1061,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 19]
+Dickinson, et al.         Expires June 9, 2017                 [Page 19]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    The Extended information is a CBOR map as follows.  Each item in the
@@ -1117,9 +1117,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 20]
+Dickinson, et al.         Expires June 9, 2017                 [Page 20]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    +----------+----------+---------------------------------------------+
@@ -1173,9 +1173,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 21]
+Dickinson, et al.         Expires June 9, 2017                 [Page 21]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
       *  A DNS payload may have be split across multiple TCP segments
@@ -1229,9 +1229,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 22]
+Dickinson, et al.         Expires June 9, 2017                 [Page 22]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    Appendix B presents an example of two differing compression
@@ -1285,9 +1285,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 23]
+Dickinson, et al.         Expires June 9, 2017                 [Page 23]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 9.2.  Message identifiers
@@ -1341,9 +1341,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 24]
+Dickinson, et al.         Expires June 9, 2017                 [Page 24]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 9.5.  Algorithm Limitations
@@ -1397,9 +1397,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 25]
+Dickinson, et al.         Expires June 9, 2017                 [Page 25]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    Thanks to Robert Edmonds, Paul Hoffman and Jerry Lundstroem for
@@ -1453,9 +1453,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 26]
+Dickinson, et al.         Expires June 9, 2017                 [Page 26]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -1509,9 +1509,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 27]
+Dickinson, et al.         Expires June 9, 2017                 [Page 27]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 14.3.  URIs
@@ -1552,7 +1552,7 @@ File = [
 ]
 
 FilePreamble = {
-    format-version  => uint, ; 2 (Will change to major/minor/private)
+    format-version  => uint, ; 1
     ? configuration => Configuration,
     ? generator-id  => tstr,
     ? host-id       => tstr,
@@ -1565,9 +1565,9 @@ host-id        = 3
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 28]
+Dickinson, et al.         Expires June 9, 2017                 [Page 28]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 Configuration = {
@@ -1621,9 +1621,9 @@ address-event-counts = 4
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 29]
+Dickinson, et al.         Expires June 9, 2017                 [Page 29]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 BlockPreamble = {
@@ -1677,9 +1677,9 @@ classtype  = 1
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 30]
+Dickinson, et al.         Expires June 9, 2017                 [Page 30]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 name-rdata = 2
@@ -1733,9 +1733,9 @@ QuerySignature = {
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 31]
+Dickinson, et al.         Expires June 9, 2017                 [Page 31]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
     ? query-rcode           => uint,
@@ -1789,9 +1789,9 @@ RR = {
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 32]
+Dickinson, et al.         Expires June 9, 2017                 [Page 32]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
     ttl             => uint,
@@ -1845,9 +1845,9 @@ Appendix B.  DNS Name compression example
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 33]
+Dickinson, et al.         Expires June 9, 2017                 [Page 33]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    name, and if the uncompressed part of the name is shorter than any
@@ -1901,9 +1901,9 @@ B.1.  NSD compression algorithm
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 34]
+Dickinson, et al.         Expires June 9, 2017                 [Page 34]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    writing, a tiny number (<.01%) of the reconstructed packets had
@@ -1957,9 +1957,9 @@ Appendix C.  Comparison of Binary Formats
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 35]
+Dickinson, et al.         Expires June 9, 2017                 [Page 35]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    Protocol Buffers and Avro both require a data schema, and validate
@@ -2013,9 +2013,9 @@ D.3.  Blocking vs more simple output
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 36]
+Dickinson, et al.         Expires June 9, 2017                 [Page 36]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    It might be expected that blocking is exploiting commonality that a
@@ -2069,9 +2069,9 @@ Authors' Addresses
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 37]
+Dickinson, et al.         Expires June 9, 2017                 [Page 37]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
    Jim Hague
@@ -2125,4 +2125,4 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format       October 2016
 
 
 
-Dickinson, et al.          Expires May 4, 2017                 [Page 38]
+Dickinson, et al.         Expires June 9, 2017                 [Page 38]

@@ -232,7 +232,7 @@ It is anticipated
 that the files produced can be subject to further compression using general purpose compression tools. Measurements show that 
 blocking significantly reduces the CPU required to perform such strong compression. See (#sample-data-on-the-cdns-format).
 
-* Meta-data about other packets received should also be included in each block. For example, counts of malformed DNS packets and non-DNS packets
+* metadata about other packets received should also be included in each block. For example, counts of malformed DNS packets and non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may of interest.
  
 It should be noted that any structured capture format that does not capture the DNS payload byte for byte will likely be limited to some extent in
@@ -241,7 +241,7 @@ can be represented by it. So if a query is malformed this will lead to the (well
 
 [TODO: Need further discussion of well-formed vs. malformed packets and how name servers view this definition.]
 
-[TODO: May need to develop optional representation of malformed packets within CBOR and what this means for packet matching.
+[TODO: May need to develop optional representation of malformed packets within C-DNS and what this means for packet matching.
 This may influence which fields are optional in the rest of the representation.]
 
 <!--Include in the discussion that e.g. trailing bytes on a well-formed query are not retained-->
@@ -285,7 +285,6 @@ ideas of lists and objects, and thus requires very little familiarization for th
 * CBOR can also be easily converted to text formats such as JSON for debugging and other human inspection requirements.
 * CBOR data schemas can be described using CDDL [@?I-D.greevenbosch-appsawg-cbor-cddl#09]. 
 
-
 # The C-DNS format
 
 ## CDDL definition
@@ -295,9 +294,9 @@ The CDDL definition for the C-DNS format is given in (#cddl).
 ## Format overview
 
 A C-DNS file begins with a file header containing a file type identifier and
-preamble. The preamble contains information on the collection settings.
+a preamble. The preamble contains information on the collection settings.
 
-This is followed by a series of data blocks.
+The file header is followed by a series of data blocks.
 
 A block consists of a block header, containing various tables of common data,
 and some statistics for the traffic received over the block. The block header
@@ -307,16 +306,29 @@ of per-client counts of particular IP events that occurred during collection of
 the block data.
 
 The exact nature of the DNS data will affect what block size is the best fit, 
-however sample data for a root server indicated that block sizes in the low 
-1000's give good results. See (#block-size-choices) for more details. 
+however sample data for a root server indicated that block sizes less than 
+about 3000 bytes give good results. See (#block-size-choices) for more details. 
 
-If no field type is specified then the field is unsigned.
+If no field type is specified, then the field is unsigned.
 
-In the following
+In all quantities that contain bit flags, bit 0 indicates the least significant bit.
+An item described as an index is the index of the Q/R data item in the referenced table.
+Indexes are 1-based. An index value of 0 is reserved to mean "not present".
 
-* For all quantities that contain bit flags, bit 0 indicates the least significant bit.
-* Items described as indexes are the index of the Q/R data item in the referenced table.
-Indexes are 1-based. An index value of 0 is reserved to mean not present.
+<!-- ######################################## NOTE TO AUTHORS
+
+Yipes! The fields in these tables are not the actual field names. In fact, they don't even
+have the same capitalization. I would suggest either calling each first column "Contents
+of field" or, better, just use the actual field names for the Field column.
+
+Editorial: Many descriptions end in a period even though they are not at all sentences.
+All those periods should be removed.
+
+"Optional" is listed only for *some* of the optional fields. I propose that you
+(a) make it correct everywhere and (b) shorten it to be a ? before the Field name.
+
+
+############################################# -->
 
 ## File header contents
 
@@ -550,7 +562,7 @@ RDATA | The index in the NAME/RDATA table of the RR RDATA.
 
 ## Question list table
 
-This table holds a list of second and subsequent individual Questions in a Question section. Each item in the table is a CBOR unsigned. This data is optionally collected.
+This table holds a list of second and subsequent individual Questions in a Question section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.
 
 Field | Description
 :-----|:-----------
@@ -558,7 +570,7 @@ Question | The index in the Question table of the individual Question.
 
 ## Resource Record list table
 
-This table holds a list of individual Resource Records in a Answer, Authority or Additional section. Each item in the table is a CBOR unsigned. This data is optionally collected.
+This table holds a list of individual Resource Records in a Answer, Authority or Additional section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.
 
 Field | Description
 :-----|:-----------
@@ -645,34 +657,35 @@ Count | Unsigned | The number of occurrences of this event during the block coll
 
 # C-DNS to PCAP
 
-It is possible to re-construct PCAP files from the C-DNS format. However this is
-a lossy process and some of the issues with reconstructing both the DNS payload and the 
+It is possible to re-construct PCAP files from the C-DNS format in a lossy fashion.
+Some of the issues with reconstructing both the DNS payload and the 
 full packet stream are outlined here.
 
-Firstly the reconstruction depends on whether or not all the optional sections
+The reconstruction depends on whether or not all the optional sections
 of both the query and response were captured in the C-DNS file. 
-Clearly if they were not all captured the reconstruction is imperfect.
+Clearly, if they were not all captured, the reconstruction will be imperfect.
 
-Secondly, even if all sections of the response were captured name compression presents a
-challenge in reconstructing the DNS response payload
-byte for byte. (#name-compression) discusses this is more detail.
+Even if all sections of the response were captured, one cannot reconstruct the DNS
+response payload exactly due to the fact that some DNS names in the message on the wire
+may have been compressed.
+(#name-compression) discusses this is more detail.
 
-Thirdly, not all transport
-information is captured in the C-DNS format. For example, the following aspects
+Some transport
+information is not captured in the C-DNS format. For example, the following aspects
 of the original packet stream cannot be re-constructed from the C-DNS format:
 
-* IP Fragmentation
+* IP fragmentation
 * TCP stream information: 
      * Multiple DNS messages may have been sent in a single TCP segment
      * A DNS payload may have be split across multiple TCP segments
      * Multiple DNS messages may have be sent on a single TCP session
 * Malformed DNS messages and non-DNS packets
 
-Simple assumptions can be made on the reconstruction - fragmented and DNS-over-TCP messages
+Simple assumptions can be made on the reconstruction: fragmented and DNS-over-TCP messages
 can be reconstructed into single packets and a single TCP session can be constructed
 for each TCP packet.
 
-Additionally if the malformed and non-DNS packets are captured separately into packet captures,
+Additionally, if malformed and non-DNS packets are captured separately into packet captures,
 they can be merged with packet captures reconstructed from C-DNS to produce a more complete
 packet stream.
 
@@ -680,8 +693,8 @@ packet stream.
 ## Name Compression
 
 All the names stored in the C-DNS format are full domain names; no DNS style name compression is used
-on the individual names within the format. Therefore when reconstructing a packet
-name compression must be used in order to re-produce the on the wire representation of the
+on the individual names within the format. Therefore when reconstructing a packet,
+name compression must be used in order to reproduce the on the wire representation of the
 packet.
 
 [@!RFC1035] name compression works by substituting trailing sections of a name with a
@@ -694,36 +707,35 @@ and speed and others use different rules for what is a valid compression target.
 This means that responses to the
 same question from different name server software which match in terms of DNS payload 
 content (header, counts, RRs with name compression removed) do
-not necessarily match byte for byte on the wire. 
+not necessarily match byte-for-byte on the wire. 
 
-From the C-DNS format it is not possible to ensure that the DNS response payload is reconstructed
-byte for byte. However it can at least, in principle, be reconstructed to have the correct payload
+Therefore, it is not possible to ensure that the DNS response payload is reconstructed
+byte-for-byte from C-DNS data. However, it can at least, in principle, be reconstructed to have the correct payload
 length (since the original response length is captured) if there is enough knowledge of the
 commonly implemented name compression algorithms. For example, a simplistic approach would be
 to try each algorithm in turn
 to see if it reproduces the original length, stopping at the first match. This would not 
 guarantee the correct algorithm has been used as it is possible to match the length
-whilst still not matching the on the wire bytes but without further information added to the C-BOR this is the
+whilst still not matching the on the wire bytes but, without further information added to the C-DNS data, this is the
 best that can be achieved.
 
-(#dns-name-compression-example) presents an example of two differing compression
-algorithms used by well known name server software.
+(#dns-name-compression-example) presents an example of two different compression
+algorithms used by well-known name server software.
 
 
 # Data Collection
+
 This section describes a non-normative proposed algorithm for the processing of a captured stream of DNS queries and
 responses and matching queries/responses where possible.
 
 For the purposes of this discussion, it is assumed that the input has been pre-processed such that:
 
-1. All IP fragmentation reassembly, TCP stream reassembly etc. has already been performed
-1. Each message is associated with transport meta-data required to generate the Primary ID (see below)
-1. Each message has a well-formed DNS header of 12 bytes and (if present) the first RR in the query section can be parsed to generate the Secondary ID (see below). 
-    * As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present
+1. All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed
+1. Each message is associated with transport metadata required to generate the Primary ID (see below)
+1. Each message has a well-formed DNS header of 12 bytes and (if present) the first RR in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
 
 DNS messages are processed in the order they are delivered to the application.
-
-    * It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
+It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
 
 [TODO: Discuss the corner cases resulting from this in more detail.]
 
@@ -735,7 +747,7 @@ A schematic representation of the algorithm for matching Q/R pairs is shown in t
 
 ![Figure showing the packet matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/packet_matching.svg)
 
-and further details of the algorithm are given in the following sections.
+Further details of the algorithm are given in the following sections.
 
 ## Message identifiers
 
@@ -773,7 +785,7 @@ The algorithm is designed to handle the following input data:
 ## Algorithm Limitations
 
 For cases 1 and 2 listed in the above requirements, it is not possible to unambiguously match queries with responses.
-The solution to this employed in this algorithm is to match to the earliest query with the correct Primary and Secondary ID.
+This algorithm chooses to match to the earliest query with the correct Primary and Secondary ID.
 
 ## Workspace
 
@@ -784,15 +796,15 @@ A FIFO structure is used to hold the Q/R data items during processing.
 The output is a list of Q/R data items. Both the Query and Response elements are optional in these items,
 therefore Q/R data items have one of three types of content:
 
-1. Paired Q/R messages
-1. A query message (no response)
-1. A response message (no query)
+1. A matched pair of query and response messages
+1. A query message with no response
+1. A response message with no query
 
 The timestamp of a list item is that of the query for cases 1 and 2 and that of the response for case 3.
 
 ## Post Processing
 
-When ending capture, all remaining entries in the Q/R FIFO should be treated as timed out queries.
+When ending capture, all remaining entries in the Q/R data item FIFO should be treated as timed out queries.
  
 
 # IANA Considerations
@@ -827,7 +839,7 @@ draft-ietf-dnsop-dns-capture-format-00
 * Set the format version in the CDDL
 * Added a TODO: Add block statistics
 * Added a TODO: Add extend to support pico/nano. Also do this for Time offset and Response delay
-* Added a TODO: Need to develop optional representation of malformed packets within CBOR and what this means for packet matching.  This may influence which fields are optional in the rest of the representation.
+* Added a TODO: Need to develop optional representation of malformed packets within C-DNS and what this means for packet matching.  This may influence which fields are optional in the rest of the representation.
 * Added section on design goals to Introduction
 * Added a TODO: Can Class be optimised?  Should a class of IN be inferred if not present?
 
@@ -1206,7 +1218,8 @@ draft-dickinson-dnsop-dns-capture-format-00
 
 
 # DNS Name compression example
-The basic algorithm which follows the guidance in [@RFC1035]
+
+The basic algorithm, which follows the guidance in [@RFC1035],
 is simply to collect each name, and the offset in the packet
 at which it starts, during packet construction. As each name is added, it is
 offered to each of the collected names in order of collection, starting from
@@ -1244,8 +1257,8 @@ N | Name | Uncompressed | Compression Target
 2 | bar.com | bar | 1 + offset to com
 3 | www.bar.com | www | 2
 
-As an optimization, if a name is already perfectly compressed - in other words,
-the uncompressed part of the name is empty - no further names will be considered
+As an optimization, if a name is already perfectly compressed (in other words,
+the uncompressed part of the name is empty), then no further names will be considered
 for compression.
 
 ## NSD compression algorithm
@@ -1282,8 +1295,8 @@ had different packet lengths to those produced by NSD.
 
 # Comparison of Binary Formats
 
-Several binary representations were considered in particular CBOR, Apache Avro and
-Protocol Buffers.
+Several binary representations were considered. In particular CBOR, Apache Avro and
+Protocol Buffers were analyzed.
 
 Protocol Buffers and Avro both require a data schema, and validate data being
 stored against that schema.
@@ -1302,9 +1315,9 @@ The data is sample data for a root instance.
 
 ## Comparison to full PCAP files
 
-As can be seen in more detail below for this sample data the compressed C-DNS files are around 30% the size of the full compressed PCAP files.
+As can be seen in more detail below, for this sample data the compressed C-DNS files are around 30% the size of the full compressed PCAP files.
 It should also be noted that experiments showed that compression of the C-DNS format required
-very roughly an order of magnitude less CPU resources than compression of full PCAP files when using one core from a 3.5GHz i7 processor.
+very roughly one tenth of the CPU resources compared to compression of full PCAP files when using one core from a 3.5GHz i7 processor.
 
 ## Block size choices
 
@@ -1312,7 +1325,7 @@ very roughly an order of magnitude less CPU resources than compression of full P
 
 [TODO: Add graph that demonstrates block size of 5000 is optimal for the sample data used.]
 
-## Blocking vs more simple output
+## Blocking vs. more simple output
 
 Some experiments were conducted producing output in a very simple format
 involving a single record per Q/R data item (akin to a .csv representation). 
@@ -1348,9 +1361,9 @@ avro-block | 17.44M | 12.94M | 10.08M | 7.18M
 protobuf-simple | 46.02M | 15.79M | 11.59M | 7.94M
 protobuf-block | 22.08M | 15.43M | 10.91M | 7.40M
 
-There's not a lot to choose between the three contenders with simple output.
+There is not a lot to choose between the three contenders with simple output.
 Avro produces the smaller output, CBOR the next and Protocol Buffers the largest,
-but the different is under 10%. However, with blocking, while CBOR and Protocol
+but the different is less than 10%. However, with blocking, while CBOR and Protocol
 Buffers are again within a few percentage points of each other (though Protocol
 Buffers now has a slight advantage), Avro produces files in the region of 20%
 smaller, and holds a diminishing advantage through increased compression.

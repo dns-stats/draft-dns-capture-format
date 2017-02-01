@@ -230,7 +230,7 @@ Although this introduces complexity, it provides compression of the data that ma
 	
 It is anticipated 
 that the files produced can be subject to further compression using general purpose compression tools. Measurements show that 
-blocking significantly reduces the CPU required to perform such strong compression. See (#sample-data-on-the-cdns-format).
+blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
 
 * metadata about other packets received should also be included in each block. For example, counts of malformed DNS packets and non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may of interest.
@@ -251,7 +251,7 @@ Packets such as those described above can be separately recorded in a packet cap
 # Conceptual Overview
 
 The following figures show purely schematic representations of the C-DNS format to convey the high-level
-structure of the C-DNS format. (#cdns-cbor-format) provides a detailed discussion of the CBOR representation
+structure of the C-DNS format. (#the-cdns-format) provides a detailed discussion of the CBOR representation
 and individual elements.
 
 <!-- ######################################## NOTE TO AUTHORS
@@ -278,11 +278,12 @@ The choice of CBOR was made taking a number of factors into account.
  
 * CBOR is a binary representation, and thus is economical in storage space. 
 * Other binary representations were investigated, and whilst all had attractive features,
-none had a significant advantage over CBOR. See (#comparison-of-binary-formats) 
-and (#sample-data-on-the-cdns-format) for some discussion of this.
+none had a significant advantage over CBOR. See (#comparison-of-binary-formats) for some discussion of this.
 * CBOR is an IETF standard and familiar to IETF participants. It is based on the now-common 
-ideas of lists and objects, and thus requires very little familiarization for those in the wider industry. 
-* CBOR can also be easily converted to text formats such as JSON for debugging and other human inspection requirements.
+ideas of lists and objects, and thus requires very little familiarization for those in the wider industry.
+* CBOR is a simple format, and can easily be implemented from scratch if necessary. More complex formats
+require library support which may present problems on unusual platforms.
+* CBOR can also be easily converted to text formats such as JSON ([@RFC7159]) for debugging and other human inspection requirements.
 * CBOR data schemas can be described using CDDL [@?I-D.greevenbosch-appsawg-cbor-cddl#09]. 
 
 # The C-DNS format
@@ -307,7 +308,7 @@ the block data.
 
 The exact nature of the DNS data will affect what block size is the best fit, 
 however sample data for a root server indicated that block sizes less than 
-about 3000 bytes give good results. See (#block-size-choices) for more details. 
+about 3000 bytes give good results. See (#block-size-choice) for more details. 
 
 If no field type is specified, then the field is unsigned.
 
@@ -1295,76 +1296,263 @@ had different packet lengths to those produced by NSD.
 
 # Comparison of Binary Formats
 
-Several binary representations were considered. In particular CBOR, Apache Avro and
-Protocol Buffers were analyzed.
+Several binary serialisation formats were considered, and for
+completeness were also compared to JSON.
 
-Protocol Buffers and Avro both require a data schema, and validate data being
-stored against that schema.
+* [Apache Avro](https://avro.apache.org/). Data is stored according to
+  a pre-defined schema. The schema itself is always included in the
+  data file. Data can therefore be stored untagged, for a smaller
+  serialisation size, and be written and read by an Avro library.
+* [Google Protocol
+  Buffers](https://developers.google.com/protocol-buffers/). Data is
+  stored according to a pre-defined schema. The schema is used by a
+  generator to generate code for encoding and decoding the data. Data
+  can therefore be stored untagged, for a smaller serialisation size.
+  The schema is not stored with the data, so unlike Avro cannot be
+  read with a generic library.
+* [CBOR](http://cbor.io). Defined in [@!RFC7049], this serialisation format
+  is comparable to JSON but with a binary representation. It does not
+  use a pre-defined schema, so data is always stored tagged. However,
+  CBOR data schemas can be described using CDDL
+  [@?I-D.greevenbosch-appsawg-cbor-cddl#09] and tools exist to verify
+  data files conform to the schema.
 
-[TODO: Finish pros and cons of CBOR vs Avro vs Protocol buffers - tools, schema, adoption, etc.]
+A test program was written which reads input from an input PCAP file
+and writes output using two basic structures; a simple structure,
+where each query/response pair is represented in a single record
+entry, and a block structure as described above, where query/responses
+are collected into blocks and common data is reused.
 
-The difference in file sizes were mostly minimal See (#blocking-vs-more-simple-output).
+The resulting output files were then run through a variety of common
+general-purpose lossless compression tools to explore the further
+compressibility of the formats. The compression tools employed were:
 
-# Sample data on the C-DNS format
+* [snzip](https://github.com/kubo/snzip). A command line compression
+  tool based on the [Google Snappy](http://google.github.io/snappy/)
+  library.
+* [lz4](http://lz4.github.io/lz4/). The command line
+  compression tool from the reference C LZ4 implementation.
+* [gzip](http://www.gzip.org/). The ubiquitous GNU zip tool.
+* [zstd](http://facebook.github.io/zstd/). Compression using the Zstandard
+  algorithm.
+* [xz](http://tukaani.org/xz/). A popular compression tool noted for high
+  compression.
 
-This section presents some example figures for the output size of capture files
-when using different block sizes, data representations and binary formats. 
-The data is sample data for a root instance.
+In all cases the compression tools were run using their default settings.
 
-[TODO: This section needs more work..]
+Note that this draft does not mandate the use of compression, nor any
+particular compression scheme, but it anticipates that in practice
+output data will be subject to general-purpose compression, and so
+this should be taken into consideration.
 
-## Comparison to full PCAP files
+A capture of sample data from a root instance was used for the
+comparison. The input file was 661.87Mb. The following table shows the
+formatted size and size after compression (both in Mb), together with
+the RSS (in kb) and user time (seconds) taken by the
+compression.
 
-As can be seen in more detail below, for this sample data the compressed C-DNS files are around 30% the size of the full compressed PCAP files.
-It should also be noted that experiments showed that compression of the C-DNS format required
-very roughly one tenth of the CPU resources compared to compression of full PCAP files when using one core from a 3.5GHz i7 processor.
+Format|Fmt size|Comp.|Size|RSS|User time
+:-----|-------:|:----|---:|--:|--------:
+PCAP|661.87|snzip|212.48|2696|1.26
+PCAP|661.87|lz4|181.58|6336|1.35
+PCAP|661.87|gzip|153.46|1428|18.20
+PCAP|661.87|zstd|87.07|3544|4.27
+PCAP|661.87|xz|49.09|97416|160.79
+JSON simple|4113.92|snzip|603.78|2656|5.72
+JSON simple|4113.92|lz4|386.42|5636|5.25
+JSON simple|4113.92|gzip|271.11|1492|73.00
+JSON simple|4113.92|zstd|133.43|3284|8.68
+JSON simple|4113.92|xz|51.98|97412|600.74
+Avro simple|640.45|snzip|148.98|2656|0.90
+Avro simple|640.45|lz4|111.92|5828|0.99
+Avro simple|640.45|gzip|103.07|1540|11.52
+Avro simple|640.45|zstd|49.08|3524|2.50
+Avro simple|640.45|xz|22.87|97308|90.34
+CBOR simple|764.82|snzip|164.57|2664|1.11
+CBOR simple|764.82|lz4|120.98|5892|1.13
+CBOR simple|764.82|gzip|110.61|1428|12.88
+CBOR simple|764.82|zstd|54.14|3224|2.77
+CBOR simple|764.82|xz|23.43|97276|111.48
+PBuf simple|749.51|snzip|167.16|2660|1.08
+PBuf simple|749.51|lz4|123.09|5824|1.14
+PBuf simple|749.51|gzip|112.05|1424|12.75
+PBuf simple|749.51|zstd|53.39|3388|2.76
+PBuf simple|749.51|xz|23.99|97348|106.47
+JSON block|519.77|snzip|106.12|2812|0.93
+JSON block|519.77|lz4|104.34|6080|0.97
+JSON block|519.77|gzip|57.97|1604|12.70
+JSON block|519.77|zstd|61.51|3396|3.45
+JSON block|519.77|xz|27.67|97524|169.10
+Avro block|60.45|snzip|48.38|2688|0.20
+Avro block|60.45|lz4|48.78|8540|0.22
+Avro block|60.45|gzip|39.62|1576|2.92
+Avro block|60.45|zstd|29.63|3612|1.25
+Avro block|60.45|xz|18.28|97564|25.81
+CBOR block|75.25|snzip|53.27|2684|0.24
+CBOR block|75.25|lz4|51.88|8008|0.28
+CBOR block|75.25|gzip|41.17|1548|4.36
+CBOR block|75.25|zstd|30.61|3476|1.48
+CBOR block|75.25|xz|18.15|97556|38.78
+PBuf block|67.98|snzip|51.10|2636|0.24
+PBuf block|67.98|lz4|52.39|8304|0.24
+PBuf block|67.98|gzip|40.19|1520|3.63
+PBuf block|67.98|zstd|31.61|3576|1.40
+PBuf block|67.98|xz|17.94|97440|33.99
 
-## Block size choices
+The above results are discussed in the following sections.
 
-[TODO: Discuss trade-off of file block size vs memory consumption.]
+## Comparison with full PCAP files
 
-[TODO: Add graph that demonstrates block size of 5000 is optimal for the sample data used.]
+An important first consideration is whether moving away from PCAP
+offers significant benefits. The data show that compressed PCAP files
+are significantly larger than even the simple binary encodings, and
+the compression requires significantly more processor than compression
+of other encodings.
 
-## Blocking vs. more simple output
+## Simple versus block coding
 
-Some experiments were conducted producing output in a very simple format
-involving a single record per Q/R data item (akin to a .csv representation). 
-The aim here was to examine whether the
-blocking mechanism (using a block size of 5000) was worth the complexity, particularly after compression
-of the output file using several general purpose compression tools. The original PCAP
-file was 325.79M and compressed using xz to 24.3Mb.
+The intention of the block coding is to perform data de-duplication on
+query/response records within the block. The simple and block formats
+above store exactly the same information for each query/response
+record. This information is parsed from the DNS traffic in the input
+PCAP file, and in all cases each field has an identifier and the field
+data is typed.
 
-Format | Output size | lz4 | gzip | xz
-:------|------------:|----:|-----:|---:
-cbor-simple | 44.23M | 16.06M | 11.50M | 7.51M
-cbor-block | 22.44M | 15.14M | 10.70M | 7.23M
+The reduction in data size for the simple formats over the PCAP format
+made by not recording all fields in the PCAP - for example, Ethernet
+MAC addresses are not retained - is, in most cases, lost to the field
+identifiers and data type information.
 
-It might be expected that blocking is exploiting commonality that a general purpose
-compression engine could also exploit, and the figures do indeed bear this out.
-The more powerful (and resource-consuming) the compression, the closer the
-compressed simple file size gets to the compressed chunk file size. With no
-compression, the blocked output size is typically half that of the simple output,
-but as greater degrees of compression are applied the gap shrinks. However, even
-with the stronger compressor, the chunked output remains roughly 5-10% smaller
-than the simple output. This, and the higher gains at lower compression, might
-be significant, depending on the target environment.
+The data de-duplication on the block formats show an order of
+magnitude reduction in the size of the format file size against the
+simple formats. As would be expected, the compression tools are able
+to find and exploit a lot of this duplication, but as the
+de-duplication process uses knowledge of DNS traffic, it is able to
+retain a size advantage. This advantage reduces as stronger
+compression is applied, as again would be expected, but even with the
+strongest compression applied the block formatted data remains around
+75% of the size of the simple format and its compression requires
+roughly a third of the CPU time.
 
-[TODO: Add data on reduction in CPU overhead of compressing blocked output vs simple output.]
+## Binary versus text formats
 
-This was repeated using some other binary representations:
+Text data formats offer many advantages over binary formats,
+particularly in the areas of ad-hoc data inspection and extraction. It
+was therefore felt worthwhile to carry out a direct comparison,
+implementing JSON versions of the simple and block formats.
 
-Format | Output size | lz4 | gzip | xz
-:------|------------:|----:|-----:|---:
-json-simple | 189.85M | 25.59M | 16.03M | 9.74M
-avro-simple | 43.31M | 16.07M | 11.92M | 7.99M
-avro-block | 17.44M | 12.94M | 10.08M | 7.18M
-protobuf-simple | 46.02M | 15.79M | 11.59M | 7.94M
-protobuf-block | 22.08M | 15.43M | 10.91M | 7.40M
+Concentrating on JSON block format, the format files produced are a
+significant fraction of an order of magnitude larger than binary
+formats. The impact on file size after compression is as might be
+expected from that starting point; the stronger compression produces
+files that are 150% of the size of similarly compressed binary format,
+and require over 4x more CPU to compress.
 
-There is not a lot to choose between the three contenders with simple output.
-Avro produces the smaller output, CBOR the next and Protocol Buffers the largest,
-but the different is less than 10%. However, with blocking, while CBOR and Protocol
-Buffers are again within a few percentage points of each other (though Protocol
-Buffers now has a slight advantage), Avro produces files in the region of 20%
-smaller, and holds a diminishing advantage through increased compression.
+## Binary serialisation formats
 
+### Implementation notes
+
+* CBOR.  CBOR is a simple format, and simple to implement. The CBOR website
+  lists implementations for 16 languages.
+* Protocol Buffers. Code must be generated for a particular data schema to
+  to read and write data using that schema. The Google code generator can
+  currently generate code for encoding and decoding a schema for C++, Go,
+  Java, Python, Ruby, C#, Objective-C, Javascript and PHP.
+* Avro. Avro libraries are available for C, C++, C#, Java, Python, Ruby
+  and PHP. Optionally tools are available for C++, Java and C# to generate
+  code for encoding and decoding.
+
+Avro and Protocol Buffers both allow storage of untagged data, but
+because they rely on the data schema for this, their implementation is
+considerably more complex than CBOR. Using Avro or Protocol Buffers in
+an unsupported environment would require notably greater development
+effort compared to CBOR.
+
+### Performance
+
+Concentrating again on the block formats, all three produce format
+files that are close to an order of magnitude smaller that the
+original PCAP.  Avro produces the smallest files and CBOR the
+largest. The Avro file is 80% the size of CBOR files, with the
+Protocol Buffers file 90% of the CBOR size.
+
+Once compression is taken into account, the size difference
+narrows. At medium compression (gzip), Avro is 96% and Protocol
+Buffers 98% of CBOR size, and using strong compression Protocol
+Buffers is the smallest and Avro the largest, with Protocol Buffers
+being 98% and CBOR 99% the size of Avro, though CBOR and Protocol
+Buffers require more compression CPU.
+
+The measurements presented above do not include data on the CPU
+required to generate the format files. The testbed program producing
+the format files was coded in Python, and so absolute runtime figures
+do not reflect attainable performance in native code. However, each
+serialisation format was written from Python via native code
+libraries, so the relative demands of each block format may be
+assessed. The same input data as before was used, and resulted
+in the following timings.
+
+Format|RSS (Mb)|User time
+:-----|-------:|--------:
+Avro|639.28|1412.50
+CBOR|644.41|1259.34
+PBuf|640.98|1271.62
+
+It appears, therefore, that Avro's advantage in compression CPU usage
+is probably offset by a larger CPU requirement in writing Avro.
+
+## Format choice
+
+The above assessments lead us to the choice of a binary format file
+using blocking.
+
+As noted previously, this draft anticipates that output data will be
+subject to compression, and this being the case there is no compelling
+case for one particular binary serialisation format in terms of either
+final file size or machine resources consumed.
+
+The relative simplicity of CBOR implementation and consequent lack of
+reliance on library and/or code generator availability, its IETF
+standardisation, and its close resemblance to JSON and thus its
+accessibility to a wider industry beyond IETF were felt to justify its
+adoption for this use case.
+
+## Block size choice
+
+Given the choice of a CBOR format using blocking, the question arises
+of what an appropriate default value for the maximum number of
+query/response pairs in a block should be. This has two components;
+what is the impact on performance of using different chunk sizes in
+the format file, and what is the impact on the size of the format file
+before and after compression.
+
+The following table addresses the performance question, showing the
+impact on the performance of a C++ program writing the file format
+described in this draft, using the same input data as before. Format
+size is in Mb, RSS in kb.
+
+Chunk size|Format size|RSS|User time
+---------:|----------:|--:|--------:
+1000|133.46|612.27|15.25
+5000|89.85|676.82|14.99
+10000|76.87|752.40|14.53
+20000|67.86|750.75|14.49
+40000|61.88|736.30|14.29
+80000|58.08|694.16|14.28
+160000|55.94|733.84|14.44
+320000|54.41|799.20|13.97
+
+Increasing chunk size, therefore, tends to increase maximum RSS a
+little, with no significant effect (if anything a small reduction) on
+CPU consumption.
+
+The following figure plots the effect of increasing chunk size on output file size for different compressions.
+
+![Figure showing effect of chunk size on file size (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.png)
+
+![Figure showing effect of chunk size on file size (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.svg)
+
+From the above, there is obviously scope for tuning the default block
+size to the compression being employed, traffic loads, frequency of
+output file rollover etc. Using a strong compression, block sizes over
+10,000 query/response pairs would seem to offer limited improvements.

@@ -1219,7 +1219,7 @@ draft-dickinson-dnsop-dns-capture-format-00
 
 # DNS Name compression example
 
-The basic algorithm, which follows the guidance in [@RFC1035],
+The basic algorithm, which follows the guidance in [@!RFC1035],
 is simply to collect each name, and the offset in the packet
 at which it starts, during packet construction. As each name is added, it is
 offered to each of the collected names in order of collection, starting from

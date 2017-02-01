@@ -129,7 +129,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in [@!RFC2119].
 
-The parts of DNS messages are named as they are in [@!RFC 1035]. In specific,
+The parts of DNS messages are named as they are in [@!RFC1035]. In specific,
 the DNS message has five sections: Header, Question, Answer, Authority,
 and Additional.
 
@@ -176,7 +176,7 @@ with the most limited use case in mind such that:
 * collected data being returned to some central analysis system will use the same network interface as the DNS queries and responses
 * there can be multiple third party servers involved
 
-Because of thes considerations, a major factor in the design of the
+Because of these considerations, a major factor in the design of the
 format is minimal storage size of the capture files.
 
 Another significant consideration for any application that records DNS traffic 

@@ -239,9 +239,7 @@ It should be noted that any structured capture format that does not capture the 
 that it cannot represent "malformed" DNS packets. Only those packets that can be transformed reasonably into the structured format
 can be represented by it. So if a query is malformed this will lead to the (well formed) DNS responses with error code FORMERR appearing as "unmatched".
 
-* Data on malformed packets will optionally be recorded.
-
-There are three distinct types of packets that are considered "malformed":
+* Data on malformed packets will optionally be recorded. There are three distinct types of packets that are considered "malformed":
 
     * Packets that cannot be decoded into a well-formed IP or IPv6 packet, or where a valid DNS header cannot be extracted.
       A valid DNS header is one where the identifier, flags and codes, and question count words are present and well-formed, and
@@ -256,7 +254,8 @@ to be informed of such transactions, or input data that cannot be decoded to eve
 processed as part of the query/response stream, and may wish to be able to analyse these malformed inputs as, for example, possible attack
 vectors. Therefore these interactions with the name server should be recorded where possible, but flagged as malformed.
 
-QUESTION: Should a valid DNS header include additional conditions:
+QUESTION: Should a valid DNS header include additional conditions?
+
 * The flags and codes words has valid values for operation code and response code.
 * A query has response code 0.
 * All zero bits are set to 0.
@@ -752,7 +751,6 @@ best that can be achieved.
 (#dns-name-compression-example) presents an example of two different compression
 algorithms used by well-known name server software.
 
-
 # Data Collection
 
 This section describes a non-normative proposed algorithm for the processing of a captured stream of DNS queries and
@@ -835,7 +833,6 @@ The timestamp of a list item is that of the query for cases 1 and 2 and that of 
 ## Post Processing
 
 When ending capture, all remaining entries in the Q/R data item FIFO should be treated as timed out queries.
- 
 
 # IANA Considerations
 
@@ -843,8 +840,7 @@ None
 
 # Security Considerations
 
-Any control interface MUST perform authentication and 
-encryption.
+Any control interface MUST perform authentication and encryption.
 
 Any data upload MUST be authenticated and encrypted.
 
@@ -1594,3 +1590,11 @@ In the presence of malformed packets where one or more of QDCOUNT, ANCOUNT, NSCO
 decoded, the query signature should contain the values of the counts from the DNS header, and the query/response record should contain
 the successfully decoded RRs. Beware, therefore, that the counts as recorded are not a reliable guide to the number of RRs associated with
 the query/response.
+
+## Block preamble timestamp
+
+The timestamp in the block preamble gives the timestamp of the earliest query/response or malformed packet record
+in the block. Query/response records and malformed packet records specify their timestamp as an offset from this timestamp.
+This offset is always positive. Since, as already noted above in (#data-collection), packet capture libraries
+do not necessarily provide packets in strict chronological order, the earliest item in the block will not necessarily
+be the first item.

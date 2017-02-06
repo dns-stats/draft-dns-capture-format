@@ -232,21 +232,34 @@ It is anticipated
 that the files produced can be subject to further compression using general purpose compression tools. Measurements show that 
 blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
 
-* metadata about other packets received should also be included in each block. For example, counts of malformed DNS packets and non-DNS packets
+* Metadata about other packets received should also be included in each block. For example, counts of malformed DNS packets and non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may of interest.
  
 It should be noted that any structured capture format that does not capture the DNS payload byte for byte will likely be limited to some extent in
 that it cannot represent "malformed" DNS packets. Only those packets that can be transformed reasonably into the structured format
 can be represented by it. So if a query is malformed this will lead to the (well formed) DNS responses with error code FORMERR appearing as "unmatched".
 
-[TODO: Need further discussion of well-formed vs. malformed packets and how name servers view this definition.]
+* Data on malformed packets will optionally be recorded.
 
-[TODO: May need to develop optional representation of malformed packets within C-DNS and what this means for packet matching.
-This may influence which fields are optional in the rest of the representation.]
+There are three distinct types of packets that are considered "malformed":
 
-<!--Include in the discussion that e.g. trailing bytes on a well-formed query are not retained-->
+    * Packets that cannot be decoded into a well-formed IP or IPv6 packet, or where a valid DNS header cannot be extracted.
+      A valid DNS header is one where the identifier, flags and codes, and question count words are present and well-formed, and
+      unless the question count is 0 a single question is present in the question section.
+    * Packets with a well-formed DNS header, but well-formed records corresponding to the full count of records specified in each section
+      are not present.
+    * Packets with well-formed DNS content, but with additional data following the DNS content.
 
-Packets such as those described above can be separately recorded in a packet capture file for later analysis.
+Rationale: Many name servers will process queries on a best-effort basis in accordance with Postel's Law, and do not insist on
+completely well-formed packets. Name servers will also generally ignore any trailing data following well-formed DNS content. Users may wish
+to be informed of such transactions, or input data that cannot be decoded to even a DNS header and which therefore cannot be meaningfully
+processed as part of the query/response stream, and may wish to be able to analyse these malformed inputs as, for example, possible attack
+vectors. Therefore these interactions with the name server should be recorded where possible, but flagged as malformed.
+
+QUESTION: Should a valid DNS header include additional conditions:
+* The flags and codes words has valid values for operation code and response code.
+* A query has response code 0.
+* All zero bits are set to 0.
 
 # Conceptual Overview
 
@@ -408,6 +421,8 @@ Block tables | Map of tables | The tables containing data referenced by individu
 Q/Rs | Array of Q/Rs | Details of individual Q/R pairs.
 ||
 Address Event Counts | Array of Address Event counts | Per client counts of ICMP messages and TCP resets.
+||
+Malformed Packets | Array of malformed packets | Wire contents of malformed packets. 
 
 ## Block preamble map
 
@@ -495,6 +510,8 @@ Q/R signature flags | A | Bit flags indicating information present in this Q/R p
  | | Bit 3. 1 if a Query is present and it has an OPT Resource Record.
  | | Bit 4. 1 if a Response is present and it has an OPT Resource Record.
  | | Bit 5. 1 if a Response is present but has no Question.
+ | | Bit 6. 1 if a Query is present but malformed.
+ | | Bit 7. 1 if a Response is present but malformed.
 ||
 Query OPCODE | Q | Query OPCODE.
 ||
@@ -654,6 +671,19 @@ Address index | Unsigned | The index in the IP address table of the client addre
 ||
 Count | Unsigned | The number of occurrences of this event during the block collection period.
 
+## Malformed packet records
+
+This optional table records the content of malformed packets.
+
+Field | Type | Description
+:-----|:-----|:-----------
+Time offset | A | Packet timestamp as an offset in microseconds and optionally picoseconds from the Block preamble Timestamp.
+Malformed type | Unsigned | The type of malformation. The following types are currently defined:
+ | | 0. Cannot decode IP or extract valid DNS header.
+ | | 1. DNS header is valid, but other DNS content is malformed.
+ | | 2. DNS content is well-formed but the packet contains trailing data.
+Contents | Byte string | The packet content in wire format.
+
 # C-DNS to PCAP
 
 It is possible to re-construct PCAP files from the C-DNS format in a lossy fashion.
@@ -678,16 +708,17 @@ of the original packet stream cannot be re-constructed from the C-DNS format:
      * Multiple DNS messages may have been sent in a single TCP segment
      * A DNS payload may have be split across multiple TCP segments
      * Multiple DNS messages may have be sent on a single TCP session
-* Malformed DNS messages and non-DNS packets
+* Malformed DNS messages if they are not recorded
+* Non-DNS packets
 
 Simple assumptions can be made on the reconstruction: fragmented and DNS-over-TCP messages
 can be reconstructed into single packets and a single TCP session can be constructed
 for each TCP packet.
 
-Additionally, if malformed and non-DNS packets are captured separately into packet captures,
+Additionally, if malformed packets are captured in the C-DNS or separate packet captures,
+and non-DNS packets are captured separately into packet captures,
 they can be merged with packet captures reconstructed from C-DNS to produce a more complete
 packet stream.
-
 
 ## Name Compression
 
@@ -1554,3 +1585,12 @@ From the above, there is obviously scope for tuning the default block
 size to the compression being employed, traffic loads, frequency of
 output file rollover etc. Using a strong compression, block sizes over
 10,000 query/response pairs would seem to offer limited improvements.
+
+# Notes to implementors
+
+## Malformed packets
+
+In the presence of malformed packets where one or more of QDCOUNT, ANCOUNT, NSCOUNT and ARCOUNT do not match the RRs that can be successfully
+decoded, the query signature should contain the values of the counts from the DNS header, and the query/response record should contain
+the successfully decoded RRs. Beware, therefore, that the counts as recorded are not a reliable guide to the number of RRs associated with
+the query/response.

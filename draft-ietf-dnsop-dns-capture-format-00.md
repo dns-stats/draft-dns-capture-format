@@ -692,10 +692,12 @@ This optional table records the content of malformed packets.
 Field | Type | Description
 :-----|:-----|:-----------
 Time offset | A | Packet timestamp as an offset in microseconds and optionally picoseconds from the Block preamble Timestamp.
+||
 Malformed type | Unsigned | The type of malformation. The following types are currently defined:
  | | 0. Cannot decode IP or extract valid DNS header.
  | | 1. DNS header is valid, but other DNS content is malformed.
  | | 2. DNS content is well-formed but the packet contains trailing data.
+||
 Contents | Byte string | The packet content in wire format.
 
 # C-DNS to PCAP

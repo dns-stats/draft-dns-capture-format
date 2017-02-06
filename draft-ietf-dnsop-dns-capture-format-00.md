@@ -433,7 +433,22 @@ Timestamp | Array of unsigned | A timestamp for the earliest record in the block
 
 ## Block statistics
 
-[TODO: Add block statistics]
+The block statistics section contains some basic statistical information about the block.
+
+Field | Type | Description
+:-----|:-----|:-----------
+Total packets | Unsigned | Total number of packets processed during the block.
+Total pairs | Unsigned | Total number of query/response pairs in the block.
+Unmatched queries | Unsigned | Number of unmatched queries in the block.
+Unmatched responses | Unsigned | Number of unmatched responses in the block.
+Malformed packets | Unsigned | Number of malformed packets found in input for the block.
+Non-DNS packets | Unsigned | Number of non-DNS packets found in input for the block.
+Out-of-order packets | Unsigned | Number of packets processed during input for the block that were not in strict chronological order.
+Dropped pairs | Unsigned | Count of query/responses not written due to overflow.
+Dropped packets | Unsigned | Count of raw packets not written due to overflow.
+Dropped non-DNS packets | Unsigned | Count of ignored packets not written due to overflow.
+
+QUESTION: The last 3 are info about compactor performance.Should they be in the standard?
 
 ## Block table map
 

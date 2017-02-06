@@ -415,9 +415,7 @@ The block preamble map contains overall information for the block.
 
 Field | Type | Description
 :-----|:-----|:-----------
-Timestamp | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two elements as in Posix struct timeval. The first element is an unsigned integer time_t and the second is an unsigned integer number of microseconds. The latter is always a value between 0 and 999,999.
-
-[TODO: Extend to support pico/nano. Also do this for Time offset and Response delay]
+Timestamp | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two or three elements. The first two elements are as in Posix struct timeval. The first element is an unsigned integer time_t and the second is an unsigned integer number of microseconds. The third, if present, is an unsigned integer number of picoseconds. The microsecond and picosecond items always have a value between 0 and 999,999.
 
 ## Block statistics
 
@@ -599,7 +597,7 @@ Each item in the map has an unsigned value (with the exception of those listed b
 
 Field | P | Description
 :-----|:--------|:-----------
-Time offset | A | Q/R timestamp as an offset in microseconds from the Block pre-amble Timestamp. The timestamp is the timestamp of the Query, or the Response if there is no Query.
+Time offset | A | Q/R timestamp as an offset in microseconds and optionally picoseconds from the Block preamble Timestamp. The timestamp is the timestamp of the Query, or the Response if there is no Query.
 ||
 Client address | A | The index in the IP address table of the client IP address.
 ||

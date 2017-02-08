@@ -522,21 +522,21 @@ Q/R signature flags | A | Bit flags indicating information present in this Q/R d
 Query OPCODE | Q | Query OPCODE.
 ||
 Q/R DNS flags | A | Bit flags with values from the Query and Response DNS flags. Bit 0 is the least significant bit. Flag values are 0 if the Query or Response is not present.
- | | Bit 0. Query Checking Disabled (CD) flag.
- | | Bit 1. Query Authenticated Data (AD) flag.
- | | Bit 2. Query reserved (Z) flag.
- | | Bit 3. Query Recursion Available (RA) flag.
- | | Bit 4. Query Recursion Desired (RD) flag.
- | | Bit 5. Query TrunCation (TC) flag.
- | | Bit 6. Query Authoritative Answer (AA) flag.
- | | Bit 7. Query DNSSEC answer OK (D0) flag.
- | | Bit 8. Response Checking Disabled (CD) flag.
- | | Bit 9. Response Authenticated Data (AD) flag.
- | | Bit 10. Response reserved (Z) flag.
- | | Bit 11. Response Recursion Available (RA) flag.
- | | Bit 12. Response Recursion Desired (RD) flag.
- | | Bit 13. Response TrunCation (TC) flag.
- | | Bit 14. Response Authoritative Answer (AA) flag.
+ | | Bit 0. Query Checking Disabled (CD).
+ | | Bit 1. Query Authenticated Data (AD).
+ | | Bit 2. Query reserved (Z).
+ | | Bit 3. Query Recursion Available (RA).
+ | | Bit 4. Query Recursion Desired (RD).
+ | | Bit 5. Query TrunCation (TC).
+ | | Bit 6. Query Authoritative Answer (AA).
+ | | Bit 7. Query DNSSEC answer OK (D0).
+ | | Bit 8. Response Checking Disabled (CD).
+ | | Bit 9. Response Authenticated Data (AD).
+ | | Bit 10. Response reserved (Z).
+ | | Bit 11. Response Recursion Available (RA).
+ | | Bit 12. Response Recursion Desired (RD).
+ | | Bit 13. Response TrunCation (TC).
+ | | Bit 14. Response Authoritative Answer (AA).
 ||
 Query RCODE | Q | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 ||

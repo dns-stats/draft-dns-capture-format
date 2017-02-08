@@ -251,7 +251,7 @@ can be represented by it. So if a query is malformed this will lead to the (well
 Rationale: Many name servers will process queries on a best-effort basis in accordance with Postel's Law, and do not insist on
 completely well-formed packets. Name servers will also generally ignore any trailing data following well-formed DNS content. Users may wish
 to be informed of such transactions, or input data that cannot be decoded to even a DNS header and which therefore cannot be meaningfully
-processed as part of the query/response stream, and may wish to be able to analyse these malformed inputs as, for example, possible attack
+processed as part of the Q/R data item stream, and may wish to be able to analyse these malformed inputs as, for example, possible attack
 vectors. Therefore these interactions with the name server should be recorded where possible, but flagged as malformed.
 
 QUESTION: Should a valid DNS header include additional conditions?
@@ -265,14 +265,6 @@ QUESTION: Should a valid DNS header include additional conditions?
 The following figures show purely schematic representations of the C-DNS format to convey the high-level
 structure of the C-DNS format. (#the-cdns-format) provides a detailed discussion of the CBOR representation
 and individual elements.
-
-<!-- ######################################## NOTE TO AUTHORS
-
-The art uses terms different than those above. cdns_format uses "Query/Response data items". 
-packet_matching uses "QR item". qr_data_format uses "Query/Response". However, the term used in the document is
-"Q/R data items".
-
-############################################# -->
 
 ![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/cdns_format.png)
 
@@ -313,8 +305,8 @@ The file header is followed by a series of data blocks.
 
 A block consists of a block header, containing various tables of common data,
 and some statistics for the traffic received over the block. The block header
-is then followed by a list of the Q/R pairs detailing the queries and responses
-received during the block. The list of Q/R pairs is in turn followed by a list
+is then followed by a list of the Q/R date items detailing the queries and responses
+received during the block. The list of Q/R data items is in turn followed by a list
 of per-client counts of particular IP events that occurred during collection of
 the block data.
 
@@ -415,9 +407,9 @@ Block preamble | Map of items | Overall information for the block.
 ||
 Block statistics | Map of statistics | Statistics about the block.
 ||
-Block tables | Map of tables | The tables containing data referenced by individual Q/R entries.
+Block tables | Map of tables | The tables containing data referenced by individual Q/R data items.
 ||
-Q/Rs | Array of Q/Rs | Details of individual Q/R pairs.
+Q/Rs | Array of Q/R data items | Details of individual Q/R data items.
 ||
 Address Event Counts | Array of Address Event counts | Per client counts of ICMP messages and TCP resets.
 ||
@@ -454,7 +446,7 @@ QUESTION: The last 3 are info about compactor performance.Should they be in the 
 
 The block table map contains the block tables. Each element, or table, is an array. The following tables detail the contents of each block table.
 
-The Present column in the following tables indicates the circumstances when an optional field will be present. A Q/R pair may be:
+The Present column in the following tables indicates the circumstances when an optional field will be present. A Q/R data item may be:
 
 * A Query plus a Response.
 * A Query without a Response.
@@ -465,7 +457,7 @@ Also:
 * A Query and/or a Response may contain an OPT section.
 * A Question may or may not be present. If the Query is available, the Question section of the Query is used. If no Query is available, the Question section of the Response is used. Unless otherwise noted, a Question refers to the first Question in the Question section.
 
-So, for example, a field listed with a Present value of QUERY is present whenever the Q/R pair contains a Query. If the pair contains a Response only, the field will not be present.
+So, for example, a field listed with a Present value of QUERY is present whenever the Q/R data item contains a Query. If the pair contains a Response only, the field will not be present.
 
 ## IP address table
 This table holds all client and server IP addresses in the block. Each item in the table is a single IP address.
@@ -496,7 +488,7 @@ Data | Byte string | The NAME or RDATA contents. NAMEs, and labels within RDATA 
 
 ## Query Signature table
 
-This table holds elements of the Q/R data that are often common to between different individual Q/R records. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned key.
+This table holds elements of the Q/R data item that are often common to between different individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned key.
 
 The following abbreviations are used in the Present (P) column 
 
@@ -517,7 +509,7 @@ Transport flags | A | Bit flags describing the protocol used to service the quer
  | | Bit 0. Transport type. 0 = UDP, 1 = TCP.
  | | Bit 1. IP type. 0 = IPv4, 1 = IPv6.
 ||
-Q/R signature flags | A | Bit flags indicating information present in this Q/R pair. Bit 0 is the least significant bit.
+Q/R signature flags | A | Bit flags indicating information present in this Q/R data item. Bit 0 is the least significant bit.
  | | Bit 0. 1 if a Query is present.
  | | Bit 1. 1 if a Response is present.
  | | Bit 2. 1 if one or more Question is present.
@@ -608,7 +600,7 @@ RR | The index in the Resource Record table of the individual Resource Record.
 
 ## Query/Response data
 
-The block Q/R data is a CBOR array of individual Q/R data items. Each item in the array is a CBOR map containing details on the individual Q/R pair. 
+The block Q/R data is a CBOR array of individual Q/R data items. Each item in the array is a CBOR map containing details on the individual Q/R data item. 
 
 Note that there is no requirement that the elements of the Q/R array are presented in strict chronological order.
 
@@ -786,7 +778,7 @@ It should be noted that packet capture libraries do not necessary provide packet
 
 ## Matching algorithm
 
-A schematic representation of the algorithm for matching Q/R pairs is shown in the following diagram:
+A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
 ![Figure showing the packet matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/packet_matching.png)
 
@@ -1006,7 +998,7 @@ draft-dickinson-dnsop-dns-capture-format-00
 # CDDL
 
     ; CDDL specification of the file format for C-DNS, 
-    ; which describes a collection of DNS Query/Response pairs.
+    ; which describes a collection of DNS Q/R data items.
 
     File = [
         file-type-id  : tstr,          ; "C-DNS"
@@ -1573,7 +1565,7 @@ adoption for this use case.
 Given the choice of a CBOR format using blocking, the question arises
 of what an appropriate default value for the maximum number of
 query/response pairs in a block should be. This has two components;
-what is the impact on performance of using different chunk sizes in
+what is the impact on performance of using different block sizes in
 the format file, and what is the impact on the size of the format file
 before and after compression.
 
@@ -1582,7 +1574,7 @@ impact on the performance of a C++ program writing the file format
 described in this draft, using the same input data as before. Format
 size is in Mb, RSS in kb.
 
-Chunk size|Format size|RSS|User time
+Block size|Format size|RSS|User time
 ---------:|----------:|--:|--------:
 1000|133.46|612.27|15.25
 5000|89.85|676.82|14.99
@@ -1593,15 +1585,15 @@ Chunk size|Format size|RSS|User time
 160000|55.94|733.84|14.44
 320000|54.41|799.20|13.97
 
-Increasing chunk size, therefore, tends to increase maximum RSS a
+Increasing block size, therefore, tends to increase maximum RSS a
 little, with no significant effect (if anything a small reduction) on
 CPU consumption.
 
-The following figure plots the effect of increasing chunk size on output file size for different compressions.
+The following figure plots the effect of increasing block size on output file size for different compressions.
 
-![Figure showing effect of chunk size on file size (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.png)
+![Figure showing effect of block size on file size (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.png)
 
-![Figure showing effect of chunk size on file size (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.svg)
+![Figure showing effect of block size on file size (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg)
 
 From the above, there is obviously scope for tuning the default block
 size to the compression being employed, traffic loads, frequency of

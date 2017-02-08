@@ -1346,6 +1346,11 @@ completeness were also compared to JSON.
   a pre-defined schema. The schema itself is always included in the
   data file. Data can therefore be stored untagged, for a smaller
   serialisation size, and be written and read by an Avro library.
+
+    * Avro libraries are available for C, C++, C#, Java, Python, Ruby
+  and PHP. Optionally tools are available for C++, Java and C# to generate
+  code for encoding and decoding.
+
 * [Google Protocol
   Buffers](https://developers.google.com/protocol-buffers/). Data is
   stored according to a pre-defined schema. The schema is used by a
@@ -1353,6 +1358,12 @@ completeness were also compared to JSON.
   can therefore be stored untagged, for a smaller serialisation size.
   The schema is not stored with the data, so unlike Avro cannot be
   read with a generic library.
+
+    * Code must be generated for a particular data schema to
+  to read and write data using that schema. The Google code generator can
+  currently generate code for encoding and decoding a schema for C++, Go,
+  Java, Python, Ruby, C#, Objective-C, Javascript and PHP.
+  
 * [CBOR](http://cbor.io). Defined in [@!RFC7049], this serialisation format
   is comparable to JSON but with a binary representation. It does not
   use a pre-defined schema, so data is always stored tagged. However,
@@ -1360,11 +1371,19 @@ completeness were also compared to JSON.
   [@?I-D.greevenbosch-appsawg-cbor-cddl#09] and tools exist to verify
   data files conform to the schema.
 
+    * CBOR is a simple format, and simple to implement. The CBOR website
+  lists implementations for 16 languages.
+
+Avro and Protocol Buffers both allow storage of untagged data, but
+because they rely on the data schema for this, their implementation is
+considerably more complex than CBOR. Using Avro or Protocol Buffers in
+an unsupported environment would require notably greater development
+effort compared to CBOR.
+
 A test program was written which reads input from an input PCAP file
 and writes output using two basic structures; a simple structure,
 where each query/response pair is represented in a single record
-entry, and a block structure as described above, where query/responses
-are collected into blocks and common data is reused.
+entry, and the C-DNS block structure.
 
 The resulting output files were then compressed using a variety of common
 general-purpose lossless compression tools to explore the
@@ -1388,11 +1407,11 @@ particular compression scheme, but it anticipates that in practice
 output data will be subject to general-purpose compression, and so
 this should be taken into consideration.
 
-A capture of sample data from a root instance was used for the
-comparison. The input file was 661.87Mb. The following table shows the
-formatted size and size after compression (both in Mb), together with
-the task resident set size (RSS) in kb and the user time in seconds
-taken by the compression.
+`test.pcap`, a 662Mb capture of sample data from a root instance was
+used for the comparison. The following table shows the formatted size
+and size after compression (both in Mb), together with the task
+resident set size (RSS) in kb and the user time in seconds taken by
+the compression.
 
 Format|File size|Comp.|Comp. size|RSS|User time
 :-----|--------:|:----|---------:|--:|--------:
@@ -1455,10 +1474,12 @@ The above results are discussed in the following sections.
 ## Comparison with full PCAP files
 
 An important first consideration is whether moving away from PCAP
-offers significant benefits. The data show that compressed PCAP files
-are significantly larger than even the simple binary encodings, and
-the compression requires significantly more processor than compression
-of other encodings.
+offers significant benefits.
+
+The simple binary formats are typically larger than PCAP, even though
+they omit some information such as Ethernet MAC addresses. But not only
+do they require less CPU to compress than PCAP, the resulting
+compressed files are smaller than compressed PCAP.
 
 ## Simple versus block coding
 
@@ -1468,11 +1489,6 @@ above store exactly the same information for each query/response
 record. This information is parsed from the DNS traffic in the input
 PCAP file, and in all cases each field has an identifier and the field
 data is typed.
-
-The reduction in data size for the simple formats over the PCAP format
-made by not recording all fields in the PCAP - for example, Ethernet
-MAC addresses are not retained - is, in most cases, lost to the field
-identifiers and data type information.
 
 The data de-duplication on the block formats show an order of
 magnitude reduction in the size of the format file size against the
@@ -1499,74 +1515,42 @@ expected from that starting point; the stronger compression produces
 files that are 150% of the size of similarly compressed binary format,
 and require over 4x more CPU to compress.
 
-## Binary serialisation formats
-
-### Implementation notes
-
-* CBOR.  CBOR is a simple format, and simple to implement. The CBOR website
-  lists implementations for 16 languages.
-* Protocol Buffers. Code must be generated for a particular data schema to
-  to read and write data using that schema. The Google code generator can
-  currently generate code for encoding and decoding a schema for C++, Go,
-  Java, Python, Ruby, C#, Objective-C, Javascript and PHP.
-* Avro. Avro libraries are available for C, C++, C#, Java, Python, Ruby
-  and PHP. Optionally tools are available for C++, Java and C# to generate
-  code for encoding and decoding.
-
-Avro and Protocol Buffers both allow storage of untagged data, but
-because they rely on the data schema for this, their implementation is
-considerably more complex than CBOR. Using Avro or Protocol Buffers in
-an unsupported environment would require notably greater development
-effort compared to CBOR.
-
-### Performance
+## Performance
 
 Concentrating again on the block formats, all three produce format
 files that are close to an order of magnitude smaller that the
-original PCAP.  Avro produces the smallest files and CBOR the
-largest. The Avro file is 80% the size of CBOR files, with the
-Protocol Buffers file 90% of the CBOR size.
+original PCAP.  CBOR produces the largest files and Avro
+the smallest, 20% smaller than CBOR.
 
 Once compression is taken into account, the size difference
-narrows. At medium compression (gzip), Avro is 96% and Protocol
-Buffers 98% of CBOR size, and using strong compression Protocol
-Buffers is the smallest and Avro the largest, with Protocol Buffers
-being 98% and CBOR 99% the size of Avro, though CBOR and Protocol
-Buffers require more compression CPU.
+narrows. At medium compression (gzip), the size difference is 4%, and
+using strong compression Avro is the largest size and Protocol Buffers
+the smallest, 2% smaller than Avro, though CBOR and Protocol Buffers
+require more compression CPU.
 
 The measurements presented above do not include data on the CPU
-required to generate the format files. The testbed program producing
-the format files was coded in Python, and so absolute runtime figures
-do not reflect attainable performance in native code. However, each
-serialisation format was written from Python via native code
-libraries, so the relative demands of each block format may be
-assessed. The same input data as before was used, and resulted
-in the following timings.
-
-Format|RSS (Mb)|User time
-:-----|-------:|--------:
-Avro|639.28|1412.50
-CBOR|644.41|1259.34
-PBuf|640.98|1271.62
-
+required to generate the format files. Measurements indicate
+that writing Avro requires 10% more CPU than CBOR or Protocol Buffers.
 It appears, therefore, that Avro's advantage in compression CPU usage
 is probably offset by a larger CPU requirement in writing Avro.
 
-## Format choice
+## Conclusions
 
 The above assessments lead us to the choice of a binary format file
 using blocking.
 
 As noted previously, this draft anticipates that output data will be
-subject to compression, and this being the case there is no compelling
-case for one particular binary serialisation format in terms of either
-final file size or machine resources consumed.
+subject to compression. There is no compelling case for one particular
+binary serialisation format in terms of either final file size or
+machine resources consumed, so the choice must be largely based on
+other factors. CBOR was chosen as the binary serialisation format for
+the following reasons:
 
-The relative simplicity of CBOR implementation and consequent lack of
-reliance on library and/or code generator availability, its IETF
-standardisation, and its close resemblance to JSON and thus its
-accessibility to a wider industry beyond IETF were felt to justify its
-adoption for this use case.
+* Simplicity of implementation and consequent lack of reliance on
+library and/or code generator availability.
+* IETF standardisation.
+* Close resemblance to JSON and thus accessibility to a
+wider industry beyond IETF.
 
 ## Block size choice
 
@@ -1578,12 +1562,11 @@ the format file, and what is the impact on the size of the format file
 before and after compression.
 
 The following table addresses the performance question, showing the
-impact on the performance of a C++ program writing the file format
-described in this draft, using the same input data as before. Format
-size is in Mb, RSS in kb.
+impact on the performance of a C++ program converting `test.pcap`
+to C-DNS. File size is in Mb, resident set size (RSS) in kb.
 
-Chunk size|Format size|RSS|User time
----------:|----------:|--:|--------:
+Block size|File size|RSS|User time
+---------:|--------:|--:|--------:
 1000|133.46|612.27|15.25
 5000|89.85|676.82|14.99
 10000|76.87|752.40|14.53
@@ -1593,18 +1576,18 @@ Chunk size|Format size|RSS|User time
 160000|55.94|733.84|14.44
 320000|54.41|799.20|13.97
 
-Increasing chunk size, therefore, tends to increase maximum RSS a
+Increasing block size, therefore, tends to increase maximum RSS a
 little, with no significant effect (if anything a small reduction) on
 CPU consumption.
 
-The following figure plots the effect of increasing chunk size on output file size for different compressions.
+The following figure plots the effect of increasing block size on output file size for different compressions.
 
-![Figure showing effect of chunk size on file size (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.png)
+![Figure showing effect of block size on file size (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.png)
 
-![Figure showing effect of chunk size on file size (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.svg)
+![Figure showing effect of block size on file size (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.svg)
 
 From the above, there is obviously scope for tuning the default block
-size to the compression being employed, traffic loads, frequency of
+size to the compression being employed, traffic characteristics, frequency of
 output file rollover etc. Using a strong compression, block sizes over
 10,000 query/response pairs would seem to offer limited improvements.
 

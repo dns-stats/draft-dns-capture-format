@@ -1324,10 +1324,11 @@ The heuristics are:
 
 1. A match is only perfect if the name is completely compressed AND the TYPE of the section in which the name occurs matches the TYPE of the name used as the compression target.
 2. If the name occurs in RDATA:
- a.  If the compression target name is in a query, then only the first RR in an RRSET can use that name as a compression target.
- b.  The compression target name MUST be in RDATA.
- c.  The name section TYPE must match the compression target name section TYPE.
- d.  The compression target name MUST be in the immediately preceding RR in the RRSET.
+
+    * If the compression target name is in a query, then only the first RR in an RRSET can use that name as a compression target.
+    * The compression target name MUST be in RDATA.
+    * The name section TYPE must match the compression target name section TYPE.
+    * The compression target name MUST be in the immediately preceding RR in the RRSET.
 
 Using this algorithm less than 0.1% of the reconstructed packets had incorrect lengths.
 

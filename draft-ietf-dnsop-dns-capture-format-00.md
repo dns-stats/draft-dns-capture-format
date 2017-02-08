@@ -341,7 +341,7 @@ The file header contains the following:
 
 Field | Type | Description
 :----|:----|:-----
-File type ID | Text string | String identifying the file type
+File type ID | Text string | String "C-DNS" identifying the file type
 ||
 File preamble | Map of items | Collection information for the whole file.
 ||
@@ -353,7 +353,11 @@ The file preamble contains the following:
 
 Field | Type | Description
 :----|:----|:-----
-Format version | Unsigned | Indicates version of format used in file.
+major-format-version | Unsigned | Unsigned integer '0'. The major version of format used in file.
+||
+minor-format-version | Unsigned | Unsigned integer '1'. The minor version of format used in file.
+||
+private-version | Unsigned | Version indicator available for private use by applications. Optional.
 ||
 Configuration | Map of items | The collection configuration. Optional.
 ||

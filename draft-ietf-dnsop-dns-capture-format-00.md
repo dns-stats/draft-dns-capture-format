@@ -1365,8 +1365,8 @@ where each query/response pair is represented in a single record
 entry, and a block structure as described above, where query/responses
 are collected into blocks and common data is reused.
 
-The resulting output files were then run through a variety of common
-general-purpose lossless compression tools to explore the further
+The resulting output files were then compressed using a variety of common
+general-purpose lossless compression tools to explore the
 compressibility of the formats. The compression tools employed were:
 
 * [snzip](https://github.com/kubo/snzip). A command line compression
@@ -1390,56 +1390,64 @@ this should be taken into consideration.
 A capture of sample data from a root instance was used for the
 comparison. The input file was 661.87Mb. The following table shows the
 formatted size and size after compression (both in Mb), together with
-the RSS (in kb) and user time (seconds) taken by the
-compression.
+the task resident set size (RSS) in kb and the user time in seconds
+taken by the compression.
 
-Format|Fmt size|Comp.|Size|RSS|User time
-:-----|-------:|:----|---:|--:|--------:
+Format|File size|Comp.|Comp. size|RSS|User time
+:-----|--------:|:----|---------:|--:|--------:
 PCAP|661.87|snzip|212.48|2696|1.26
-PCAP|661.87|lz4|181.58|6336|1.35
-PCAP|661.87|gzip|153.46|1428|18.20
-PCAP|661.87|zstd|87.07|3544|4.27
-PCAP|661.87|xz|49.09|97416|160.79
+ | |lz4|181.58|6336|1.35
+ | |gzip|153.46|1428|18.20
+ | |zstd|87.07|3544|4.27
+ | |xz|49.09|97416|160.79
+||
 JSON simple|4113.92|snzip|603.78|2656|5.72
-JSON simple|4113.92|lz4|386.42|5636|5.25
-JSON simple|4113.92|gzip|271.11|1492|73.00
-JSON simple|4113.92|zstd|133.43|3284|8.68
-JSON simple|4113.92|xz|51.98|97412|600.74
+ | |lz4|386.42|5636|5.25
+ | |gzip|271.11|1492|73.00
+ | |zstd|133.43|3284|8.68
+ | |xz|51.98|97412|600.74
+||
 Avro simple|640.45|snzip|148.98|2656|0.90
-Avro simple|640.45|lz4|111.92|5828|0.99
-Avro simple|640.45|gzip|103.07|1540|11.52
-Avro simple|640.45|zstd|49.08|3524|2.50
-Avro simple|640.45|xz|22.87|97308|90.34
+ | |lz4|111.92|5828|0.99
+ | |gzip|103.07|1540|11.52
+ | |zstd|49.08|3524|2.50
+ | |xz|22.87|97308|90.34
+||
 CBOR simple|764.82|snzip|164.57|2664|1.11
-CBOR simple|764.82|lz4|120.98|5892|1.13
-CBOR simple|764.82|gzip|110.61|1428|12.88
-CBOR simple|764.82|zstd|54.14|3224|2.77
-CBOR simple|764.82|xz|23.43|97276|111.48
+ | |lz4|120.98|5892|1.13
+ | |gzip|110.61|1428|12.88
+ | |zstd|54.14|3224|2.77
+ | |xz|23.43|97276|111.48
+||
 PBuf simple|749.51|snzip|167.16|2660|1.08
-PBuf simple|749.51|lz4|123.09|5824|1.14
-PBuf simple|749.51|gzip|112.05|1424|12.75
-PBuf simple|749.51|zstd|53.39|3388|2.76
-PBuf simple|749.51|xz|23.99|97348|106.47
+ | |lz4|123.09|5824|1.14
+ | |gzip|112.05|1424|12.75
+ | |zstd|53.39|3388|2.76
+ | |xz|23.99|97348|106.47
+||
 JSON block|519.77|snzip|106.12|2812|0.93
-JSON block|519.77|lz4|104.34|6080|0.97
-JSON block|519.77|gzip|57.97|1604|12.70
-JSON block|519.77|zstd|61.51|3396|3.45
-JSON block|519.77|xz|27.67|97524|169.10
+ | |lz4|104.34|6080|0.97
+ | |gzip|57.97|1604|12.70
+ | |zstd|61.51|3396|3.45
+ | |xz|27.67|97524|169.10
+||
 Avro block|60.45|snzip|48.38|2688|0.20
-Avro block|60.45|lz4|48.78|8540|0.22
-Avro block|60.45|gzip|39.62|1576|2.92
-Avro block|60.45|zstd|29.63|3612|1.25
-Avro block|60.45|xz|18.28|97564|25.81
+ | |lz4|48.78|8540|0.22
+ | |gzip|39.62|1576|2.92
+ | |zstd|29.63|3612|1.25
+ | |xz|18.28|97564|25.81
+||
 CBOR block|75.25|snzip|53.27|2684|0.24
-CBOR block|75.25|lz4|51.88|8008|0.28
-CBOR block|75.25|gzip|41.17|1548|4.36
-CBOR block|75.25|zstd|30.61|3476|1.48
-CBOR block|75.25|xz|18.15|97556|38.78
+ | |lz4|51.88|8008|0.28
+ | |gzip|41.17|1548|4.36
+ | |zstd|30.61|3476|1.48
+ | |xz|18.15|97556|38.78
+||
 PBuf block|67.98|snzip|51.10|2636|0.24
-PBuf block|67.98|lz4|52.39|8304|0.24
-PBuf block|67.98|gzip|40.19|1520|3.63
-PBuf block|67.98|zstd|31.61|3576|1.40
-PBuf block|67.98|xz|17.94|97440|33.99
+ | |lz4|52.39|8304|0.24
+ | |gzip|40.19|1520|3.63
+ | |zstd|31.61|3576|1.40
+ | |xz|17.94|97440|33.99
 
 The above results are discussed in the following sections.
 

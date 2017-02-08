@@ -239,20 +239,18 @@ It should be noted that any structured capture format that does not capture the 
 that it cannot represent "malformed" DNS packets. Only those packets that can be transformed reasonably into the structured format
 can be represented by it. So if a query is malformed this will lead to the (well formed) DNS responses with error code FORMERR appearing as "unmatched".
 
-* Data on malformed packets will optionally be recorded. There are three distinct types of packets that are considered "malformed":
+* Data on malformed packets will optionally be recorded. There are two distinct types of packets that are considered "malformed":
 
     * Packets that cannot be decoded into a well-formed IP or IPv6 packet, or where a valid DNS header cannot be extracted.
       A valid DNS header is one where the identifier, flags and codes, and question count words are present and well-formed, and
       unless the question count is 0 a single question is present in the question section.
     * Packets with a well-formed DNS header, but well-formed records corresponding to the full count of records specified in each section
       are not present.
-    * Packets with well-formed DNS content, but with additional data following the DNS content.
 
 Rationale: Many name servers will process queries on a best-effort basis in accordance with Postel's Law, and do not insist on
-completely well-formed packets. Name servers will also generally ignore any trailing data following well-formed DNS content. Users may wish
-to be informed of such transactions, or input data that cannot be decoded to even a DNS header and which therefore cannot be meaningfully
-processed as part of the query/response stream, and may wish to be able to analyse these malformed inputs as, for example, possible attack
-vectors. Therefore these interactions with the name server should be recorded where possible, but flagged as malformed.
+completely well-formed packets. Users may wish to be informed of such transactions, or input data that cannot be decoded to even
+a DNS header and which therefore cannot be meaningfully processed as part of the query/response stream, and may wish to be able to
+analyse these malformed inputs. Therefore these interactions with the name server should be recorded where possible, but flagged as malformed.
 
 QUESTION: Should a valid DNS header include additional conditions?
 
@@ -513,9 +511,10 @@ Server address | A | The index in the IP address table of the server IP address.
 ||
 Server port | A | The server port.
 ||
-Transport flags | A | Bit flags describing the protocol used to service the query. Bit 0 is the least significant bit.
+Transport flags | A | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
  | | Bit 0. Transport type. 0 = UDP, 1 = TCP.
  | | Bit 1. IP type. 0 = IPv4, 1 = IPv6.
+ | | Bit 2. Trailing data in query. The query DNS message was followed by some additional, ignored, data.
 ||
 Q/R signature flags | A | Bit flags indicating information present in this Q/R pair. Bit 0 is the least significant bit.
  | | Bit 0. 1 if a Query is present.
@@ -692,12 +691,9 @@ This optional table records the content of malformed packets.
 Field | Type | Description
 :-----|:-----|:-----------
 Time offset | A | Packet timestamp as an offset in microseconds and optionally picoseconds from the Block preamble Timestamp.
-||
 Malformed type | Unsigned | The type of malformation. The following types are currently defined:
  | | 0. Cannot decode IP or extract valid DNS header.
  | | 1. DNS header is valid, but other DNS content is malformed.
- | | 2. DNS content is well-formed but the packet contains trailing data.
-||
 Contents | Byte string | The packet content in wire format.
 
 # C-DNS to PCAP

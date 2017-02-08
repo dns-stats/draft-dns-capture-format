@@ -311,8 +311,8 @@ of per-client counts of particular IP events that occurred during collection of
 the block data.
 
 The exact nature of the DNS data will affect what block size is the best fit, 
-however sample data for a root server indicated that block sizes less than 
-about 3000 bytes give good results. See (#block-size-choice) for more details. 
+however sample data for a root server indicated that block sizes or up to
+10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
 If no field type is specified, then the field is unsigned.
 

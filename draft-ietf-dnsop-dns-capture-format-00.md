@@ -232,7 +232,7 @@ It is anticipated
 that the files produced can be subject to further compression using general purpose compression tools. Measurements show that 
 blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
 
-* Metadata about other packets received should also be included in each block. For example, counts of malformed DNS packets and non-DNS packets
+* Metadata about other packets received will optionally also be included in each block. For example, counts of malformed DNS packets and non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may of interest.
  
 It should be noted that any structured capture format that does not capture the DNS payload byte for byte will likely be limited to some extent in

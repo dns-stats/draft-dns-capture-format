@@ -141,7 +141,7 @@ In an ideal world, it would be optimal to collect full packet captures of all
 packets going in or out of a name server. However, there are several
 design choices or other limitations that are common to many DNS installations and operators.
 
-* DNS ervers are hosted in a variety of situations
+* DNS servers are hosted in a variety of situations
     * Self-hosted servers
     * Third party hosting (including multiple third parties)
     * Third party hardware (including multiple third parties)

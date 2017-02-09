@@ -1375,9 +1375,10 @@ this should be taken into consideration.
 
 A capture of sample data from a root instance was used for the
 comparison. The input file was 661.87Mb. The following table shows the
-formatted size and size after compression (both in Mb), together with
-the task resident set size (RSS) in kb and the user time in seconds
-taken by the compression.
+formatted size and size after compression (abbreviated to Comp. in the
+table headers), together with the task resident set size (RSS) and the
+user time taken by the compression. File sizes are in Mb, RSS in kb
+and user time in seconds.
 
 Format|File size|Comp.|Comp. size|RSS|User time
 :-----|--------:|:----|---------:|--:|--------:

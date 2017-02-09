@@ -232,14 +232,14 @@ It is anticipated
 that the files produced can be subject to further compression using general purpose compression tools. Measurements show that 
 blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
 
-* Metadata about other packets received should also be included in each block. For example, counts of malformed DNS packets and non-DNS packets
+* Metadata about other packets received can optionally be included in each block. For example, counts of malformed DNS packets and non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.
  
 * Data on malformed packets will optionally be recorded.
 
     * Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
       that it cannot represent "malformed" DNS packets. Only those packets that can be transformed reasonably into the
-      structured format can be represented by the format. So if a query is malformed this will lead to the (well formed) DNS responses
+      structured format can be represented by the format. For example if a query is malformed this will lead to the (well formed) DNS responses
       with error code FORMERR appearing as "unmatched".
 
     * There are two distinct types of packets that are considered "malformed". These are packets which can be decoded sufficiently
@@ -256,9 +256,8 @@ blocking significantly reduces the CPU required to perform such strong compressi
 
 Rationale: Many name servers will process queries on a best-effort basis in accordance with Postel's Law, and do not insist on
 completely well-formed packets. If possible, responses to these queries should be matched with the query, so that the query does
-not appear to have gone un-answered in name server performance reporting. Users may also wish to collect statistics on malformed
-inputs, and possibly to analyse those inputs. Therefore these interactions with the name server should be recorded where possible,
-but flagged as malformed.
+not appear to have gone un-answered in name server performance reporting. It can be advantageous to collect statistics on malformed
+inputs, and possibly to analyse those inputs. Therefore it should be possible to record these directly in the C-DNS format.
 
 # Conceptual Overview
 
@@ -694,8 +693,8 @@ Field | Type | Description
 :-----|:-----|:-----------
 Time offset | A | Packet timestamp as an offset in microseconds and optionally picoseconds from the Block preamble Timestamp.
 Malformed type | Unsigned | The type of malformation. The following types are currently defined:
- | | 0. Cannot decode packet enough to allow matching (completely malformed).
- | | 1. Can decode DNS message enough to allow matching, but other parts of the packet content cannot be decoded (partially malformed).
+ | | 0. Cannot decode packet sufficiently to allow matching (completely malformed).
+ | | 1. Can decode DNS message sufficiently to allow matching, but other parts of the packet content cannot be decoded (partially malformed).
 Contents | Byte string | The packet content in wire format.
 
 # C-DNS to PCAP

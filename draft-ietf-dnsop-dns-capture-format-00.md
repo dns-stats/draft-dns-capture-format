@@ -1347,9 +1347,9 @@ completeness were also compared to JSON.
   data file. Data can therefore be stored untagged, for a smaller
   serialisation size, and be written and read by an Avro library.
 
-    * Avro libraries are available for C, C++, C#, Java, Python, Ruby
-  and PHP. Optionally tools are available for C++, Java and C# to generate
-  code for encoding and decoding.
+    * At the time of writing, Avro libraries are available for C, C++, C#,
+      Java, Python, Ruby and PHP. Optionally tools are available for C++,
+      Java and C# to generate code for encoding and decoding.
 
 * [Google Protocol
   Buffers](https://developers.google.com/protocol-buffers/). Data is
@@ -1360,10 +1360,11 @@ completeness were also compared to JSON.
   read with a generic library.
 
     * Code must be generated for a particular data schema to
-  to read and write data using that schema. The Google code generator can
-  currently generate code for encoding and decoding a schema for C++, Go,
-  Java, Python, Ruby, C#, Objective-C, Javascript and PHP.
-  
+      to read and write data using that schema. At the time of
+      writing, the Google code generator can currently generate code
+      for encoding and decoding a schema for C++, Go,
+        Java, Python, Ruby, C#, Objective-C, Javascript and PHP.
+
 * [CBOR](http://cbor.io). Defined in [@!RFC7049], this serialisation format
   is comparable to JSON but with a binary representation. It does not
   use a pre-defined schema, so data is always stored tagged. However,
@@ -1371,8 +1372,8 @@ completeness were also compared to JSON.
   [@?I-D.greevenbosch-appsawg-cbor-cddl#09] and tools exist to verify
   data files conform to the schema.
 
-    * CBOR is a simple format, and simple to implement. The CBOR website
-  lists implementations for 16 languages.
+    * CBOR is a simple format, and simple to implement. At the time of writing,
+      the CBOR website lists implementations for 16 languages.
 
 Avro and Protocol Buffers both allow storage of untagged data, but
 because they rely on the data schema for this, their implementation is
@@ -1519,14 +1520,14 @@ and require over 4x more CPU to compress.
 
 Concentrating again on the block formats, all three produce format
 files that are close to an order of magnitude smaller that the
-original PCAP.  CBOR produces the largest files and Avro
+original `test.pcap` file.  CBOR produces the largest files and Avro
 the smallest, 20% smaller than CBOR.
 
-Once compression is taken into account, the size difference
-narrows. At medium compression (gzip), the size difference is 4%, and
-using strong compression Avro is the largest size and Protocol Buffers
-the smallest, 2% smaller than Avro, though CBOR and Protocol Buffers
-require more compression CPU.
+However, once compression is taken into account, the size difference
+narrows. At medium compression (with gzip), the size difference is 4%.
+Using strong compression (with xz) the difference reduces to 2%, with Avro
+the largest and Protocol Buffers the smallest, although CBOR and Protocol Buffers
+require slightly more compression CPU.
 
 The measurements presented above do not include data on the CPU
 required to generate the format files. Measurements indicate

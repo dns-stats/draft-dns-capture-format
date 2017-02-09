@@ -730,14 +730,12 @@ of the original packet stream cannot be re-constructed from the C-DNS format:
      * A DNS payload may have be split across multiple TCP segments
      * Multiple DNS messages may have be sent on a single TCP session
 * Malformed DNS messages if they are not recorded
-* Non-DNS packets
 
 Simple assumptions can be made on the reconstruction: fragmented and DNS-over-TCP messages
 can be reconstructed into single packets and a single TCP session can be constructed
 for each TCP packet.
 
 Additionally, if malformed packets are captured in the C-DNS or separate packet captures,
-and non-DNS packets are captured separately into packet captures,
 they can be merged with packet captures reconstructed from C-DNS to produce a more complete
 packet stream.
 

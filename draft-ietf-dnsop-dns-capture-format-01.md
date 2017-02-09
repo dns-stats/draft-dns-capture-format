@@ -305,13 +305,13 @@ The file header is followed by a series of data blocks.
 
 A block consists of a block header, containing various tables of common data,
 and some statistics for the traffic received over the block. The block header
-is then followed by a list of the Q/R date items detailing the queries and responses
-received during the block. The list of Q/R data items is in turn followed by a list
+is then followed by a list of the Q/R data items detailing the queries and responses
+received during processing of the block input. The list of Q/R data items is in turn followed by a list
 of per-client counts of particular IP events that occurred during collection of
 the block data.
 
 The exact nature of the DNS data will affect what block size is the best fit, 
-however sample data for a root server indicated that block sizes or up to
+however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
 If no field type is specified, then the field is unsigned.
@@ -353,9 +353,9 @@ The file preamble contains the following:
 
 Field | Type | Description
 :----|:----|:-----
-major-format-version | Unsigned | Unsigned integer '0'. The major version of format used in file.
+major-format-version | Unsigned | Unsigned integer '1'. The major version of format used in file.
 ||
-minor-format-version | Unsigned | Unsigned integer '1'. The minor version of format used in file.
+minor-format-version | Unsigned | Unsigned integer '0'. The minor version of format used in file.
 ||
 private-version | Unsigned | Version indicator available for private use by applications. Optional.
 ||
@@ -1002,7 +1002,8 @@ draft-dickinson-dnsop-dns-capture-format-00
 # CDDL
 
     ; CDDL specification of the file format for C-DNS, 
-    ; which describes a collection of DNS Q/R data items.
+    ; which describes a collection of DNS messages and
+    ; traffic meta-data.
 
     File = [
         file-type-id  : tstr,          ; "C-DNS"

@@ -484,8 +484,6 @@ Class | CLASS value.
 ||
 Type | TYPE value.
 
-[TODO: Can this be optimized? Should a class of IN be inferred if not present?]
-
 ## Name/RDATA table
 
 This table holds the contents of all NAME or RDATA items in the block. Each item in the table is the content of a single NAME or RDATA.

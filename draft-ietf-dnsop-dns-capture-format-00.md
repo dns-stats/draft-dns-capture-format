@@ -244,11 +244,10 @@ blocking significantly reduces the CPU required to perform such strong compressi
 
     * There are two distinct types of packets that are considered "malformed". These are packets which can be decoded sufficiently
       to allow matching with a corresponding query or response ("partially malformed"), and those that cannot ("completely malformed").
-      To be matched, it must be possible to decode the Primary ID (see (#primary-id)), and, if the DNS message is a query, the Secondary ID
+      To be matched, it must be possible to decode the Primary ID (see (#primary-id)), and, if present, the Secondary ID
       (see (#secondary-id)). In other words, it must be possible to decode the IP source and destination addresses, the UDP or
-      TCP source and destination ports, the DNS header ID, the DNS header flags/opcode/rcode fields, and, if the DNS message is a query,
-      the entire DNS header and the first question section entry, which implies that in a DNS query QDCOUNT must be at least 1 or the
-      packet is completely malformed.
+      TCP source and destination ports, the DNS header ID, the DNS header flags/opcode/rcode fields, QDCOUNT, and, if QDCOUNT is non-zero,
+      the entire DNS header and the first question section entry. If these cannot be decoded, the packet is completely malformed.
 
     * When processing a partially malformed DNS message, the generated Q/R data item must be populated with the information
       in the Primary ID, the Secondary ID (if relevant) and the packet timestamp. All other fields in the Q/R data item are
@@ -256,9 +255,10 @@ blocking significantly reduces the CPU required to perform such strong compressi
       content is correctly decoded.
 
 Rationale: Many name servers will process queries on a best-effort basis in accordance with Postel's Law, and do not insist on
-completely well-formed packets. Users may wish to be informed of such transactions, or input data that cannot be decoded to even
-a DNS header and which therefore cannot be meaningfully processed as part of the query/response stream, and may wish to be able to
-analyse these malformed inputs. Therefore these interactions with the name server should be recorded where possible. but flagged as malformed.
+completely well-formed packets. If possible, responses to these queries should be matched with the query, so that the query does
+not appear to have gone un-answered in name server performance reporting. Users may also wish to collect statistics on malformed
+inputs, and possibly to analyse those inputs. Therefore these interactions with the name server should be recorded where possible,
+but flagged as malformed.
 
 # Conceptual Overview
 
@@ -808,9 +808,9 @@ A Primary ID can be constructed for each message which is composed of the follow
 ### Secondary ID
 
 If present, the first question in the Question section is used as a secondary ID
-for each message. Note that some responses may have a QDCOUNT of 0
-(for example, RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used
-in matching.
+for each message. Note that some queries and some responses may have a QDCOUNT of 0
+(for example, responses with RCODE=FORMERR or NOTIMP). In this case the secondary ID
+is not used in matching.
 
 ## Algorithm Parameters
 

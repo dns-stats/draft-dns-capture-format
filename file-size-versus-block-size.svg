@@ -167,7 +167,7 @@
  <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1275" y="5488"><tspan fill="rgb(0,0,0)" stroke="none">120.00M</tspan></tspan></tspan></text>
  <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1275" y="3726"><tspan fill="rgb(0,0,0)" stroke="none">140.00M</tspan></tspan></tspan></text>
  <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1275" y="1965"><tspan fill="rgb(0,0,0)" stroke="none">160.00M</tspan></tspan></tspan></text>
- <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="459px" font-weight="400"><tspan class="TextPosition" x="8626" y="1050"><tspan fill="rgb(0,0,0)" stroke="none">Recording size and chunk size</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="459px" font-weight="400"><tspan class="TextPosition" x="8707" y="1050"><tspan fill="rgb(0,0,0)" stroke="none">Recording size and block size</tspan></tspan></tspan></text>
  <path fill="none" stroke="rgb(131,202,255)" stroke-width="80" stroke-linejoin="round" d="M 19937,7705 L 20737,7705"/>
  <path fill="rgb(131,202,255)" stroke="none" d="M 20231,7705 L 20442,7811 20442,7600 20231,7705 Z"/>
  <path fill="none" stroke="rgb(131,202,255)" stroke-linejoin="round" d="M 20231,7705 L 20442,7811 20442,7600 20231,7705 Z"/>
@@ -192,6 +192,6 @@
  <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="20837" y="9323"><tspan fill="rgb(0,0,0)" stroke="none">gzip</tspan></tspan></tspan></text>
  <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="20837" y="9820"><tspan fill="rgb(0,0,0)" stroke="none">zstd</tspan></tspan></tspan></text>
  <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="20837" y="10317"><tspan fill="rgb(0,0,0)" stroke="none">xz</tspan></tspan></tspan></text>
- <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="318px" font-weight="400"><tspan class="TextPosition" x="9626" y="17311"><tspan fill="rgb(0,0,0)" stroke="none">Chunk size</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="318px" font-weight="400"><tspan class="TextPosition" x="9696" y="17311"><tspan fill="rgb(0,0,0)" stroke="none">Block size</tspan></tspan></tspan></text>
  <text class="TextShape" transform="translate(827,9691) rotate(-90) translate(-827,-9691)"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="318px" font-weight="400"><tspan class="TextPosition" x="827" y="9691"><tspan fill="rgb(0,0,0)" stroke="none">FIle size</tspan></tspan></tspan></text>
 </svg>

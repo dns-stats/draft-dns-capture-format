@@ -79,9 +79,9 @@ Table of Contents
      7.3.  File header contents  . . . . . . . . . . . . . . . . . .  10
      7.4.  File preamble contents  . . . . . . . . . . . . . . . . .  10
      7.5.  Configuration contents  . . . . . . . . . . . . . . . . .  11
-     7.6.  Block contents  . . . . . . . . . . . . . . . . . . . . .  12
+     7.6.  Block contents  . . . . . . . . . . . . . . . . . . . . .  13
      7.7.  Block preamble map  . . . . . . . . . . . . . . . . . . .  13
-     7.8.  Block statistics  . . . . . . . . . . . . . . . . . . . .  13
+     7.8.  Block statistics  . . . . . . . . . . . . . . . . . . . .  14
      7.9.  Block table map . . . . . . . . . . . . . . . . . . . . .  14
      7.10. IP address table  . . . . . . . . . . . . . . . . . . . .  15
      7.11. Class/Type table  . . . . . . . . . . . . . . . . . . . .  15
@@ -96,16 +96,16 @@ Table of Contents
      7.20. Malformed packet records  . . . . . . . . . . . . . . . .  22
    8.  C-DNS to PCAP . . . . . . . . . . . . . . . . . . . . . . . .  23
      8.1.  Name Compression  . . . . . . . . . . . . . . . . . . . .  24
-   9.  Data Collection . . . . . . . . . . . . . . . . . . . . . . .  25
+   9.  Data Collection . . . . . . . . . . . . . . . . . . . . . . .  24
      9.1.  Matching algorithm  . . . . . . . . . . . . . . . . . . .  25
      9.2.  Message identifiers . . . . . . . . . . . . . . . . . . .  25
        9.2.1.  Primary ID (required) . . . . . . . . . . . . . . . .  25
-       9.2.2.  Secondary ID (optional) . . . . . . . . . . . . . . .  26
+       9.2.2.  Secondary ID (optional) . . . . . . . . . . . . . . .  25
      9.3.  Algorithm Parameters  . . . . . . . . . . . . . . . . . .  26
      9.4.  Algorithm Requirements  . . . . . . . . . . . . . . . . .  26
      9.5.  Algorithm Limitations . . . . . . . . . . . . . . . . . .  26
-     9.6.  Workspace . . . . . . . . . . . . . . . . . . . . . . . .  27
-     9.7.  Output  . . . . . . . . . . . . . . . . . . . . . . . . .  27
+     9.6.  Workspace . . . . . . . . . . . . . . . . . . . . . . . .  26
+     9.7.  Output  . . . . . . . . . . . . . . . . . . . . . . . . .  26
 
 
 
@@ -118,26 +118,26 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  27
    11. Security Considerations . . . . . . . . . . . . . . . . . . .  27
    12. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  27
-   13. Changelog . . . . . . . . . . . . . . . . . . . . . . . . . .  28
+   13. Changelog . . . . . . . . . . . . . . . . . . . . . . . . . .  27
    14. References  . . . . . . . . . . . . . . . . . . . . . . . . .  28
      14.1.  Normative References . . . . . . . . . . . . . . . . . .  28
-     14.2.  Informative References . . . . . . . . . . . . . . . . .  29
-   Appendix A.  CDDL . . . . . . . . . . . . . . . . . . . . . . . .  30
-   Appendix B.  DNS Name compression example . . . . . . . . . . . .  35
+     14.2.  Informative References . . . . . . . . . . . . . . . . .  28
+   Appendix A.  CDDL . . . . . . . . . . . . . . . . . . . . . . . .  29
+   Appendix B.  DNS Name compression example . . . . . . . . . . . .  34
      B.1.  NSD compression algorithm . . . . . . . . . . . . . . . .  36
      B.2.  Knot Authoritative compression algorithm  . . . . . . . .  36
-     B.3.  Observed differences  . . . . . . . . . . . . . . . . . .  37
+     B.3.  Observed differences  . . . . . . . . . . . . . . . . . .  36
    Appendix C.  Comparison of Binary Formats . . . . . . . . . . . .  37
      C.1.  Comparison with full PCAP files . . . . . . . . . . . . .  39
      C.2.  Simple versus block coding  . . . . . . . . . . . . . . .  39
      C.3.  Binary versus text formats  . . . . . . . . . . . . . . .  40
      C.4.  Binary serialisation formats  . . . . . . . . . . . . . .  40
        C.4.1.  Implementation notes  . . . . . . . . . . . . . . . .  40
-       C.4.2.  Performance . . . . . . . . . . . . . . . . . . . . .  41
+       C.4.2.  Performance . . . . . . . . . . . . . . . . . . . . .  40
      C.5.  Format choice . . . . . . . . . . . . . . . . . . . . . .  41
      C.6.  Block size choice . . . . . . . . . . . . . . . . . . . .  42
-   Appendix D.  Notes to implementors  . . . . . . . . . . . . . . .  43
-     D.1.  Malformed packets . . . . . . . . . . . . . . . . . . . .  43
+   Appendix D.  Notes to implementors  . . . . . . . . . . . . . . .  42
+     D.1.  Malformed packets . . . . . . . . . . . . . . . . . . . .  42
      D.2.  Block preamble timestamp  . . . . . . . . . . . . . . . .  43
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  43
 
@@ -233,7 +233,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    there are several design choices or other limitations that are common
    to many DNS installations and operators.
 
-   o  DNS ervers are hosted in a variety of situations
+   o  DNS servers are hosted in a variety of situations
 
       *  Self-hosted servers
 
@@ -382,10 +382,10 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    show that blocking significantly reduces the CPU required to perform
    such strong compression.  See Appendix C.2.
 
-   o  Metadata about other packets received should also be included in
-      each block.  For example, counts of malformed DNS packets and non-
-      DNS packets (e.g. ICMP, TCP resets) sent to the server may of
-      interest.
+   o  Metadata about other packets received will optionally also be
+      included in each block.  For example, counts of malformed DNS
+      packets and non-DNS packets (e.g. ICMP, TCP resets) sent to the
+      server may of interest.
 
 
 
@@ -425,7 +425,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    ignore any trailing data following well-formed DNS content.  Users
    may wish to be informed of such transactions, or input data that
    cannot be decoded to even a DNS header and which therefore cannot be
-   meaningfully processed as part of the query/response stream, and may
+   meaningfully processed as part of the Q/R data item stream, and may
    wish to be able to analyse these malformed inputs as, for example,
    possible attack vectors.  Therefore these interactions with the name
    server should be recorded where possible, but flagged as malformed.
@@ -516,16 +516,16 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    A block consists of a block header, containing various tables of
    common data, and some statistics for the traffic received over the
-   block.  The block header is then followed by a list of the Q/R pairs
-   detailing the queries and responses received during the block.  The
-   list of Q/R pairs is in turn followed by a list of per-client counts
-   of particular IP events that occurred during collection of the block
-   data.
+   block.  The block header is then followed by a list of the Q/R date
+   items detailing the queries and responses received during the block.
+   The list of Q/R data items is in turn followed by a list of per-
+   client counts of particular IP events that occurred during collection
+   of the block data.
 
    The exact nature of the DNS data will affect what block size is the
    best fit, however sample data for a root server indicated that block
-   sizes less than about 3000 bytes give good results.  See Appendix C.6
-   for more details.
+   sizes or up to 10,000 Q/R data items give good results.  See
+   Appendix C.6 for more details.
 
    If no field type is specified, then the field is unsigned.
 
@@ -541,8 +541,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    +----------------+----------------+---------------------------------+
    | Field          | Type           | Description                     |
    +----------------+----------------+---------------------------------+
-   | File type ID   | Text string    | String identifying the file     |
-   |                |                | type                            |
+   | File type ID   | Text string    | String "C-DNS" identifying the  |
+   |                |                | file type                       |
    |                |                |                                 |
    | File preamble  | Map of items   | Collection information for the  |
    |                |                | whole file.                     |
@@ -562,23 +562,34 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 10]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-   +-----------------+------------+------------------------------------+
-   | Field           | Type       | Description                        |
-   +-----------------+------------+------------------------------------+
-   | Format version  | Unsigned   | Indicates version of format used   |
-   |                 |            | in file.                           |
-   |                 |            |                                    |
-   | Configuration   | Map of     | The collection configuration.      |
-   |                 | items      | Optional.                          |
-   |                 |            |                                    |
-   | Generator ID    | Text       | String identifying the collection  |
-   |                 | string     | program. Optional.                 |
-   |                 |            |                                    |
-   | Host ID         | Text       | String identifying the collecting  |
-   |                 | string     | host. Blank if converting an       |
-   |                 |            | existing packet capture file.      |
-   |                 |            | Optional.                          |
-   +-----------------+------------+------------------------------------+
+   +------------------------+-------------+----------------------------+
+   | Field                  | Type        | Description                |
+   +------------------------+-------------+----------------------------+
+   | major-format-version   | Unsigned    | Unsigned integer '0'. The  |
+   |                        |             | major version of format    |
+   |                        |             | used in file.              |
+   |                        |             |                            |
+   | minor-format-version   | Unsigned    | Unsigned integer '1'. The  |
+   |                        |             | minor version of format    |
+   |                        |             | used in file.              |
+   |                        |             |                            |
+   | private-version        | Unsigned    | Version indicator          |
+   |                        |             | available for private use  |
+   |                        |             | by applications. Optional. |
+   |                        |             |                            |
+   | Configuration          | Map of      | The collection             |
+   |                        | items       | configuration. Optional.   |
+   |                        |             |                            |
+   | Generator ID           | Text string | String identifying the     |
+   |                        |             | collection program.        |
+   |                        |             | Optional.                  |
+   |                        |             |                            |
+   | Host ID                | Text string | String identifying the     |
+   |                        |             | collecting host. Blank if  |
+   |                        |             | converting an existing     |
+   |                        |             | packet capture file.       |
+   |                        |             | Optional.                  |
+   +------------------------+-------------+----------------------------+
 
 7.5.  Configuration contents
 
@@ -599,6 +610,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |                 |            | until after this many micro-       |
    |                 |            | seconds.                           |
    |                 |            |                                    |
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 11]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
    | Snap length     | Unsigned   | Collect up to this many bytes per  |
    |                 |            | packet.                            |
    |                 |            |                                    |
@@ -610,14 +629,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |                 | strings    |                                    |
    |                 |            |                                    |
    | VLAN IDs        | Array of   | Identifiers of VLANs selected for  |
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 11]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    |                 | unsigned   | collection.                        |
    |                 |            |                                    |
    | Filter          | Text       | "tcpdump" [pcap] style filter for  |
@@ -655,6 +666,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |                 |            | types is present.                  |
    +-----------------+------------+------------------------------------+
 
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 12]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
 7.6.  Block contents
 
    Each block contains the following:
@@ -666,22 +685,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |                |                    | block.                      |
    |                |                    |                             |
    | Block          | Map of statistics  | Statistics about the block. |
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 12]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    | statistics     |                    |                             |
    |                |                    |                             |
    | Block tables   | Map of tables      | The tables containing data  |
    |                |                    | referenced by individual    |
-   |                |                    | Q/R entries.                |
+   |                |                    | Q/R data items.             |
    |                |                    |                             |
-   | Q/Rs           | Array of Q/Rs      | Details of individual Q/R   |
-   |                |                    | pairs.                      |
+   | Q/Rs           | Array of Q/R data  | Details of individual Q/R   |
+   |                | items              | data items.                 |
    |                |                    |                             |
    | Address Event  | Array of Address   | Per client counts of ICMP   |
    | Counts         | Event counts       | messages and TCP resets.    |
@@ -711,6 +722,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |           |            | between 0 and 999,999.                   |
    +-----------+------------+------------------------------------------+
 
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 13]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
 7.8.  Block statistics
 
    The block statistics section contains some basic statistical
@@ -722,14 +741,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    | Total packets    | Unsigned   | Total number of packets processed |
    |                  |            | during the block.                 |
    | Total pairs      | Unsigned   | Total number of query/response    |
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 13]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    |                  |            | pairs in the block.               |
    | Unmatched        | Unsigned   | Number of unmatched queries in    |
    | queries          |            | the block.                        |
@@ -761,23 +772,12 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    block table.
 
    The Present column in the following tables indicates the
-   circumstances when an optional field will be present.  A Q/R pair may
-   be:
+   circumstances when an optional field will be present.  A Q/R data
+   item may be:
 
    o  A Query plus a Response.
 
    o  A Query without a Response.
-
-   o  A Response without a Query.
-
-   Also:
-
-   o  A Query and/or a Response may contain an OPT section.
-
-
-
-
-
 
 
 
@@ -786,6 +786,12 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 14]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
+   o  A Response without a Query.
+
+   Also:
+
+   o  A Query and/or a Response may contain an OPT section.
+
    o  A Question may or may not be present.  If the Query is available,
       the Question section of the Query is used.  If no Query is
       available, the Question section of the Response is used.  Unless
@@ -793,8 +799,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
       Question section.
 
    So, for example, a field listed with a Present value of QUERY is
-   present whenever the Q/R pair contains a Query.  If the pair contains
-   a Response only, the field will not be present.
+   present whenever the Q/R data item contains a Query.  If the pair
+   contains a Response only, the field will not be present.
 
 7.10.  IP address table
 
@@ -828,12 +834,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 7.12.  Name/RDATA table
 
-   This table holds the contents of all NAME or RDATA items in the
-   block.  Each item in the table is the content of a single NAME or
-   RDATA.
-
-   +---------+-----------+---------------------------------------------+
-   | Field   | Type      | Description                                 |
 
 
 
@@ -842,6 +842,12 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 15]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
+   This table holds the contents of all NAME or RDATA items in the
+   block.  Each item in the table is the content of a single NAME or
+   RDATA.
+
+   +---------+-----------+---------------------------------------------+
+   | Field   | Type      | Description                                 |
    +---------+-----------+---------------------------------------------+
    | Data    | Byte      | The NAME or RDATA contents. NAMEs, and      |
    |         | string    | labels within RDATA contents, are in        |
@@ -850,10 +856,10 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 7.13.  Query Signature table
 
-   This table holds elements of the Q/R data that are often common to
-   between different individual Q/R records.  Each item in the table is
-   a CBOR map.  Each item in the map has an unsigned value and an
-   unsigned key.
+   This table holds elements of the Q/R data item that are often common
+   to between different individual Q/R data items.  Each item in the
+   table is a CBOR map.  Each item in the map has an unsigned value and
+   an unsigned key.
 
    The following abbreviations are used in the Present (P) column
 
@@ -884,12 +890,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |              |      | Bit 1. IP type. 0 = IPv4, 1 = IPv6.         |
    |              |      |                                             |
    | Q/R          | A    | Bit flags indicating information present in |
-   | signature    |      | this Q/R pair. Bit 0 is the least           |
-   | flags        |      | significant bit.                            |
-   |              |      | Bit 0. 1 if a Query is present.             |
-   |              |      | Bit 1. 1 if a Response is present.          |
-   |              |      | Bit 2. 1 if one or more Question is         |
-   |              |      | present.                                    |
 
 
 
@@ -898,6 +898,12 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 16]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
+   | signature    |      | this Q/R data item. Bit 0 is the least      |
+   | flags        |      | significant bit.                            |
+   |              |      | Bit 0. 1 if a Query is present.             |
+   |              |      | Bit 1. 1 if a Response is present.          |
+   |              |      | Bit 2. 1 if one or more Question is         |
+   |              |      | present.                                    |
    |              |      | Bit 3. 1 if a Query is present and it has   |
    |              |      | an OPT Resource Record.                     |
    |              |      | Bit 4. 1 if a Response is present and it    |
@@ -915,27 +921,21 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    | flags        |      | Response DNS flags. Bit 0 is the least      |
    |              |      | significant bit. Flag values are 0 if the   |
    |              |      | Query or Response is not present.           |
-   |              |      | Bit 0. Query Checking Disabled (CD) flag.   |
-   |              |      | Bit 1. Query Authenticated Data (AD) flag.  |
-   |              |      | Bit 2. Query reserved (Z) flag.             |
-   |              |      | Bit 3. Query Recursion Available (RA) flag. |
-   |              |      | Bit 4. Query Recursion Desired (RD) flag.   |
-   |              |      | Bit 5. Query TrunCation (TC) flag.          |
-   |              |      | Bit 6. Query Authoritative Answer (AA)      |
-   |              |      | flag.                                       |
-   |              |      | Bit 7. Query DNSSEC answer OK (D0) flag.    |
-   |              |      | Bit 8. Response Checking Disabled (CD)      |
-   |              |      | flag.                                       |
-   |              |      | Bit 9. Response Authenticated Data (AD)     |
-   |              |      | flag.                                       |
-   |              |      | Bit 10. Response reserved (Z) flag.         |
-   |              |      | Bit 11. Response Recursion Available (RA)   |
-   |              |      | flag.                                       |
-   |              |      | Bit 12. Response Recursion Desired (RD)     |
-   |              |      | flag.                                       |
-   |              |      | Bit 13. Response TrunCation (TC) flag.      |
-   |              |      | Bit 14. Response Authoritative Answer (AA)  |
-   |              |      | flag.                                       |
+   |              |      | Bit 0. Query Checking Disabled (CD).        |
+   |              |      | Bit 1. Query Authenticated Data (AD).       |
+   |              |      | Bit 2. Query reserved (Z).                  |
+   |              |      | Bit 3. Query Recursion Available (RA).      |
+   |              |      | Bit 4. Query Recursion Desired (RD).        |
+   |              |      | Bit 5. Query TrunCation (TC).               |
+   |              |      | Bit 6. Query Authoritative Answer (AA).     |
+   |              |      | Bit 7. Query DNSSEC answer OK (D0).         |
+   |              |      | Bit 8. Response Checking Disabled (CD).     |
+   |              |      | Bit 9. Response Authenticated Data (AD).    |
+   |              |      | Bit 10. Response reserved (Z).              |
+   |              |      | Bit 11. Response Recursion Available (RA).  |
+   |              |      | Bit 12. Response Recursion Desired (RD).    |
+   |              |      | Bit 13. Response TrunCation (TC).           |
+   |              |      | Bit 14. Response Authoritative Answer (AA). |
    |              |      |                                             |
    | Query RCODE  | Q    | Query RCODE. If the Query contains OPT,     |
    |              |      | this value incorporates any                 |
@@ -1052,7 +1052,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    The block Q/R data is a CBOR array of individual Q/R data items.
    Each item in the array is a CBOR map containing details on the
-   individual Q/R pair.
+   individual Q/R data item.
 
    Note that there is no requirement that the elements of the Q/R array
    are presented in strict chronological order.
@@ -1208,32 +1208,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    This optional table records the content of malformed packets.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 22]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    +---------------+------------+--------------------------------------+
    | Field         | Type       | Description                          |
    +---------------+------------+--------------------------------------+
@@ -1241,6 +1215,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |               |            | microseconds and optionally          |
    |               |            | picoseconds from the Block preamble  |
    |               |            | Timestamp.                           |
+   |               |            |                                      |
    | Malformed     | Unsigned   | The type of malformation. The        |
    | type          |            | following types are currently        |
    |               |            | defined:                             |
@@ -1250,6 +1225,15 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |               |            | DNS content is malformed.            |
    |               |            | 2. DNS content is well-formed but    |
    |               |            | the packet contains trailing data.   |
+   |               |            |                                      |
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 22]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
    | Contents      | Byte       | The packet content in wire format.   |
    |               | string     |                                      |
    +---------------+------------+--------------------------------------+
@@ -1283,13 +1267,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
       *  A DNS payload may have be split across multiple TCP segments
 
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 23]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
       *  Multiple DNS messages may have be sent on a single TCP session
 
    o  Malformed DNS messages if they are not recorded
@@ -1304,6 +1281,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    separate packet captures, and non-DNS packets are captured separately
    into packet captures, they can be merged with packet captures
    reconstructed from C-DNS to produce a more complete packet stream.
+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 23]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
 8.1.  Name Compression
 
@@ -1339,13 +1324,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    information added to the C-DNS data, this is the best that can be
    achieved.
 
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 24]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    Appendix B presents an example of two different compression
    algorithms used by well-known name server software.
 
@@ -1360,6 +1338,13 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    1.  All IP fragmentation reassembly, TCP stream reassembly, and so
        on, has already been performed
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 24]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    2.  Each message is associated with transport metadata required to
        generate the Primary ID (see below)
@@ -1379,8 +1364,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 9.1.  Matching algorithm
 
-   A schematic representation of the algorithm for matching Q/R pairs is
-   shown in the following diagram:
+   A schematic representation of the algorithm for matching Q/R data
+   items is shown in the following diagram:
 
    Figure showing the packet matching algorithm format (PNG) [5]
 
@@ -1395,13 +1380,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    A Primary ID can be constructed for each message which is composed of
    the following data:
 
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 25]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    1.  Source IP Address
 
    2.  Destination IP Address
@@ -1415,6 +1393,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    6.  DNS Message ID
 
 9.2.2.  Secondary ID (optional)
+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 25]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    If present, the first question in the Question section is used as a
    secondary ID for each message.  Note that there may be well formed
@@ -1449,15 +1435,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    algorithm chooses to match to the earliest query with the correct
    Primary and Secondary ID.
 
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 26]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
 9.6.  Workspace
 
    A FIFO structure is used to hold the Q/R data items during
@@ -1472,6 +1449,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    1.  A matched pair of query and response messages
 
    2.  A query message with no response
+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 26]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    3.  A response message with no query
 
@@ -1505,15 +1490,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    Also, Miek Gieben for mmark [7]
 
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 27]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
 13.  Changelog
 
    draft-ietf-dnsop-dns-capture-format-00
@@ -1529,6 +1505,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    o  Changed DNS-STAT to C-DNS in CDDL
 
    o  Set the format version in the CDDL
+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 27]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    o  Added a TODO: Add block statistics
 
@@ -1562,14 +1546,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
               RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
 
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 28]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
               October 2013, <http://www.rfc-editor.org/info/rfc7049>.
@@ -1586,6 +1562,13 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
               (CDDL): a notational convention to express CBOR data
               structures", draft-greevenbosch-appsawg-cbor-cddl-09 (work
               in progress), September 2016.
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 28]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    [I-D.hoffman-dns-in-json]
               Hoffman, P., "Representing DNS Messages in JSON", draft-
@@ -1618,18 +1601,10 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    [rrtypes]  IANA, "RR types", 2016, <http://www.iana.org/assignments/
               dns-parameters/dns-parameters.xhtml#dns-parameters-4>.
 
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 29]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
 Appendix A.  CDDL
 
    ; CDDL specification of the file format for C-DNS,
-   ; which describes a collection of DNS Query/Response pairs.
+   ; which describes a collection of DNS Q/R data items.
 
    File = [
        file-type-id  : tstr,          ; "C-DNS"
@@ -1643,6 +1618,13 @@ Appendix A.  CDDL
        ? generator-id  => tstr,
        ? host-id       => tstr,
    }
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 29]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    format-version = 0
    configuration  = 1
@@ -1674,14 +1656,6 @@ Appendix A.  CDDL
    query-timeout    = 0
    skew-timeout     = 1
    snaplen          = 2
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 30]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    promisc          = 3
    interfaces       = 4
    vlan-ids         = 5
@@ -1699,6 +1673,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
        queries              => [* QueryResponse],
        address-event-counts => [* AddressEventCount],
    }
+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 30]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    preamble             = 0
    statistics           = 1
@@ -1730,14 +1712,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
        ? missing-non-dns      => uint,
    }
 
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 31]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    total-packets        = 0
    total-pairs          = 1
    unmatched_queries    = 2
@@ -1756,6 +1730,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
        query_sig  => [* QuerySignature]
        ? qlist    => [* QuestionList],
        ? qrr      => [* Question],
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 31]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
        ? rrlist   => [* RRList],
        ? rr       => [* RR],
    }
@@ -1786,14 +1768,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    time-useconds         = 0
    client-address-index  = 1
    client-port           = 2
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 32]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    transaction-id        = 3
    query-signature-index = 4
    client-hoplimit       = 5
@@ -1812,6 +1786,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    class = 1
 
    QuerySignature = {
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 32]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
        server-address-index    => uint,
        server-port             => uint,
        transport-flags         => uint,
@@ -1842,14 +1824,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    query-an-count        = 9
    query-ar-count        = 10
    query-ns-count        = 11
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 33]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    edns-version          = 12
    udp-buf-size          = 13
    opt-rdata-index       = 14
@@ -1868,6 +1842,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    classtype-index = 1
 
    RRList = [
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 33]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
        * uint,                           ; Index of RR
    ]
 
@@ -1898,14 +1880,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
        ? ae-code        => uint,
        ae-address-index => uint,
        ae-count         => uint,
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 34]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    }
 
    ae-type          = 0
@@ -1923,6 +1897,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    )
 
 Appendix B.  DNS Name compression example
+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 34]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    The basic algorithm, which follows the guidance in [RFC1035], is
    simply to collect each name, and the offset in the packet at which it
@@ -1954,14 +1936,6 @@ Appendix B.  DNS Name compression example
           | 2 | bar.com     | bar          | 1 + offset to com  |
           +---+-------------+--------------+--------------------+
 
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 35]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    The third name added is www.bar.com.  This is first matched against
    example.com, and as before this is recorded as a compression target,
    with the remaining uncompressed part of the name being www.bar.  It
@@ -1980,6 +1954,13 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    As an optimization, if a name is already perfectly compressed (in
    other words, the uncompressed part of the name is empty), then no
    further names will be considered for compression.
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 35]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
 B.1.  NSD compression algorithm
 
@@ -2007,24 +1988,17 @@ B.2.  Knot Authoritative compression algorithm
 
    2.  If the name occurs in RDATA:
 
-       a  If the compression target name is in a query, then only the
-             first RR in an RRSET can use that name as a compression
-             target.
+       *  If the compression target name is in a query, then only the
+          first RR in an RRSET can use that name as a compression
+          target.
 
+       *  The compression target name MUST be in RDATA.
 
+       *  The name section TYPE must match the compression target name
+          section TYPE.
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 36]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
-       b  The compression target name MUST be in RDATA.
-
-       c  The name section TYPE must match the compression target name
-             section TYPE.
-
-       d  The compression target name MUST be in the immediately
-             preceding RR in the RRSET.
+       *  The compression target name MUST be in the immediately
+          preceding RR in the RRSET.
 
    Using this algorithm less than 0.1% of the reconstructed packets had
    incorrect lengths.
@@ -2034,6 +2008,15 @@ B.3.  Observed differences
    In sample traffic collected on a root name server around 2-4% of
    responses generated by Knot had different packet lengths to those
    produced by NSD.
+
+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 36]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
 Appendix C.  Comparison of Binary Formats
 
@@ -2065,17 +2048,8 @@ Appendix C.  Comparison of Binary Formats
    entry, and a block structure as described above, where query/
    responses are collected into blocks and common data is reused.
 
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 37]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
-   The resulting output files were then run through a variety of common
-   general-purpose lossless compression tools to explore the further
+   The resulting output files were then compressed using a variety of
+   common general-purpose lossless compression tools to explore the
    compressibility of the formats.  The compression tools employed were:
 
    o  snzip [13].  A command line compression tool based on the Google
@@ -2093,6 +2067,13 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    In all cases the compression tools were run using their default
    settings.
 
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 37]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
    Note that this draft does not mandate the use of compression, nor any
    particular compression scheme, but it anticipates that in practice
    output data will be subject to general-purpose compression, and so
@@ -2101,27 +2082,46 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    A capture of sample data from a root instance was used for the
    comparison.  The input file was 661.87Mb.  The following table shows
    the formatted size and size after compression (both in Mb), together
-   with the RSS (in kb) and user time (seconds) taken by the
-   compression.
+   with the task resident set size (RSS) in kb and the user time in
+   seconds taken by the compression.
 
-      +-------------+----------+-------+--------+-------+-----------+
-      | Format      | Fmt size | Comp. |   Size |   RSS | User time |
-      +-------------+----------+-------+--------+-------+-----------+
-      | PCAP        |   661.87 | snzip | 212.48 |  2696 |      1.26 |
-      | PCAP        |   661.87 | lz4   | 181.58 |  6336 |      1.35 |
-      | PCAP        |   661.87 | gzip  | 153.46 |  1428 |     18.20 |
-      | PCAP        |   661.87 | zstd  |  87.07 |  3544 |      4.27 |
-      | PCAP        |   661.87 | xz    |  49.09 | 97416 |    160.79 |
-      | JSON simple |  4113.92 | snzip | 603.78 |  2656 |      5.72 |
-      | JSON simple |  4113.92 | lz4   | 386.42 |  5636 |      5.25 |
-      | JSON simple |  4113.92 | gzip  | 271.11 |  1492 |     73.00 |
-      | JSON simple |  4113.92 | zstd  | 133.43 |  3284 |      8.68 |
-      | JSON simple |  4113.92 | xz    |  51.98 | 97412 |    600.74 |
-      | Avro simple |   640.45 | snzip | 148.98 |  2656 |      0.90 |
-      | Avro simple |   640.45 | lz4   | 111.92 |  5828 |      0.99 |
-      | Avro simple |   640.45 | gzip  | 103.07 |  1540 |     11.52 |
-      | Avro simple |   640.45 | zstd  |  49.08 |  3524 |      2.50 |
-      | Avro simple |   640.45 | xz    |  22.87 | 97308 |     90.34 |
+   +-------------+-----------+-------+------------+-------+-----------+
+   | Format      | File size | Comp. | Comp. size |   RSS | User time |
+   +-------------+-----------+-------+------------+-------+-----------+
+   | PCAP        |    661.87 | snzip |     212.48 |  2696 |      1.26 |
+   |             |           | lz4   |     181.58 |  6336 |      1.35 |
+   |             |           | gzip  |     153.46 |  1428 |     18.20 |
+   |             |           | zstd  |      87.07 |  3544 |      4.27 |
+   |             |           | xz    |      49.09 | 97416 |    160.79 |
+   |             |           |       |            |       |           |
+   | JSON simple |   4113.92 | snzip |     603.78 |  2656 |      5.72 |
+   |             |           | lz4   |     386.42 |  5636 |      5.25 |
+   |             |           | gzip  |     271.11 |  1492 |     73.00 |
+   |             |           | zstd  |     133.43 |  3284 |      8.68 |
+   |             |           | xz    |      51.98 | 97412 |    600.74 |
+   |             |           |       |            |       |           |
+   | Avro simple |    640.45 | snzip |     148.98 |  2656 |      0.90 |
+   |             |           | lz4   |     111.92 |  5828 |      0.99 |
+   |             |           | gzip  |     103.07 |  1540 |     11.52 |
+   |             |           | zstd  |      49.08 |  3524 |      2.50 |
+   |             |           | xz    |      22.87 | 97308 |     90.34 |
+   |             |           |       |            |       |           |
+   | CBOR simple |    764.82 | snzip |     164.57 |  2664 |      1.11 |
+   |             |           | lz4   |     120.98 |  5892 |      1.13 |
+   |             |           | gzip  |     110.61 |  1428 |     12.88 |
+   |             |           | zstd  |      54.14 |  3224 |      2.77 |
+   |             |           | xz    |      23.43 | 97276 |    111.48 |
+   |             |           |       |            |       |           |
+   | PBuf simple |    749.51 | snzip |     167.16 |  2660 |      1.08 |
+   |             |           | lz4   |     123.09 |  5824 |      1.14 |
+   |             |           | gzip  |     112.05 |  1424 |     12.75 |
+   |             |           | zstd  |      53.39 |  3388 |      2.76 |
+   |             |           | xz    |      23.99 | 97348 |    106.47 |
+   |             |           |       |            |       |           |
+   | JSON block  |    519.77 | snzip |     106.12 |  2812 |      0.93 |
+   |             |           | lz4   |     104.34 |  6080 |      0.97 |
+   |             |           | gzip  |      57.97 |  1604 |     12.70 |
+   |             |           | zstd  |      61.51 |  3396 |      3.45 |
 
 
 
@@ -2130,37 +2130,26 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 38]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-      | CBOR simple |   764.82 | snzip | 164.57 |  2664 |      1.11 |
-      | CBOR simple |   764.82 | lz4   | 120.98 |  5892 |      1.13 |
-      | CBOR simple |   764.82 | gzip  | 110.61 |  1428 |     12.88 |
-      | CBOR simple |   764.82 | zstd  |  54.14 |  3224 |      2.77 |
-      | CBOR simple |   764.82 | xz    |  23.43 | 97276 |    111.48 |
-      | PBuf simple |   749.51 | snzip | 167.16 |  2660 |      1.08 |
-      | PBuf simple |   749.51 | lz4   | 123.09 |  5824 |      1.14 |
-      | PBuf simple |   749.51 | gzip  | 112.05 |  1424 |     12.75 |
-      | PBuf simple |   749.51 | zstd  |  53.39 |  3388 |      2.76 |
-      | PBuf simple |   749.51 | xz    |  23.99 | 97348 |    106.47 |
-      | JSON block  |   519.77 | snzip | 106.12 |  2812 |      0.93 |
-      | JSON block  |   519.77 | lz4   | 104.34 |  6080 |      0.97 |
-      | JSON block  |   519.77 | gzip  |  57.97 |  1604 |     12.70 |
-      | JSON block  |   519.77 | zstd  |  61.51 |  3396 |      3.45 |
-      | JSON block  |   519.77 | xz    |  27.67 | 97524 |    169.10 |
-      | Avro block  |    60.45 | snzip |  48.38 |  2688 |      0.20 |
-      | Avro block  |    60.45 | lz4   |  48.78 |  8540 |      0.22 |
-      | Avro block  |    60.45 | gzip  |  39.62 |  1576 |      2.92 |
-      | Avro block  |    60.45 | zstd  |  29.63 |  3612 |      1.25 |
-      | Avro block  |    60.45 | xz    |  18.28 | 97564 |     25.81 |
-      | CBOR block  |    75.25 | snzip |  53.27 |  2684 |      0.24 |
-      | CBOR block  |    75.25 | lz4   |  51.88 |  8008 |      0.28 |
-      | CBOR block  |    75.25 | gzip  |  41.17 |  1548 |      4.36 |
-      | CBOR block  |    75.25 | zstd  |  30.61 |  3476 |      1.48 |
-      | CBOR block  |    75.25 | xz    |  18.15 | 97556 |     38.78 |
-      | PBuf block  |    67.98 | snzip |  51.10 |  2636 |      0.24 |
-      | PBuf block  |    67.98 | lz4   |  52.39 |  8304 |      0.24 |
-      | PBuf block  |    67.98 | gzip  |  40.19 |  1520 |      3.63 |
-      | PBuf block  |    67.98 | zstd  |  31.61 |  3576 |      1.40 |
-      | PBuf block  |    67.98 | xz    |  17.94 | 97440 |     33.99 |
-      +-------------+----------+-------+--------+-------+-----------+
+   |             |           | xz    |      27.67 | 97524 |    169.10 |
+   |             |           |       |            |       |           |
+   | Avro block  |     60.45 | snzip |      48.38 |  2688 |      0.20 |
+   |             |           | lz4   |      48.78 |  8540 |      0.22 |
+   |             |           | gzip  |      39.62 |  1576 |      2.92 |
+   |             |           | zstd  |      29.63 |  3612 |      1.25 |
+   |             |           | xz    |      18.28 | 97564 |     25.81 |
+   |             |           |       |            |       |           |
+   | CBOR block  |     75.25 | snzip |      53.27 |  2684 |      0.24 |
+   |             |           | lz4   |      51.88 |  8008 |      0.28 |
+   |             |           | gzip  |      41.17 |  1548 |      4.36 |
+   |             |           | zstd  |      30.61 |  3476 |      1.48 |
+   |             |           | xz    |      18.15 | 97556 |     38.78 |
+   |             |           |       |            |       |           |
+   | PBuf block  |     67.98 | snzip |      51.10 |  2636 |      0.24 |
+   |             |           | lz4   |      52.39 |  8304 |      0.24 |
+   |             |           | gzip  |      40.19 |  1520 |      3.63 |
+   |             |           | zstd  |      31.61 |  3576 |      1.40 |
+   |             |           | xz    |      17.94 | 97440 |     33.99 |
+   +-------------+-----------+-------+------------+-------+-----------+
 
    The above results are discussed in the following sections.
 
@@ -2178,14 +2167,6 @@ C.2.  Simple versus block coding
    on query/response records within the block.  The simple and block
    formats above store exactly the same information for each query/
    response record.  This information is parsed from the DNS traffic in
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 39]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    the input PCAP file, and in all cases each field has an identifier
    and the field data is typed.
 
@@ -2197,6 +2178,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    The data de-duplication on the block formats show an order of
    magnitude reduction in the size of the format file size against the
    simple formats.  As would be expected, the compression tools are able
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 39]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
    to find and exploit a lot of this duplication, but as the de-
    duplication process uses knowledge of DNS traffic, it is able to
    retain a size advantage.  This advantage reduces as stronger
@@ -2232,16 +2221,6 @@ C.4.1.  Implementation notes
       decoding a schema for C++, Go, Java, Python, Ruby, C#,
       Objective-C, Javascript and PHP.
 
-
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 40]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    o  Avro.  Avro libraries are available for C, C++, C#, Java, Python,
       Ruby and PHP.  Optionally tools are available for C++, Java and C#
       to generate code for encoding and decoding.
@@ -2253,6 +2232,15 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    development effort compared to CBOR.
 
 C.4.2.  Performance
+
+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 40]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    Concentrating again on the block formats, all three produce format
    files that are close to an order of magnitude smaller that the
@@ -2289,15 +2277,6 @@ C.4.2.  Performance
 
 C.5.  Format choice
 
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 41]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    The above assessments lead us to the choice of a binary format file
    using blocking.
 
@@ -2312,12 +2291,19 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    accessibility to a wider industry beyond IETF were felt to justify
    its adoption for this use case.
 
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 41]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
 C.6.  Block size choice
 
    Given the choice of a CBOR format using blocking, the question arises
    of what an appropriate default value for the maximum number of query/
    response pairs in a block should be.  This has two components; what
-   is the impact on performance of using different chunk sizes in the
+   is the impact on performance of using different block sizes in the
    format file, and what is the impact on the size of the format file
    before and after compression.
 
@@ -2327,7 +2313,7 @@ C.6.  Block size choice
    size is in Mb, RSS in kb.
 
              +------------+-------------+--------+-----------+
-             | Chunk size | Format size |    RSS | User time |
+             | Block size | Format size |    RSS | User time |
              +------------+-------------+--------+-----------+
              |       1000 |      133.46 | 612.27 |     15.25 |
              |       5000 |       89.85 | 676.82 |     14.99 |
@@ -2339,24 +2325,16 @@ C.6.  Block size choice
              |     320000 |       54.41 | 799.20 |     13.97 |
              +------------+-------------+--------+-----------+
 
-   Increasing chunk size, therefore, tends to increase maximum RSS a
+   Increasing block size, therefore, tends to increase maximum RSS a
    little, with no significant effect (if anything a small reduction) on
    CPU consumption.
 
-   The following figure plots the effect of increasing chunk size on
+   The following figure plots the effect of increasing block size on
    output file size for different compressions.
 
+   Figure showing effect of block size on file size (PNG) [19]
 
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 42]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
-   Figure showing effect of chunk size on file size (PNG) [19]
-
-   Figure showing effect of chunk size on file size (SVG) [20]
+   Figure showing effect of block size on file size (SVG) [20]
 
    From the above, there is obviously scope for tuning the default block
    size to the compression being employed, traffic loads, frequency of
@@ -2367,6 +2345,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 Appendix D.  Notes to implementors
 
 D.1.  Malformed packets
+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 42]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
    In the presence of malformed packets where one or more of QDCOUNT,
    ANCOUNT, NSCOUNT and ARCOUNT do not match the RRs that can be
@@ -2398,18 +2384,6 @@ Authors' Addresses
    Email: jad@sinodun.com
 
 
-
-
-
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 43]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    Jim Hague
    Sinodun IT
    Magdalen Centre
@@ -2428,6 +2402,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    Email: sara@sinodun.com
 
 
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 43]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
    Terry Manderson
    ICANN
    12025 Waterfront Drive
@@ -2444,6 +2426,24 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    Los Angeles  CA 90094-2536
 
    Email: john.bond@icann.org
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

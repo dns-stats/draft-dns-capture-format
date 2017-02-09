@@ -233,30 +233,32 @@ that the files produced can be subject to further compression using general purp
 blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
 
 * Metadata about other packets received should also be included in each block. For example, counts of malformed DNS packets and non-DNS packets
-(e.g. ICMP, TCP resets) sent to the server may of interest.
+(e.g. ICMP, TCP resets) sent to the server may be of interest.
  
-It should be noted that any structured capture format that does not capture the DNS payload byte for byte will likely be limited to some extent in
-that it cannot represent "malformed" DNS packets. Only those packets that can be transformed reasonably into the structured format
-can be represented by it. So if a query is malformed this will lead to the (well formed) DNS responses with error code FORMERR appearing as "unmatched".
+* Data on malformed packets will optionally be recorded.
 
-* Data on malformed packets will optionally be recorded. There are two distinct types of packets that are considered "malformed":
+    * Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
+      that it cannot represent "malformed" DNS packets. Only those packets that can be transformed reasonably into the
+      structured format can be represented by the format. So if a query is malformed this will lead to the (well formed) DNS responses
+      with error code FORMERR appearing as "unmatched".
 
-    * Packets that cannot be decoded into a well-formed IP or IPv6 packet, or where a valid DNS header cannot be extracted.
-      A valid DNS header is one where the identifier, flags and codes, and question count words are present and well-formed, and
-      unless the question count is 0 a single question is present in the question section.
-    * Packets with a well-formed DNS header, but well-formed records corresponding to the full count of records specified in each section
-      are not present.
+    * There are two distinct types of packets that are considered "malformed". These are packets which can be decoded sufficiently
+      to allow matching with a corresponding query or response ("partially malformed"), and those that cannot ("completely malformed").
+      To be matched, it must be possible to decode the Primary ID (see (#primary-id)), and, if the DNS message is a query, the Secondary ID
+      (see (#secondary-id)). In other words, it must be possible to decode the IP source and destination addresses, the UDP or
+      TCP source and destination ports, the DNS header ID, the DNS header flags/opcode/rcode fields, and, if the DNS message is a query,
+      the entire DNS header and the first question section entry, which implies that in a DNS query QDCOUNT must be at least 1 or the
+      packet is completely malformed.
+
+    * When processing a partially malformed DNS message, the generated Q/R data item must be populated with the information
+      in the Primary ID, the Secondary ID (if relevant) and the packet timestamp. All other fields in the Q/R data item are
+      optional, and so may be omitted. Implementations may choose to include individual fields if confident that the field
+      content is correctly decoded.
 
 Rationale: Many name servers will process queries on a best-effort basis in accordance with Postel's Law, and do not insist on
 completely well-formed packets. Users may wish to be informed of such transactions, or input data that cannot be decoded to even
 a DNS header and which therefore cannot be meaningfully processed as part of the query/response stream, and may wish to be able to
-analyse these malformed inputs. Therefore these interactions with the name server should be recorded where possible, but flagged as malformed.
-
-QUESTION: Should a valid DNS header include additional conditions?
-
-* The flags and codes words has valid values for operation code and response code.
-* A query has response code 0.
-* All zero bits are set to 0.
+analyse these malformed inputs. Therefore these interactions with the name server should be recorded where possible. but flagged as malformed.
 
 # Conceptual Overview
 
@@ -692,8 +694,8 @@ Field | Type | Description
 :-----|:-----|:-----------
 Time offset | A | Packet timestamp as an offset in microseconds and optionally picoseconds from the Block preamble Timestamp.
 Malformed type | Unsigned | The type of malformation. The following types are currently defined:
- | | 0. Cannot decode IP or extract valid DNS header.
- | | 1. DNS header is valid, but other DNS content is malformed.
+ | | 0. Cannot decode packet enough to allow matching (completely malformed).
+ | | 1. Can decode DNS message enough to allow matching, but other parts of the packet content cannot be decoded (partially malformed).
 Contents | Byte string | The packet content in wire format.
 
 # C-DNS to PCAP
@@ -772,7 +774,7 @@ responses and matching queries/responses where possible.
 For the purposes of this discussion, it is assumed that the input has been pre-processed such that:
 
 1. All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed
-1. Each message is associated with transport metadata required to generate the Primary ID (see below)
+1. Each message is associated with transport metadata required to generate the Primary ID (see (#primary-id))
 1. Each message has a well-formed DNS header of 12 bytes and (if present) the first RR in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
 
 DNS messages are processed in the order they are delivered to the application.
@@ -792,7 +794,7 @@ Further details of the algorithm are given in the following sections.
 
 ## Message identifiers
 
-### Primary ID (required)
+### Primary ID
 
 A Primary ID can be constructed for each message which is composed of the following data:
 
@@ -803,12 +805,12 @@ A Primary ID can be constructed for each message which is composed of the follow
 1. Transport
 1. DNS Message ID
 
-### Secondary ID (optional)
+### Secondary ID
 
 If present, the first question in the Question section is used as a secondary ID
-for each message. Note that there may be well formed DNS queries that have a
-QDCOUNT of 0, and some responses may have a QDCOUNT of 0
-(for example, RCODE=FORMERR or NOTIMP)
+for each message. Note that some responses may have a QDCOUNT of 0
+(for example, RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used
+in matching.
 
 ## Algorithm Parameters
 

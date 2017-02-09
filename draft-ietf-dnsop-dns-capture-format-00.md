@@ -141,7 +141,7 @@ In an ideal world, it would be optimal to collect full packet captures of all
 packets going in or out of a name server. However, there are several
 design choices or other limitations that are common to many DNS installations and operators.
 
-* DNS ervers are hosted in a variety of situations
+* DNS servers are hosted in a variety of situations
     * Self-hosted servers
     * Third party hosting (including multiple third parties)
     * Third party hardware (including multiple third parties)
@@ -234,7 +234,7 @@ blocking significantly reduces the CPU required to perform such strong compressi
 
 * Metadata about other packets received can optionally be included in each block. For example, counts of malformed DNS packets and non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.
- 
+
 * Data on malformed packets will optionally be recorded.
 
     * Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
@@ -264,14 +264,6 @@ inputs, and possibly to analyse those inputs. Therefore it should be possible to
 The following figures show purely schematic representations of the C-DNS format to convey the high-level
 structure of the C-DNS format. (#the-cdns-format) provides a detailed discussion of the CBOR representation
 and individual elements.
-
-<!-- ######################################## NOTE TO AUTHORS
-
-The art uses terms different than those above. cdns_format uses "Query/Response data items". 
-packet_matching uses "QR item". qr_data_format uses "Query/Response". However, the term used in the document is
-"Q/R data items".
-
-############################################# -->
 
 ![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/cdns_format.png)
 
@@ -312,14 +304,14 @@ The file header is followed by a series of data blocks.
 
 A block consists of a block header, containing various tables of common data,
 and some statistics for the traffic received over the block. The block header
-is then followed by a list of the Q/R pairs detailing the queries and responses
-received during the block. The list of Q/R pairs is in turn followed by a list
+is then followed by a list of the Q/R date items detailing the queries and responses
+received during the block. The list of Q/R data items is in turn followed by a list
 of per-client counts of particular IP events that occurred during collection of
 the block data.
 
 The exact nature of the DNS data will affect what block size is the best fit, 
-however sample data for a root server indicated that block sizes less than 
-about 3000 bytes give good results. See (#block-size-choice) for more details. 
+however sample data for a root server indicated that block sizes or up to
+10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
 If no field type is specified, then the field is unsigned.
 
@@ -348,7 +340,7 @@ The file header contains the following:
 
 Field | Type | Description
 :----|:----|:-----
-File type ID | Text string | String identifying the file type
+File type ID | Text string | String "C-DNS" identifying the file type
 ||
 File preamble | Map of items | Collection information for the whole file.
 ||
@@ -360,7 +352,11 @@ The file preamble contains the following:
 
 Field | Type | Description
 :----|:----|:-----
-Format version | Unsigned | Indicates version of format used in file.
+major-format-version | Unsigned | Unsigned integer '0'. The major version of format used in file.
+||
+minor-format-version | Unsigned | Unsigned integer '1'. The minor version of format used in file.
+||
+private-version | Unsigned | Version indicator available for private use by applications. Optional.
 ||
 Configuration | Map of items | The collection configuration. Optional.
 ||
@@ -414,9 +410,9 @@ Block preamble | Map of items | Overall information for the block.
 ||
 Block statistics | Map of statistics | Statistics about the block.
 ||
-Block tables | Map of tables | The tables containing data referenced by individual Q/R entries.
+Block tables | Map of tables | The tables containing data referenced by individual Q/R data items.
 ||
-Q/Rs | Array of Q/Rs | Details of individual Q/R pairs.
+Q/Rs | Array of Q/R data items | Details of individual Q/R data items.
 ||
 Address Event Counts | Array of Address Event counts | Per client counts of ICMP messages and TCP resets.
 ||
@@ -453,7 +449,7 @@ QUESTION: The last 3 are info about compactor performance.Should they be in the 
 
 The block table map contains the block tables. Each element, or table, is an array. The following tables detail the contents of each block table.
 
-The Present column in the following tables indicates the circumstances when an optional field will be present. A Q/R pair may be:
+The Present column in the following tables indicates the circumstances when an optional field will be present. A Q/R data item may be:
 
 * A Query plus a Response.
 * A Query without a Response.
@@ -464,7 +460,7 @@ Also:
 * A Query and/or a Response may contain an OPT section.
 * A Question may or may not be present. If the Query is available, the Question section of the Query is used. If no Query is available, the Question section of the Response is used. Unless otherwise noted, a Question refers to the first Question in the Question section.
 
-So, for example, a field listed with a Present value of QUERY is present whenever the Q/R pair contains a Query. If the pair contains a Response only, the field will not be present.
+So, for example, a field listed with a Present value of QUERY is present whenever the Q/R data item contains a Query. If the pair contains a Response only, the field will not be present.
 
 ## IP address table
 This table holds all client and server IP addresses in the block. Each item in the table is a single IP address.
@@ -495,7 +491,7 @@ Data | Byte string | The NAME or RDATA contents. NAMEs, and labels within RDATA 
 
 ## Query Signature table
 
-This table holds elements of the Q/R data that are often common to between different individual Q/R records. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned key.
+This table holds elements of the Q/R data item that are often common to between different individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned key.
 
 The following abbreviations are used in the Present (P) column 
 
@@ -517,7 +513,7 @@ Transport flags | A | Bit flags describing the transport used to service the que
  | | Bit 1. IP type. 0 = IPv4, 1 = IPv6.
  | | Bit 2. Trailing data in query. The query DNS message was followed by some additional, ignored, data.
 ||
-Q/R signature flags | A | Bit flags indicating information present in this Q/R pair. Bit 0 is the least significant bit.
+Q/R signature flags | A | Bit flags indicating information present in this Q/R data item. Bit 0 is the least significant bit.
  | | Bit 0. 1 if a Query is present.
  | | Bit 1. 1 if a Response is present.
  | | Bit 2. 1 if one or more Question is present.
@@ -530,21 +526,21 @@ Q/R signature flags | A | Bit flags indicating information present in this Q/R p
 Query OPCODE | Q | Query OPCODE.
 ||
 Q/R DNS flags | A | Bit flags with values from the Query and Response DNS flags. Bit 0 is the least significant bit. Flag values are 0 if the Query or Response is not present.
- | | Bit 0. Query Checking Disabled (CD) flag.
- | | Bit 1. Query Authenticated Data (AD) flag.
- | | Bit 2. Query reserved (Z) flag.
- | | Bit 3. Query Recursion Available (RA) flag.
- | | Bit 4. Query Recursion Desired (RD) flag.
- | | Bit 5. Query TrunCation (TC) flag.
- | | Bit 6. Query Authoritative Answer (AA) flag.
- | | Bit 7. Query DNSSEC answer OK (D0) flag.
- | | Bit 8. Response Checking Disabled (CD) flag.
- | | Bit 9. Response Authenticated Data (AD) flag.
- | | Bit 10. Response reserved (Z) flag.
- | | Bit 11. Response Recursion Available (RA) flag.
- | | Bit 12. Response Recursion Desired (RD) flag.
- | | Bit 13. Response TrunCation (TC) flag.
- | | Bit 14. Response Authoritative Answer (AA) flag.
+ | | Bit 0. Query Checking Disabled (CD).
+ | | Bit 1. Query Authenticated Data (AD).
+ | | Bit 2. Query reserved (Z).
+ | | Bit 3. Query Recursion Available (RA).
+ | | Bit 4. Query Recursion Desired (RD).
+ | | Bit 5. Query TrunCation (TC).
+ | | Bit 6. Query Authoritative Answer (AA).
+ | | Bit 7. Query DNSSEC answer OK (D0).
+ | | Bit 8. Response Checking Disabled (CD).
+ | | Bit 9. Response Authenticated Data (AD).
+ | | Bit 10. Response reserved (Z).
+ | | Bit 11. Response Recursion Available (RA).
+ | | Bit 12. Response Recursion Desired (RD).
+ | | Bit 13. Response TrunCation (TC).
+ | | Bit 14. Response Authoritative Answer (AA).
 ||
 Query RCODE | Q | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 ||
@@ -608,7 +604,7 @@ RR | The index in the Resource Record table of the individual Resource Record.
 
 ## Query/Response data
 
-The block Q/R data is a CBOR array of individual Q/R data items. Each item in the array is a CBOR map containing details on the individual Q/R pair. 
+The block Q/R data is a CBOR array of individual Q/R data items. Each item in the array is a CBOR map containing details on the individual Q/R data item. 
 
 Note that there is no requirement that the elements of the Q/R array are presented in strict chronological order.
 
@@ -783,7 +779,7 @@ It should be noted that packet capture libraries do not necessary provide packet
 
 ## Matching algorithm
 
-A schematic representation of the algorithm for matching Q/R pairs is shown in the following diagram:
+A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
 ![Figure showing the packet matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/packet_matching.png)
 
@@ -1003,7 +999,7 @@ draft-dickinson-dnsop-dns-capture-format-00
 # CDDL
 
     ; CDDL specification of the file format for C-DNS, 
-    ; which describes a collection of DNS Query/Response pairs.
+    ; which describes a collection of DNS Q/R data items.
 
     File = [
         file-type-id  : tstr,          ; "C-DNS"
@@ -1321,10 +1317,11 @@ The heuristics are:
 
 1. A match is only perfect if the name is completely compressed AND the TYPE of the section in which the name occurs matches the TYPE of the name used as the compression target.
 2. If the name occurs in RDATA:
- a.  If the compression target name is in a query, then only the first RR in an RRSET can use that name as a compression target.
- b.  The compression target name MUST be in RDATA.
- c.  The name section TYPE must match the compression target name section TYPE.
- d.  The compression target name MUST be in the immediately preceding RR in the RRSET.
+
+    * If the compression target name is in a query, then only the first RR in an RRSET can use that name as a compression target.
+    * The compression target name MUST be in RDATA.
+    * The name section TYPE must match the compression target name section TYPE.
+    * The compression target name MUST be in the immediately preceding RR in the RRSET.
 
 Using this algorithm less than 0.1% of the reconstructed packets had incorrect lengths.
 
@@ -1362,8 +1359,8 @@ where each query/response pair is represented in a single record
 entry, and a block structure as described above, where query/responses
 are collected into blocks and common data is reused.
 
-The resulting output files were then run through a variety of common
-general-purpose lossless compression tools to explore the further
+The resulting output files were then compressed using a variety of common
+general-purpose lossless compression tools to explore the
 compressibility of the formats. The compression tools employed were:
 
 * [snzip](https://github.com/kubo/snzip). A command line compression
@@ -1387,56 +1384,64 @@ this should be taken into consideration.
 A capture of sample data from a root instance was used for the
 comparison. The input file was 661.87Mb. The following table shows the
 formatted size and size after compression (both in Mb), together with
-the RSS (in kb) and user time (seconds) taken by the
-compression.
+the task resident set size (RSS) in kb and the user time in seconds
+taken by the compression.
 
-Format|Fmt size|Comp.|Size|RSS|User time
-:-----|-------:|:----|---:|--:|--------:
+Format|File size|Comp.|Comp. size|RSS|User time
+:-----|--------:|:----|---------:|--:|--------:
 PCAP|661.87|snzip|212.48|2696|1.26
-PCAP|661.87|lz4|181.58|6336|1.35
-PCAP|661.87|gzip|153.46|1428|18.20
-PCAP|661.87|zstd|87.07|3544|4.27
-PCAP|661.87|xz|49.09|97416|160.79
+ | |lz4|181.58|6336|1.35
+ | |gzip|153.46|1428|18.20
+ | |zstd|87.07|3544|4.27
+ | |xz|49.09|97416|160.79
+||
 JSON simple|4113.92|snzip|603.78|2656|5.72
-JSON simple|4113.92|lz4|386.42|5636|5.25
-JSON simple|4113.92|gzip|271.11|1492|73.00
-JSON simple|4113.92|zstd|133.43|3284|8.68
-JSON simple|4113.92|xz|51.98|97412|600.74
+ | |lz4|386.42|5636|5.25
+ | |gzip|271.11|1492|73.00
+ | |zstd|133.43|3284|8.68
+ | |xz|51.98|97412|600.74
+||
 Avro simple|640.45|snzip|148.98|2656|0.90
-Avro simple|640.45|lz4|111.92|5828|0.99
-Avro simple|640.45|gzip|103.07|1540|11.52
-Avro simple|640.45|zstd|49.08|3524|2.50
-Avro simple|640.45|xz|22.87|97308|90.34
+ | |lz4|111.92|5828|0.99
+ | |gzip|103.07|1540|11.52
+ | |zstd|49.08|3524|2.50
+ | |xz|22.87|97308|90.34
+||
 CBOR simple|764.82|snzip|164.57|2664|1.11
-CBOR simple|764.82|lz4|120.98|5892|1.13
-CBOR simple|764.82|gzip|110.61|1428|12.88
-CBOR simple|764.82|zstd|54.14|3224|2.77
-CBOR simple|764.82|xz|23.43|97276|111.48
+ | |lz4|120.98|5892|1.13
+ | |gzip|110.61|1428|12.88
+ | |zstd|54.14|3224|2.77
+ | |xz|23.43|97276|111.48
+||
 PBuf simple|749.51|snzip|167.16|2660|1.08
-PBuf simple|749.51|lz4|123.09|5824|1.14
-PBuf simple|749.51|gzip|112.05|1424|12.75
-PBuf simple|749.51|zstd|53.39|3388|2.76
-PBuf simple|749.51|xz|23.99|97348|106.47
+ | |lz4|123.09|5824|1.14
+ | |gzip|112.05|1424|12.75
+ | |zstd|53.39|3388|2.76
+ | |xz|23.99|97348|106.47
+||
 JSON block|519.77|snzip|106.12|2812|0.93
-JSON block|519.77|lz4|104.34|6080|0.97
-JSON block|519.77|gzip|57.97|1604|12.70
-JSON block|519.77|zstd|61.51|3396|3.45
-JSON block|519.77|xz|27.67|97524|169.10
+ | |lz4|104.34|6080|0.97
+ | |gzip|57.97|1604|12.70
+ | |zstd|61.51|3396|3.45
+ | |xz|27.67|97524|169.10
+||
 Avro block|60.45|snzip|48.38|2688|0.20
-Avro block|60.45|lz4|48.78|8540|0.22
-Avro block|60.45|gzip|39.62|1576|2.92
-Avro block|60.45|zstd|29.63|3612|1.25
-Avro block|60.45|xz|18.28|97564|25.81
+ | |lz4|48.78|8540|0.22
+ | |gzip|39.62|1576|2.92
+ | |zstd|29.63|3612|1.25
+ | |xz|18.28|97564|25.81
+||
 CBOR block|75.25|snzip|53.27|2684|0.24
-CBOR block|75.25|lz4|51.88|8008|0.28
-CBOR block|75.25|gzip|41.17|1548|4.36
-CBOR block|75.25|zstd|30.61|3476|1.48
-CBOR block|75.25|xz|18.15|97556|38.78
+ | |lz4|51.88|8008|0.28
+ | |gzip|41.17|1548|4.36
+ | |zstd|30.61|3476|1.48
+ | |xz|18.15|97556|38.78
+||
 PBuf block|67.98|snzip|51.10|2636|0.24
-PBuf block|67.98|lz4|52.39|8304|0.24
-PBuf block|67.98|gzip|40.19|1520|3.63
-PBuf block|67.98|zstd|31.61|3576|1.40
-PBuf block|67.98|xz|17.94|97440|33.99
+ | |lz4|52.39|8304|0.24
+ | |gzip|40.19|1520|3.63
+ | |zstd|31.61|3576|1.40
+ | |xz|17.94|97440|33.99
 
 The above results are discussed in the following sections.
 
@@ -1561,7 +1566,7 @@ adoption for this use case.
 Given the choice of a CBOR format using blocking, the question arises
 of what an appropriate default value for the maximum number of
 query/response pairs in a block should be. This has two components;
-what is the impact on performance of using different chunk sizes in
+what is the impact on performance of using different block sizes in
 the format file, and what is the impact on the size of the format file
 before and after compression.
 
@@ -1570,7 +1575,7 @@ impact on the performance of a C++ program writing the file format
 described in this draft, using the same input data as before. Format
 size is in Mb, RSS in kb.
 
-Chunk size|Format size|RSS|User time
+Block size|Format size|RSS|User time
 ---------:|----------:|--:|--------:
 1000|133.46|612.27|15.25
 5000|89.85|676.82|14.99
@@ -1581,15 +1586,15 @@ Chunk size|Format size|RSS|User time
 160000|55.94|733.84|14.44
 320000|54.41|799.20|13.97
 
-Increasing chunk size, therefore, tends to increase maximum RSS a
+Increasing block size, therefore, tends to increase maximum RSS a
 little, with no significant effect (if anything a small reduction) on
 CPU consumption.
 
-The following figure plots the effect of increasing chunk size on output file size for different compressions.
+The following figure plots the effect of increasing block size on output file size for different compressions.
 
-![Figure showing effect of chunk size on file size (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.png)
+![Figure showing effect of block size on file size (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.png)
 
-![Figure showing effect of chunk size on file size (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-chunk-size.svg)
+![Figure showing effect of block size on file size (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg)
 
 From the above, there is obviously scope for tuning the default block
 size to the compression being employed, traffic loads, frequency of

@@ -2,7 +2,7 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-ietf-dnsop-dns-capture-format-00"
+    docName= "draft-ietf-dnsop-dns-capture-format-01"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"

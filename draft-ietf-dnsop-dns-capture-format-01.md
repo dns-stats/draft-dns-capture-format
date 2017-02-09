@@ -235,29 +235,43 @@ blocking significantly reduces the CPU required to perform such strong compressi
 * Metadata about other packets received can optionally be included in each block. For example, counts of malformed DNS packets and non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.
 
-* Data on malformed packets will optionally be recorded.
+* Malformed packets will, where possible, be matched with the corresponding query or response, with the match flagged
+  to indicate the presence of malformed input. The original content of malformed packets will optionally be recorded.
+
+    * For example if a query is malformed and no matching attempt is made, this will lead to the
+      (well formed) DNS responses with error code FORMERR appearing as "unmatched".
 
     * Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
       that it cannot represent "malformed" DNS packets. Only those packets that can be transformed reasonably into the
-      structured format can be represented by the format. For example if a query is malformed this will lead to the (well formed) DNS responses
-      with error code FORMERR appearing as "unmatched".
+      structured format can be represented by the format.
 
-    * There are two distinct types of packets that are considered "malformed". These are packets which can be decoded sufficiently
-      to allow matching with a corresponding query or response ("partially malformed"), and those that cannot ("completely malformed").
-      To be matched, it must be possible to decode the Primary ID (see (#primary-id)), and, if present, the Secondary ID
-      (see (#secondary-id)). In other words, it must be possible to decode the IP source and destination addresses, the UDP or
-      TCP source and destination ports, the DNS header ID, the DNS header flags/opcode/rcode fields, QDCOUNT, and, if QDCOUNT is non-zero,
-      the entire DNS header and the first question section entry. If these cannot be decoded, the packet is completely malformed.
-
-    * When processing a partially malformed DNS message, the generated Q/R data item must be populated with the information
-      in the Primary ID, the Secondary ID (if relevant) and the packet timestamp. All other fields in the Q/R data item are
-      optional, and so may be omitted. Implementations may choose to include individual fields if confident that the field
-      content is correctly decoded.
+    * Malformed packets are discussed in more detail in (#malformed-packets).
 
 Rationale: Many name servers will process queries on a best-effort basis in accordance with Postel's Law, and do not insist on
 completely well-formed packets. If possible, responses to these queries should be matched with the query, so that the query does
 not appear to have gone un-answered in name server performance reporting. It can be advantageous to collect statistics on malformed
-inputs, and possibly to analyse those inputs. Therefore it should be possible to record these directly in the C-DNS format.
+inputs, and possibly to analyse those inputs. Therefore it should be possible to record malformed packet contents directly in the C-DNS format.
+
+# Malformed Packets
+
+As the primary aim of handling malformed packets is to match responses and queries as far as possible despite the malformation,
+malformed packets are divided into two distinct types; those packets which can be decoded sufficiently
+to allow matching with a corresponding query or response ("partially malformed"), and those that cannot ("completely malformed").
+
+The approach adopted in C-DNS to matching query and response is described in (#matching-algorithm). To be matched, it must be possible
+to decode the Primary ID (see (#primary-id)), and, if present, the Secondary ID (see (#secondary-id)). Briefly, it must be possible
+to decode the IP source and destination addresses, the UDP or TCP source and destination ports, the DNS header ID, the DNS header
+flags/opcode/rcode fields, QDCOUNT, and, if QDCOUNT is non-zero, the entire DNS header and the first question section entry.
+If these cannot be decoded, matching cannot proceed, and the packet is therefore classified as completely malformed. If these can
+be decoded, the packet is classified as partially malformed, and participates in matching. See (#malformed-packet-considerations) for
+more on matching with partially malformed packets.
+
+If recording the content of malformed packets in C-DNS is enabled, the original packet content of both completely and partially
+malformed packets is recorded in C-DNS. The data is tagged to indicate whether the packet was processed as completely or
+partially malformed.
+
+A count of malformed packets is in a block is kept in the C-DNS block statistics. This is a single count, including both
+partially and completely malformed packets.
 
 # Conceptual Overview
 
@@ -436,7 +450,7 @@ Total packets | Unsigned | Total number of packets processed during the block.
 Total pairs | Unsigned | Total number of query/response pairs in the block.
 Unmatched queries | Unsigned | Number of unmatched queries in the block.
 Unmatched responses | Unsigned | Number of unmatched responses in the block.
-Malformed packets | Unsigned | Number of malformed packets found in input for the block.
+Malformed packets | Unsigned | Number of malformed packets found in input for the block. See (#malformed-packets).
 Non-DNS packets | Unsigned | Number of non-DNS packets found in input for the block.
 Out-of-order packets | Unsigned | Number of packets processed during input for the block that were not in strict chronological order.
 Dropped pairs | Unsigned | Count of query/responses not written due to overflow.
@@ -518,8 +532,8 @@ Q/R signature flags | A | Bit flags indicating information present in this Q/R d
  | | Bit 3. 1 if a Query is present and it has an OPT Resource Record.
  | | Bit 4. 1 if a Response is present and it has an OPT Resource Record.
  | | Bit 5. 1 if a Response is present but has no Question.
- | | Bit 6. 1 if a Query is present but malformed.
- | | Bit 7. 1 if a Response is present but malformed.
+ | | Bit 6. 1 if a Query is present but malformed (see (#malformed-packets)).
+ | | Bit 7. 1 if a Response is present but malformed (see (#malformed-packets)).
 ||
 Query OPCODE | Q | Query OPCODE.
 ||
@@ -681,14 +695,14 @@ Count | Unsigned | The number of occurrences of this event during the block coll
 
 ## Malformed packet records
 
-This optional table records the content of malformed packets.
+This optional table records the original content of malformed packets (see (#malformed-packets)).
 
 Field | Type | Description
 :-----|:-----|:-----------
 Time offset | A | Packet timestamp as an offset in microseconds and optionally picoseconds from the Block preamble Timestamp.
 Malformed type | Unsigned | The type of malformation. The following types are currently defined:
- | | 0. Cannot decode packet sufficiently to allow matching (completely malformed).
- | | 1. Can decode DNS message sufficiently to allow matching, but other parts of the packet content cannot be decoded (partially malformed).
+ | | 0. Completely malformed packet.
+ | | 1. Partially malformed packet.
 Contents | Byte string | The packet content in wire format.
 
 # C-DNS to PCAP
@@ -827,6 +841,15 @@ This algorithm chooses to match to the earliest query with the correct Primary a
 
 A FIFO structure is used to hold the Q/R data items during processing.
 
+## Matching Queries and Responses
+
+If a response has a Secondary ID, it matches the earliest query with the same Primary and
+Secondary IDs. If a response does not have a Secondary ID, it matches the earliest query
+with the same Primary ID, regardless of whether that query has a Secondary ID or not.
+
+A query that does not have a Secondary ID can only be matched by a response that does
+not have a Secondary ID.
+
 ## Output
 
 The output is a list of Q/R data items. Both the Query and Response elements are optional in these items,
@@ -841,6 +864,19 @@ The timestamp of a list item is that of the query for cases 1 and 2 and that of 
 ## Post Processing
 
 When ending capture, all remaining entries in the Q/R data item FIFO should be treated as timed out queries.
+
+## Malformed Packet Considerations
+
+As noted in (#malformed-packets), partially malformed packets go through query and response matching. They have
+a Primary ID, and possibly a Secondary ID, and can be matched in the same way as well-formed packets.
+
+When a partially malformed packet is matched, the Q/R data item generated by this process must be populated with
+the information in the Primary ID, the Secondary ID (if relevant) and the packet timestamp, and a flag
+set to indicate that the packet was malformed and the Q/R data item may therefore be incomplete. All other fields in the
+Q/R data item are optional, and so may be omitted. Implementations may choose to include the contents of other decoded
+fields from the partially malformed packet in the Q/R data item.
+
+Completely malformed packets do not go through query and response matching, and so do not generate a Q/R data item.
 
 # IANA Considerations
 

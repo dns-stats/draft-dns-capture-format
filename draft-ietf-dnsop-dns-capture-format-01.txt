@@ -84,28 +84,28 @@ Table of Contents
      8.7.  Block preamble map  . . . . . . . . . . . . . . . . . . .  14
      8.8.  Block statistics  . . . . . . . . . . . . . . . . . . . .  14
      8.9.  Block table map . . . . . . . . . . . . . . . . . . . . .  15
-     8.10. IP address table  . . . . . . . . . . . . . . . . . . . .  16
-     8.11. Class/Type table  . . . . . . . . . . . . . . . . . . . .  16
+     8.10. IP address table  . . . . . . . . . . . . . . . . . . . .  15
+     8.11. Class/Type table  . . . . . . . . . . . . . . . . . . . .  15
      8.12. Name/RDATA table  . . . . . . . . . . . . . . . . . . . .  16
-     8.13. Query Signature table . . . . . . . . . . . . . . . . . .  17
+     8.13. Query Signature table . . . . . . . . . . . . . . . . . .  16
      8.14. Question table  . . . . . . . . . . . . . . . . . . . . .  19
      8.15. Resource Record (RR) table  . . . . . . . . . . . . . . .  19
-     8.16. Question list table . . . . . . . . . . . . . . . . . . .  20
+     8.16. Question list table . . . . . . . . . . . . . . . . . . .  19
      8.17. Resource Record list table  . . . . . . . . . . . . . . .  20
      8.18. Query/Response data . . . . . . . . . . . . . . . . . . .  20
-     8.19. Address Event counts  . . . . . . . . . . . . . . . . . .  23
-     8.20. Malformed packet records  . . . . . . . . . . . . . . . .  24
+     8.19. Address Event counts  . . . . . . . . . . . . . . . . . .  22
+     8.20. Malformed packet records  . . . . . . . . . . . . . . . .  23
    9.  C-DNS to PCAP . . . . . . . . . . . . . . . . . . . . . . . .  24
-     9.1.  Name Compression  . . . . . . . . . . . . . . . . . . . .  25
-   10. Data Collection . . . . . . . . . . . . . . . . . . . . . . .  26
-     10.1.  Matching algorithm . . . . . . . . . . . . . . . . . . .  27
-     10.2.  Message identifiers  . . . . . . . . . . . . . . . . . .  27
-       10.2.1.  Primary ID . . . . . . . . . . . . . . . . . . . . .  27
-       10.2.2.  Secondary ID . . . . . . . . . . . . . . . . . . . .  27
-     10.3.  Algorithm Parameters . . . . . . . . . . . . . . . . . .  28
-     10.4.  Algorithm Requirements . . . . . . . . . . . . . . . . .  28
-     10.5.  Algorithm Limitations  . . . . . . . . . . . . . . . . .  28
-     10.6.  Workspace  . . . . . . . . . . . . . . . . . . . . . . .  28
+     9.1.  Name Compression  . . . . . . . . . . . . . . . . . . . .  24
+   10. Data Collection . . . . . . . . . . . . . . . . . . . . . . .  25
+     10.1.  Matching algorithm . . . . . . . . . . . . . . . . . . .  26
+     10.2.  Message identifiers  . . . . . . . . . . . . . . . . . .  26
+       10.2.1.  Primary ID . . . . . . . . . . . . . . . . . . . . .  26
+       10.2.2.  Secondary ID . . . . . . . . . . . . . . . . . . . .  26
+     10.3.  Algorithm Parameters . . . . . . . . . . . . . . . . . .  27
+     10.4.  Algorithm Requirements . . . . . . . . . . . . . . . . .  27
+     10.5.  Algorithm Limitations  . . . . . . . . . . . . . . . . .  27
+     10.6.  Workspace  . . . . . . . . . . . . . . . . . . . . . . .  27
 
 
 
@@ -114,34 +114,34 @@ Dickinson, et al.         Expires June 9, 2017                  [Page 2]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-     10.7.  Matching Queries and Responses . . . . . . . . . . . . .  28
-     10.8.  Output . . . . . . . . . . . . . . . . . . . . . . . . .  28
-     10.9.  Post Processing  . . . . . . . . . . . . . . . . . . . .  29
-     10.10. Malformed Packet Considerations  . . . . . . . . . . . .  29
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  29
-   12. Security Considerations . . . . . . . . . . . . . . . . . . .  29
-   13. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  29
-   14. Changelog . . . . . . . . . . . . . . . . . . . . . . . . . .  30
-   15. References  . . . . . . . . . . . . . . . . . . . . . . . . .  30
-     15.1.  Normative References . . . . . . . . . . . . . . . . . .  31
-     15.2.  Informative References . . . . . . . . . . . . . . . . .  31
-     15.3.  URIs . . . . . . . . . . . . . . . . . . . . . . . . . .  32
-   Appendix A.  CDDL . . . . . . . . . . . . . . . . . . . . . . . .  33
-   Appendix B.  DNS Name compression example . . . . . . . . . . . .  38
-     B.1.  NSD compression algorithm . . . . . . . . . . . . . . . .  39
-     B.2.  Knot Authoritative compression algorithm  . . . . . . . .  39
-     B.3.  Observed differences  . . . . . . . . . . . . . . . . . .  40
-   Appendix C.  Comparison of Binary Formats . . . . . . . . . . . .  40
-     C.1.  Comparison with full PCAP files . . . . . . . . . . . . .  43
-     C.2.  Simple versus block coding  . . . . . . . . . . . . . . .  43
-     C.3.  Binary versus text formats  . . . . . . . . . . . . . . .  44
-     C.4.  Performance . . . . . . . . . . . . . . . . . . . . . . .  44
-     C.5.  Conclusions . . . . . . . . . . . . . . . . . . . . . . .  44
-     C.6.  Block size choice . . . . . . . . . . . . . . . . . . . .  45
-   Appendix D.  Notes to implementors  . . . . . . . . . . . . . . .  46
-     D.1.  Malformed packets . . . . . . . . . . . . . . . . . . . .  46
-     D.2.  Block preamble timestamp  . . . . . . . . . . . . . . . .  46
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  46
+     10.7.  Matching Queries and Responses . . . . . . . . . . . . .  27
+     10.8.  Output . . . . . . . . . . . . . . . . . . . . . . . . .  27
+     10.9.  Post Processing  . . . . . . . . . . . . . . . . . . . .  28
+     10.10. Malformed Packet Considerations  . . . . . . . . . . . .  28
+   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  28
+   12. Security Considerations . . . . . . . . . . . . . . . . . . .  28
+   13. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  28
+   14. Changelog . . . . . . . . . . . . . . . . . . . . . . . . . .  29
+   15. References  . . . . . . . . . . . . . . . . . . . . . . . . .  29
+     15.1.  Normative References . . . . . . . . . . . . . . . . . .  30
+     15.2.  Informative References . . . . . . . . . . . . . . . . .  30
+     15.3.  URIs . . . . . . . . . . . . . . . . . . . . . . . . . .  31
+   Appendix A.  CDDL . . . . . . . . . . . . . . . . . . . . . . . .  32
+   Appendix B.  DNS Name compression example . . . . . . . . . . . .  37
+     B.1.  NSD compression algorithm . . . . . . . . . . . . . . . .  38
+     B.2.  Knot Authoritative compression algorithm  . . . . . . . .  38
+     B.3.  Observed differences  . . . . . . . . . . . . . . . . . .  39
+   Appendix C.  Comparison of Binary Formats . . . . . . . . . . . .  39
+     C.1.  Comparison with full PCAP files . . . . . . . . . . . . .  42
+     C.2.  Simple versus block coding  . . . . . . . . . . . . . . .  42
+     C.3.  Binary versus text formats  . . . . . . . . . . . . . . .  43
+     C.4.  Performance . . . . . . . . . . . . . . . . . . . . . . .  43
+     C.5.  Conclusions . . . . . . . . . . . . . . . . . . . . . . .  43
+     C.6.  Block size choice . . . . . . . . . . . . . . . . . . . .  44
+   Appendix D.  Notes to implementors  . . . . . . . . . . . . . . .  45
+     D.1.  Malformed packets . . . . . . . . . . . . . . . . . . . .  45
+     D.2.  Block preamble timestamp  . . . . . . . . . . . . . . . .  45
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  45
 
 1.  Introduction
 
@@ -566,18 +566,18 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    The file header contains the following:
 
-   +-------------+---------------+-------------------------------------+
-   | Field       | Type          | Description                         |
-   +-------------+---------------+-------------------------------------+
-   | File type   | Text string   | String "C-DNS" identifying the file |
-   | ID          |               | type                                |
-   |             |               |                                     |
-   | File        | Map of items  | Collection information for the      |
-   | preamble    |               | whole file.                         |
-   |             |               |                                     |
-   | File Blocks | Array of      | The data blocks                     |
-   |             | Blocks        |                                     |
-   +-------------+---------------+-------------------------------------+
+   +---------------+---------------+-----------------------------------+
+   | Field         | Type          | Description                       |
+   +---------------+---------------+-----------------------------------+
+   | file-type-id  | Text string   | String "C-DNS" identifying the    |
+   |               |               | file type.                        |
+   |               |               |                                   |
+   | file-preamble | Map of items  | Collection information for the    |
+   |               |               | whole file.                       |
+   |               |               |                                   |
+   | file-blocks   | Array of      | The data blocks.                  |
+   |               | Blocks        |                                   |
+   +---------------+---------------+-----------------------------------+
 
 8.4.  File preamble contents
 
@@ -596,13 +596,13 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |                      |          | private use by applications.    |
    |                      |          | Optional.                       |
    |                      |          |                                 |
-   | Configuration        | Map of   | The collection configuration.   |
+   | configuration        | Map of   | The collection configuration.   |
    |                      | items    | Optional.                       |
    |                      |          |                                 |
-   | Generator ID         | Text     | String identifying the          |
+   | generator-id         | Text     | String identifying the          |
    |                      | string   | collection program. Optional.   |
    |                      |          |                                 |
-   | Host ID              | Text     | String identifying the          |
+   | host-id              | Text     | String identifying the          |
    |                      | string   | collecting host. Blank if       |
    |                      |          | converting an existing packet   |
    |                      |          | capture file. Optional.         |
@@ -623,49 +623,49 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    The collection configuration contains the following items.  All are
    optional.
 
-   +-------------+----------+------------------------------------------+
-   | Field       | Type     | Description                              |
-   +-------------+----------+------------------------------------------+
-   | Query       | Unsigned | To be matched with a query, a response   |
-   | timeout     |          | must arrive within this number of        |
-   |             |          | seconds.                                 |
-   |             |          |                                          |
-   | Skew        | Unsigned | The network stack may report a response  |
-   | timeout     |          | before the corresponding query. A        |
-   |             |          | response is not considered to be missing |
-   |             |          | a query until after this many micro-     |
-   |             |          | seconds.                                 |
-   |             |          |                                          |
-   | Snap length | Unsigned | Collect up to this many bytes per        |
-   |             |          | packet.                                  |
-   |             |          |                                          |
-   | Promiscuous | Unsigned | 1 if promiscuous mode was enabled on the |
-   | mode        |          | interface, 0 otherwise.                  |
-   |             |          |                                          |
-   | Interfaces  | Array of | Identifiers of the interfaces used for   |
-   |             | text     | collection.                              |
-   |             | strings  |                                          |
-   |             |          |                                          |
-   | VLAN IDs    | Array of | Identifiers of VLANs selected for        |
-   |             | unsigned | collection.                              |
-   |             |          |                                          |
-   | Filter      | Text     | "tcpdump" [pcap] style filter for input. |
-   |             | string   |                                          |
-   |             |          |                                          |
-   | Query       | Unsigned | Bit flags indicating sections in Query   |
-   | collection  |          | packets to be collected.                 |
-   | options     |          |                                          |
-   |             |          | Bit 0. Collect second and subsequent     |
-   |             |          | question sections.                       |
-   |             |          | Bit 1. Collect Answer sections.          |
-   |             |          | Bit 2. Collect Authority sections.       |
-   |             |          | Bit 3. Collection Additional sections.   |
-   |             |          |                                          |
-   | Response    | Unsigned | Bit flags indicating sections in         |
-   | collection  |          | Response packets to be collected.        |
-   | options     |          |                                          |
-   |             |          | Bit 0. Collect second and subsequent     |
-   |             |          | question sections.                       |
+   +-------------------+----------+------------------------------------+
+   | Field             | Type     | Description                        |
+   +-------------------+----------+------------------------------------+
+   | query-timeout     | Unsigned | To be matched with a query, a      |
+   |                   |          | response must arrive within this   |
+   |                   |          | number of seconds.                 |
+   |                   |          |                                    |
+   | skew-timeout      | Unsigned | The network stack may report a     |
+   |                   |          | response before the corresponding  |
+   |                   |          | query. A response is not           |
+   |                   |          | considered to be missing a query   |
+   |                   |          | until after this many micro-       |
+   |                   |          | seconds.                           |
+   |                   |          |                                    |
+   | snaplen           | Unsigned | Collect up to this many bytes per  |
+   |                   |          | packet.                            |
+   |                   |          |                                    |
+   | promisc           | Unsigned | 1 if promiscuous mode was enabled  |
+   |                   |          | on the interface, 0 otherwise.     |
+   |                   |          |                                    |
+   | interfaces        | Array of | Identifiers of the interfaces used |
+   |                   | text     | for collection.                    |
+   |                   | strings  |                                    |
+   |                   |          |                                    |
+   | vlan-ids          | Array of | Identifiers of VLANs selected for  |
+   |                   | unsigned | collection.                        |
+   |                   |          |                                    |
+   | filter            | Text     | tcpdump [pcap] style filter for    |
+   |                   | string   | input.                             |
+   |                   |          |                                    |
+   | query-options     | Unsigned | Bit flags indicating sections in   |
+   |                   |          | Query packets to be collected.     |
+   |                   |          | Bit 0. Collect second and          |
+   |                   |          | subsequent question sections.      |
+   |                   |          | Bit 1. Collect Answer sections.    |
+   |                   |          | Bit 2. Collect Authority sections. |
+   |                   |          | Bit 3. Collection Additional       |
+   |                   |          | sections.                          |
+   |                   |          |                                    |
+   | response-options  | Unsigned | Bit flags indicating sections in   |
+   |                   |          | Response packets to be collected.  |
+   |                   |          | Bit 0. Collect second and          |
+   |                   |          | subsequent question sections.      |
 
 
 
@@ -674,54 +674,54 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 12]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-   |             |          | Bit 1. Collect Answer sections.          |
-   |             |          | Bit 2. Collect Authority sections.       |
-   |             |          | Bit 3. Collection Additional sections.   |
-   |             |          |                                          |
-   | Accept RR   | Array of | A set of RR type names [rrtypes]. If not |
-   | types       | text     | empty, only the nominated RR types are   |
-   |             | strings  | collected.                               |
-   |             |          |                                          |
-   | Ignore RR   | Array of | A set of RR type names [rrtypes]. If not |
-   | types       | text     | empty, all RR types are collected except |
-   |             | strings  | those listed. If present, this item must |
-   |             |          | be empty if a non-empty list of Accept   |
-   |             |          | RR types is present.                     |
-   +-------------+----------+------------------------------------------+
+   |                   |          | Bit 1. Collect Answer sections.    |
+   |                   |          | Bit 2. Collect Authority sections. |
+   |                   |          | Bit 3. Collection Additional       |
+   |                   |          | sections.                          |
+   |                   |          |                                    |
+   | accept-rr-types   | Array of | A set of RR type names [rrtypes].  |
+   |                   | text     | If not empty, only the nominated   |
+   |                   | strings  | RR types are collected.            |
+   |                   |          |                                    |
+   | ignore-rr-types   | Array of | A set of RR type names [rrtypes].  |
+   |                   | text     | If not empty, all RR types are     |
+   |                   | strings  | collected except those listed. If  |
+   |                   |          | present, this item must be empty   |
+   |                   |          | if a non-empty list of Accept RR   |
+   |                   |          | types is present.                  |
+   |                   |          |                                    |
+   | collect-malformed | Unsigned | 1 if malformed packet contents are |
+   |                   |          | collected, 0 otherwise.            |
+   +-------------------+----------+------------------------------------+
 
 8.6.  Block contents
 
    Each block contains the following:
 
-   +-------------+-----------------+-----------------------------------+
-   | Field       | Type            | Description                       |
-   +-------------+-----------------+-----------------------------------+
-   | Block       | Map of items    | Overall information for the       |
-   | preamble    |                 | block.                            |
-   |             |                 |                                   |
-   | Block       | Map of          | Statistics about the block.       |
-   | statistics  | statistics      |                                   |
-   |             |                 |                                   |
-   | Block       | Map of tables   | The tables containing data        |
-   | tables      |                 | referenced by individual Q/R data |
-   |             |                 | items.                            |
-   |             |                 |                                   |
-   | Q/Rs        | Array of Q/R    | Details of individual Q/R data    |
-   |             | data items      | items.                            |
-   |             |                 |                                   |
-   | Address     | Array of        | Per client counts of ICMP         |
-   | Event       | Address Event   | messages and TCP resets.          |
-   | Counts      | counts          |                                   |
-   |             |                 |                                   |
-   | Malformed   | Array of        | Wire contents of malformed        |
-   | Packets     | malformed       | packets.                          |
-   |             | packets         |                                   |
-   +-------------+-----------------+-----------------------------------+
-
-
-
-
-
+   +----------------------+--------------+-----------------------------+
+   | Field                | Type         | Description                 |
+   +----------------------+--------------+-----------------------------+
+   | preamble             | Map of items | Overall information for the |
+   |                      |              | block.                      |
+   |                      |              |                             |
+   | statistics           | Map of       | Statistics about the block. |
+   |                      | statistics   | Optional.                   |
+   |                      |              |                             |
+   | tables               | Map of       | The tables containing data  |
+   |                      | tables       | referenced by individual    |
+   |                      |              | Q/R data items.             |
+   |                      |              |                             |
+   | queries              | Array of Q/R | Details of individual Q/R   |
+   |                      | data items   | data items.                 |
+   |                      |              |                             |
+   | address-event-counts | Array of     | Per client counts of ICMP   |
+   |                      | Address      | messages and TCP resets.    |
+   |                      | Event counts |                             |
+   |                      |              |                             |
+   | malformed-packets    | Array of     | Wire contents of malformed  |
+   |                      | malformed    | packets. Optional.          |
+   |                      | packets      |                             |
+   +----------------------+--------------+-----------------------------+
 
 
 
@@ -734,46 +734,46 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    The block preamble map contains overall information for the block.
 
-   +-----------+----------+--------------------------------------------+
-   | Field     | Type     | Description                                |
-   +-----------+----------+--------------------------------------------+
-   | Timestamp | Array of | A timestamp for the earliest record in the |
-   |           | unsigned | block. The timestamp is specified as a     |
-   |           |          | CBOR array with two or three elements. The |
-   |           |          | first two elements are as in Posix struct  |
-   |           |          | timeval. The first element is an unsigned  |
-   |           |          | integer time_t and the second is an        |
-   |           |          | unsigned integer number of microseconds.   |
-   |           |          | The third, if present, is an unsigned      |
-   |           |          | integer number of picoseconds. The         |
-   |           |          | microsecond and picosecond items always    |
-   |           |          | have a value between 0 and 999,999.        |
-   +-----------+----------+--------------------------------------------+
+   +---------------+----------+----------------------------------------+
+   | Field         | Type     | Description                            |
+   +---------------+----------+----------------------------------------+
+   | earliest-time | Array of | A timestamp for the earliest record in |
+   |               | unsigned | the block. The timestamp is specified  |
+   |               |          | as a CBOR array with two or three      |
+   |               |          | elements. The first two elements are   |
+   |               |          | as in Posix struct timeval. The first  |
+   |               |          | element is an unsigned integer time_t  |
+   |               |          | and the second is an unsigned integer  |
+   |               |          | number of microseconds. The third, if  |
+   |               |          | present, is an unsigned integer number |
+   |               |          | of picoseconds. The microsecond and    |
+   |               |          | picosecond items always have a value   |
+   |               |          | between 0 and 999,999.                 |
+   +---------------+----------+----------------------------------------+
 
 8.8.  Block statistics
 
    The block statistics section contains some basic statistical
-   information about the block.
+   information about the block.  All are optional.
 
+   +---------------------+----------+----------------------------------+
+   | Field               | Type     | Description                      |
+   +---------------------+----------+----------------------------------+
+   | total-packets       | Unsigned | Total number of packets          |
+   |                     |          | processed during the block.      |
+   | total-pairs         | Unsigned | Total number of query/response   |
+   |                     |          | pairs in the block.              |
+   | unmatched-queries   | Unsigned | Number of unmatched queries in   |
+   |                     |          | the block.                       |
+   | unmatched-responses | Unsigned | Number of unmatched responses in |
+   |                     |          | the block.                       |
+   | malformed-packets   | Unsigned | Number of malformed packets      |
+   |                     |          | found in input for the block.    |
+   |                     |          | See Section 5.                   |
+   +---------------------+----------+----------------------------------+
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   Implementations may choose to add additional implementation-specific
+   fields to the statistics.
 
 
 
@@ -785,35 +785,6 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 14]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
-
-   +--------------+----------+-----------------------------------------+
-   | Field        | Type     | Description                             |
-   +--------------+----------+-----------------------------------------+
-   | Total        | Unsigned | Total number of packets processed       |
-   | packets      |          | during the block.                       |
-   | Total pairs  | Unsigned | Total number of query/response pairs in |
-   |              |          | the block.                              |
-   | Unmatched    | Unsigned | Number of unmatched queries in the      |
-   | queries      |          | block.                                  |
-   | Unmatched    | Unsigned | Number of unmatched responses in the    |
-   | responses    |          | block.                                  |
-   | Malformed    | Unsigned | Number of malformed packets found in    |
-   | packets      |          | input for the block. See Section 5.     |
-   | Non-DNS      | Unsigned | Number of non-DNS packets found in      |
-   | packets      |          | input for the block.                    |
-   | Out-of-order | Unsigned | Number of packets processed during      |
-   | packets      |          | input for the block that were not in    |
-   |              |          | strict chronological order.             |
-   | Dropped      | Unsigned | Count of query/responses not written    |
-   | pairs        |          | due to overflow.                        |
-   | Dropped      | Unsigned | Count of raw packets not written due to |
-   | packets      |          | overflow.                               |
-   | Dropped non- | Unsigned | Count of ignored packets not written    |
-   | DNS packets  |          | due to overflow.                        |
-   +--------------+----------+-----------------------------------------+
-
-   QUESTION: The last 3 are info about compactor performance.Should they
-   be in the standard?
 
 8.9.  Block table map
 
@@ -835,13 +806,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    o  A Query and/or a Response may contain an OPT section.
 
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 15]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    o  A Question may or may not be present.  If the Query is available,
       the Question section of the Query is used.  If no Query is
       available, the Question section of the Response is used.  Unless
@@ -854,64 +818,58 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 8.10.  IP address table
 
-   This table holds all client and server IP addresses in the block.
-   Each item in the table is a single IP address.
+   The table "ip-address" holds all client and server IP addresses in
+   the block.  Each item in the table is a single IP address.
 
-   +---------+--------+------------------------------------------------+
-   | Field   | Type   | Description                                    |
-   +---------+--------+------------------------------------------------+
-   | Address | Byte   | The IP address, in network byte order. The     |
-   |         | string | string is 4 bytes long for an IPv4 address, 16 |
-   |         |        | bytes long for an IPv6 address.                |
-   +---------+--------+------------------------------------------------+
+   +------------+--------+---------------------------------------------+
+   | Field      | Type   | Description                                 |
+   +------------+--------+---------------------------------------------+
+   | ip-address | Byte   | The IP address, in network byte order. The  |
+   |            | string | string is 4 bytes long for an IPv4 address, |
+   |            |        | 16 bytes long for an IPv6 address.          |
+   +------------+--------+---------------------------------------------+
 
 8.11.  Class/Type table
 
-   This table holds pairs of RR CLASS and TYPE values.  Each item in the
-   table is a CBOR map.
-
-                         +-------+--------------+
-                         | Field | Description  |
-                         +-------+--------------+
-                         | Class | CLASS value. |
-                         |       |              |
-                         | Type  | TYPE value.  |
-                         +-------+--------------+
-
-8.12.  Name/RDATA table
-
-   This table holds the contents of all NAME or RDATA items in the
-   block.  Each item in the table is the content of a single NAME or
-   RDATA.
+   The table "classtype" holds pairs of RR CLASS and TYPE values.  Each
+   item in the table is a CBOR map.
 
 
 
 
-
-
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 16]
+Dickinson, et al.         Expires June 9, 2017                 [Page 15]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-   +-------+--------+--------------------------------------------------+
-   | Field | Type   | Description                                      |
-   +-------+--------+--------------------------------------------------+
-   | Data  | Byte   | The NAME or RDATA contents. NAMEs, and labels    |
-   |       | string | within RDATA contents, are in uncompressed label |
-   |       |        | format.                                          |
-   +-------+--------+--------------------------------------------------+
+                         +-------+--------------+
+                         | Field | Description  |
+                         +-------+--------------+
+                         | type  | TYPE value.  |
+                         |       |              |
+                         | class | CLASS value. |
+                         +-------+--------------+
+
+8.12.  Name/RDATA table
+
+   The table "name-rdata" holds the contents of all NAME or RDATA items
+   in the block.  Each item in the table is the content of a single NAME
+   or RDATA.
+
+   +------------+--------+---------------------------------------------+
+   | Field      | Type   | Description                                 |
+   +------------+--------+---------------------------------------------+
+   | name-rdata | Byte   | The NAME or RDATA contents. NAMEs, and      |
+   |            | string | labels within RDATA contents, are in        |
+   |            |        | uncompressed label format.                  |
+   +------------+--------+---------------------------------------------+
 
 8.13.  Query Signature table
 
-   This table holds elements of the Q/R data item that are often common
-   to between different individual Q/R data items.  Each item in the
-   table is a CBOR map.  Each item in the map has an unsigned value and
-   an unsigned key.
+   The table "query-sig" holds elements of the Q/R data item that are
+   often common to between different individual Q/R data items.  Each
+   item in the table is a CBOR map.  Each item in the map has an
+   unsigned value and an unsigned key.
 
    The following abbreviations are used in the Present (P) column
 
@@ -927,25 +885,67 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    o  R = RESPONSE
 
-   +------------+----+-------------------------------------------------+
-   | Field      | P  | Description                                     |
-   +------------+----+-------------------------------------------------+
-   | Server     | A  | The index in the IP address table of the server |
-   | address    |    | IP address.                                     |
-   |            |    |                                                 |
-   | Server     | A  | The server port.                                |
-   | port       |    |                                                 |
-   |            |    |                                                 |
-   | Transport  | A  | Bit flags describing the transport used to      |
-   | flags      |    | service the query. Bit 0 is the least           |
-   |            |    | significant bit.                                |
-   |            |    | Bit 0. Transport type. 0 = UDP, 1 = TCP.        |
-   |            |    | Bit 1. IP type. 0 = IPv4, 1 = IPv6.             |
-   |            |    | Bit 2. Trailing data in query. The query DNS    |
-   |            |    | message was followed by some additional,        |
-   |            |    | ignored, data.                                  |
-   |            |    |                                                 |
-   | Q/R        | A  | Bit flags indicating information present in     |
+   +-----------------------+----+--------------------------------------+
+   | Field                 | P  | Description                          |
+   +-----------------------+----+--------------------------------------+
+   | server-address-index  | A  | The index in the IP address table of |
+   |                       |    | the server IP address.               |
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 16]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
+   |                       |    |                                      |
+   | server-port           | A  | The server port.                     |
+   |                       |    |                                      |
+   | Transport flags       | A  | Bit flags describing the transport   |
+   |                       |    | used to service the query. Bit 0 is  |
+   |                       |    | the least significant bit.           |
+   |                       |    | Bit 0. Transport type. 0 = UDP, 1 =  |
+   |                       |    | TCP.                                 |
+   |                       |    | Bit 1. IP type. 0 = IPv4, 1 = IPv6.  |
+   |                       |    | Bit 2. Trailing data in query. The   |
+   |                       |    | query DNS message was followed by    |
+   |                       |    | some additional, ignored, data.      |
+   |                       |    |                                      |
+   | qr-sig-flags          | A  | Bit flags indicating information     |
+   |                       |    | present in this Q/R data item. Bit 0 |
+   |                       |    | is the least significant bit.        |
+   |                       |    | Bit 0. 1 if a Query is present.      |
+   |                       |    | Bit 1. 1 if a Response is present.   |
+   |                       |    | Bit 2. 1 if one or more Question is  |
+   |                       |    | present.                             |
+   |                       |    | Bit 3. 1 if a Query is present and   |
+   |                       |    | it has an OPT Resource Record.       |
+   |                       |    | Bit 4. 1 if a Response is present    |
+   |                       |    | and it has an OPT Resource Record.   |
+   |                       |    | Bit 5. 1 if a Response is present    |
+   |                       |    | but has no Question.                 |
+   |                       |    | Bit 6. 1 if a Query is present but   |
+   |                       |    | malformed (see Section 5).           |
+   |                       |    | Bit 7. 1 if a Response is present    |
+   |                       |    | but malformed (see Section 5).       |
+   |                       |    |                                      |
+   | query-opcode          | Q  | Query OPCODE. Optional.              |
+   |                       |    |                                      |
+   | qr-dns-flags          | A  | Bit flags with values from the Query |
+   |                       |    | and Response DNS flags. Bit 0 is the |
+   |                       |    | least significant bit. Flag values   |
+   |                       |    | are 0 if the Query or Response is    |
+   |                       |    | not present.                         |
+   |                       |    | Bit 0. Query Checking Disabled (CD). |
+   |                       |    | Bit 1. Query Authenticated Data      |
+   |                       |    | (AD).                                |
+   |                       |    | Bit 2. Query reserved (Z).           |
+   |                       |    | Bit 3. Query Recursion Available     |
+   |                       |    | (RA).                                |
+   |                       |    | Bit 4. Query Recursion Desired (RD). |
+   |                       |    | Bit 5. Query TrunCation (TC).        |
+   |                       |    | Bit 6. Query Authoritative Answer    |
+   |                       |    | (AA).                                |
 
 
 
@@ -954,54 +954,54 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 17]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-   | signature  |    | this Q/R data item. Bit 0 is the least          |
-   | flags      |    | significant bit.                                |
-   |            |    | Bit 0. 1 if a Query is present.                 |
-   |            |    | Bit 1. 1 if a Response is present.              |
-   |            |    | Bit 2. 1 if one or more Question is present.    |
-   |            |    | Bit 3. 1 if a Query is present and it has an    |
-   |            |    | OPT Resource Record.                            |
-   |            |    | Bit 4. 1 if a Response is present and it has an |
-   |            |    | OPT Resource Record.                            |
-   |            |    | Bit 5. 1 if a Response is present but has no    |
-   |            |    | Question.                                       |
-   |            |    | Bit 6. 1 if a Query is present but malformed    |
-   |            |    | (see Section 5).                                |
-   |            |    | Bit 7. 1 if a Response is present but malformed |
-   |            |    | (see Section 5).                                |
-   |            |    |                                                 |
-   | Query      | Q  | Query OPCODE.                                   |
-   | OPCODE     |    |                                                 |
-   |            |    |                                                 |
-   | Q/R DNS    | A  | Bit flags with values from the Query and        |
-   | flags      |    | Response DNS flags. Bit 0 is the least          |
-   |            |    | significant bit. Flag values are 0 if the Query |
-   |            |    | or Response is not present.                     |
-   |            |    | Bit 0. Query Checking Disabled (CD).            |
-   |            |    | Bit 1. Query Authenticated Data (AD).           |
-   |            |    | Bit 2. Query reserved (Z).                      |
-   |            |    | Bit 3. Query Recursion Available (RA).          |
-   |            |    | Bit 4. Query Recursion Desired (RD).            |
-   |            |    | Bit 5. Query TrunCation (TC).                   |
-   |            |    | Bit 6. Query Authoritative Answer (AA).         |
-   |            |    | Bit 7. Query DNSSEC answer OK (D0).             |
-   |            |    | Bit 8. Response Checking Disabled (CD).         |
-   |            |    | Bit 9. Response Authenticated Data (AD).        |
-   |            |    | Bit 10. Response reserved (Z).                  |
-   |            |    | Bit 11. Response Recursion Available (RA).      |
-   |            |    | Bit 12. Response Recursion Desired (RD).        |
-   |            |    | Bit 13. Response TrunCation (TC).               |
-   |            |    | Bit 14. Response Authoritative Answer (AA).     |
-   |            |    |                                                 |
-   | Query      | Q  | Query RCODE. If the Query contains OPT, this    |
-   | RCODE      |    | value incorporates any EXTENDED_RCODE_VALUE.    |
-   |            |    |                                                 |
-   | Question   | QT | The index in the Class/Type table of the CLASS  |
-   | Class/Type |    | and TYPE of the first Question.                 |
-   |            |    |                                                 |
-   | Question   | QT | The QDCOUNT in the Query, or Response if no     |
-   | QDCOUNT    |    | Query present.                                  |
-   |            |    |                                                 |
+   |                       |    | Bit 7. Query DNSSEC answer OK (D0).  |
+   |                       |    | Bit 8. Response Checking Disabled    |
+   |                       |    | (CD).                                |
+   |                       |    | Bit 9. Response Authenticated Data   |
+   |                       |    | (AD).                                |
+   |                       |    | Bit 10. Response reserved (Z).       |
+   |                       |    | Bit 11. Response Recursion Available |
+   |                       |    | (RA).                                |
+   |                       |    | Bit 12. Response Recursion Desired   |
+   |                       |    | (RD).                                |
+   |                       |    | Bit 13. Response TrunCation (TC).    |
+   |                       |    | Bit 14. Response Authoritative       |
+   |                       |    | Answer (AA).                         |
+   |                       |    |                                      |
+   | query-rcode           | Q  | Query RCODE. If the Query contains   |
+   |                       |    | OPT, this value incorporates any     |
+   |                       |    | EXTENDED_RCODE_VALUE. Optional.      |
+   |                       |    |                                      |
+   | query-classtype-index | QT | The index in the Class/Type table of |
+   |                       |    | the CLASS and TYPE of the first      |
+   |                       |    | Question. Optional.                  |
+   |                       |    |                                      |
+   | query-qd-count        | QT | The QDCOUNT in the Query, or         |
+   |                       |    | Response if no Query present.        |
+   |                       |    | Optional.                            |
+   |                       |    |                                      |
+   | query-an-count        | Q  | Query ANCOUNT. Optional.             |
+   |                       |    |                                      |
+   | query-ar-count        | Q  | Query ARCOUNT. Optional.             |
+   |                       |    |                                      |
+   | query-ns-count        | Q  | Query NSCOUNT. Optional.             |
+   |                       |    |                                      |
+   | edns-version          | QO | The Query EDNS version. Optional.    |
+   |                       |    |                                      |
+   | udp-buf-size          | QO | The Query EDNS sender's UDO payload  |
+   |                       |    | size. Optional.                      |
+   |                       |    |                                      |
+   | opt-rdata-index       | QO | The index in the NAME/RDATA table of |
+   |                       |    | the OPT RDATA. Optional.             |
+   |                       |    |                                      |
+   | response-rcode        | R  | Response RCODE. If the Response      |
+   |                       |    | contains OPT, this value             |
+   |                       |    | incorporates any                     |
+   |                       |    | EXTENDED_RCODE_VALUE. Optional.      |
+   +-----------------------+----+--------------------------------------+
+
+
+
 
 
 
@@ -1010,29 +1010,6 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 18]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-   | Query      | Q  | Query ANCOUNT.                                  |
-   | ANCOUNT    |    |                                                 |
-   |            |    |                                                 |
-   | Query      | Q  | Query ARCOUNT.                                  |
-   | ARCOUNT    |    |                                                 |
-   |            |    |                                                 |
-   | Query      | Q  | Query NSCOUNT.                                  |
-   | NSCOUNT    |    |                                                 |
-   |            |    |                                                 |
-   | Query EDNS | QO | The Query EDNS version.                         |
-   | version    |    |                                                 |
-   |            |    |                                                 |
-   | EDNS UDP   | QO | The Query EDNS sender's UDO payload size        |
-   | size       |    |                                                 |
-   |            |    |                                                 |
-   | Query OPT  | QO | The index in the NAME/RDATA table of the OPT    |
-   | RDATA      |    | RDATA.                                          |
-   |            |    |                                                 |
-   | Response   | R  | Response RCODE. If the Response contains OPT,   |
-   | RCODE      |    | this value incorporates any                     |
-   |            |    | EXTENDED_RCODE_VALUE.                           |
-   +------------+----+-------------------------------------------------+
-
 8.14.  Question table
 
    This table holds details on individual Questions in a Question
@@ -1040,14 +1017,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    Question.  Each item in the map has an unsigned value and an unsigned
    key.  This data is optionally collected.
 
-   +------------+------------------------------------------------------+
-   | Field      | Description                                          |
-   +------------+------------------------------------------------------+
-   | QNAME      | The index in the NAME/RDATA table of the QNAME.      |
-   |            |                                                      |
-   | Class/Type | The index in the Class/Type table of the CLASS and   |
-   |            | TYPE of the Question.                                |
-   +------------+------------------------------------------------------+
+   +-----------------+-------------------------------------------------+
+   | Field           | Description                                     |
+   +-----------------+-------------------------------------------------+
+   | name-index      | The index in the NAME/RDATA table of the QNAME. |
+   |                 |                                                 |
+   | classtype-index | The index in the Class/Type table of the CLASS  |
+   |                 | and TYPE of the Question.                       |
+   +-----------------+-------------------------------------------------+
 
 8.15.  Resource Record (RR) table
 
@@ -1055,29 +1032,19 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    sections.  Each item in the table is a CBOR map containing a single
    Resource Record.  This data is optionally collected.
 
-
-
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 19]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
-   +------------+------------------------------------------------------+
-   | Field      | Description                                          |
-   +------------+------------------------------------------------------+
-   | NAME       | The index in the NAME/RDATA table of the NAME.       |
-   |            |                                                      |
-   | Class/Type | The index in the Class/Type table of the CLASS and   |
-   |            | TYPE of the RR.                                      |
-   |            |                                                      |
-   | TTL        | The RR Time to Live.                                 |
-   |            |                                                      |
-   | RDATA      | The index in the NAME/RDATA table of the RR RDATA.   |
-   +------------+------------------------------------------------------+
+   +-----------------+-------------------------------------------------+
+   | Field           | Description                                     |
+   +-----------------+-------------------------------------------------+
+   | name-index      | The index in the NAME/RDATA table of the NAME.  |
+   |                 |                                                 |
+   | classtype-index | The index in the Class/Type table of the CLASS  |
+   |                 | and TYPE of the RR.                             |
+   |                 |                                                 |
+   | ttl             | The RR Time to Live.                            |
+   |                 |                                                 |
+   | rdata-index     | The index in the NAME/RDATA table of the RR     |
+   |                 | RDATA.                                          |
+   +-----------------+-------------------------------------------------+
 
 8.16.  Question list table
 
@@ -1088,9 +1055,16 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    +----------+--------------------------------------------------------+
    | Field    | Description                                            |
    +----------+--------------------------------------------------------+
-   | Question | The index in the Question table of the individual      |
+   | question | The index in the Question table of the individual      |
    |          | Question.                                              |
    +----------+--------------------------------------------------------+
+
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 19]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
 
 8.17.  Resource Record list table
 
@@ -1101,7 +1075,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    +-------+-----------------------------------------------------------+
    | Field | Description                                               |
    +-------+-----------------------------------------------------------+
-   | RR    | The index in the Resource Record table of the individual  |
+   | rr    | The index in the Resource Record table of the individual  |
    |       | Resource Record.                                          |
    +-------+-----------------------------------------------------------+
 
@@ -1113,14 +1087,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
    Note that there is no requirement that the elements of the Q/R array
    are presented in strict chronological order.
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 20]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
 
    The following abbreviations are used in the Present (P) column
 
@@ -1145,31 +1111,65 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    o  Response delay which is an integer (This can be negative if the
       network stack/capture library returns them out of order.)
 
+   +-----------------------+----+--------------------------------------+
+   | Field                 | P  | Description                          |
+   +-----------------------+----+--------------------------------------+
 
 
 
+Dickinson, et al.         Expires June 9, 2017                 [Page 20]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   | time-useconds         | A  | Q/R timestamp as an offset in        |
+   |                       |    | microseconds from the Block preamble |
+   |                       |    | Timestamp. The timestamp is the      |
+   |                       |    | timestamp of the Query, or the       |
+   |                       |    | Response if there is no Query.       |
+   |                       |    |                                      |
+   | time-pseconds         | A  | Picosecond component of the          |
+   |                       |    | timestamp. Optional.                 |
+   |                       |    |                                      |
+   | client-address-index  | A  | The index in the IP address table of |
+   |                       |    | the client IP address.               |
+   |                       |    |                                      |
+   | client-port           | A  | The client port.                     |
+   |                       |    |                                      |
+   | transaction-id        | A  | DNS transaction identifier.          |
+   |                       |    |                                      |
+   | query-signature-index | A  | The index of the more information on |
+   |                       |    | the Q/R in the Query Signature       |
+   |                       |    | table.                               |
+   |                       |    |                                      |
+   | client-hoplimit       | Q  | The IPv4 TTL or IPv6 Hoplimit from   |
+   |                       |    | the Query packet. Optional.          |
+   |                       |    |                                      |
+   | delay-useconds        | QR | The time different between Query and |
+   |                       |    | Response, in microseconds. Only      |
+   |                       |    | present if there is a query and a    |
+   |                       |    | response.                            |
+   |                       |    |                                      |
+   | delay-pseconds        | QR | Picosecond component of the time     |
+   |                       |    | different between Query and          |
+   |                       |    | Response. Optional.                  |
+   |                       |    |                                      |
+   | query-name-index      | QT | The index in the NAME/RDATA table of |
+   |                       |    | the QNAME for the first Question.    |
+   |                       |    | Optional.                            |
+   |                       |    |                                      |
+   | query-size            | R  | The size of the DNS message (not the |
+   |                       |    | packet containing the message, just  |
+   |                       |    | the DNS message) that forms the      |
+   |                       |    | Query. Optional.                     |
+   |                       |    |                                      |
+   | response-size         | R  | The size of the DNS message (not the |
+   |                       |    | packet containing the message, just  |
+   |                       |    | the DNS message) that forms the      |
+   |                       |    | Response. Optional.                  |
+   |                       |    |                                      |
+   | query-extended        | Q  | Extended Query information. This     |
+   |                       |    | item is only present if collection   |
 
 
 
@@ -1178,86 +1178,46 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 21]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-   +-------------+----+------------------------------------------------+
-   | Field       | P  | Description                                    |
-   +-------------+----+------------------------------------------------+
-   | Time offset | A  | Q/R timestamp as an offset in microseconds and |
-   |             |    | optionally picoseconds from the Block preamble |
-   |             |    | Timestamp. The timestamp is the timestamp of   |
-   |             |    | the Query, or the Response if there is no      |
-   |             |    | Query.                                         |
-   |             |    |                                                |
-   | Client      | A  | The index in the IP address table of the       |
-   | address     |    | client IP address.                             |
-   |             |    |                                                |
-   | Client port | A  | The client port.                               |
-   |             |    |                                                |
-   | Transaction | A  | DNS transaction identifier.                    |
-   | ID          |    |                                                |
-   |             |    |                                                |
-   | Query       | A  | The index of the more information on the Q/R   |
-   | signature   |    | in the Query Signature table.                  |
-   |             |    |                                                |
-   | Client      | Q  | The IPv4 TTL or IPv6 Hoplimit from the Query   |
-   | hoplimit    |    | packet.                                        |
-   |             |    |                                                |
-   | Response    | QR | The time different between Query and Response, |
-   | delay       |    | in microseconds.                               |
-   |             |    |                                                |
-   | Question    | QT | The index in the NAME/RDATA table of the QNAME |
-   | NAME        |    | for the first Question.                        |
-   |             |    |                                                |
-   | Response    | R  | The size of the DNS message (not the packet    |
-   | size        |    | containing the message, just the DNS message)  |
-   |             |    | that forms the Response.                       |
-   |             |    |                                                |
-   | Query       | Q  | Extended Query information. This item is only  |
-   | extended    |    | present if collection of extra Query           |
-   | information |    | information is configured.                     |
-   |             |    |                                                |
-   | Response    | R  | Extended Response information. This item is    |
-   | extended    |    | only present if collection of extra Query      |
-   | information |    | information is configured.                     |
-   +-------------+----+------------------------------------------------+
+   |                       |    | of extra Query information is        |
+   |                       |    | configured. Optional.                |
+   |                       |    |                                      |
+   | response-extended     | R  | Extended Response information. This  |
+   |                       |    | item is only present if collection   |
+   |                       |    | of extra Response information is     |
+   |                       |    | configured. Optional.                |
+   +-----------------------+----+--------------------------------------+
 
-   The collector always collects basic Q/R information.  It may be
-   configured to collect details on Question, Answer, Authority and
+   An implementation must always collects basic Q/R information.  It may
+   be configured to collect details on Question, Answer, Authority and
    Additional sections of the Query, the Response or both.  Note that
    only the second and subsequent Questions of any Question section are
    collected (the details of the first are in the basic information),
    and that OPT Records are not collected in the Additional section.
 
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 22]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    The Extended information is a CBOR map as follows.  Each item in the
-   map is present only of collection of the relevant details is
+   map is present only if collection of the relevant details is
    configured.  Each item in the map has an unsigned value and an
    unsigned key.
 
-   +------------+------------------------------------------------------+
-   | Field      | Description                                          |
-   +------------+------------------------------------------------------+
-   | Question   | The index in the Questions list table of the entry   |
-   |            | listing the second and subsequent Question sections  |
-   |            | for the Query or Response.                           |
-   |            |                                                      |
-   | Answer     | The index in the RR list table of the entry listing  |
-   |            | the Answer Resource Record sections for the Query or |
-   |            | Response.                                            |
-   |            |                                                      |
-   | Authority  | The index in the RR list table of the entry listing  |
-   |            | the Authority Resource Record sections for the Query |
-   |            | or Response.                                         |
-   |            |                                                      |
-   | Additional | The index in the RR list table of the entry listing  |
-   |            | the Additional Resource Record sections for the      |
-   |            | Query or Response.                                   |
-   +------------+------------------------------------------------------+
+   +------------------+------------------------------------------------+
+   | Field            | Description                                    |
+   +------------------+------------------------------------------------+
+   | question-index   | The index in the Questions list table of the   |
+   |                  | entry listing the second and subsequent        |
+   |                  | Question sections for the Query or Response.   |
+   |                  |                                                |
+   | answer-index     | The index in the RR list table of the entry    |
+   |                  | listing the Answer Resource Record sections    |
+   |                  | for the Query or Response.                     |
+   |                  |                                                |
+   | authority-index  | The index in the RR list table of the entry    |
+   |                  | listing the Authority Resource Record sections |
+   |                  | for the Query or Response.                     |
+   |                  |                                                |
+   | additional-index | The index in the RR list table of the entry    |
+   |                  | listing the Additional Resource Record         |
+   |                  | sections for the Query or Response.            |
+   +------------------+------------------------------------------------+
 
 8.19.  Address Event counts
 
@@ -1269,18 +1229,58 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 
+Dickinson, et al.         Expires June 9, 2017                 [Page 22]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
+   +------------------+----------+-------------------------------------+
+   | Field            | Type     | Description                         |
+   +------------------+----------+-------------------------------------+
+   | ae-type          | Unsigned | The type of event. The following    |
+   |                  |          | events types are currently defined: |
+   |                  |          | 0. TCP reset.                       |
+   |                  |          | 1. ICMP time exceeded.              |
+   |                  |          | 2. ICMP destination unreachable.    |
+   |                  |          | 3. ICMPv6 time exceeded.            |
+   |                  |          | 4. ICMPv6 destination unreachable.  |
+   |                  |          | 5. ICMPv6 packet too big.           |
+   |                  |          |                                     |
+   | ae-code          | Unsigned | A code relating to the event.       |
+   |                  |          | Optional.                           |
+   |                  |          |                                     |
+   | ae-address-index | Unsigned | The index in the IP address table   |
+   |                  |          | of the client address.              |
+   |                  |          |                                     |
+   | ae-count         | Unsigned | The number of occurrences of this   |
+   |                  |          | event during the block collection   |
+   |                  |          | period.                             |
+   +------------------+----------+-------------------------------------+
 
+8.20.  Malformed packet records
 
+   This optional table records the original content of malformed packets
+   (see Section 5).
 
-
-
-
-
-
-
-
+   +----------------+----------+---------------------------------------+
+   | Field          | Type     | Description                           |
+   +----------------+----------+---------------------------------------+
+   | time-useconds  | A        | Packet timestamp as an offset in      |
+   |                |          | microseconds from the Block preamble  |
+   |                |          | Timestamp.                            |
+   |                |          |                                       |
+   | time-pseconds  | A        | Picosecond component of the           |
+   |                |          | timestamp. Optional.                  |
+   |                |          |                                       |
+   | malformed-type | Unsigned | The type of malformation. The         |
+   |                |          | following types are currently         |
+   |                |          | defined:                              |
+   |                |          | 0. Completely malformed packet.       |
+   |                |          | 1. Partially malformed packet.        |
+   |                |          |                                       |
+   | packet-content | Byte     | The packet content in wire format.    |
+   |                | string   |                                       |
+   +----------------+----------+---------------------------------------+
 
 
 
@@ -1290,61 +1290,11 @@ Dickinson, et al.         Expires June 9, 2017                 [Page 23]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
-   +----------+----------+---------------------------------------------+
-   | Field    | Type     | Description                                 |
-   +----------+----------+---------------------------------------------+
-   | Event    | Unsigned | The type of event. The following events     |
-   | type     |          | types are currently defined:                |
-   |          |          | 0. TCP reset.                               |
-   |          |          | 1. ICMP time exceeded.                      |
-   |          |          | 2. ICMP destination unreachable.            |
-   |          |          | 3. ICMPv6 time exceeded.                    |
-   |          |          | 4. ICMPv6 destination unreachable.          |
-   |          |          | 5. ICMPv6 packet too big.                   |
-   |          |          |                                             |
-   | Event    | Unsigned | A code relating to the event. Optional.     |
-   | code     |          |                                             |
-   |          |          |                                             |
-   | Address  | Unsigned | The index in the IP address table of the    |
-   | index    |          | client address.                             |
-   |          |          |                                             |
-   | Count    | Unsigned | The number of occurrences of this event     |
-   |          |          | during the block collection period.         |
-   +----------+----------+---------------------------------------------+
-
-8.20.  Malformed packet records
-
-   This optional table records the original content of malformed packets
-   (see Section 5).
-
-   +-----------+----------+--------------------------------------------+
-   | Field     | Type     | Description                                |
-   +-----------+----------+--------------------------------------------+
-   | Time      | A        | Packet timestamp as an offset in           |
-   | offset    |          | microseconds and optionally picoseconds    |
-   |           |          | from the Block preamble Timestamp.         |
-   | Malformed | Unsigned | The type of malformation. The following    |
-   | type      |          | types are currently defined:               |
-   |           |          | 0. Completely malformed packet.            |
-   |           |          | 1. Partially malformed packet.             |
-   | Contents  | Byte     | The packet content in wire format.         |
-   |           | string   |                                            |
-   +-----------+----------+--------------------------------------------+
-
 9.  C-DNS to PCAP
 
    It is possible to re-construct PCAP files from the C-DNS format in a
    lossy fashion.  Some of the issues with reconstructing both the DNS
    payload and the full packet stream are outlined here.
-
-
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 24]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
 
    The reconstruction depends on whether or not all the optional
    sections of both the query and response were captured in the C-DNS
@@ -1389,19 +1339,18 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    must be used in order to reproduce the on the wire representation of
    the packet.
 
+
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 24]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
+
+
    [RFC1035] name compression works by substituting trailing sections of
    a name with a reference back to the occurrence of those sections
    earlier in the packet.  Not all name server software uses the same
    algorithm when compressing domain names within the responses.  Some
    attempt maximum recompression at the expense of runtime resources,
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 25]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
-
-
    others use heuristics to balance compression and speed and others use
    different rules for what is a valid compression target.
 
@@ -1445,18 +1394,16 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
        present) the first RR in the Question section can be parsed to
        generate the Secondary ID (see below).  As noted earlier, this
        requirement can result in a malformed query being removed in the
-       pre-processing stage, but the correctly formed response with
-       RCODE of FORMERR being present.
 
 
 
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 26]
+Dickinson, et al.         Expires June 9, 2017                 [Page 25]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
+
+       pre-processing stage, but the correctly formed response with
+       RCODE of FORMERR being present.
 
    DNS messages are processed in the order they are delivered to the
    application.  It should be noted that packet capture libraries do not
@@ -1506,10 +1453,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 
-
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 27]
+Dickinson, et al.         Expires June 9, 2017                 [Page 26]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -1565,7 +1509,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 28]
+Dickinson, et al.         Expires June 9, 2017                 [Page 27]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -1621,7 +1565,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 29]
+Dickinson, et al.         Expires June 9, 2017                 [Page 28]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -1677,7 +1621,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 30]
+Dickinson, et al.         Expires June 9, 2017                 [Page 29]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -1733,7 +1677,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 31]
+Dickinson, et al.         Expires June 9, 2017                 [Page 30]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -1789,7 +1733,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 32]
+Dickinson, et al.         Expires June 9, 2017                 [Page 31]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -1845,7 +1789,7 @@ Configuration = {
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 33]
+Dickinson, et al.         Expires June 9, 2017                 [Page 32]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -1901,7 +1845,7 @@ Timeval = [
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 34]
+Dickinson, et al.         Expires June 9, 2017                 [Page 33]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -1957,7 +1901,7 @@ QueryResponse = {
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 35]
+Dickinson, et al.         Expires June 9, 2017                 [Page 34]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -2013,7 +1957,7 @@ QuerySignature = {
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 36]
+Dickinson, et al.         Expires June 9, 2017                 [Page 35]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -2069,7 +2013,7 @@ QueryResponseExtended = {
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 37]
+Dickinson, et al.         Expires June 9, 2017                 [Page 36]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -2125,7 +2069,7 @@ Appendix B.  DNS Name compression example
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 38]
+Dickinson, et al.         Expires June 9, 2017                 [Page 37]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -2181,7 +2125,7 @@ B.2.  Knot Authoritative compression algorithm
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 39]
+Dickinson, et al.         Expires June 9, 2017                 [Page 38]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -2237,7 +2181,7 @@ Appendix C.  Comparison of Binary Formats
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 40]
+Dickinson, et al.         Expires June 9, 2017                 [Page 39]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -2293,7 +2237,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 41]
+Dickinson, et al.         Expires June 9, 2017                 [Page 40]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -2306,11 +2250,12 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    output data will be subject to general-purpose compression, and so
    this should be taken into consideration.
 
-   "test.pcap", a 662Mb capture of sample data from a root instance was
-   used for the comparison.  The following table shows the formatted
-   size and size after compression (both in Mb), together with the task
-   resident set size (RSS) in kb and the user time in seconds taken by
-   the compression.
+   A capture of sample data from a root instance was used for the
+   comparison.  The input file was 661.87Mb.  The following table shows
+   the formatted size and size after compression (abbreviated to Comp.
+   in the table headers), together with the task resident set size (RSS)
+   and the user time taken by the compression.  File sizes are in Mb,
+   RSS in kb and user time in seconds.
 
    +-------------+-----------+-------+------------+-------+-----------+
    | Format      | File size | Comp. | Comp. size |   RSS | User time |
@@ -2345,15 +2290,15 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
    |             |           | zstd  |      53.39 |  3388 |      2.76 |
    |             |           | xz    |      23.99 | 97348 |    106.47 |
    |             |           |       |            |       |           |
-   | JSON block  |    519.77 | snzip |     106.12 |  2812 |      0.93 |
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 42]
+Dickinson, et al.         Expires June 9, 2017                 [Page 41]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
+   | JSON block  |    519.77 | snzip |     106.12 |  2812 |      0.93 |
    |             |           | lz4   |     104.34 |  6080 |      0.97 |
    |             |           | gzip  |      57.97 |  1604 |     12.70 |
    |             |           | zstd  |      61.51 |  3396 |      3.45 |
@@ -2401,15 +2346,15 @@ C.2.  Simple versus block coding
 
    The data de-duplication on the block formats show an order of
    magnitude reduction in the size of the format file size against the
-   simple formats.  As would be expected, the compression tools are able
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 43]
+Dickinson, et al.         Expires June 9, 2017                 [Page 42]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
+   simple formats.  As would be expected, the compression tools are able
    to find and exploit a lot of this duplication, but as the de-
    duplication process uses knowledge of DNS traffic, it is able to
    retain a size advantage.  This advantage reduces as stronger
@@ -2456,16 +2401,17 @@ C.5.  Conclusions
    The above assessments lead us to the choice of a binary format file
    using blocking.
 
-   As noted previously, this draft anticipates that output data will be
-   subject to compression.  There is no compelling case for one
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 44]
+
+Dickinson, et al.         Expires June 9, 2017                 [Page 43]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
+   As noted previously, this draft anticipates that output data will be
+   subject to compression.  There is no compelling case for one
    particular binary serialisation format in terms of either final file
    size or machine resources consumed, so the choice must be largely
    based on other factors.  CBOR was chosen as the binary serialisation
@@ -2512,15 +2458,15 @@ C.6.  Block size choice
    The following figure plots the effect of increasing block size on
    output file size for different compressions.
 
-   Figure showing effect of block size on file size (PNG) [19]
 
 
 
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 45]
+Dickinson, et al.         Expires June 9, 2017                 [Page 44]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
+
+   Figure showing effect of block size on file size (PNG) [19]
 
    Figure showing effect of block size on file size (SVG) [20]
 
@@ -2571,9 +2517,7 @@ Authors' Addresses
 
 
 
-
-
-Dickinson, et al.         Expires June 9, 2017                 [Page 46]
+Dickinson, et al.         Expires June 9, 2017                 [Page 45]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
@@ -2629,4 +2573,4 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2016
 
 
 
-Dickinson, et al.         Expires June 9, 2017                 [Page 47]
+Dickinson, et al.         Expires June 9, 2017                 [Page 46]

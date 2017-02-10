@@ -798,7 +798,7 @@ Further details of the algorithm are given in the following sections.
 
 ### Primary ID
 
-A Primary ID can be constructed for each message which is composed of the following data:
+A Primary ID is constructed for each message. It is composed of the following data:
 
 1. Source IP Address
 1. Destination IP Address

@@ -832,18 +832,16 @@ The algorithm is designed to handle the following input data:
 For cases 1 and 2 listed in the above requirements, it is not possible to unambiguously match queries with responses.
 This algorithm chooses to match to the earliest query with the correct Primary and Secondary ID.
 
-## Workspace
-
-A FIFO structure is used to hold the Q/R data items during processing.
-
-## Matching Queries and Responses
-
 If a response has a Secondary ID, it matches the earliest query with the same Primary and
 Secondary IDs. If a response does not have a Secondary ID, it matches the earliest query
 with the same Primary ID, regardless of whether that query has a Secondary ID or not.
 
 A query that does not have a Secondary ID can only be matched by a response that does
 not have a Secondary ID.
+
+## Workspace
+
+A FIFO structure is used to hold the Q/R data items during processing.
 
 ## Output
 

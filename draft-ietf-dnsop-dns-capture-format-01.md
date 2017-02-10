@@ -796,7 +796,7 @@ Further details of the algorithm are given in the following sections.
 
 ## Message identifiers
 
-### Primary ID
+### Primary ID (required) {#primary-id}
 
 A Primary ID is constructed for each message. It is composed of the following data:
 
@@ -807,7 +807,7 @@ A Primary ID is constructed for each message. It is composed of the following da
 1. Transport
 1. DNS Message ID
 
-### Secondary ID
+### Secondary ID (optional) {#secondary-id}
 
 If present, the first question in the Question section is used as a secondary ID
 for each message. Note that there may be well formed DNS queries that have a

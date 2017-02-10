@@ -810,9 +810,9 @@ A Primary ID is constructed for each message. It is composed of the following da
 ### Secondary ID
 
 If present, the first question in the Question section is used as a secondary ID
-for each message. Note that some queries and some responses may have a QDCOUNT of 0
-(for example, responses with RCODE=FORMERR or NOTIMP). In this case the secondary ID
-is not used in matching.
+for each message. Note that there may be well formed DNS queries that have a
+QDCOUNT of 0, and some responses may have a QDCOUNT of 0 (for example, responses
+with RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used in matching.
 
 ## Algorithm Parameters
 

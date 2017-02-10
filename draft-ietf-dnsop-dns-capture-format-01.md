@@ -415,9 +415,9 @@ tables | Map of tables | The tables containing data referenced by individual Q/R
 ||
 queries | Array of Q/R data items | Details of individual Q/R data items.
 ||
-address-event-counts | Array of Address Event counts | Per client counts of ICMP messages and TCP resets.
+address-event-counts | Array of Address Event counts | Per client counts of ICMP messages and TCP resets. Optional.
 ||
-malformed-packets | Array of malformed packets | Wire contents of malformed packets. Optional.
+malformed-packet-data | Array of malformed packets | Wire contents of malformed packets. Optional.
 
 ## Block preamble map
 

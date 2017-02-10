@@ -441,7 +441,8 @@ total-packets | Unsigned | Total number of packets processed during the block.
 total-pairs | Unsigned | Total number of query/response pairs in the block.
 unmatched-queries | Unsigned | Number of unmatched queries in the block.
 unmatched-responses | Unsigned | Number of unmatched responses in the block.
-malformed-packets | Unsigned | Number of malformed packets found in input for the block. See (#malformed-packets).
+completely-malformed-packets | Unsigned | Number of completely malformed packets found in input for the block. See (#malformed-packets).
+partially-malformed-packets | Unsigned | Number of partially malformed packets found in input for the block. See (#malformed-packets).
 
 Implementations may choose to add additional implementation-specific fields to the statistics.
 
@@ -1120,18 +1121,20 @@ draft-dickinson-dnsop-dns-capture-format-00
     ]
 
     BlockStatistics = {
-        ? total-packets        => uint,
-        ? total-pairs          => uint,
-        ? unmatched-queries    => uint,
-        ? unmatched-responses  => uint,
-        ? malformed-packets    => uint,
+        ? total-packets                => uint,
+        ? total-pairs                  => uint,
+        ? unmatched-queries            => uint,
+        ? unmatched-responses          => uint,
+        ? completely-malformed-packets => uint,
+        ? partially-malformed-packets  => uint,
     }
 
-    total-packets        = 0
-    total-pairs          = 1
-    unmatched-queries    = 2
-    unmatched-responses  = 3
-    malformed-packets    = 4
+    total-packets                = 0
+    total-pairs                  = 1
+    unmatched-queries            = 2
+    unmatched-responses          = 3
+    completely-malformed-packets = 4
+    partially-malformed-packets  = 5
 
     BlockTables = {
         ip-address => [* IPAddress],

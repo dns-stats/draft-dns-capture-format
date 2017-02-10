@@ -379,6 +379,8 @@ promisc | Unsigned | 1 if promiscuous mode was enabled on the interface, 0 other
 ||
 interfaces | Array of text strings | Identifiers of the interfaces used for collection.
 ||
+server-addresses | Array of byte strings | Server collection IP addresses. Hint for downstream analysers.
+||
 vlan-ids | Array of unsigned | Identifiers of VLANs selected for collection.
 ||
 filter | Text string | tcpdump [@pcap] style filter for input.
@@ -398,6 +400,8 @@ response-options | Unsigned | Bit flags indicating sections in Response packets 
 accept-rr-types | Array of text strings | A set of RR type names [@rrtypes]. If not empty, only the nominated RR types are collected.
 ||
 ignore-rr-types | Array of text strings | A set of RR type names [@rrtypes]. If not empty, all RR types are collected except those listed. If present, this item must be empty if a non-empty list of Accept RR types is present.
+||
+max-block-qr-items | Unsigned | Maximum number of Q/R data items in a block.
 ||
 collect-malformed | Unsigned | 1 if malformed packet contents are collected, 0 otherwise.
 

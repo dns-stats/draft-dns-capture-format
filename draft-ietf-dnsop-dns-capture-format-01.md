@@ -563,7 +563,7 @@ response-rcode | R | Response RCODE. If the Response contains OPT, this value in
 
 ## Question table
 
-This table holds details on individual Questions in a Question section. Each item in the table is a CBOR map containing a single Question. Each item in the map has an unsigned value and an unsigned key. This data is optionally collected.
+The table `qrr` holds details on individual Questions in a Question section. Each item in the table is a CBOR map containing a single Question. Each item in the map has an unsigned value and an unsigned key. This data is optionally collected.
 
 Field | Description
 :-----|:-----------
@@ -573,7 +573,7 @@ classtype-index | The index in the Class/Type table of the CLASS and TYPE of the
 
 ## Resource Record (RR) table
 
-This table holds details on individual Resource Records in RR sections. Each item in the table is a CBOR map containing a single Resource Record. This data is optionally collected.
+The table `rr` holds details on individual Resource Records in RR sections. Each item in the table is a CBOR map containing a single Resource Record. This data is optionally collected.
 
 Field | Description
 :-----|:-----------
@@ -587,7 +587,7 @@ rdata-index | The index in the NAME/RDATA table of the RR RDATA.
 
 ## Question list table
 
-This table holds a list of second and subsequent individual Questions in a Question section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.
+The table `qlist` holds a list of second and subsequent individual Questions in a Question section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.
 
 Field | Description
 :-----|:-----------
@@ -595,7 +595,7 @@ question | The index in the Question table of the individual Question.
 
 ## Resource Record list table
 
-This table holds a list of individual Resource Records in a Answer, Authority or Additional section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.
+The table `rrlist` holds a list of individual Resource Records in a Answer, Authority or Additional section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.
 
 Field | Description
 :-----|:-----------

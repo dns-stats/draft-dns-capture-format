@@ -1032,112 +1032,114 @@ draft-dickinson-dnsop-dns-capture-format-00
     ; traffic meta-data.
 
     File = [
-        file-type-id  : tstr,          ; "C-DNS"
+        file-type-id  : tstr,          ; = "C-DNS"
         file-preamble : FilePreamble,
         file-blocks   : [* Block],
     ]
 
     FilePreamble = {
-        format-version  => uint, ; 1
-        ? configuration => Configuration,
-        ? generator-id  => tstr,
-        ? host-id       => tstr,
+        major-format-version => uint,  ; = 1
+        minor-format-version => uint,  ; = 0
+        ? private-version    => uint,
+        ? configuration      => Configuration,
+        ? generator-id       => tstr,
+        ? host-id            => tstr,
     }
 
-    format-version = 0
-    configuration  = 1
-    generator-id   = 2
-    host-id        = 3
+    major-format-version = 0
+    minor-format-version = 1
+    private-version      = 2
+    configuration        = 3
+    generator-id         = 4
+    host-id              = 5
 
     Configuration = {
-        ? query-timeout    => uint,
-        ? skew-timeout     => uint,
-        ? snaplen          => uint,
-        ? promisc          => uint,
-        ? interfaces       => [* tstr],
-        ? vlan-ids         => [* uint],
-        ? filter           => tstr,
-        ? query-options    => uint,    ; See below
-        ? response-options => uint,
-        ? accept-rr-types  => [* tstr],
-        ? ignore-rr-types  => [* tstr],
+        ? query-timeout      => uint,
+        ? skew-timeout       => uint,
+        ? snaplen            => uint,
+        ? promisc            => uint,
+        ? interfaces         => [* tstr],
+        ? server-addresses   => [* IPAddress],  ; optional hint for downstream analysis
+        ? vlan-ids           => [* uint],
+        ? filter             => tstr,
+        ? query-options      => QRCollectionSections,
+        ? response-options   => QRCollectionSections,
+        ? accept-rr-types    => [* uint],
+        ? ignore-rr-types    => [* uint],
+        ? max-block-qr-items => uint,
+        ? collect-malformed  => uint,
     }
 
-    ; query-options and response-options are bitmasks. A bit set adds in the
-    ; specified sections.
-    ;
-    ; second & subsequent question sections = 1
-    ; answer sections = 2
-    ; authority sections = 4
-    ; additional sections = 8
+    QRCollectionSectionValues = &(
+        question  : 0,       ; Second & subsequent question sections
+        answer    : 1,
+        authority : 2,
+        additional: 3,
+    )
+    QRCollectionSections = uint .bits QRCollectionSectionValues
 
-    query-timeout    = 0
-    skew-timeout     = 1
-    snaplen          = 2
-    promisc          = 3
-    interfaces       = 4
-    vlan-ids         = 5
-    filter           = 6
-    query-options    = 7
-    response-options = 8
-    accept-rr-types  = 9;
-    ignore-rr-types  = 10;
-
+    query-timeout      = 0
+    skew-timeout       = 1
+    snaplen            = 2
+    promisc            = 3
+    interfaces         = 4
+    vlan-ids           = 5
+    filter             = 6
+    query-options      = 7
+    response-options   = 8
+    accept-rr-types    = 9;
+    ignore-rr-types    = 10;
+    server-addresses   = 11;
+    max-block-qr-items = 12;
+    collect-malformed  = 13
 
     Block = {
-        preamble             => BlockPreamble,
-        ? statistics         => BlockStatistics, ; Much of this could be derived
-        tables               => BlockTables,
-        queries              => [* QueryResponse],
-        address-event-counts => [* AddressEventCount],
+        preamble                => BlockPreamble,
+        ? statistics            => BlockStatistics, ; Much of this could be derived
+        tables                  => BlockTables,
+        queries                 => [* QueryResponse],
+        ? address-event-counts  => [* AddressEventCount],
+        ? malformed-packet-data => [* MalformedPacket],
     }
 
-    preamble             = 0
-    statistics           = 1
-    tables               = 2
-    queries              = 3
-    address-event-counts = 4
+    preamble              = 0
+    statistics            = 1
+    tables                = 2
+    queries               = 3
+    address-event-counts  = 4
+    malformed-packet-data = 5
 
     BlockPreamble = {
-        start-time => Timeval
+        earliest-time => Timeval
     }
 
-    start-time = 1
+    earliest-time = 1
 
     Timeval = [
-        seconds      : uint,
-        microseconds : uint,
+        seconds       : uint,
+        microseconds  : uint,
+        ? picoseconds : uint,
     ]
 
     BlockStatistics = {
         ? total-packets        => uint,
         ? total-pairs          => uint,
-        ? unmatched_queries    => uint,
-        ? unmatched_responses  => uint,
+        ? unmatched-queries    => uint,
+        ? unmatched-responses  => uint,
         ? malformed-packets    => uint,
-        ? non-dns-packets      => uint,
-        ? out-of-order-packets => uint,
-        ? missing-pairs        => uint,
-        ? missing-packets      => uint,
-        ? missing-non-dns      => uint,
     }
 
     total-packets        = 0
     total-pairs          = 1
-    unmatched_queries    = 2
-    unmatched_responses  = 3
+    unmatched-queries    = 2
+    unmatched-responses  = 3
     malformed-packets    = 4
-    non-dns-packets      = 5
-    out-of-order-packets = 6
-    missing-pairs        = 7
-    missing-packets      = 8
-    missing-non-dns      = 9
 
     BlockTables = {
-        ip-address => [* bstr],
+        ip-address => [* IPAddress],
         classtype  => [* ClassType],
         name-rdata => [* bstr],            ; Holds both Name RDATA and RDATA
-        query_sig  => [* QuerySignature]
+        query-sig  => [* QuerySignature]
         ? qlist    => [* QuestionList],
         ? qrr      => [* Question],
         ? rrlist   => [* RRList],
@@ -1147,37 +1149,43 @@ draft-dickinson-dnsop-dns-capture-format-00
     ip-address = 0
     classtype  = 1
     name-rdata = 2
-    query_sig  = 3
+    query-sig  = 3
     qlist      = 4
     qrr        = 5
     rrlist     = 6
     rr         = 7
 
     QueryResponse = {
-        time-useconds         => uint,        ; Time offset from earliest record
+        time-useconds         => uint,       ; Time offset from start of block
+        ? time-pseconds       => uint,       ; in microseconds and picoseconds
         client-address-index  => uint,
         client-port           => uint,
         transaction-id        => uint,
         query-signature-index => uint,
         ? client-hoplimit     => uint,
-        ? delay-useconds      => int,        ; Times may be -ve at capture
+        ? delay-useconds      => uint,
+        ? delay-pseconds      => uint,
         ? query-name-index    => uint,
+        ? query-size          => uint,       ; DNS size of query
         ? response-size       => uint,       ; DNS size of response
         ? query-extended      => QueryResponseExtended,
         ? response-extended   => QueryResponseExtended,
     }
 
     time-useconds         = 0
-    client-address-index  = 1
-    client-port           = 2
-    transaction-id        = 3
-    query-signature-index = 4
-    client-hoplimit       = 5
-    delay-useconds        = 6
-    query-name-index      = 7
-    response-size         = 8
-    query-extended        = 9
-    response-extended     = 10
+    time-pseconds         = 1
+    client-address-index  = 2
+    client-port           = 3
+    transaction-id        = 4
+    query-signature-index = 5
+    client-hoplimit       = 6
+    delay-useconds        = 7
+    delay-pseconds        = 8
+    query-name-index      = 9
+    query-size            = 10
+    response-size         = 11
+    query-extended        = 12
+    response-extended     = 13
 
     ClassType = {
         type  => uint,
@@ -1187,13 +1195,49 @@ draft-dickinson-dnsop-dns-capture-format-00
     type  = 0
     class = 1
 
+    DNSFlagValues = &(
+        query-cd   : 0,
+        query-ad   : 1,
+        query-z    : 2,
+        query-ra   : 3,
+        query-rd   : 4,
+        query-tc   : 5,
+        query-aa   : 6,
+        query-d0   : 7,
+        response-cd: 8,
+        response-ad: 9,
+        response-z : 10,
+        response-ra: 11,
+        response-rd: 12,
+        response-tc: 13,
+        response-aa: 14,
+    )
+    DNSFlags = uint .bits DNSFlagValues
+
+    QueryResponseFlagValues = &(
+        has-query               : 0,
+        has-reponse             : 1,
+        query-has-question      : 2,
+        query-has-opt           : 3,
+        response-has-opt        : 4,
+        response-has-no-question: 5,
+    )
+    QueryResponseFlags = uint .bits QueryResponseFlagValues
+
+    TransportFlagValues = &(
+        tcp               : 0,
+        ipv6              : 1,
+        query-trailingdata: 2,
+    )
+    TransportFlags = uint .bits TransportFlagValues
+
     QuerySignature = {
         server-address-index    => uint,
         server-port             => uint,
-        transport-flags         => uint,
-        qr-sig-flags            => uint,
+        transport-flags         => TransportFlags,
+        qr-sig-flags            => QueryResponseFlags,
         ? query-opcode          => uint,
-        qr-dns-flags            => uint,
+        qr-dns-flags            => DNSFlags,
         ? query-rcode           => uint,
         ? query-classtype-index => uint,
         ? query-qd-count        => uint,
@@ -1274,7 +1318,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     ae-count         = 3
 
     AddressEventType = (
-        tcp-reset: 0,
+        tcp-reset              : 0,
         icmp-time-exceeded     : 1,
         icmp-dest-unreachable  : 2,
         icmpv6-time-exceeded   : 3,
@@ -1282,6 +1326,24 @@ draft-dickinson-dnsop-dns-capture-format-00
         icmpv6-packet-too-big  : 5,
     )
 
+    MalformedPacket = {
+        time-useconds   => uint,           ; Time offset from start of block
+        ? time-pseconds => uint,           ; in microseconds and picoseconds
+        malformed-type  => &MalformedPacketType,
+        packet-content  => bstr,           ; Raw packet contents
+    }
+
+    malformed-type   = 2
+    packet-content   = 3
+
+    MalformedPacketType = (
+        completely-malformed: 0,
+        partially-malformed : 1,
+    )
+
+    IPv4Address = bstr .size 4
+    IPv6Address = bstr .size 16
+    IPAddress = IPv4Address / IPv6Address
 
 # DNS Name compression example
 

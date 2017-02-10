@@ -1493,8 +1493,8 @@ particular compression scheme, but it anticipates that in practice
 output data will be subject to general-purpose compression, and so
 this should be taken into consideration.
 
-A capture of sample data from a root instance was used for the
-comparison. The input file was 661.87Mb. The following table shows the
+`test.pcap`, a 662Mb capture of sample data from a root instance was
+used for the comparison. The following table shows the
 formatted size and size after compression (abbreviated to Comp. in the
 table headers), together with the task resident set size (RSS) and the
 user time taken by the compression. File sizes are in Mb, RSS in kb

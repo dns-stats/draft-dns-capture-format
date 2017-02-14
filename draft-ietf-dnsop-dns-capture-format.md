@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2016-12-06T00:00:00Z
+    date = 2017-02-14T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -204,33 +204,24 @@ This section presents some of the major design considerations used in the develo
 will be used for unmatched Queries and Responses. Queries without Responses will be 
 captured omitting the response data. Responses without queries will be captured omitting the Query data (but using
 the Question section from the response, if present, as an identifying QNAME).
-
-Rationale: A Query and Response represents the basic level of a clients interaction with the server. 
-Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data
+    * Rationale: A Query and Response represents the basic level of a clients interaction with the server. Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data
 of the two messages.
 
 * Each Q/R data item will comprise a default Q/R data description and a set of optional sections.
 Inclusion of optional sections shall be configurable.
- 
-Rationale: Different users will have different requirements for data to be available for analysis. 
+    * Rationale: Different users will have different requirements for data to be available for analysis. 
 Users with minimal requirements should not have to pay the cost of recording full data, however this will
 limit the ability to reconstruct packet captures. For example, omitting the resource records from a Response will
 reduce the files size, and in principle responses can be synthesized if there is enough context.
 
 * Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and 
 referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
- 
-Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.
+    * Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.
 Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS packet structure.
-
-[TODO: Further discussion on commonality between DNS packets e.g.
-
-* common query signatures
-* for the authoritative case, there are a finite set of valid responses and much commonality in NXDOMAIN responses]
-	
-It is anticipated 
-that the files produced can be subject to further compression using general purpose compression tools. Measurements show that 
-blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
+    * It is anticipated that the files produced can be subject to further compression using general purpose compression tools. 
+Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
+    * [TODO: Further discussion on commonality between DNS packets e.g. common query signatures and the set of finite set of
+valid responses from authoritatives]
 
 * Metadata about other packets received can optionally be included in each block. For example, counts of malformed DNS packets and non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.
@@ -247,7 +238,7 @@ blocking significantly reduces the CPU required to perform such strong compressi
 
     * Malformed packets are discussed in more detail in (#malformed-packets).
 
-Rationale: Many name servers will process queries on a best-effort basis in accordance with Postel's Law, and do not insist on
+    * Rationale: Many name servers will process queries on a best-effort basis in accordance with Postel's Law, and do not insist on
 completely well-formed packets. If possible, responses to these queries should be matched with the query, so that the query does
 not appear to have gone un-answered in name server performance reporting. It can be advantageous to collect statistics on malformed
 inputs, and possibly to analyse those inputs. Therefore it should be possible to record malformed packet contents directly in the C-DNS format.
@@ -361,7 +352,7 @@ configuration | Map of items | The collection configuration. Optional.
 ||
 generator-id | Text string | String identifying the collection program. Optional.
 ||
-host-id | Text string | String identifying the collecting host. Blank if converting an existing packet capture file. Optional.
+host-id | Text string | String identifying the collecting host. Empty if converting an existing packet capture file. Optional.
 
 ## Configuration contents
 
@@ -379,11 +370,11 @@ promisc | Unsigned | 1 if promiscuous mode was enabled on the interface, 0 other
 ||
 interfaces | Array of text strings | Identifiers of the interfaces used for collection.
 ||
-server-addresses | Array of byte strings | Server collection IP addresses. Hint for downstream analysers.
+server-addresses | Array of byte strings | Server collection IP addresses. Hint for downstream analysers; does not affect collection.
 ||
 vlan-ids | Array of unsigned | Identifiers of VLANs selected for collection.
 ||
-filter | Text string | tcpdump [@pcap] style filter for input.
+filter | Text string | 'tcpdump' [@pcap] style filter for input.
 ||
 query-options | Unsigned | Bit flags indicating sections in Query packets to be collected.
  | | Bit 0. Collect second and subsequent question sections.
@@ -437,8 +428,8 @@ The block statistics section contains some basic statistical information about t
 
 Field | Type | Description
 :-----|:-----|:-----------
-total-packets | Unsigned | Total number of packets processed during the block.
-total-pairs | Unsigned | Total number of query/response pairs in the block.
+total-packets | Unsigned | Total number of packets processed from the input traffic stream during collection of the block data.
+total-pairs | Unsigned | Total number of Q/R data items in the block.
 unmatched-queries | Unsigned | Number of unmatched queries in the block.
 unmatched-responses | Unsigned | Number of unmatched responses in the block.
 completely-malformed-packets | Unsigned | Number of completely malformed packets found in input for the block. See (#malformed-packets).
@@ -508,10 +499,10 @@ server-address-index | A | The index in the IP address table of the server IP ad
 ||
 server-port | A | The server port.
 ||
-Transport flags | A | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
+transport-flags | A | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
  | | Bit 0. Transport type. 0 = UDP, 1 = TCP.
  | | Bit 1. IP type. 0 = IPv4, 1 = IPv6.
- | | Bit 2. Trailing data in query. The query DNS message was followed by some additional, ignored, data.
+ | | Bit 2. Trailing data in query. The query DNS message in the UDP/TCP payload was followed by some additional, ignored, data.
 ||
 qr-sig-flags | A | Bit flags indicating information present in this Q/R data item. Bit 0 is the least significant bit.
  | | Bit 0. 1 if a Query is present.
@@ -727,13 +718,14 @@ of the original packet stream cannot be re-constructed from the C-DNS format:
      * Multiple DNS messages may have been sent in a single TCP segment
      * A DNS payload may have be split across multiple TCP segments
      * Multiple DNS messages may have be sent on a single TCP session
-* Malformed DNS messages if they are not recorded
+* Malformed DNS messages if the wire format is not recorded
+* Any Non-DNS messages that were in the original packet stream e.g. ICMP
 
 Simple assumptions can be made on the reconstruction: fragmented and DNS-over-TCP messages
 can be reconstructed into single packets and a single TCP session can be constructed
 for each TCP packet.
 
-Additionally, if malformed packets are captured in the C-DNS or separate packet captures,
+Additionally, if malformed packets and Non-DNS packets are captured separately,
 they can be merged with packet captures reconstructed from C-DNS to produce a more complete
 packet stream.
 
@@ -817,7 +809,8 @@ with RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used in matc
 
 ## Algorithm Parameters
 
-1. Configurable timeout
+1. Query timeout
+2. Skew timeout
 
 ## Algorithm Requirements
 
@@ -886,13 +879,23 @@ Any data upload MUST be authenticated and encrypted.
 
 The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful discussions on binary 
 formats, compression and packet matching. Also Jan Vcelak and Wouter Wijngaards for discussions on
-name compression.
+name compression and Paul Hoffman for a detailed review of the document and the C-DNS CDDL.
 
-Thanks to Robert Edmonds, Paul Hoffman and Jerry Lundström for review.
+Thanks also to Robert Edmonds and Jerry Lundström for review.
 
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+draft-ietf-dnsop-dns-capture-format-01
+
+* Many editorial improvements by Paul Hoffman
+* Included discussion of malformed packet handling
+* Improved Appendix C on Comparison of Binary Formats
+* Now using C-DNS field names in the tables in section 8
+* A handful of new fields included (CDDL updated)
+* Timestamps now include optional picoseconds
+* Added details of block statistics
+
 draft-ietf-dnsop-dns-capture-format-00
 
 * Changed dnstap.io to dnstap.info
@@ -1467,10 +1470,10 @@ considerably more complex than CBOR. Using Avro or Protocol Buffers in
 an unsupported environment would require notably greater development
 effort compared to CBOR.
 
-A test program was written which reads input from an input PCAP file
-and writes output using two basic structures; a simple structure,
+A test program was written which reads input from a PCAP file
+and writes output using one of two basic structures; either a simple structure,
 where each query/response pair is represented in a single record
-entry, and the C-DNS block structure.
+entry, or the C-DNS block structure.
 
 The resulting output files were then compressed using a variety of common
 general-purpose lossless compression tools to explore the
@@ -1678,20 +1681,3 @@ From the above, there is obviously scope for tuning the default block
 size to the compression being employed, traffic characteristics, frequency of
 output file rollover etc. Using a strong compression, block sizes over
 10,000 query/response pairs would seem to offer limited improvements.
-
-# Notes to implementors
-
-## Malformed packets
-
-In the presence of malformed packets where one or more of QDCOUNT, ANCOUNT, NSCOUNT and ARCOUNT do not match the RRs that can be successfully
-decoded, the query signature should contain the values of the counts from the DNS header, and the query/response record should contain
-the successfully decoded RRs. Beware, therefore, that the counts as recorded are not a reliable guide to the number of RRs associated with
-the query/response.
-
-## Block preamble timestamp
-
-The timestamp in the block preamble gives the timestamp of the earliest query/response or malformed packet record
-in the block. Query/response records and malformed packet records specify their timestamp as an offset from this timestamp.
-This offset is always positive. Since, as already noted above in (#data-collection), packet capture libraries
-do not necessarily provide packets in strict chronological order, the earliest item in the block will not necessarily
-be the first item.

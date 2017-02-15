@@ -220,7 +220,7 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
 Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS packet structure.
     * It is anticipated that the files produced can be subject to further compression using general purpose compression tools. 
 Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
-    * [TODO: Further discussion on commonality between DNS packets e.g. common query signatures and the set of finite set of
+    * [TODO: Further discussion of commonality between DNS packets e.g. common query signatures, a finite set of
 valid responses from authoritatives]
 
 4. Metadata about other packets received can optionally be included in each block. For example, counts of malformed DNS packets and non-DNS packets
@@ -450,7 +450,7 @@ name-rdata | Byte string | The NAME or RDATA contents. NAMEs, and labels within 
 
 ## Query Signature table
 
-The table `query-sig` holds elements of the Q/R data item that are often common to between different individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned key.
+The table `query-sig` holds elements of the Q/R data item that are often common between multiple individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned key.
 
 The following abbreviations are used in the Present (P) column 
 
@@ -470,7 +470,7 @@ server-port | A | The server port.
 transport-flags | A | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
  | | Bit 0. Transport type. 0 = UDP, 1 = TCP.
  | | Bit 1. IP type. 0 = IPv4, 1 = IPv6.
- | | Bit 2. Trailing bytes in query payload. The DNS query message in the UDP/TCP payload was followed by some additional, ignored, bytes.
+ | | Bit 2. Trailing bytes in query payload. The DNS query message in the UDP payload was followed by some additional bytes, which were discarded.
 ||
 qr-sig-flags | A | Bit flags indicating information present in this Q/R data item. Bit 0 is the least significant bit.
  | | Bit 0. 1 if a Query is present.
@@ -490,7 +490,7 @@ qr-dns-flags | A | Bit flags with values from the Query and Response DNS flags. 
  | | Bit 4. Query Recursion Desired (RD).
  | | Bit 5. Query TrunCation (TC).
  | | Bit 6. Query Authoritative Answer (AA).
- | | Bit 7. Query DNSSEC answer OK (D0).
+ | | Bit 7. Query DNSSEC answer OK (DO).
  | | Bit 8. Response Checking Disabled (CD).
  | | Bit 9. Response Authenticated Data (AD).
  | | Bit 10. Response reserved (Z).
@@ -513,7 +513,7 @@ query-ns-count | Q | Query NSCOUNT. Optional.
 ||
 edns-version | QO | The Query EDNS version. Optional.
 ||
-udp-buf-size | QO | The Query EDNS sender's UDO payload size. Optional.
+udp-buf-size | QO | The Query EDNS sender's UDP payload size. Optional.
 ||
 opt-rdata-index | QO | The index in the NAME/RDATA table of the OPT RDATA. Optional.
 ||
@@ -576,8 +576,8 @@ The following abbreviations are used in the Present (P) column
 
 Each item in the map has an unsigned value (with the exception of those listed below) and an unsigned key.
 
-* Query extended information and Response extended information which are of Type Extended Information.
-* Response delay which is an integer (This can be negative if the network stack/capture library returns them out of order.)
+* query-extended and response-extended which are of type Extended Information.
+* delay-useconds and delay-pseconds which are integers (The delay can be negative if the network stack/capture library returns them out of order.)
 
 Field | P | Description
 :-----|:--------|:-----------
@@ -609,7 +609,7 @@ query-extended | Q | Extended Query information. This item is only present if co
 ||
 response-extended | R | Extended Response information. This item is only present if collection of extra Response information is configured. Optional.
 
-An implementation must always collects basic Q/R information. It may be configured to collect details on Question, Answer, Authority and Additional sections of the Query, the Response or both. Note that only the second and subsequent Questions of any Question section are collected (the details of the first are in the basic information), and that OPT Records are not collected in the Additional section.
+An implementation must always collect basic Q/R information. It may be configured to collect details on Question, Answer, Authority and Additional sections of the Query, the Response or both. Note that only the second and subsequent Questions of any Question section are collected (the details of the first are in the basic information), and that OPT Records are not collected in the Additional section.
 
 The query-size and response-size fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message and will therefore include any trailing bytes if present. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present. For TCP it is the size of the DNS message as specified in the two-byte message length header.
 
@@ -1136,8 +1136,8 @@ draft-dickinson-dnsop-dns-capture-format-00
         transaction-id        => uint,
         query-signature-index => uint,
         ? client-hoplimit     => uint,
-        ? delay-useconds      => uint,
-        ? delay-pseconds      => uint,
+        ? delay-useconds      => int,
+        ? delay-pseconds      => int,
         ? query-name-index    => uint,
         ? query-size          => uint,       ; DNS size of query
         ? response-size       => uint,       ; DNS size of response
@@ -1598,14 +1598,8 @@ As noted previously, this draft anticipates that output data will be
 subject to compression. There is no compelling case for one particular
 binary serialisation format in terms of either final file size or
 machine resources consumed, so the choice must be largely based on
-other factors. CBOR was chosen as the binary serialisation format for
-the following reasons:
-
-* Simplicity of implementation and consequent lack of reliance on
-library and/or code generator availability.
-* IETF standardisation.
-* Close resemblance to JSON and thus accessibility to a
-wider industry beyond IETF.
+other factors. CBOR was therefore chosen as the binary serialisation format for
+the reasons listed in (#choice-of-cbor).
 
 ## Block size choice
 

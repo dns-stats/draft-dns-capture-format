@@ -378,9 +378,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
           required to perform such strong compression.  See
           Appendix C.2.
 
-       *  [TODO: Further discussion on commonality between DNS packets
-          e.g. common query signatures and the set of finite set of
-          valid responses from authoritatives]
+       *  [TODO: Further discussion of commonality between DNS packets
+          e.g. common query signatures, a finite set of valid responses
+          from authoritatives]
 
    4.  Metadata about other packets received can optionally be included
        in each block.  For example, counts of malformed DNS packets and
@@ -845,9 +845,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
 7.13.  Query Signature table
 
    The table "query-sig" holds elements of the Q/R data item that are
-   often common to between different individual Q/R data items.  Each
-   item in the table is a CBOR map.  Each item in the map has an
-   unsigned value and an unsigned key.
+   often common between multiple individual Q/R data items.  Each item
+   in the table is a CBOR map.  Each item in the map has an unsigned
+   value and an unsigned key.
 
    The following abbreviations are used in the Present (P) column
 
@@ -879,8 +879,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    |                       |    | Bit 1. IP type. 0 = IPv4, 1 = IPv6.  |
    |                       |    | Bit 2. Trailing bytes in query       |
    |                       |    | payload. The DNS query message in    |
-   |                       |    | the UDP/TCP payload was followed by  |
-   |                       |    | some additional, ignored, bytes.     |
+   |                       |    | the UDP payload was followed by some |
+   |                       |    | additional bytes, which were         |
+   |                       |    | discarded.                           |
    |                       |    |                                      |
    | qr-sig-flags          | A  | Bit flags indicating information     |
    |                       |    | present in this Q/R data item. Bit 0 |
@@ -889,7 +890,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    |                       |    | Bit 1. 1 if a Response is present.   |
    |                       |    | Bit 2. 1 if one or more Question is  |
    |                       |    | present.                             |
-   |                       |    | Bit 3. 1 if a Query is present and   |
 
 
 
@@ -898,6 +898,7 @@ Dickinson, et al.        Expires August 18, 2017               [Page 16]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
 
 
+   |                       |    | Bit 3. 1 if a Query is present and   |
    |                       |    | it has an OPT Resource Record.       |
    |                       |    | Bit 4. 1 if a Response is present    |
    |                       |    | and it has an OPT Resource Record.   |
@@ -921,7 +922,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    |                       |    | Bit 5. Query TrunCation (TC).        |
    |                       |    | Bit 6. Query Authoritative Answer    |
    |                       |    | (AA).                                |
-   |                       |    | Bit 7. Query DNSSEC answer OK (D0).  |
+   |                       |    | Bit 7. Query DNSSEC answer OK (DO).  |
    |                       |    | Bit 8. Response Checking Disabled    |
    |                       |    | (CD).                                |
    |                       |    | Bit 9. Response Authenticated Data   |
@@ -945,7 +946,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    |                       |    |                                      |
    | query-qd-count        | QT | The QDCOUNT in the Query, or         |
    |                       |    | Response if no Query present.        |
-   |                       |    | Optional.                            |
 
 
 
@@ -954,6 +954,7 @@ Dickinson, et al.        Expires August 18, 2017               [Page 17]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
 
 
+   |                       |    | Optional.                            |
    |                       |    |                                      |
    | query-an-count        | Q  | Query ANCOUNT. Optional.             |
    |                       |    |                                      |
@@ -963,7 +964,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    |                       |    |                                      |
    | edns-version          | QO | The Query EDNS version. Optional.    |
    |                       |    |                                      |
-   | udp-buf-size          | QO | The Query EDNS sender's UDO payload  |
+   | udp-buf-size          | QO | The Query EDNS sender's UDP payload  |
    |                       |    | size. Optional.                      |
    |                       |    |                                      |
    | opt-rdata-index       | QO | The index in the NAME/RDATA table of |
@@ -996,7 +997,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    The table "rr" holds details on individual Resource Records in RR
    sections.  Each item in the table is a CBOR map containing a single
    Resource Record.  This data is optionally collected.
-
 
 
 
@@ -1083,10 +1083,10 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    Each item in the map has an unsigned value (with the exception of
    those listed below) and an unsigned key.
 
-   o  Query extended information and Response extended information which
-      are of Type Extended Information.
+   o  query-extended and response-extended which are of type Extended
+      Information.
 
-   o  Response delay which is an integer (This can be negative if the
+   o  delay-useconds which is an integer (This can be negative if the
       network stack/capture library returns them out of order.)
 
    +-----------------------+----+--------------------------------------+
@@ -1152,7 +1152,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    |                       |    | configured. Optional.                |
    +-----------------------+----+--------------------------------------+
 
-   An implementation must always collects basic Q/R information.  It may
+   An implementation must always collect basic Q/R information.  It may
    be configured to collect details on Question, Answer, Authority and
    Additional sections of the Query, the Response or both.  Note that
    only the second and subsequent Questions of any Question section are
@@ -2537,16 +2537,8 @@ C.5.  Conclusions
    subject to compression.  There is no compelling case for one
    particular binary serialisation format in terms of either final file
    size or machine resources consumed, so the choice must be largely
-   based on other factors.  CBOR was chosen as the binary serialisation
-   format for the following reasons:
-
-   o  Simplicity of implementation and consequent lack of reliance on
-      library and/or code generator availability.
-
-   o  IETF standardisation.
-
-   o  Close resemblance to JSON and thus accessibility to a wider
-      industry beyond IETF.
+   based on other factors.  CBOR was therefore chosen as the binary
+   serialisation format for the reasons listed in Section 6.
 
 C.6.  Block size choice
 
@@ -2560,23 +2552,6 @@ C.6.  Block size choice
    The following table addresses the performance question, showing the
    impact on the performance of a C++ program converting "test.pcap" to
    C-DNS.  File size is in Mb, resident set size (RSS) in kb.
-
-
-
-
-
-
-
-
-
-
-
-
-
-Dickinson, et al.        Expires August 18, 2017               [Page 46]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
-
 
               +------------+-----------+--------+-----------+
               | Block size | File size |    RSS | User time |
@@ -2594,6 +2569,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    Increasing block size, therefore, tends to increase maximum RSS a
    little, with no significant effect (if anything a small reduction) on
    CPU consumption.
+
+
+
+
+Dickinson, et al.        Expires August 18, 2017               [Page 46]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
+
 
    The following figure plots the effect of increasing block size on
    output file size for different compressions.
@@ -2628,12 +2611,6 @@ Authors' Addresses
    Email: jim@sinodun.com
 
 
-
-Dickinson, et al.        Expires August 18, 2017               [Page 47]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
-
-
    Sara Dickinson
    Sinodun IT
    Magdalen Centre
@@ -2641,6 +2618,20 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    Oxford  OX4 4GA
 
    Email: sara@sinodun.com
+
+
+
+
+
+
+
+
+
+
+
+Dickinson, et al.        Expires August 18, 2017               [Page 47]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
 
 
    Terry Manderson
@@ -2659,6 +2650,15 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    Los Angeles  CA 90094-2536
 
    Email: john.bond@icann.org
+
+
+
+
+
+
+
+
+
 
 
 

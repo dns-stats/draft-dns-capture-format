@@ -1086,8 +1086,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    o  query-extended and response-extended which are of type Extended
       Information.
 
-   o  delay-useconds which is an integer (This can be negative if the
-      network stack/capture library returns them out of order.)
+   o  delay-useconds and delay-pseconds which are integers (The delay
+      can be negative if the network stack/capture library returns them
+      out of order.)
 
    +-----------------------+----+--------------------------------------+
    | Field                 | P  | Description                          |
@@ -1113,7 +1114,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    |                       |    |                                      |
    | client-hoplimit       | Q  | The IPv4 TTL or IPv6 Hoplimit from   |
    |                       |    | the Query packet. Optional.          |
-   |                       |    |                                      |
 
 
 
@@ -1122,6 +1122,7 @@ Dickinson, et al.        Expires August 18, 2017               [Page 20]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
 
 
+   |                       |    |                                      |
    | delay-useconds        | QR | The time difference between Query    |
    |                       |    | and Response, in microseconds. Only  |
    |                       |    | present if there is a query and a    |
@@ -1169,7 +1170,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
 
    The Extended information is a CBOR map as follows.  Each item in the
    map is present only if collection of the relevant details is
-
 
 
 
@@ -1964,8 +1964,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
 
     query-signature-index => uint,
     ? client-hoplimit     => uint,
-    ? delay-useconds      => uint,
-    ? delay-pseconds      => uint,
+    ? delay-useconds      => int,
+    ? delay-pseconds      => int,
     ? query-name-index    => uint,
     ? query-size          => uint,       ; DNS size of query
     ? response-size       => uint,       ; DNS size of response

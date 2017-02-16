@@ -1130,7 +1130,10 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    |                       |    |                                      |
    | delay-pseconds        | QR | Picosecond component of the time     |
    |                       |    | different between Query and          |
-   |                       |    | Response. Optional.                  |
+   |                       |    | Response. If delay-useconds is non-  |
+   |                       |    | zero then delay-pseconds (if         |
+   |                       |    | present) MUST be of the same sign as |
+   |                       |    | delay-useconds, or be 0. Optional.   |
    |                       |    |                                      |
    | query-name-index      | QT | The index in the NAME/RDATA table of |
    |                       |    | the QNAME for the first Question.    |
@@ -1168,9 +1171,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
    trailing bytes were present.  For TCP it is the size of the DNS
    message as specified in the two-byte message length header.
 
-   The Extended information is a CBOR map as follows.  Each item in the
-   map is present only if collection of the relevant details is
-
 
 
 Dickinson, et al.        Expires August 18, 2017               [Page 21]
@@ -1178,6 +1178,8 @@ Dickinson, et al.        Expires August 18, 2017               [Page 21]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
 
 
+   The Extended information is a CBOR map as follows.  Each item in the
+   map is present only if collection of the relevant details is
    configured.  Each item in the map has an unsigned value and an
    unsigned key.
 
@@ -1205,8 +1207,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
 
    This table holds counts of various IP related events relating to
    traffic with individual client addresses.
-
-
 
 
 
@@ -1836,7 +1836,7 @@ Configuration = {
     ? snaplen            => uint,
     ? promisc            => uint,
     ? interfaces         => [* tstr],
-    ? server-addresses   => [* IPAddress],  ; optional hint for downstream analysis
+    ? server-addresses   => [* IPAddress],  ; Hint for downstream analysis
     ? vlan-ids           => [* uint],
     ? filter             => tstr,
     ? query-options      => QRCollectionSections,
@@ -1965,7 +1965,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2017
     query-signature-index => uint,
     ? client-hoplimit     => uint,
     ? delay-useconds      => int,
-    ? delay-pseconds      => int,
+    ? delay-pseconds      => int,        ; Must have same sign as delay-useconds
     ? query-name-index    => uint,
     ? query-size          => uint,       ; DNS size of query
     ? response-size       => uint,       ; DNS size of response

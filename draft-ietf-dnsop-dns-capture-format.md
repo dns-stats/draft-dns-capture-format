@@ -597,7 +597,7 @@ client-hoplimit | Q | The IPv4 TTL or IPv6 Hoplimit from the Query packet. Optio
 ||
 delay-useconds | QR | The time difference between Query and Response, in microseconds. Only present if there is a query and a response.
 ||
-delay-pseconds | QR | Picosecond component of the time different between Query and Response. Optional.
+delay-pseconds | QR | Picosecond component of the time different between Query and Response. If delay-useconds is non-zero then delay-pseconds (if present) MUST be of the same sign as delay-useconds, or be 0. Optional.
 ||
 query-name-index | QT | The index in the NAME/RDATA table of the QNAME for the first Question. Optional.
 ||
@@ -1032,7 +1032,7 @@ draft-dickinson-dnsop-dns-capture-format-00
         ? snaplen            => uint,
         ? promisc            => uint,
         ? interfaces         => [* tstr],
-        ? server-addresses   => [* IPAddress],  ; optional hint for downstream analysis
+        ? server-addresses   => [* IPAddress],  ; Hint for downstream analysis
         ? vlan-ids           => [* uint],
         ? filter             => tstr,
         ? query-options      => QRCollectionSections,
@@ -1137,7 +1137,7 @@ draft-dickinson-dnsop-dns-capture-format-00
         query-signature-index => uint,
         ? client-hoplimit     => uint,
         ? delay-useconds      => int,
-        ? delay-pseconds      => int,
+        ? delay-pseconds      => int,        ; Must have same sign as delay-useconds
         ? query-name-index    => uint,
         ? query-size          => uint,       ; DNS size of query
         ? response-size       => uint,       ; DNS size of response

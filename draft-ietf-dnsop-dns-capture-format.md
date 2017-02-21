@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2017-02-14T00:00:00Z
+    date = 2017-02-21T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -97,7 +97,7 @@ formats can contain a great deal of additional information that is not directly 
 and thus unnecessarily increases the capture file size.
 
 There has also been work on using text based formats to describe 
-DNS packets such as [@?I-D.daley-dnsxml#00], [@?I-D.hoffman-dns-in-json#09], but these are largely 
+DNS packets such as [@?I-D.daley-dnsxml], [@?I-D.hoffman-dns-in-json], but these are largely 
 aimed at producing convenient representations of single messages.
 
 Many DNS operators may receive hundreds of thousands of queries per second on a single
@@ -198,8 +198,6 @@ close to the original as is realistic given the restrictions above.
 
 This section presents some of the major design considerations used in the development of the C-DNS format.
 
-<!--SD: Want to re-format this section as a list but complex lists seem broken -->
-
 1. The basic unit of data is a combined DNS Query and the associated Response (a "Q/R data item"). The same structure
 will be used for unmatched Queries and Responses. Queries without Responses will be 
 captured omitting the response data. Responses without queries will be captured omitting the Query data (but using
@@ -229,7 +227,7 @@ valid responses from authoritatives]
 5. The wire format content of malformed DNS packets can optionally be recorded.
 
     * Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
-      that it cannot represent "malformed" DNS packets (see #malformed-packets). Only those packets that can be transformed reasonably into the
+      that it cannot represent "malformed" DNS packets (see (#malformed-packets)). Only those packets that can be transformed reasonably into the
       structured format can be represented by the format. However this can result in rather misleading statistics. For example, a malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS packets available directly in the C-DNS file.
 
 
@@ -401,7 +399,7 @@ total-packets | Unsigned | Total number of packets processed from the input traf
 total-pairs | Unsigned | Total number of Q/R data items in the block.
 unmatched-queries | Unsigned | Number of unmatched queries in the block.
 unmatched-responses | Unsigned | Number of unmatched responses in the block.
-malformed-packets | Unsigned | Number of  malformed packets found in input for the block.
+malformed-packets | Unsigned | Number of malformed packets found in input for the block.
 
 Implementations may choose to add additional implementation-specific fields to the statistics.
 
@@ -765,7 +763,7 @@ For the purposes of this discussion, it is assumed that the input has been pre-p
 DNS messages are processed in the order they are delivered to the application.
 It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
 
-[TODO: Discuss the corner cases resulting from this in more detail.]
+TODO: Discuss the corner cases resulting from this in more detail.
 
 ## Matching algorithm
 
@@ -1005,7 +1003,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     ; traffic meta-data.
 
     File = [
-        file-type-id  : tstr,          ; = "C-DNS"
+        file-type-id  : tstr, ; = "C-DNS"
         file-preamble : FilePreamble,
         file-blocks   : [* Block],
     ]
@@ -1032,7 +1030,7 @@ draft-dickinson-dnsop-dns-capture-format-00
         ? snaplen            => uint,
         ? promisc            => uint,
         ? interfaces         => [* tstr],
-        ? server-addresses   => [* IPAddress],  ; Hint for downstream analysis
+        ? server-addresses   => [* IPAddress], ; Hint for later analysis
         ? vlan-ids           => [* uint],
         ? filter             => tstr,
         ? query-options      => QRCollectionSections,
@@ -1044,7 +1042,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     }
 
     QRCollectionSectionValues = &(
-        question  : 0,       ; Second & subsequent question sections
+        question  : 0, ; Second & subsequent question sections
         answer    : 1,
         authority : 2,
         additional: 3,
@@ -1060,15 +1058,15 @@ draft-dickinson-dnsop-dns-capture-format-00
     filter             = 6
     query-options      = 7
     response-options   = 8
-    accept-rr-types    = 9;
-    ignore-rr-types    = 10;
-    server-addresses   = 11;
-    max-block-qr-items = 12;
+    accept-rr-types    = 9
+    ignore-rr-types    = 10
+    server-addresses   = 11
+    max-block-qr-items = 12
     collect-malformed  = 13
 
     Block = {
         preamble                => BlockPreamble,
-        ? statistics            => BlockStatistics, ; Much of this could be derived
+        ? statistics            => BlockStatistics,
         tables                  => BlockTables,
         queries                 => [* QueryResponse],
         ? address-event-counts  => [* AddressEventCount],
@@ -1111,7 +1109,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     BlockTables = {
         ip-address => [* IPAddress],
         classtype  => [* ClassType],
-        name-rdata => [* bstr],            ; Holds both Name RDATA and RDATA
+        name-rdata => [* bstr], ; Holds both Name RDATA and RDATA
         query-sig  => [* QuerySignature]
         ? qlist    => [* QuestionList],
         ? qrr      => [* Question],
@@ -1129,18 +1127,18 @@ draft-dickinson-dnsop-dns-capture-format-00
     rr         = 7
 
     QueryResponse = {
-        time-useconds         => uint,       ; Time offset from start of block
-        ? time-pseconds       => uint,       ; in microseconds and picoseconds
+        time-useconds         => uint, ; Time offset from start of block
+        ? time-pseconds       => uint, ; in microseconds and picoseconds
         client-address-index  => uint,
         client-port           => uint,
         transaction-id        => uint,
         query-signature-index => uint,
         ? client-hoplimit     => uint,
         ? delay-useconds      => int,
-        ? delay-pseconds      => int,        ; Must have same sign as delay-useconds
+        ? delay-pseconds      => int, ; Has same sign as delay-useconds
         ? query-name-index    => uint,
-        ? query-size          => uint,       ; DNS size of query
-        ? response-size       => uint,       ; DNS size of response
+        ? query-size          => uint, ; DNS size of query
+        ? response-size       => uint, ; DNS size of response
         ? query-extended      => QueryResponseExtended,
         ? response-extended   => QueryResponseExtended,
     }
@@ -1241,11 +1239,11 @@ draft-dickinson-dnsop-dns-capture-format-00
     response-rcode        = 15
 
     QuestionList = [
-        * uint,                           ; Index of Question
+        * uint, ; Index of Question
     ]
 
-    Question = {                          ; Second and subsequent questions
-        name-index      => uint,          ; Index to a name in the name-rdata table
+    Question = {                 ; Second and subsequent questions
+        name-index      => uint, ; Index to a name in the name-rdata table
         classtype-index => uint,
     }
 
@@ -1253,22 +1251,22 @@ draft-dickinson-dnsop-dns-capture-format-00
     classtype-index = 1
 
     RRList = [
-        * uint,                           ; Index of RR
+        * uint, ; Index of RR
     ]
 
     RR = {
-        name-index      => uint,          ; Index to a name in the name-rdata table
+        name-index      => uint, ; Index to a name in the name-rdata table
         classtype-index => uint,
         ttl             => uint,
-        rdata-index     => uint,          ; Index to RDATA in the name-rdata table
+        rdata-index     => uint, ; Index to RDATA in the name-rdata table
     }
 
     ttl         = 2
     rdata-index = 3
 
     QueryResponseExtended = {
-        ? question-index   => uint,       ; Index of QuestionList
-        ? answer-index     => uint,       ; Index of RRList
+        ? question-index   => uint, ; Index of QuestionList
+        ? answer-index     => uint, ; Index of RRList
         ? authority-index  => uint,
         ? additional-index => uint,
     }
@@ -1300,18 +1298,19 @@ draft-dickinson-dnsop-dns-capture-format-00
     )
 
     MalformedPacket = {
-        time-useconds   => uint,           ; Time offset from start of block
-        ? time-pseconds => uint,           ; in microseconds and picoseconds
-        packet-content  => bstr,           ; Raw packet contents
+        time-useconds   => uint, ; Time offset from start of block
+        ? time-pseconds => uint, ; in microseconds and picoseconds
+        packet-content  => bstr, ; Raw packet contents
     }
 
-    time-useconds    = 0,
-    time-pseconds    = 1,
+    time-useconds    = 0
+    time-pseconds    = 1
     packet-content   = 2
 
     IPv4Address = bstr .size 4
     IPv6Address = bstr .size 16
     IPAddress = IPv4Address / IPv6Address
+
 
 # DNS Name compression example
 

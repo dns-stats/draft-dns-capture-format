@@ -344,13 +344,13 @@ vlan-ids | Array of unsigned | Identifiers of VLANs selected for collection.
 filter | Text string | 'tcpdump' [@pcap] style filter for input.
 ||
 query-options | Unsigned | Bit flags indicating sections in Query packets to be collected.
- | | Bit 0. Collect second and subsequent question sections.
+ | | Bit 0. Collect second and subsequent Questions in Question sections.
  | | Bit 1. Collect Answer sections.
  | | Bit 2. Collect Authority sections.
  | | Bit 3. Collection Additional sections.
 ||
 response-options | Unsigned | Bit flags indicating sections in Response packets to be collected.
- | | Bit 0. Collect second and subsequent question sections.
+ | | Bit 0. Collect second and subsequent Questions in Question sections.
  | | Bit 1. Collect Answer sections.
  | | Bit 2. Collect Authority sections.
  | | Bit 3. Collection Additional sections.
@@ -615,7 +615,7 @@ The Extended information is a CBOR map as follows. Each item in the map is prese
 
 Field | Description
 :-----|:-----------
-question-index | The index in the Questions list table of the entry listing the second and subsequent Question sections for the Query or Response.
+question-index | The index in the Questions list table of the entry listing any second and subsequent Questions in the Question section for the Query or Response.
 ||
 answer-index | The index in the RR list table of the entry listing the Answer Resource Record sections for the Query or Response.
 ||
@@ -671,14 +671,14 @@ In principle, packets that do not meet these criteria could be classified into t
 to extract 
     * a DNS header (and therefore a DNS transaction ID)
     * a QDCOUNT
-    * the first question in the QUESTION section if QDCOUNT is greater than 0 
+    * the first Question in the Question section if QDCOUNT is greater than 0 
 
       but suffer other issues while parsing. This is the minimum information required to attempt packet matching as described in (#matching-algorithm)
 * Completely malformed: those packets that cannot be decoded to this extent.
 
 An open question is whether there is value in attempting to process partially malformed packets in an analogous manner to well formed packets in terms of attempting to match them with the corresponding query or response. This could be done by creating 'placeholder' records during packet matching with just the information extracted as above. If the packet were then matched the resulting C-DNS Q/R data item would include a flag to indicate a malformed record (in addition to capturing the wire format of the packet).
 
-An advantage of this would be that it would result in more meaningful statistics about matched packets because, for example, some partially malformed queries could be matched to responses. However it would only apply to those queries where the first QUESTION is well formed. It could also simplify the downstream analysis of C-DNS files and the reconstruction of packet streams from C-DNS.
+An advantage of this would be that it would result in more meaningful statistics about matched packets because, for example, some partially malformed queries could be matched to responses. However it would only apply to those queries where the first Question is well formed. It could also simplify the downstream analysis of C-DNS files and the reconstruction of packet streams from C-DNS.
 
 A disadvantage is that this adds complexity to the packet matching and data representation, could potentially lead to false matches and some additional statistics would be required (e.g. counts for matched-partially-malformed, unmatched-partially-malformed, completely-malformed).
 
@@ -758,7 +758,7 @@ For the purposes of this discussion, it is assumed that the input has been pre-p
 
 1. All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed
 1. Each message is associated with transport metadata required to generate the Primary ID (see (#primary-id))
-1. Each message has a well-formed DNS header of 12 bytes and (if present) the first RR in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
+1. Each message has a well-formed DNS header of 12 bytes and (if present) the first Question in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
 
 DNS messages are processed in the order they are delivered to the application.
 It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
@@ -790,7 +790,7 @@ A Primary ID is constructed for each message. It is composed of the following da
 
 ### Secondary ID (optional) {#secondary-id}
 
-If present, the first question in the Question section is used as a secondary ID
+If present, the first Question in the Question section is used as a secondary ID
 for each message. Note that there may be well formed DNS queries that have a
 QDCOUNT of 0, and some responses may have a QDCOUNT of 0 (for example, responses
 with RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used in matching.
@@ -1042,7 +1042,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     }
 
     QRCollectionSectionValues = &(
-        question  : 0, ; Second & subsequent question sections
+        question  : 0, ; Second & subsequent questions
         answer    : 1,
         authority : 2,
         additional: 3,

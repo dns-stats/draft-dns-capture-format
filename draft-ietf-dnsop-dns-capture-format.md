@@ -851,8 +851,8 @@ Any data upload MUST be authenticated and encrypted.
 
 # Acknowledgements
 
-The authors wish to thank CZ.NIC, in particular Tomáš Gavenčiak, for many useful discussions on binary 
-formats, compression and Query/Response matching. Also Jan Včelák and Wouter Wijngaards for discussions on
+The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful discussions on binary 
+formats, compression and packet matching. Also Jan Vcelak and Wouter Wijngaards for discussions on
 name compression and Paul Hoffman for a detailed review of the document and the C-DNS CDDL.
 
 Thanks also to Robert Edmonds and Jerry Lundström for review.

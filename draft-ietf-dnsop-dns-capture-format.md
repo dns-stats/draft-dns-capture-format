@@ -129,9 +129,10 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in [@!RFC2119].
 
-"Packet" refers to individual IP or IPv6 packets. Typically these are UDP, but may be part of
-a TCP message. "Message", unless otherwise qualified, refers to a DNS message extracted from
-a UDP or TCP data stream.
+"Packet" refers to individual IP or IPv6 packets. Typically these are
+UDP, but may be part of a TCP message. "Message", unless otherwise
+qualified, refers to a DNS payload extracted from a UDP or TCP data
+stream.
 
 The parts of DNS messages are named as they are in [@!RFC1035]. In specific,
 the DNS message has five sections: Header, Question, Answer, Authority,

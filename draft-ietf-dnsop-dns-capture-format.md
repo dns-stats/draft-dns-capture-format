@@ -129,6 +129,10 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in [@!RFC2119].
 
+"Packet" refers to individual IP or IPv6 packets. Typically these are UDP, but may be part of
+a TCP message. "Message", unless otherwise qualified, refers to a DNS message extracted from
+a UDP or TCP data stream.
+
 The parts of DNS messages are named as they are in [@!RFC1035]. In specific,
 the DNS message has five sections: Header, Question, Answer, Authority,
 and Additional.
@@ -215,10 +219,10 @@ reduce the files size, and in principle responses can be synthesized if there is
 3. Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and 
 referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
     * Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.
-Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS packet structure.
+Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
     * It is anticipated that the files produced can be subject to further compression using general purpose compression tools. 
 Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
-    * [TODO: Further discussion of commonality between DNS packets e.g. common query signatures, a finite set of
+    * [TODO: Further discussion of commonality between DNS messages e.g. common query signatures, a finite set of
 valid responses from authoritatives]
 
 4. Metadata about other packets received can optionally be included in each block. For example, counts of malformed DNS packets and non-DNS packets
@@ -343,13 +347,13 @@ vlan-ids | Array of unsigned | Identifiers of VLANs selected for collection.
 ||
 filter | Text string | 'tcpdump' [@pcap] style filter for input.
 ||
-query-options | Unsigned | Bit flags indicating sections in Query packets to be collected.
+query-options | Unsigned | Bit flags indicating sections in Query messages to be collected.
  | | Bit 0. Collect second and subsequent Questions in Question sections.
  | | Bit 1. Collect Answer sections.
  | | Bit 2. Collect Authority sections.
  | | Bit 3. Collection Additional sections.
 ||
-response-options | Unsigned | Bit flags indicating sections in Response packets to be collected.
+response-options | Unsigned | Bit flags indicating sections in Response messages to be collected.
  | | Bit 0. Collect second and subsequent Questions in Question sections.
  | | Bit 1. Collect Answer sections.
  | | Bit 2. Collect Authority sections.
@@ -673,14 +677,14 @@ to extract
     * a QDCOUNT
     * the first Question in the Question section if QDCOUNT is greater than 0 
 
-      but suffer other issues while parsing. This is the minimum information required to attempt packet matching as described in (#matching-algorithm)
+      but suffer other issues while parsing. This is the minimum information required to attempt Query/Response matching as described in (#matching-algorithm)
 * Completely malformed: those packets that cannot be decoded to this extent.
 
-An open question is whether there is value in attempting to process partially malformed packets in an analogous manner to well formed packets in terms of attempting to match them with the corresponding query or response. This could be done by creating 'placeholder' records during packet matching with just the information extracted as above. If the packet were then matched the resulting C-DNS Q/R data item would include a flag to indicate a malformed record (in addition to capturing the wire format of the packet).
+An open question is whether there is value in attempting to process partially malformed packets in an analogous manner to well formed packets in terms of attempting to match them with the corresponding query or response. This could be done by creating 'placeholder' records during Query/Response matching with just the information extracted as above. If the packet were then matched the resulting C-DNS Q/R data item would include a flag to indicate a malformed record (in addition to capturing the wire format of the packet).
 
 An advantage of this would be that it would result in more meaningful statistics about matched packets because, for example, some partially malformed queries could be matched to responses. However it would only apply to those queries where the first Question is well formed. It could also simplify the downstream analysis of C-DNS files and the reconstruction of packet streams from C-DNS.
 
-A disadvantage is that this adds complexity to the packet matching and data representation, could potentially lead to false matches and some additional statistics would be required (e.g. counts for matched-partially-malformed, unmatched-partially-malformed, completely-malformed).
+A disadvantage is that this adds complexity to the Query/Response matching and data representation, could potentially lead to false matches and some additional statistics would be required (e.g. counts for matched-partially-malformed, unmatched-partially-malformed, completely-malformed).
 
 # C-DNS to PCAP
 
@@ -725,7 +729,7 @@ name compression must be used in order to reproduce the on the wire representati
 packet.
 
 [@!RFC1035] name compression works by substituting trailing sections of a name with a
-reference back to the occurrence of those sections earlier in the packet.
+reference back to the occurrence of those sections earlier in the message.
 Not all name server software uses the same algorithm when compressing domain names 
 within the responses. Some attempt maximum recompression
 at the expense of runtime resources, others use heuristics to balance compression
@@ -769,9 +773,9 @@ TODO: Discuss the corner cases resulting from this in more detail.
 
 A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
-![Figure showing the packet matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/packet_matching.png)
+![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/packet_matching.png)
 
-![Figure showing the packet matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/packet_matching.svg)
+![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/packet_matching.svg)
 
 Further details of the algorithm are given in the following sections.
 

@@ -210,14 +210,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in [RFC2119].
 
+   "Packet" refers to individual IP or IPv6 packets.  Typically these
+   are UDP, but may be part of a TCP message.  "Message", unless
+   otherwise qualified, refers to a DNS payload extracted from a UDP or
+   TCP data stream.
+
    The parts of DNS messages are named as they are in [RFC1035].  In
    specific, the DNS message has five sections: Header, Question,
    Answer, Authority, and Additional.
-
-   Pairs of DNS messages are called a Query and a Response.
-
-
-
 
 
 
@@ -225,6 +225,8 @@ Dickinson, et al.       Expires October 15, 2017                [Page 4]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
+
+   Pairs of DNS messages are called a Query and a Response.
 
 3.  Data Collection Use Cases
 
@@ -272,8 +274,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
       *  Everything being on the in-band network
 
-   Thus, there is a wide range of use cases from very limited data
-   collection environments (third party hardware, servers that are under
 
 
 
@@ -282,6 +282,8 @@ Dickinson, et al.       Expires October 15, 2017                [Page 5]
 Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
 
+   Thus, there is a wide range of use cases from very limited data
+   collection environments (third party hardware, servers that are under
    attack, packet capture on the name server itself and no out-of-band
    network) to "limitless" environments (self hosted, well provisioned
    servers, using a network tap or port mirroring with an out-of-band
@@ -328,8 +330,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
    This section presents some of the major design considerations used in
    the development of the C-DNS format.
 
-   1.  The basic unit of data is a combined DNS Query and the associated
-       Response (a "Q/R data item").  The same structure will be used
 
 
 
@@ -338,6 +338,8 @@ Dickinson, et al.       Expires October 15, 2017                [Page 6]
 Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
 
+   1.  The basic unit of data is a combined DNS Query and the associated
+       Response (a "Q/R data item").  The same structure will be used
        for unmatched Queries and Responses.  Queries without Responses
        will be captured omitting the response data.  Responses without
        queries will be captured omitting the Query data (but using the
@@ -370,7 +372,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
        *  Rationale: This blocking and indexing provides a significant
           reduction in the volume of file data generated.  Although this
           introduces complexity, it provides compression of the data
-          that makes use of knowledge of the DNS packet structure.
+          that makes use of knowledge of the DNS message structure.
 
        *  It is anticipated that the files produced can be subject to
           further compression using general purpose compression tools.
@@ -378,14 +380,12 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
           required to perform such strong compression.  See
           Appendix C.2.
 
-       *  [TODO: Further discussion of commonality between DNS packets
+       *  [TODO: Further discussion of commonality between DNS messages
           e.g. common query signatures, a finite set of valid responses
           from authoritatives]
 
    4.  Metadata about other packets received can optionally be included
        in each block.  For example, counts of malformed DNS packets and
-       non-DNS packets (e.g.  ICMP, TCP resets) sent to the server may
-       be of interest.
 
 
 
@@ -393,6 +393,9 @@ Dickinson, et al.       Expires October 15, 2017                [Page 7]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
+
+       non-DNS packets (e.g.  ICMP, TCP resets) sent to the server may
+       be of interest.
 
    5.  The wire format content of malformed DNS packets can optionally
        be recorded.
@@ -439,9 +442,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
       attractive features, none had a significant advantage over CBOR.
       See Appendix C for some discussion of this.
 
-   o  CBOR is an IETF standard and familiar to IETF participants.  It is
-      based on the now-common ideas of lists and objects, and thus
-
 
 
 
@@ -450,6 +450,8 @@ Dickinson, et al.       Expires October 15, 2017                [Page 8]
 Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
 
+   o  CBOR is an IETF standard and familiar to IETF participants.  It is
+      based on the now-common ideas of lists and objects, and thus
       requires very little familiarization for those in the wider
       industry.
 
@@ -496,8 +498,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
    significant bit.  An item described as an index is the index of the
    Q/R data item in the referenced table.  Indexes are 1-based.  An
    index value of 0 is reserved to mean "not present".
-
-
 
 
 
@@ -602,14 +602,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
    |                    | string   | input.                            |
    |                    |          |                                   |
    | query-options      | Unsigned | Bit flags indicating sections in  |
-   |                    |          | Query packets to be collected.    |
+   |                    |          | Query messages to be collected.   |
    |                    |          | Bit 0. Collect second and         |
-   |                    |          | subsequent question sections.     |
+   |                    |          | subsequent Questions in Question  |
+   |                    |          | sections.                         |
    |                    |          | Bit 1. Collect Answer sections.   |
    |                    |          | Bit 2. Collect Authority          |
    |                    |          | sections.                         |
    |                    |          | Bit 3. Collection Additional      |
-   |                    |          | sections.                         |
 
 
 
@@ -618,11 +618,14 @@ Dickinson, et al.       Expires October 15, 2017               [Page 11]
 Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
 
+   |                    |          | sections.                         |
    |                    |          |                                   |
    | response-options   | Unsigned | Bit flags indicating sections in  |
-   |                    |          | Response packets to be collected. |
+   |                    |          | Response messages to be           |
+   |                    |          | collected.                        |
    |                    |          | Bit 0. Collect second and         |
-   |                    |          | subsequent question sections.     |
+   |                    |          | subsequent Questions in Question  |
+   |                    |          | sections.                         |
    |                    |          | Bit 1. Collect Answer sections.   |
    |                    |          | Bit 2. Collect Authority          |
    |                    |          | sections.                         |
@@ -650,9 +653,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 7.6.  Block contents
 
    Each block contains the following:
-
-
-
 
 
 
@@ -1187,8 +1187,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
    | Field            | Description                                    |
    +------------------+------------------------------------------------+
    | question-index   | The index in the Questions list table of the   |
-   |                  | entry listing the second and subsequent        |
-   |                  | Question sections for the Query or Response.   |
+   |                  | entry listing any second and subsequent        |
+   |                  | Questions in the Question section for the      |
+   |                  | Query or Response.                             |
    |                  |                                                |
    | answer-index     | The index in the RR list table of the entry    |
    |                  | listing the Answer Resource Record sections    |
@@ -1207,7 +1208,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
    This table holds counts of various IP related events relating to
    traffic with individual client addresses.
-
 
 
 
@@ -1306,12 +1306,12 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
       *  a QDCOUNT
 
-      *  the first question in the QUESTION section if QDCOUNT is
+      *  the first Question in the Question section if QDCOUNT is
          greater than 0
 
       but suffer other issues while parsing.  This is the minimum
-      information required to attempt packet matching as described in
-      Section 10.1
+      information required to attempt Query/Response matching as
+      described in Section 10.1
 
    o  Completely malformed: those packets that cannot be decoded to this
       extent.
@@ -1320,22 +1320,22 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
    partially malformed packets in an analogous manner to well formed
    packets in terms of attempting to match them with the corresponding
    query or response.  This could be done by creating 'placeholder'
-   records during packet matching with just the information extracted as
-   above.  If the packet were then matched the resulting C-DNS Q/R data
-   item would include a flag to indicate a malformed record (in addition
-   to capturing the wire format of the packet).
+   records during Query/Response matching with just the information
+   extracted as above.  If the packet were then matched the resulting
+   C-DNS Q/R data item would include a flag to indicate a malformed
+   record (in addition to capturing the wire format of the packet).
 
    An advantage of this would be that it would result in more meaningful
    statistics about matched packets because, for example, some partially
    malformed queries could be matched to responses.  However it would
-   only apply to those queries where the first QUESTION is well formed.
+   only apply to those queries where the first Question is well formed.
    It could also simplify the downstream analysis of C-DNS files and the
    reconstruction of packet streams from C-DNS.
 
-   A disadvantage is that this adds complexity to the packet matching
-   and data representation, could potentially lead to false matches and
-   some additional statistics would be required (e.g. counts for
-   matched-partially-malformed, unmatched-partially-malformed,
+   A disadvantage is that this adds complexity to the Query/Response
+   matching and data representation, could potentially lead to false
+   matches and some additional statistics would be required (e.g. counts
+   for matched-partially-malformed, unmatched-partially-malformed,
    completely-malformed).
 
 
@@ -1412,7 +1412,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
    [RFC1035] name compression works by substituting trailing sections of
    a name with a reference back to the occurrence of those sections
-   earlier in the packet.  Not all name server software uses the same
+   earlier in the message.  Not all name server software uses the same
    algorithm when compressing domain names within the responses.  Some
    attempt maximum recompression at the expense of runtime resources,
    others use heuristics to balance compression and speed and others use
@@ -1462,8 +1462,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
        generate the Primary ID (see Section 10.2.1)
 
    3.  Each message has a well-formed DNS header of 12 bytes and (if
-       present) the first RR in the Question section can be parsed to
-       generate the Secondary ID (see below).  As noted earlier, this
+       present) the first Question in the Question section can be parsed
+       to generate the Secondary ID (see below).  As noted earlier, this
        requirement can result in a malformed query being removed in the
        pre-processing stage, but the correctly formed response with
        RCODE of FORMERR being present.
@@ -1479,9 +1479,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
    A schematic representation of the algorithm for matching Q/R data
    items is shown in the following diagram:
 
-   Figure showing the packet matching algorithm format (PNG) [5]
+   Figure showing the Query/Response matching algorithm format (PNG) [5]
 
-   Figure showing the packet matching algorithm format (SVG) [6]
+   Figure showing the Query/Response matching algorithm format (SVG) [6]
 
    Further details of the algorithm are given in the following sections.
 
@@ -1516,7 +1516,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
 
 10.2.2.  Secondary ID (optional)
 
-   If present, the first question in the Question section is used as a
+   If present, the first Question in the Question section is used as a
    secondary ID for each message.  Note that there may be well formed
    DNS queries that have a QDCOUNT of 0, and some responses may have a
    QDCOUNT of 0 (for example, responses with RCODE=FORMERR or NOTIMP).
@@ -1856,7 +1856,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format         April 2017
   }
 
   QRCollectionSectionValues = &(
-      question  : 0, ; Second & subsequent question sections
+      question  : 0, ; Second & subsequent questions
       answer    : 1,
       authority : 2,
       additional: 3,

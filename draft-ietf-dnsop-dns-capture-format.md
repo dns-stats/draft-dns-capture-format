@@ -2,12 +2,12 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-ietf-dnsop-dns-capture-format-01"
+    docName= "draft-ietf-dnsop-dns-capture-format-02"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2017-02-21T00:00:00Z
+    date = 2017-04-18T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -129,6 +129,11 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in [@!RFC2119].
 
+"Packet" refers to individual IPv4 or IPv6 packets. Typically these are
+UDP, but may be constructed from a TCP packet. "Message", unless otherwise
+qualified, refers to a DNS payload extracted from a UDP or TCP data
+stream.
+
 The parts of DNS messages are named as they are in [@!RFC1035]. In specific,
 the DNS message has five sections: Header, Question, Answer, Authority,
 and Additional.
@@ -215,10 +220,10 @@ reduce the files size, and in principle responses can be synthesized if there is
 3. Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and 
 referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
     * Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.
-Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS packet structure.
+Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
     * It is anticipated that the files produced can be subject to further compression using general purpose compression tools. 
 Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
-    * [TODO: Further discussion of commonality between DNS packets e.g. common query signatures, a finite set of
+    * [TODO: Further discussion of commonality between DNS messages e.g. common query signatures, a finite set of
 valid responses from authoritatives]
 
 4. Metadata about other packets received can optionally be included in each block. For example, counts of malformed DNS packets and non-DNS packets
@@ -237,13 +242,13 @@ The following figures show purely schematic representations of the C-DNS format 
 structure of the C-DNS format. (#the-cdns-format) provides a detailed discussion of the CBOR representation
 and individual elements.
 
-![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/cdns_format.png)
+![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/cdns_format.png)
 
-![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/cdns_format.svg)
+![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/cdns_format.svg)
 
-![Figure showing the Q/R data item and Block tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/qr_data_format.png)
+![Figure showing the Q/R data item and Block tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/qr_data_format.png)
 
-![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/qr_data_format.svg)
+![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/qr_data_format.svg)
 
 # Choice of CBOR
 
@@ -259,7 +264,7 @@ ideas of lists and objects, and thus requires very little familiarization for th
 * CBOR is a simple format, and can easily be implemented from scratch if necessary. More complex formats
 require library support which may present problems on unusual platforms.
 * CBOR can also be easily converted to text formats such as JSON ([@RFC7159]) for debugging and other human inspection requirements.
-* CBOR data schemas can be described using CDDL [@?I-D.greevenbosch-appsawg-cbor-cddl#09]. 
+* CBOR data schemas can be described using CDDL [@?I-D.greevenbosch-appsawg-cbor-cddl]. 
 
 # The C-DNS format
 
@@ -343,14 +348,14 @@ vlan-ids | Array of unsigned | Identifiers of VLANs selected for collection.
 ||
 filter | Text string | 'tcpdump' [@pcap] style filter for input.
 ||
-query-options | Unsigned | Bit flags indicating sections in Query packets to be collected.
- | | Bit 0. Collect second and subsequent question sections.
+query-options | Unsigned | Bit flags indicating sections in Query messages to be collected.
+ | | Bit 0. Collect second and subsequent Questions in the Question section.
  | | Bit 1. Collect Answer sections.
  | | Bit 2. Collect Authority sections.
  | | Bit 3. Collection Additional sections.
 ||
-response-options | Unsigned | Bit flags indicating sections in Response packets to be collected.
- | | Bit 0. Collect second and subsequent question sections.
+response-options | Unsigned | Bit flags indicating sections in Response messages to be collected.
+ | | Bit 0. Collect second and subsequent Questions in the Question section.
  | | Bit 1. Collect Answer sections.
  | | Bit 2. Collect Authority sections.
  | | Bit 3. Collection Additional sections.
@@ -615,7 +620,7 @@ The Extended information is a CBOR map as follows. Each item in the map is prese
 
 Field | Description
 :-----|:-----------
-question-index | The index in the Questions list table of the entry listing the second and subsequent Question sections for the Query or Response.
+question-index | The index in the Questions list table of the entry listing any second and subsequent Questions in the Question section for the Query or Response.
 ||
 answer-index | The index in the RR list table of the entry listing the Answer Resource Record sections for the Query or Response.
 ||
@@ -671,16 +676,16 @@ In principle, packets that do not meet these criteria could be classified into t
 to extract 
     * a DNS header (and therefore a DNS transaction ID)
     * a QDCOUNT
-    * the first question in the QUESTION section if QDCOUNT is greater than 0 
+    * the first Question in the Question section if QDCOUNT is greater than 0 
 
-      but suffer other issues while parsing. This is the minimum information required to attempt packet matching as described in (#matching-algorithm)
+      but suffer other issues while parsing. This is the minimum information required to attempt Query/Response matching as described in (#matching-algorithm)
 * Completely malformed: those packets that cannot be decoded to this extent.
 
-An open question is whether there is value in attempting to process partially malformed packets in an analogous manner to well formed packets in terms of attempting to match them with the corresponding query or response. This could be done by creating 'placeholder' records during packet matching with just the information extracted as above. If the packet were then matched the resulting C-DNS Q/R data item would include a flag to indicate a malformed record (in addition to capturing the wire format of the packet).
+An open question is whether there is value in attempting to process partially malformed packets in an analogous manner to well formed packets in terms of attempting to match them with the corresponding query or response. This could be done by creating 'placeholder' records during Query/Response matching with just the information extracted as above. If the packet were then matched the resulting C-DNS Q/R data item would include a flag to indicate a malformed record (in addition to capturing the wire format of the packet).
 
-An advantage of this would be that it would result in more meaningful statistics about matched packets because, for example, some partially malformed queries could be matched to responses. However it would only apply to those queries where the first QUESTION is well formed. It could also simplify the downstream analysis of C-DNS files and the reconstruction of packet streams from C-DNS.
+An advantage of this would be that it would result in more meaningful statistics about matched packets because, for example, some partially malformed queries could be matched to responses. However it would only apply to those queries where the first Question is well formed. It could also simplify the downstream analysis of C-DNS files and the reconstruction of packet streams from C-DNS.
 
-A disadvantage is that this adds complexity to the packet matching and data representation, could potentially lead to false matches and some additional statistics would be required (e.g. counts for matched-partially-malformed, unmatched-partially-malformed, completely-malformed).
+A disadvantage is that this adds complexity to the Query/Response matching and data representation, could potentially lead to false matches and some additional statistics would be required (e.g. counts for matched-partially-malformed, unmatched-partially-malformed, completely-malformed).
 
 # C-DNS to PCAP
 
@@ -725,7 +730,7 @@ name compression must be used in order to reproduce the on the wire representati
 packet.
 
 [@!RFC1035] name compression works by substituting trailing sections of a name with a
-reference back to the occurrence of those sections earlier in the packet.
+reference back to the occurrence of those sections earlier in the message.
 Not all name server software uses the same algorithm when compressing domain names 
 within the responses. Some attempt maximum recompression
 at the expense of runtime resources, others use heuristics to balance compression
@@ -758,7 +763,7 @@ For the purposes of this discussion, it is assumed that the input has been pre-p
 
 1. All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed
 1. Each message is associated with transport metadata required to generate the Primary ID (see (#primary-id))
-1. Each message has a well-formed DNS header of 12 bytes and (if present) the first RR in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
+1. Each message has a well-formed DNS header of 12 bytes and (if present) the first Question in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
 
 DNS messages are processed in the order they are delivered to the application.
 It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
@@ -769,9 +774,9 @@ TODO: Discuss the corner cases resulting from this in more detail.
 
 A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
-![Figure showing the packet matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/packet_matching.png)
+![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/packet_matching.png)
 
-![Figure showing the packet matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/packet_matching.svg)
+![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/packet_matching.svg)
 
 Further details of the algorithm are given in the following sections.
 
@@ -790,7 +795,7 @@ A Primary ID is constructed for each message. It is composed of the following da
 
 ### Secondary ID (optional) {#secondary-id}
 
-If present, the first question in the Question section is used as a secondary ID
+If present, the first Question in the Question section is used as a secondary ID
 for each message. Note that there may be well formed DNS queries that have a
 QDCOUNT of 0, and some responses may have a QDCOUNT of 0 (for example, responses
 with RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used in matching.
@@ -855,6 +860,11 @@ Thanks also to Robert Edmonds and Jerry Lundström for review.
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+draft-ietf-dnsop-dns-capture-format-02
+
+* Update qr_data_format.png to match CDDL
+* Editorial clarifications and improvements
+
 draft-ietf-dnsop-dns-capture-format-01
 
 * Many editorial improvements by Paul Hoffman
@@ -1042,7 +1052,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     }
 
     QRCollectionSectionValues = &(
-        question  : 0, ; Second & subsequent question sections
+        question  : 0, ; Second & subsequent questions
         answer    : 1,
         authority : 2,
         additional: 3,
@@ -1311,7 +1321,6 @@ draft-dickinson-dnsop-dns-capture-format-00
     IPv6Address = bstr .size 16
     IPAddress = IPv4Address / IPv6Address
 
-
 # DNS Name compression example
 
 The basic algorithm, which follows the guidance in [@!RFC1035],
@@ -1421,7 +1430,7 @@ completeness were also compared to JSON.
   is comparable to JSON but with a binary representation. It does not
   use a pre-defined schema, so data is always stored tagged. However,
   CBOR data schemas can be described using CDDL
-  [@?I-D.greevenbosch-appsawg-cbor-cddl#09] and tools exist to verify
+  [@?I-D.greevenbosch-appsawg-cbor-cddl] and tools exist to verify
   data files conform to the schema.
 
     * CBOR is a simple format, and simple to implement. At the time of writing,

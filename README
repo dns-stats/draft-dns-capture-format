@@ -1,5 +1,20 @@
+Building
+--------
+
 To generate the txt from the markdown use something like:
 
-mmark -xml2 -page draft-ietf-dnsop-dns-capture-format-01.md > draft-ietf-dnsop-dns-capture-format-01.xml && xml2rfc --text draft-ietf-dnsop-dns-capture-format-01.xml && rm draft-ietf-dnsop-dns-capture-format-01.xml
+mmark -xml2 -page draft-ietf-dnsop-dns-capture-format.md > draft-ietf-dnsop-dns-capture-format.xml && xml2rfc --text draft-ietf-dnsop-dns-capture-format.xml && rm draft-ietf-dnsop-dns-capture-format.xml && mv draft-ietf-dnsop-dns-capture-format.txt draft-02/draft-ietf-dnsop-dns-capture-format-02.txt
 
 mmark can be found here https://github.com/miekg/mmark
+
+Build artifacts
+---------------
+
+All build artifacts that get checked in should be checked into a subdirectory draft-<rev>. Build artifacts are:
+
+* The .txt file. This should be named with the draft revision, to ease working with IETF tools.
+* Graphics files generated from checked-in sources. If the files are unchanged from the previous draft, a soft link
+  can be used.
+
+*.odg files are LibreOffice Draw files.
+.png and .svg are generated using the LibreOffice export, and in the case of .png taking the default size options.

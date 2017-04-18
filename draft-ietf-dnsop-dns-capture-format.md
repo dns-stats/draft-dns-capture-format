@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2017-04-13T00:00:00Z
+    date = 2017-04-18T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -129,8 +129,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in [@!RFC2119].
 
-"Packet" refers to individual IP or IPv6 packets. Typically these are
-UDP, but may be part of a TCP message. "Message", unless otherwise
+"Packet" refers to individual IPv4 or IPv6 packets. Typically these are
+UDP, but may be constructed from a TCP packet. "Message", unless otherwise
 qualified, refers to a DNS payload extracted from a UDP or TCP data
 stream.
 
@@ -349,13 +349,13 @@ vlan-ids | Array of unsigned | Identifiers of VLANs selected for collection.
 filter | Text string | 'tcpdump' [@pcap] style filter for input.
 ||
 query-options | Unsigned | Bit flags indicating sections in Query messages to be collected.
- | | Bit 0. Collect second and subsequent Questions in Question sections.
+ | | Bit 0. Collect second and subsequent Questions in the Question section.
  | | Bit 1. Collect Answer sections.
  | | Bit 2. Collect Authority sections.
  | | Bit 3. Collection Additional sections.
 ||
 response-options | Unsigned | Bit flags indicating sections in Response messages to be collected.
- | | Bit 0. Collect second and subsequent Questions in Question sections.
+ | | Bit 0. Collect second and subsequent Questions in the Question section.
  | | Bit 1. Collect Answer sections.
  | | Bit 2. Collect Authority sections.
  | | Bit 3. Collection Additional sections.
@@ -860,6 +860,11 @@ Thanks also to Robert Edmonds and Jerry Lundström for review.
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+draft-ietf-dnsop-dns-capture-format-02
+
+* Update qr_data_format.png to match CDDL
+* Editorial clarifications and improvements
+
 draft-ietf-dnsop-dns-capture-format-01
 
 * Many editorial improvements by Paul Hoffman

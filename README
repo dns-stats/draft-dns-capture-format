@@ -7,14 +7,12 @@ mmark -xml2 -page draft-ietf-dnsop-dns-capture-format.md > draft-ietf-dnsop-dns-
 
 mmark can be found here https://github.com/miekg/mmark
 
-Build artifacts
+*.odg files are LibreOffice Draw files.
+
+Build Artifacts
 ---------------
 
 All build artifacts that get checked in should be checked into a subdirectory draft-<rev>. Build artifacts are:
 
 * The .txt file. This should be named with the draft revision, to ease working with IETF tools.
-* Graphics files generated from checked-in sources. If the files are unchanged from the previous draft, a soft link
-  can be used.
-
-*.odg files are LibreOffice Draw files.
-.png and .svg are generated using the LibreOffice export, and in the case of .png taking the default size options.
+* Graphics files generated from checked-in sources. .png and .svg are generated using the LibreOffice export, and in the case of .png taking the default size options.

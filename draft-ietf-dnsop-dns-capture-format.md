@@ -2,12 +2,12 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-ietf-dnsop-dns-capture-format-02"
+    docName= "draft-ietf-dnsop-dns-capture-format-03"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2017-04-18T00:00:00Z
+    date = 2017-06-29T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -242,13 +242,13 @@ The following figures show purely schematic representations of the C-DNS format 
 structure of the C-DNS format. (#the-cdns-format) provides a detailed discussion of the CBOR representation
 and individual elements.
 
-![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/cdns_format.png)
+![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/cdns_format.png)
 
-![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/cdns_format.svg)
+![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/cdns_format.svg)
 
-![Figure showing the Q/R data item and Block tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/qr_data_format.png)
+![Figure showing the Q/R data item and Block tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/qr_data_format.png)
 
-![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/qr_data_format.svg)
+![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/qr_data_format.svg)
 
 # Choice of CBOR
 
@@ -774,9 +774,9 @@ TODO: Discuss the corner cases resulting from this in more detail.
 
 A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
-![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/packet_matching.png)
+![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/packet_matching.png)
 
-![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-02/packet_matching.svg)
+![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/packet_matching.svg)
 
 Further details of the algorithm are given in the following sections.
 
@@ -838,10 +838,60 @@ The timestamp of a list item is that of the query for cases 1 and 2 and that of 
 
 When ending capture, all remaining entries in the Q/R data item FIFO should be treated as timed out queries.
 
+# Implementation Status
+
+[Note to RFC Editor: please remove this section and reference to [@RFC7942] prior to publication.]
+
+This section records the status of known implementations of the
+protocol defined by this specification at the time of posting of
+this Internet-Draft, and is based on a proposal described in
+[@RFC7942].  The description of implementations in this section is
+intended to assist the IETF in its decision processes in
+progressing drafts to RFCs.  Please note that the listing of any
+individual implementation here does not imply endorsement by the
+IETF.  Furthermore, no effort has been spent to verify the
+information presented here that was supplied by IETF contributors.
+This is not intended as, and must not be construed to be, a
+catalog of available implementations or their features.  Readers
+are advised to note that other implementations may exist.
+
+According to [@RFC7942], "this will allow reviewers and working
+groups to assign due consideration to documents that have the
+benefit of running code, which may serve as evidence of valuable
+experimentation and feedback that have made the implemented
+protocols more mature.  It is up to the individual working groups
+to use this information as they see fit".
+
+## DNS-STATS Compactor
+
+ICANN/Sinodun IT have developed an open source implementation called DNS-STATS Compactor.
+The Compactor is a suite of tools which can capture DNS traffic (from either a 
+network interface or a PCAP file) and store it in the Compacted-DNS (C-DNS) file
+format. PCAP files for the captured traffic can also be reconstructed. See
+[Compactor](https://github.com/dns-stats/compactor/wiki).
+
+This implementation:
+
+* is mature but has only been deployed for testing in a single environment so is
+not yet classified as production ready.
+
+* covers the whole of the specification described in the -03 draft with the
+exception of support for malformed packets ((#malformed-packets)) and pico second time resolution. 
+(Note: this implementation does allow malformed packets to be dumped to a PCAP file).
+
+* is released under the Mozilla Public License Version 2.0.
+
+* has a users mailing list available, see [dns-stats-users](https://mm.dns-stats.org/mailman/listinfo/dns-stats-users).
+
+There is also some discussion of issues encountered during development available at
+[Compressing Pcap Files](https://www.sinodun.com/2017/06/compressing-pcap-files/) and
+[Packet Capture](https://www.sinodun.com/2017/06/more-on-debian-jessieubuntu-trusty-packet-capture-woes/).
+
+This information was last updated on 29th of June 2017.
 
 # IANA Considerations
 
-None
+See (#implementation-status).
 
 # Security Considerations
 
@@ -860,6 +910,11 @@ Thanks also to Robert Edmonds and Jerry Lundström for review.
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+
+draft-ietf-dnsop-dns-capture-format-03
+
+* Added an Implementation Status section
+
 draft-ietf-dnsop-dns-capture-format-02
 
 * Update qr_data_format.png to match CDDL

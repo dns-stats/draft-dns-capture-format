@@ -1657,7 +1657,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format          June 2017
 
 12.  IANA Considerations
 
-   See Section 11.
+   None
 
 13.  Security Considerations
 

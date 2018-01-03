@@ -2,12 +2,12 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-ietf-dnsop-dns-capture-format-03"
+    docName= "draft-ietf-dnsop-dns-capture-format-04"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2017-06-29T00:00:00Z
+    date = 2018-01-03T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -242,13 +242,13 @@ The following figures show purely schematic representations of the C-DNS format 
 structure of the C-DNS format. (#the-cdns-format) provides a detailed discussion of the CBOR representation
 and individual elements.
 
-![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/cdns_format.png)
+![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/cdns_format.png)
 
-![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/cdns_format.svg)
+![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/cdns_format.svg)
 
-![Figure showing the Q/R data item and Block tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/qr_data_format.png)
+![Figure showing the Q/R data item and Block tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/qr_data_format.png)
 
-![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/qr_data_format.svg)
+![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/qr_data_format.svg)
 
 # Choice of CBOR
 
@@ -295,6 +295,9 @@ If no field type is specified, then the field is unsigned.
 In all quantities that contain bit flags, bit 0 indicates the least significant bit.
 An item described as an index is the index of the Q/R data item in the referenced table.
 Indexes are 1-based. An index value of 0 is reserved to mean "not present".
+
+All map keys are unsigned integers with values specified in the CDDL (string keys
+would significantly bloat the file size).
 
 ## File header contents
 
@@ -437,23 +440,26 @@ ip-address | Byte string | The IP address, in network byte order. The string is 
 
 The table `classtype` holds pairs of RR CLASS and TYPE values. Each item in the table is a CBOR map.
 
-Field | Description
-:-----|:-----------
-type | TYPE value.
+Field | Type | Description
+:-----|:-----|:-----------
+type | Unsigned  | TYPE value.
 ||
-class | CLASS value.
+class | Unsigned | CLASS value.
 
 ## Name/RDATA table
 
 The table `name-rdata` holds the contents of all NAME or RDATA items in the block. Each item in the table is the content of a single NAME or RDATA.
 
+Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no
+DNS style name compression is used on the individual names/labels within the format.
+
 Field | Type | Description
 :-----|:-----|:-----------
-name-rdata | Byte string | The NAME or RDATA contents. NAMEs, and labels within RDATA contents, are in uncompressed label format.
+name-rdata | Byte string | The NAME or RDATA contents (uncompressed).
 
 ## Query Signature table
 
-The table `query-sig` holds elements of the Q/R data item that are often common between multiple individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned key.
+The table `query-sig` holds elements of the Q/R data item that are often common between multiple individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned integer key.
 
 The following abbreviations are used in the Present (P) column 
 
@@ -524,7 +530,7 @@ response-rcode | R | Response RCODE. If the Response contains OPT, this value in
 
 ## Question table
 
-The table `qrr` holds details on individual Questions in a Question section. Each item in the table is a CBOR map containing a single Question. Each item in the map has an unsigned value and an unsigned key. This data is optionally collected.
+The table `qrr` holds details on individual Questions in a Question section. Each item in the table is a CBOR map containing a single Question. Each item in the map has an unsigned value and an unsigned integer key. This data is optionally collected.
 
 Field | Description
 :-----|:-----------
@@ -577,7 +583,7 @@ The following abbreviations are used in the Present (P) column
 * QR = QUERY & RESPONSE
 * R = RESPONSE
 
-Each item in the map has an unsigned value (with the exception of those listed below) and an unsigned key.
+Each item in the map has an unsigned value (with the exception of those listed below) and an unsigned integer key.
 
 * query-extended and response-extended which are of type Extended Information.
 * delay-useconds and delay-pseconds which are integers (The delay can be negative if the network stack/capture library returns them out of order.)
@@ -616,7 +622,7 @@ An implementation must always collect basic Q/R information. It may be configure
 
 The query-size and response-size fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message and will therefore include any trailing bytes if present. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present. For TCP it is the size of the DNS message as specified in the two-byte message length header.
 
-The Extended information is a CBOR map as follows. Each item in the map is present only if collection of the relevant details is configured. Each item in the map has an unsigned value and an unsigned key.
+The Extended information is a CBOR map as follows. Each item in the map is present only if collection of the relevant details is configured. Each item in the map has an unsigned value and an unsigned integer key.
 
 Field | Description
 :-----|:-----------
@@ -774,9 +780,9 @@ TODO: Discuss the corner cases resulting from this in more detail.
 
 A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
-![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/packet_matching.png)
+![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/packet_matching.png)
 
-![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-03/packet_matching.svg)
+![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/packet_matching.svg)
 
 Further details of the algorithm are given in the following sections.
 
@@ -910,6 +916,13 @@ Thanks also to Robert Edmonds and Jerry Lundström for review.
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+
+draft-ietf-dnsop-dns-capture-format-04
+
+* Correct query-d0 to query-do in CDDL
+* Clarify that map keys are unsigned integers
+* Add Type to Class/type table
+* Clarify storage format in section 7.12
 
 draft-ietf-dnsop-dns-capture-format-03
 
@@ -1239,7 +1252,7 @@ draft-dickinson-dnsop-dns-capture-format-00
         query-rd   : 4,
         query-tc   : 5,
         query-aa   : 6,
-        query-d0   : 7,
+        query-do   : 7,
         response-cd: 8,
         response-ad: 9,
         response-z : 10,

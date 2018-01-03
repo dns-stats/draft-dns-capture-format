@@ -1,0 +1,3329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>C-DNS: A DNS Packet Capture Format</title>
+
+  <style type="text/css" title="Xml2Rfc (sans serif)">
+  /*<![CDATA[*/
+	  a {
+	  text-decoration: none;
+	  }
+      /* info code from SantaKlauss at http://www.madaboutstyle.com/tooltip2.html */
+      a.info {
+          /* This is the key. */
+          position: relative;
+          z-index: 24;
+          text-decoration: none;
+      }
+      a.info:hover {
+          z-index: 25;
+          color: #FFF; background-color: #900;
+      }
+      a.info span { display: none; }
+      a.info:hover span.info {
+          /* The span will display just on :hover state. */
+          display: block;
+          position: absolute;
+          font-size: smaller;
+          top: 2em; left: -5em; width: 15em;
+          padding: 2px; border: 1px solid #333;
+          color: #900; background-color: #EEE;
+          text-align: left;
+      }
+	  a.smpl {
+	  color: black;
+	  }
+	  a:hover {
+	  text-decoration: underline;
+	  }
+	  a:active {
+	  text-decoration: underline;
+	  }
+	  address {
+	  margin-top: 1em;
+	  margin-left: 2em;
+	  font-style: normal;
+	  }
+	  body {
+	  color: black;
+	  font-family: verdana, helvetica, arial, sans-serif;
+	  font-size: 10pt;
+	  max-width: 55em;
+	  
+	  }
+	  cite {
+	  font-style: normal;
+	  }
+	  dd {
+	  margin-right: 2em;
+	  }
+	  dl {
+	  margin-left: 2em;
+	  }
+	
+	  ul.empty {
+	  list-style-type: none;
+	  }
+	  ul.empty li {
+	  margin-top: .5em;
+	  }
+	  dl p {
+	  margin-left: 0em;
+	  }
+	  dt {
+	  margin-top: .5em;
+	  }
+	  h1 {
+	  font-size: 14pt;
+	  line-height: 21pt;
+	  page-break-after: avoid;
+	  }
+	  h1.np {
+	  page-break-before: always;
+	  }
+	  h1 a {
+	  color: #333333;
+	  }
+	  h2 {
+	  font-size: 12pt;
+	  line-height: 15pt;
+	  page-break-after: avoid;
+	  }
+	  h3, h4, h5, h6 {
+	  font-size: 10pt;
+	  page-break-after: avoid;
+	  }
+	  h2 a, h3 a, h4 a, h5 a, h6 a {
+	  color: black;
+	  }
+	  img {
+	  margin-left: 3em;
+	  }
+	  li {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol p {
+	  margin-left: 0em;
+	  }
+	  p {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  pre {
+	  margin-left: 3em;
+	  background-color: lightyellow;
+	  padding: .25em;
+	  }
+	  pre.text2 {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f0f0f0;
+	  width: 69em;
+	  }
+	  pre.inline {
+	  background-color: white;
+	  padding: 0em;
+	  }
+	  pre.text {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  width: 69em;
+	  }
+	  pre.drawing {
+	  border-style: solid;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  padding: 2em;
+	  }
+	  table {
+	  margin-left: 2em;
+	  }
+	  table.tt {
+	  vertical-align: top;
+	  }
+	  table.full {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.headers {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.tt td {
+	  vertical-align: top;
+	  }
+	  table.full td {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.tt th {
+	  vertical-align: top;
+	  }
+	  table.full th {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.headers th {
+	  border-style: none none inset none;
+	  border-width: 1px;
+	  }
+	  table.left {
+	  margin-right: auto;
+	  }
+	  table.right {
+	  margin-left: auto;
+	  }
+	  table.center {
+	  margin-left: auto;
+	  margin-right: auto;
+	  }
+	  caption {
+	  caption-side: bottom;
+	  font-weight: bold;
+	  font-size: 9pt;
+	  margin-top: .5em;
+	  }
+	
+	  table.header {
+	  border-spacing: 1px;
+	  width: 95%;
+	  font-size: 10pt;
+	  color: white;
+	  }
+	  td.top {
+	  vertical-align: top;
+	  }
+	  td.topnowrap {
+	  vertical-align: top;
+	  white-space: nowrap; 
+	  }
+	  table.header td {
+	  background-color: gray;
+	  width: 50%;
+	  }
+	  table.header a {
+	  color: white;
+	  }
+	  td.reference {
+	  vertical-align: top;
+	  white-space: nowrap;
+	  padding-right: 1em;
+	  }
+	  thead {
+	  display:table-header-group;
+	  }
+	  ul.toc, ul.toc ul {
+	  list-style: none;
+	  margin-left: 1.5em;
+	  margin-right: 0em;
+	  padding-left: 0em;
+	  }
+	  ul.toc li {
+	  line-height: 150%;
+	  font-weight: bold;
+	  font-size: 10pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  ul.toc li li {
+	  line-height: normal;
+	  font-weight: normal;
+	  font-size: 9pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  li.excluded {
+	  font-size: 0pt;
+	  }
+	  ul p {
+	  margin-left: 0em;
+	  }
+	
+	  .comment {
+	  background-color: yellow;
+	  }
+	  .center {
+	  text-align: center;
+	  }
+	  .error {
+	  color: red;
+	  font-style: italic;
+	  font-weight: bold;
+	  }
+	  .figure {
+	  font-weight: bold;
+	  text-align: center;
+	  font-size: 9pt;
+	  }
+	  .filename {
+	  color: #333333;
+	  font-weight: bold;
+	  font-size: 12pt;
+	  line-height: 21pt;
+	  text-align: center;
+	  }
+	  .fn {
+	  font-weight: bold;
+	  }
+	  .hidden {
+	  display: none;
+	  }
+	  .left {
+	  text-align: left;
+	  }
+	  .right {
+	  text-align: right;
+	  }
+	  .title {
+	  color: #990000;
+	  font-size: 18pt;
+	  line-height: 18pt;
+	  font-weight: bold;
+	  text-align: center;
+	  margin-top: 36pt;
+	  }
+	  .vcardline {
+	  display: block;
+	  }
+	  .warning {
+	  font-size: 14pt;
+	  background-color: yellow;
+	  }
+	
+	
+	  @media print {
+	  .noprint {
+		display: none;
+	  }
+	
+	  a {
+		color: black;
+		text-decoration: none;
+	  }
+	
+	  table.header {
+		width: 90%;
+	  }
+	
+	  td.header {
+		width: 50%;
+		color: black;
+		background-color: white;
+		vertical-align: top;
+		font-size: 12pt;
+	  }
+	
+	  ul.toc a::after {
+		content: leader('.') target-counter(attr(href), page);
+	  }
+	
+	  ul.ind li li a {
+		content: target-counter(attr(href), page);
+	  }
+	
+	  .print2col {
+		column-count: 2;
+		-moz-column-count: 2;
+		column-fill: auto;
+	  }
+	  }
+	
+	  @page {
+	  @top-left {
+		   content: "Internet-Draft"; 
+	  } 
+	  @top-right {
+		   content: "December 2010"; 
+	  } 
+	  @top-center {
+		   content: "Abbreviated Title";
+	  } 
+	  @bottom-left {
+		   content: "Doe"; 
+	  } 
+	  @bottom-center {
+		   content: "Expires June 2011"; 
+	  } 
+	  @bottom-right {
+		   content: "[Page " counter(page) "]"; 
+	  } 
+	  }
+	
+	  @page:first { 
+		@top-left {
+		  content: normal;
+		}
+		@top-right {
+		  content: normal;
+		}
+		@top-center {
+		  content: normal;
+		}
+	  }
+  /*]]>*/
+  </style>
+
+  <link href="#rfc.toc" rel="Contents"/>
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction"/>
+<link href="#rfc.section.2" rel="Chapter" title="2 Terminology"/>
+<link href="#rfc.section.3" rel="Chapter" title="3 Data Collection Use Cases"/>
+<link href="#rfc.section.4" rel="Chapter" title="4 Design Considerations"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Conceptual Overview"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 Choice of CBOR"/>
+<link href="#rfc.section.7" rel="Chapter" title="7 The C-DNS format"/>
+<link href="#rfc.section.7.1" rel="Chapter" title="7.1 CDDL definition"/>
+<link href="#rfc.section.7.2" rel="Chapter" title="7.2 Format overview"/>
+<link href="#rfc.section.7.3" rel="Chapter" title="7.3 File header contents"/>
+<link href="#rfc.section.7.4" rel="Chapter" title="7.4 File preamble contents"/>
+<link href="#rfc.section.7.5" rel="Chapter" title="7.5 Configuration contents"/>
+<link href="#rfc.section.7.6" rel="Chapter" title="7.6 Block contents"/>
+<link href="#rfc.section.7.7" rel="Chapter" title="7.7 Block preamble map"/>
+<link href="#rfc.section.7.8" rel="Chapter" title="7.8 Block statistics"/>
+<link href="#rfc.section.7.9" rel="Chapter" title="7.9 Block table map"/>
+<link href="#rfc.section.7.10" rel="Chapter" title="7.10 IP address table"/>
+<link href="#rfc.section.7.11" rel="Chapter" title="7.11 Class/Type table"/>
+<link href="#rfc.section.7.12" rel="Chapter" title="7.12 Name/RDATA table"/>
+<link href="#rfc.section.7.13" rel="Chapter" title="7.13 Query Signature table"/>
+<link href="#rfc.section.7.14" rel="Chapter" title="7.14 Question table"/>
+<link href="#rfc.section.7.15" rel="Chapter" title="7.15 Resource Record (RR) table"/>
+<link href="#rfc.section.7.16" rel="Chapter" title="7.16 Question list table"/>
+<link href="#rfc.section.7.17" rel="Chapter" title="7.17 Resource Record list table"/>
+<link href="#rfc.section.7.18" rel="Chapter" title="7.18 Query/Response data"/>
+<link href="#rfc.section.7.19" rel="Chapter" title="7.19 Address Event counts"/>
+<link href="#rfc.section.7.20" rel="Chapter" title="7.20 Malformed packet records"/>
+<link href="#rfc.section.8" rel="Chapter" title="8 Malformed Packets"/>
+<link href="#rfc.section.9" rel="Chapter" title="9 C-DNS to PCAP"/>
+<link href="#rfc.section.9.1" rel="Chapter" title="9.1 Name Compression"/>
+<link href="#rfc.section.10" rel="Chapter" title="10 Data Collection"/>
+<link href="#rfc.section.10.1" rel="Chapter" title="10.1 Matching algorithm"/>
+<link href="#rfc.section.10.2" rel="Chapter" title="10.2 Message identifiers"/>
+<link href="#rfc.section.10.2.1" rel="Chapter" title="10.2.1 Primary ID (required)"/>
+<link href="#rfc.section.10.2.2" rel="Chapter" title="10.2.2 Secondary ID (optional)"/>
+<link href="#rfc.section.10.3" rel="Chapter" title="10.3 Algorithm Parameters"/>
+<link href="#rfc.section.10.4" rel="Chapter" title="10.4 Algorithm Requirements"/>
+<link href="#rfc.section.10.5" rel="Chapter" title="10.5 Algorithm Limitations"/>
+<link href="#rfc.section.10.6" rel="Chapter" title="10.6 Workspace"/>
+<link href="#rfc.section.10.7" rel="Chapter" title="10.7 Output"/>
+<link href="#rfc.section.10.8" rel="Chapter" title="10.8 Post Processing"/>
+<link href="#rfc.section.11" rel="Chapter" title="11 Implementation Status"/>
+<link href="#rfc.section.11.1" rel="Chapter" title="11.1 DNS-STATS Compactor"/>
+<link href="#rfc.section.12" rel="Chapter" title="12 IANA Considerations"/>
+<link href="#rfc.section.13" rel="Chapter" title="13 Security Considerations"/>
+<link href="#rfc.section.14" rel="Chapter" title="14 Acknowledgements"/>
+<link href="#rfc.section.15" rel="Chapter" title="15 Changelog"/>
+<link href="#rfc.references" rel="Chapter" title="16 References"/>
+<link href="#rfc.references.1" rel="Chapter" title="16.1 Normative References"/>
+<link href="#rfc.references.2" rel="Chapter" title="16.2 Informative References"/>
+<link href="#rfc.appendix.A" rel="Chapter" title="A CDDL"/>
+<link href="#rfc.appendix.B" rel="Chapter" title="B DNS Name compression example"/>
+<link href="#rfc.appendix.B.1" rel="Chapter" title="B.1 NSD compression algorithm"/>
+<link href="#rfc.appendix.B.2" rel="Chapter" title="B.2 Knot Authoritative compression algorithm"/>
+<link href="#rfc.appendix.B.3" rel="Chapter" title="B.3 Observed differences"/>
+<link href="#rfc.appendix.C" rel="Chapter" title="C Comparison of Binary Formats"/>
+<link href="#rfc.appendix.C.1" rel="Chapter" title="C.1 Comparison with full PCAP files"/>
+<link href="#rfc.appendix.C.2" rel="Chapter" title="C.2 Simple versus block coding"/>
+<link href="#rfc.appendix.C.3" rel="Chapter" title="C.3 Binary versus text formats"/>
+<link href="#rfc.appendix.C.4" rel="Chapter" title="C.4 Performance"/>
+<link href="#rfc.appendix.C.5" rel="Chapter" title="C.5 Conclusions"/>
+<link href="#rfc.appendix.C.6" rel="Chapter" title="C.6 Block size choice"/>
+<link href="#rfc.authors" rel="Chapter"/>
+
+
+  <meta name="generator" content="xml2rfc version 2.5.1 - http://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="Dickinson, J., Hague, J., Dickinson, S., Manderson, T., and J. Bond" />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-ietf-dnsop-dns-capture-format-04" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-1-3" />
+  <meta name="dct.abstract" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
+  <meta name="description" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+  <td class="left">dnsop</td>
+  <td class="right">J. Dickinson</td>
+</tr>
+<tr>
+  <td class="left">Internet-Draft</td>
+  <td class="right">J. Hague</td>
+</tr>
+<tr>
+  <td class="left">Intended status: Standards Track</td>
+  <td class="right">S. Dickinson</td>
+</tr>
+<tr>
+  <td class="left">Expires: July 7, 2018</td>
+  <td class="right">Sinodun IT</td>
+</tr>
+<tr>
+  <td class="left"></td>
+  <td class="right">T. Manderson</td>
+</tr>
+<tr>
+  <td class="left"></td>
+  <td class="right">J. Bond</td>
+</tr>
+<tr>
+  <td class="left"></td>
+  <td class="right">ICANN</td>
+</tr>
+<tr>
+  <td class="left"></td>
+  <td class="right">January 3, 2018</td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">C-DNS: A DNS Packet Capture Format<br />
+  <span class="filename">draft-ietf-dnsop-dns-capture-format-04</span></p>
+  
+  <h1 id="rfc.abstract">
+  <a href="#rfc.abstract">Abstract</a>
+</h1>
+<p>This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  </p>
+<h1 id="rfc.status">
+  <a href="#rfc.status">Status of This Memo</a>
+</h1>
+<p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
+<p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
+<p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
+<p>This Internet-Draft will expire on July 7, 2018.</p>
+<h1 id="rfc.copyrightnotice">
+  <a href="#rfc.copyrightnotice">Copyright Notice</a>
+</h1>
+<p>Copyright (c) 2018 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a></li>
+<li>2.   <a href="#rfc.section.2">Terminology</a></li>
+<li>3.   <a href="#rfc.section.3">Data Collection Use Cases</a></li>
+<li>4.   <a href="#rfc.section.4">Design Considerations</a></li>
+<li>5.   <a href="#rfc.section.5">Conceptual Overview</a></li>
+<li>6.   <a href="#rfc.section.6">Choice of CBOR</a></li>
+<li>7.   <a href="#rfc.section.7">The C-DNS format</a></li>
+<ul><li>7.1.   <a href="#rfc.section.7.1">CDDL definition</a></li>
+<li>7.2.   <a href="#rfc.section.7.2">Format overview</a></li>
+<li>7.3.   <a href="#rfc.section.7.3">File header contents</a></li>
+<li>7.4.   <a href="#rfc.section.7.4">File preamble contents</a></li>
+<li>7.5.   <a href="#rfc.section.7.5">Configuration contents</a></li>
+<li>7.6.   <a href="#rfc.section.7.6">Block contents</a></li>
+<li>7.7.   <a href="#rfc.section.7.7">Block preamble map</a></li>
+<li>7.8.   <a href="#rfc.section.7.8">Block statistics</a></li>
+<li>7.9.   <a href="#rfc.section.7.9">Block table map</a></li>
+<li>7.10.   <a href="#rfc.section.7.10">IP address table</a></li>
+<li>7.11.   <a href="#rfc.section.7.11">Class/Type table</a></li>
+<li>7.12.   <a href="#rfc.section.7.12">Name/RDATA table</a></li>
+<li>7.13.   <a href="#rfc.section.7.13">Query Signature table</a></li>
+<li>7.14.   <a href="#rfc.section.7.14">Question table</a></li>
+<li>7.15.   <a href="#rfc.section.7.15">Resource Record (RR) table</a></li>
+<li>7.16.   <a href="#rfc.section.7.16">Question list table</a></li>
+<li>7.17.   <a href="#rfc.section.7.17">Resource Record list table</a></li>
+<li>7.18.   <a href="#rfc.section.7.18">Query/Response data</a></li>
+<li>7.19.   <a href="#rfc.section.7.19">Address Event counts</a></li>
+<li>7.20.   <a href="#rfc.section.7.20">Malformed packet records</a></li>
+</ul><li>8.   <a href="#rfc.section.8">Malformed Packets</a></li>
+<li>9.   <a href="#rfc.section.9">C-DNS to PCAP</a></li>
+<ul><li>9.1.   <a href="#rfc.section.9.1">Name Compression</a></li>
+</ul><li>10.   <a href="#rfc.section.10">Data Collection</a></li>
+<ul><li>10.1.   <a href="#rfc.section.10.1">Matching algorithm</a></li>
+<li>10.2.   <a href="#rfc.section.10.2">Message identifiers</a></li>
+<ul><li>10.2.1.   <a href="#rfc.section.10.2.1">Primary ID (required)</a></li>
+<li>10.2.2.   <a href="#rfc.section.10.2.2">Secondary ID (optional)</a></li>
+</ul><li>10.3.   <a href="#rfc.section.10.3">Algorithm Parameters</a></li>
+<li>10.4.   <a href="#rfc.section.10.4">Algorithm Requirements</a></li>
+<li>10.5.   <a href="#rfc.section.10.5">Algorithm Limitations</a></li>
+<li>10.6.   <a href="#rfc.section.10.6">Workspace</a></li>
+<li>10.7.   <a href="#rfc.section.10.7">Output</a></li>
+<li>10.8.   <a href="#rfc.section.10.8">Post Processing</a></li>
+</ul><li>11.   <a href="#rfc.section.11">Implementation Status</a></li>
+<ul><li>11.1.   <a href="#rfc.section.11.1">DNS-STATS Compactor</a></li>
+</ul><li>12.   <a href="#rfc.section.12">IANA Considerations</a></li>
+<li>13.   <a href="#rfc.section.13">Security Considerations</a></li>
+<li>14.   <a href="#rfc.section.14">Acknowledgements</a></li>
+<li>15.   <a href="#rfc.section.15">Changelog</a></li>
+<li>16.   <a href="#rfc.references">References</a></li>
+<ul><li>16.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>16.2.   <a href="#rfc.references.2">Informative References</a></li>
+</ul><li>Appendix A.   <a href="#rfc.appendix.A">CDDL</a></li>
+<li>Appendix B.   <a href="#rfc.appendix.B">DNS Name compression example</a></li>
+<ul><li>B.1.   <a href="#rfc.appendix.B.1">NSD compression algorithm</a></li>
+<li>B.2.   <a href="#rfc.appendix.B.2">Knot Authoritative compression algorithm</a></li>
+<li>B.3.   <a href="#rfc.appendix.B.3">Observed differences</a></li>
+</ul><li>Appendix C.   <a href="#rfc.appendix.C">Comparison of Binary Formats</a></li>
+<ul><li>C.1.   <a href="#rfc.appendix.C.1">Comparison with full PCAP files</a></li>
+<li>C.2.   <a href="#rfc.appendix.C.2">Simple versus block coding</a></li>
+<li>C.3.   <a href="#rfc.appendix.C.3">Binary versus text formats</a></li>
+<li>C.4.   <a href="#rfc.appendix.C.4">Performance</a></li>
+<li>C.5.   <a href="#rfc.appendix.C.5">Conclusions</a></li>
+<li>C.6.   <a href="#rfc.appendix.C.6">Block size choice</a></li>
+</ul><li><a href="#rfc.authors">Authors' Addresses</a></li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a></h1>
+<p id="rfc.section.1.p.1">There has long been a need to collect DNS queries and responses on authoritative and recursive name servers for monitoring and analysis.  This data is used in a number of ways including traffic monitoring, analyzing network attacks and "day in the life" (DITL) <a href="#ditl">[ditl]</a> analysis.  </p>
+<p id="rfc.section.1.p.2">A wide variety of tools already exist that facilitate the collection of DNS traffic data, such as DSC <a href="#dsc">[dsc]</a>, packetq <a href="#packetq">[packetq]</a>, dnscap <a href="#dnscap">[dnscap]</a> and dnstap <a href="#dnstap">[dnstap]</a>.  However, there is no standard exchange format for large DNS packet captures.  The PCAP <a href="#pcap">[pcap]</a> or PCAP-NG <a href="#pcapng">[pcapng]</a> formats are typically used in practice for packet captures, but these file formats can contain a great deal of additional information that is not directly pertinent to DNS traffic analysis and thus unnecessarily increases the capture file size.  </p>
+<p id="rfc.section.1.p.3">There has also been work on using text based formats to describe DNS packets such as <a href="#I-D.daley-dnsxml">[I-D.daley-dnsxml]</a>, <a href="#I-D.hoffman-dns-in-json">[I-D.hoffman-dns-in-json]</a>, but these are largely aimed at producing convenient representations of single messages.  </p>
+<p id="rfc.section.1.p.4">Many DNS operators may receive hundreds of thousands of queries per second on a single name server instance so a mechanism to minimize the storage size (and therefore upload overhead) of the data collected is highly desirable.  </p>
+<p id="rfc.section.1.p.5">The format described in this document, C-DNS (Compacted-DNS), focusses on the problem of capturing and storing large packet capture files of DNS traffic. with the following goals in mind: </p>
+<p/>
+
+<ul>
+  <li>Minimize the file size for storage and transmission</li>
+  <li>Minimizing the overhead of producing the packet capture file and the cost of any further (general purpose) compression of the file</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.1.p.7">This document contains: </p>
+<p/>
+
+<ul>
+  <li>A discussion of the some common use cases in which such DNS data is collected <a href="#data-collection-use-cases">Section 3</a></li>
+  <li>A discussion of the major design considerations in developing an efficient data representation for collections of DNS messages <a href="#design-considerations">Section 4</a></li>
+  <li>A conceptual overview of the C-DNS format <a href="#conceptual-overview">Section 5</a></li>
+  <li>A description of why CBOR <a href="#RFC7049">[RFC7049]</a> was chosen for this format <a href="#choice-of-cbor">Section 6</a></li>
+  <li>The definition of the C-DNS format for the collection of DNS messages <a href="#the-cdns-format">Section 7</a>.</li>
+  <li>Notes on converting C-DNS data to PCAP format <a href="#cdns-to-pcap">Section 9</a></li>
+  <li>Some high level implementation considerations for applications designed to produce C-DNS <a href="#data-collection">Section 10</a></li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#terminology" id="terminology">Terminology</a></h1>
+<p id="rfc.section.2.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC2119">[RFC2119]</a>.  </p>
+<p id="rfc.section.2.p.2">"Packet" refers to individual IPv4 or IPv6 packets. Typically these are UDP, but may be constructed from a TCP packet. "Message", unless otherwise qualified, refers to a DNS payload extracted from a UDP or TCP data stream.  </p>
+<p id="rfc.section.2.p.3">The parts of DNS messages are named as they are in <a href="#RFC1035">[RFC1035]</a>. In specific, the DNS message has five sections: Header, Question, Answer, Authority, and Additional.  </p>
+<p id="rfc.section.2.p.4">Pairs of DNS messages are called a Query and a Response.  </p>
+<h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#data-collection-use-cases" id="data-collection-use-cases">Data Collection Use Cases</a></h1>
+<p id="rfc.section.3.p.1">In an ideal world, it would be optimal to collect full packet captures of all packets going in or out of a name server. However, there are several design choices or other limitations that are common to many DNS installations and operators.  </p>
+<p/>
+
+<ul>
+  <li>DNS servers are hosted in a variety of situations <ul><li>Self-hosted servers</li><li>Third party hosting (including multiple third parties)</li><li>Third party hardware (including multiple third parties)</li></ul></li>
+  <li>Data is collected under different conditions <ul><li>On well-provisioned servers running in a steady state</li><li>On heavily loaded servers</li><li>On virtualized servers</li><li>On servers that are under DoS attack</li><li>On servers that are unwitting intermediaries in DoS attacks</li></ul></li>
+  <li>Traffic can be collected via a variety of mechanisms <ul><li>On the same hardware as the name server itself</li><li>Using a network tap on an adjacent host to listen to DNS traffic</li><li>Using port mirroring to listen from another host</li></ul></li>
+  <li>The capabilities of data collection (and upload) networks vary <ul><li>Out-of-band networks with the same capacity as the in-band network</li><li>Out-of-band networks with less capacity than the in-band network</li><li>Everything being on the in-band network</li></ul></li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.3.p.3">Thus, there is a wide range of use cases from very limited data collection environments (third party hardware, servers that are under attack, packet capture on the name server itself and no out-of-band network) to "limitless" environments (self hosted, well provisioned servers, using a network tap or port mirroring with an out-of-band networks with the same capacity as the in-band network).  In the former, it is infeasible to reliably collect full packet captures, especially if the server is under attack. In the latter case, collection of full packet captures may be reasonable.  </p>
+<p id="rfc.section.3.p.4">As a result of these restrictions, the C-DNS data format was designed with the most limited use case in mind such that: </p>
+<p/>
+
+<ul>
+  <li>data collection will occur on the same hardware as the name server itself</li>
+  <li>collected data will be stored on the same hardware as the name server itself, at least temporarily</li>
+  <li>collected data being returned to some central analysis system will use the same network interface as the DNS queries and responses</li>
+  <li>there can be multiple third party servers involved</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.3.p.6">Because of these considerations, a major factor in the design of the format is minimal storage size of the capture files.  </p>
+<p id="rfc.section.3.p.7">Another significant consideration for any application that records DNS traffic is that the running of the name server software and the transmission of DNS queries and responses are the most important jobs of a name server; capturing data is not.  Any data collection system co-located with the name server needs to be intelligent enough to carefully manage its CPU, disk, memory and network utilization. This leads to designing a format that requires a relatively low overhead to produce and minimizes the requirement for further potentially costly compression.  </p>
+<p id="rfc.section.3.p.8">However, it was also essential that interoperability with less restricted infrastructure was maintained. In particular, it is highly desirable that the collection format should facilitate the re-creation of common formats (such as PCAP) that are as close to the original as is realistic given the restrictions above.  </p>
+<h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#design-considerations" id="design-considerations">Design Considerations</a></h1>
+<p id="rfc.section.4.p.1">This section presents some of the major design considerations used in the development of the C-DNS format.  </p>
+<p/>
+
+<ol>
+  <li>The basic unit of data is a combined DNS Query and the associated Response (a "Q/R data item"). The same structure will be used for unmatched Queries and Responses. Queries without Responses will be captured omitting the response data. Responses without queries will be captured omitting the Query data (but using the Question section from the response, if present, as an identifying QNAME).  <ul><li>Rationale: A Query and Response represents the basic level of a clients interaction with the server. Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data of the two messages.</li></ul></li>
+  <li>Each Q/R data item will comprise a default Q/R data description and a set of optional sections.  Inclusion of optional sections shall be configurable.  <ul><li>Rationale: Different users will have different requirements for data to be available for analysis.  Users with minimal requirements should not have to pay the cost of recording full data, however this will limit the ability to reconstruct packet captures. For example, omitting the resource records from a Response will reduce the files size, and in principle responses can be synthesized if there is enough context.</li></ul></li>
+  <li>Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.  <ul><li>Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.  Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.</li><li>It is anticipated that the files produced can be subject to further compression using general purpose compression tools.  Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See <a href="#simple-versus-block-coding">Appendix C.2</a>.</li><li>[TODO: Further discussion of commonality between DNS messages e.g. common query signatures, a finite set of valid responses from authoritatives]</li></ul></li>
+  <li>Metadata about other packets received can optionally be included in each block. For example, counts of malformed DNS packets and non-DNS packets (e.g. ICMP, TCP resets) sent to the server may be of interest.</li>
+  <li>The wire format content of malformed DNS packets can optionally be recorded.  <ul><li>Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in that it cannot represent "malformed" DNS packets (see <a href="#malformed-packets">Section 8</a>). Only those packets that can be transformed reasonably into the structured format can be represented by the format. However this can result in rather misleading statistics. For example, a malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS packets available directly in the C-DNS file.</li></ul></li>
+</ol>
+
+<p> </p>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#conceptual-overview" id="conceptual-overview">Conceptual Overview</a></h1>
+<p id="rfc.section.5.p.1">The following figures show purely schematic representations of the C-DNS format to convey the high-level structure of the C-DNS format. <a href="#the-cdns-format">Section 7</a> provides a detailed discussion of the CBOR representation and individual elements.  </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/cdns_format.png">Figure showing the C-DNS format (PNG)</a> </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/cdns_format.svg">Figure showing the C-DNS format (SVG)</a> </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/qr_data_format.png">Figure showing the Q/R data item and Block tables format (PNG)</a> </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/qr_data_format.svg">Figure showing the Q/R data item and Block tables format (SVG)</a> </p>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#choice-of-cbor" id="choice-of-cbor">Choice of CBOR</a></h1>
+<p id="rfc.section.6.p.1">This document presents a detailed format description using CBOR, the Concise Binary Object Representation defined in <a href="#RFC7049">[RFC7049]</a>.  </p>
+<p id="rfc.section.6.p.2">The choice of CBOR was made taking a number of factors into account.  </p>
+<p/>
+
+<ul>
+  <li>CBOR is a binary representation, and thus is economical in storage space.</li>
+  <li>Other binary representations were investigated, and whilst all had attractive features, none had a significant advantage over CBOR. See <a href="#comparison-of-binary-formats">Appendix C</a> for some discussion of this.</li>
+  <li>CBOR is an IETF standard and familiar to IETF participants. It is based on the now-common ideas of lists and objects, and thus requires very little familiarization for those in the wider industry.</li>
+  <li>CBOR is a simple format, and can easily be implemented from scratch if necessary. More complex formats require library support which may present problems on unusual platforms.</li>
+  <li>CBOR can also be easily converted to text formats such as JSON (<a href="#RFC7159">[RFC7159]</a>) for debugging and other human inspection requirements.</li>
+  <li>CBOR data schemas can be described using CDDL <a href="#I-D.greevenbosch-appsawg-cbor-cddl">[I-D.greevenbosch-appsawg-cbor-cddl]</a>.</li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> <a href="#the-cdns-format" id="the-cdns-format">The C-DNS format</a></h1>
+<h1 id="rfc.section.7.1"><a href="#rfc.section.7.1">7.1.</a> <a href="#cddl-definition" id="cddl-definition">CDDL definition</a></h1>
+<p id="rfc.section.7.1.p.1">The CDDL definition for the C-DNS format is given in <a href="#cddl">Appendix A</a>.  </p>
+<h1 id="rfc.section.7.2"><a href="#rfc.section.7.2">7.2.</a> <a href="#format-overview" id="format-overview">Format overview</a></h1>
+<p id="rfc.section.7.2.p.1">A C-DNS file begins with a file header containing a file type identifier and a preamble. The preamble contains information on the collection settings.  </p>
+<p id="rfc.section.7.2.p.2">The file header is followed by a series of data blocks.  </p>
+<p id="rfc.section.7.2.p.3">A block consists of a block header, containing various tables of common data, and some statistics for the traffic received over the block. The block header is then followed by a list of the Q/R data items detailing the queries and responses received during processing of the block input. The list of Q/R data items is in turn followed by a list of per-client counts of particular IP events that occurred during collection of the block data.  </p>
+<p id="rfc.section.7.2.p.4">The exact nature of the DNS data will affect what block size is the best fit, however sample data for a root server indicated that block sizes up to 10,000 Q/R data items give good results. See <a href="#block-size-choice">Appendix C.6</a> for more details.  </p>
+<p id="rfc.section.7.2.p.5">If no field type is specified, then the field is unsigned.  </p>
+<p id="rfc.section.7.2.p.6">In all quantities that contain bit flags, bit 0 indicates the least significant bit.  An item described as an index is the index of the Q/R data item in the referenced table.  Indexes are 1-based. An index value of 0 is reserved to mean "not present".  </p>
+<p id="rfc.section.7.2.p.7">All map keys are unsigned integers with values specified in the CDDL (string keys would significantly bloat the file size).  </p>
+<h1 id="rfc.section.7.3"><a href="#rfc.section.7.3">7.3.</a> <a href="#file-header-contents" id="file-header-contents">File header contents</a></h1>
+<p id="rfc.section.7.3.p.1">The file header contains the following: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">file-type-id</td>
+      <td class="left">Text string</td>
+      <td class="left">String "C-DNS" identifying the file type.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">file-preamble</td>
+      <td class="left">Map of items</td>
+      <td class="left">Collection information for the whole file.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">file-blocks</td>
+      <td class="left">Array of Blocks</td>
+      <td class="left">The data blocks.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.4"><a href="#rfc.section.7.4">7.4.</a> <a href="#file-preamble-contents" id="file-preamble-contents">File preamble contents</a></h1>
+<p id="rfc.section.7.4.p.1">The file preamble contains the following: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">major-format-version</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Unsigned integer '1'. The major version of format used in file.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">minor-format-version</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Unsigned integer '0'. The minor version of format used in file.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">private-version</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Version indicator available for private use by applications. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">configuration</td>
+      <td class="left">Map of items</td>
+      <td class="left">The collection configuration. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">generator-id</td>
+      <td class="left">Text string</td>
+      <td class="left">String identifying the collection program. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">host-id</td>
+      <td class="left">Text string</td>
+      <td class="left">String identifying the collecting host. Empty if converting an existing packet capture file. Optional.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.5"><a href="#rfc.section.7.5">7.5.</a> <a href="#configuration-contents" id="configuration-contents">Configuration contents</a></h1>
+<p id="rfc.section.7.5.p.1">The collection configuration contains the following items. All are optional.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">query-timeout</td>
+      <td class="left">Unsigned</td>
+      <td class="left">To be matched with a query, a response must arrive within this number of seconds.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">skew-timeout</td>
+      <td class="left">Unsigned</td>
+      <td class="left">The network stack may report a response before the corresponding query. A response is not considered to be missing a query until after this many micro-seconds.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">snaplen</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Collect up to this many bytes per packet.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">promisc</td>
+      <td class="left">Unsigned</td>
+      <td class="left">1 if promiscuous mode was enabled on the interface, 0 otherwise.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">interfaces</td>
+      <td class="left">Array of text strings</td>
+      <td class="left">Identifiers of the interfaces used for collection.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">server-addresses</td>
+      <td class="left">Array of byte strings</td>
+      <td class="left">Server collection IP addresses. Hint for downstream analysers; does not affect collection.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">vlan-ids</td>
+      <td class="left">Array of unsigned</td>
+      <td class="left">Identifiers of VLANs selected for collection.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">filter</td>
+      <td class="left">Text string</td>
+      <td class="left">'tcpdump' <a href="#pcap">[pcap]</a> style filter for input.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-options</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Bit flags indicating sections in Query messages to be collected.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 0. Collect second and subsequent Questions in the Question section.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 1. Collect Answer sections.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 2. Collect Authority sections.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 3. Collection Additional sections.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">response-options</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Bit flags indicating sections in Response messages to be collected.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 0. Collect second and subsequent Questions in the Question section.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 1. Collect Answer sections.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 2. Collect Authority sections.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 3. Collection Additional sections.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">accept-rr-types</td>
+      <td class="left">Array of text strings</td>
+      <td class="left">A set of RR type names <a href="#rrtypes">[rrtypes]</a>. If not empty, only the nominated RR types are collected.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">ignore-rr-types</td>
+      <td class="left">Array of text strings</td>
+      <td class="left">A set of RR type names <a href="#rrtypes">[rrtypes]</a>. If not empty, all RR types are collected except those listed. If present, this item must be empty if a non-empty list of Accept RR types is present.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">max-block-qr-items</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Maximum number of Q/R data items in a block.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">collect-malformed</td>
+      <td class="left">Unsigned</td>
+      <td class="left">1 if malformed packet contents are collected, 0 otherwise.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.6"><a href="#rfc.section.7.6">7.6.</a> <a href="#block-contents" id="block-contents">Block contents</a></h1>
+<p id="rfc.section.7.6.p.1">Each block contains the following: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">preamble</td>
+      <td class="left">Map of items</td>
+      <td class="left">Overall information for the block.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">statistics</td>
+      <td class="left">Map of statistics</td>
+      <td class="left">Statistics about the block. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">tables</td>
+      <td class="left">Map of tables</td>
+      <td class="left">The tables containing data referenced by individual Q/R data items.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">queries</td>
+      <td class="left">Array of Q/R data items</td>
+      <td class="left">Details of individual Q/R data items.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">address-event-counts</td>
+      <td class="left">Array of Address Event counts</td>
+      <td class="left">Per client counts of ICMP messages and TCP resets. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">malformed-packet-data</td>
+      <td class="left">Array of malformed packets</td>
+      <td class="left">Wire contents of malformed packets. Optional.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.7"><a href="#rfc.section.7.7">7.7.</a> <a href="#block-preamble-map" id="block-preamble-map">Block preamble map</a></h1>
+<p id="rfc.section.7.7.p.1">The block preamble map contains overall information for the block.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">earliest-time</td>
+      <td class="left">Array of unsigned</td>
+      <td class="left">A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two or three elements. The first two elements are as in Posix struct timeval. The first element is an unsigned integer time_t and the second is an unsigned integer number of microseconds. The third, if present, is an unsigned integer number of picoseconds. The microsecond and picosecond items always have a value between 0 and 999,999.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.8"><a href="#rfc.section.7.8">7.8.</a> <a href="#block-statistics" id="block-statistics">Block statistics</a></h1>
+<p id="rfc.section.7.8.p.1">The block statistics section contains some basic statistical information about the block. All are optional.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">total-packets</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Total number of packets processed from the input traffic stream during collection of the block data.</td>
+    </tr>
+    <tr>
+      <td class="left">total-pairs</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Total number of Q/R data items in the block.</td>
+    </tr>
+    <tr>
+      <td class="left">unmatched-queries</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Number of unmatched queries in the block.</td>
+    </tr>
+    <tr>
+      <td class="left">unmatched-responses</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Number of unmatched responses in the block.</td>
+    </tr>
+    <tr>
+      <td class="left">malformed-packets</td>
+      <td class="left">Unsigned</td>
+      <td class="left">Number of malformed packets found in input for the block.</td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.7.8.p.2">Implementations may choose to add additional implementation-specific fields to the statistics.  </p>
+<h1 id="rfc.section.7.9"><a href="#rfc.section.7.9">7.9.</a> <a href="#block-table-map" id="block-table-map">Block table map</a></h1>
+<p id="rfc.section.7.9.p.1">The block table map contains the block tables. Each element, or table, is an array. The following tables detail the contents of each block table.  </p>
+<p id="rfc.section.7.9.p.2">The Present column in the following tables indicates the circumstances when an optional field will be present. A Q/R data item may be: </p>
+<p/>
+
+<ul>
+  <li>A Query plus a Response.</li>
+  <li>A Query without a Response.</li>
+  <li>A Response without a Query.</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.7.9.p.4">Also: </p>
+<p/>
+
+<ul>
+  <li>A Query and/or a Response may contain an OPT section.</li>
+  <li>A Question may or may not be present. If the Query is available, the Question section of the Query is used. If no Query is available, the Question section of the Response is used. Unless otherwise noted, a Question refers to the first Question in the Question section.</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.7.9.p.6">So, for example, a field listed with a Present value of QUERY is present whenever the Q/R data item contains a Query. If the pair contains a Response only, the field will not be present.  </p>
+<h1 id="rfc.section.7.10"><a href="#rfc.section.7.10">7.10.</a> <a href="#ip-address-table" id="ip-address-table">IP address table</a></h1>
+<p id="rfc.section.7.10.p.1">The table <samp>ip-address</samp> holds all client and server IP addresses in the block. Each item in the table is a single IP address.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">ip-address</td>
+      <td class="left">Byte string</td>
+      <td class="left">The IP address, in network byte order. The string is 4 bytes long for an IPv4 address, 16 bytes long for an IPv6 address.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.11"><a href="#rfc.section.7.11">7.11.</a> <a href="#classtype-table" id="classtype-table">Class/Type table</a></h1>
+<p id="rfc.section.7.11.p.1">The table <samp>classtype</samp> holds pairs of RR CLASS and TYPE values. Each item in the table is a CBOR map.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">type</td>
+      <td class="left">Unsigned</td>
+      <td class="left">TYPE value.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">class</td>
+      <td class="left">Unsigned</td>
+      <td class="left">CLASS value.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.12"><a href="#rfc.section.7.12">7.12.</a> <a href="#namerdata-table" id="namerdata-table">Name/RDATA table</a></h1>
+<p id="rfc.section.7.12.p.1">The table <samp>name-rdata</samp> holds the contents of all NAME or RDATA items in the block. Each item in the table is the content of a single NAME or RDATA.  </p>
+<p id="rfc.section.7.12.p.2">Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">name-rdata</td>
+      <td class="left">Byte string</td>
+      <td class="left">The NAME or RDATA contents (uncompressed).</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.13"><a href="#rfc.section.7.13">7.13.</a> <a href="#query-signature-table" id="query-signature-table">Query Signature table</a></h1>
+<p id="rfc.section.7.13.p.1">The table <samp>query-sig</samp> holds elements of the Q/R data item that are often common between multiple individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned integer key.  </p>
+<p id="rfc.section.7.13.p.2">The following abbreviations are used in the Present (P) column </p>
+<p/>
+
+<ul>
+  <li>Q = QUERY</li>
+  <li>A = Always</li>
+  <li>QT = QUESTION</li>
+  <li>QO = QUERY, OPT</li>
+  <li>QR = QUERY &amp; RESPONSE</li>
+  <li>R = RESPONSE</li>
+</ul>
+
+<p> </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">P</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">server-address-index</td>
+      <td class="left">A</td>
+      <td class="left">The index in the IP address table of the server IP address.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">server-port</td>
+      <td class="left">A</td>
+      <td class="left">The server port.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">transport-flags</td>
+      <td class="left">A</td>
+      <td class="left">Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 0. Transport type. 0 = UDP, 1 = TCP.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 1. IP type. 0 = IPv4, 1 = IPv6.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 2. Trailing bytes in query payload. The DNS query message in the UDP payload was followed by some additional bytes, which were discarded.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">qr-sig-flags</td>
+      <td class="left">A</td>
+      <td class="left">Bit flags indicating information present in this Q/R data item. Bit 0 is the least significant bit.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 0. 1 if a Query is present.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 1. 1 if a Response is present.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 2. 1 if one or more Question is present.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 3. 1 if a Query is present and it has an OPT Resource Record.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 4. 1 if a Response is present and it has an OPT Resource Record.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 5. 1 if a Response is present but has no Question.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-opcode</td>
+      <td class="left">Q</td>
+      <td class="left">Query OPCODE. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">qr-dns-flags</td>
+      <td class="left">A</td>
+      <td class="left">Bit flags with values from the Query and Response DNS flags. Bit 0 is the least significant bit. Flag values are 0 if the Query or Response is not present.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 0. Query Checking Disabled (CD).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 1. Query Authenticated Data (AD).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 2. Query reserved (Z).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 3. Query Recursion Available (RA).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 4. Query Recursion Desired (RD).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 5. Query TrunCation (TC).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 6. Query Authoritative Answer (AA).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 7. Query DNSSEC answer OK (DO).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 8. Response Checking Disabled (CD).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 9. Response Authenticated Data (AD).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 10. Response reserved (Z).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 11. Response Recursion Available (RA).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 12. Response Recursion Desired (RD).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 13. Response TrunCation (TC).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">Bit 14. Response Authoritative Answer (AA).</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-rcode</td>
+      <td class="left">Q</td>
+      <td class="left">Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-classtype-index</td>
+      <td class="left">QT</td>
+      <td class="left">The index in the Class/Type table of the CLASS and TYPE of the first Question. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-qd-count</td>
+      <td class="left">QT</td>
+      <td class="left">The QDCOUNT in the Query, or Response if no Query present. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-an-count</td>
+      <td class="left">Q</td>
+      <td class="left">Query ANCOUNT. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-ar-count</td>
+      <td class="left">Q</td>
+      <td class="left">Query ARCOUNT. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-ns-count</td>
+      <td class="left">Q</td>
+      <td class="left">Query NSCOUNT. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">edns-version</td>
+      <td class="left">QO</td>
+      <td class="left">The Query EDNS version. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">udp-buf-size</td>
+      <td class="left">QO</td>
+      <td class="left">The Query EDNS sender's UDP payload size. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">opt-rdata-index</td>
+      <td class="left">QO</td>
+      <td class="left">The index in the NAME/RDATA table of the OPT RDATA. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">response-rcode</td>
+      <td class="left">R</td>
+      <td class="left">Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE. Optional.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.14"><a href="#rfc.section.7.14">7.14.</a> <a href="#question-table" id="question-table">Question table</a></h1>
+<p id="rfc.section.7.14.p.1">The table <samp>qrr</samp> holds details on individual Questions in a Question section. Each item in the table is a CBOR map containing a single Question. Each item in the map has an unsigned value and an unsigned integer key. This data is optionally collected.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">name-index</td>
+      <td class="left">The index in the NAME/RDATA table of the QNAME.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">classtype-index</td>
+      <td class="left">The index in the Class/Type table of the CLASS and TYPE of the Question.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.15"><a href="#rfc.section.7.15">7.15.</a> <a href="#resource-record-rr-table" id="resource-record-rr-table">Resource Record (RR) table</a></h1>
+<p id="rfc.section.7.15.p.1">The table <samp>rr</samp> holds details on individual Resource Records in RR sections. Each item in the table is a CBOR map containing a single Resource Record. This data is optionally collected.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">name-index</td>
+      <td class="left">The index in the NAME/RDATA table of the NAME.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">classtype-index</td>
+      <td class="left">The index in the Class/Type table of the CLASS and TYPE of the RR.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">ttl</td>
+      <td class="left">The RR Time to Live.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">rdata-index</td>
+      <td class="left">The index in the NAME/RDATA table of the RR RDATA.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.16"><a href="#rfc.section.7.16">7.16.</a> <a href="#question-list-table" id="question-list-table">Question list table</a></h1>
+<p id="rfc.section.7.16.p.1">The table <samp>qlist</samp> holds a list of second and subsequent individual Questions in a Question section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">question</td>
+      <td class="left">The index in the Question table of the individual Question.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.17"><a href="#rfc.section.7.17">7.17.</a> <a href="#resource-record-list-table" id="resource-record-list-table">Resource Record list table</a></h1>
+<p id="rfc.section.7.17.p.1">The table <samp>rrlist</samp> holds a list of individual Resource Records in a Answer, Authority or Additional section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">rr</td>
+      <td class="left">The index in the Resource Record table of the individual Resource Record.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.18"><a href="#rfc.section.7.18">7.18.</a> <a href="#queryresponse-data" id="queryresponse-data">Query/Response data</a></h1>
+<p id="rfc.section.7.18.p.1">The block Q/R data is a CBOR array of individual Q/R data items. Each item in the array is a CBOR map containing details on the individual Q/R data item.  </p>
+<p id="rfc.section.7.18.p.2">Note that there is no requirement that the elements of the Q/R array are presented in strict chronological order.  </p>
+<p id="rfc.section.7.18.p.3">The following abbreviations are used in the Present (P) column </p>
+<p/>
+
+<ul>
+  <li>Q = QUERY</li>
+  <li>A = Always</li>
+  <li>QT = QUESTION</li>
+  <li>QO = QUERY, OPT</li>
+  <li>QR = QUERY &amp; RESPONSE</li>
+  <li>R = RESPONSE</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.7.18.p.5">Each item in the map has an unsigned value (with the exception of those listed below) and an unsigned integer key.  </p>
+<p/>
+
+<ul>
+  <li>query-extended and response-extended which are of type Extended Information.</li>
+  <li>delay-useconds and delay-pseconds which are integers (The delay can be negative if the network stack/capture library returns them out of order.)</li>
+</ul>
+
+<p> </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">P</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">time-useconds</td>
+      <td class="left">A</td>
+      <td class="left">Q/R timestamp as an offset in microseconds from the Block preamble Timestamp. The timestamp is the timestamp of the Query, or the Response if there is no Query.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">time-pseconds</td>
+      <td class="left">A</td>
+      <td class="left">Picosecond component of the timestamp. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">client-address-index</td>
+      <td class="left">A</td>
+      <td class="left">The index in the IP address table of the client IP address.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">client-port</td>
+      <td class="left">A</td>
+      <td class="left">The client port.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">transaction-id</td>
+      <td class="left">A</td>
+      <td class="left">DNS transaction identifier.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-signature-index</td>
+      <td class="left">A</td>
+      <td class="left">The index of the Query Signature table record for this data item.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">client-hoplimit</td>
+      <td class="left">Q</td>
+      <td class="left">The IPv4 TTL or IPv6 Hoplimit from the Query packet. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">delay-useconds</td>
+      <td class="left">QR</td>
+      <td class="left">The time difference between Query and Response, in microseconds. Only present if there is a query and a response.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">delay-pseconds</td>
+      <td class="left">QR</td>
+      <td class="left">Picosecond component of the time different between Query and Response. If delay-useconds is non-zero then delay-pseconds (if present) MUST be of the same sign as delay-useconds, or be 0. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-name-index</td>
+      <td class="left">QT</td>
+      <td class="left">The index in the NAME/RDATA table of the QNAME for the first Question. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-size</td>
+      <td class="left">R</td>
+      <td class="left">DNS query message size (see below). Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">response-size</td>
+      <td class="left">R</td>
+      <td class="left">DNS query message size (see below). Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">query-extended</td>
+      <td class="left">Q</td>
+      <td class="left">Extended Query information. This item is only present if collection of extra Query information is configured. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">response-extended</td>
+      <td class="left">R</td>
+      <td class="left">Extended Response information. This item is only present if collection of extra Response information is configured. Optional.</td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.7.18.p.7">An implementation must always collect basic Q/R information. It may be configured to collect details on Question, Answer, Authority and Additional sections of the Query, the Response or both. Note that only the second and subsequent Questions of any Question section are collected (the details of the first are in the basic information), and that OPT Records are not collected in the Additional section.  </p>
+<p id="rfc.section.7.18.p.8">The query-size and response-size fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message and will therefore include any trailing bytes if present. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present. For TCP it is the size of the DNS message as specified in the two-byte message length header.  </p>
+<p id="rfc.section.7.18.p.9">The Extended information is a CBOR map as follows. Each item in the map is present only if collection of the relevant details is configured. Each item in the map has an unsigned value and an unsigned integer key.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">question-index</td>
+      <td class="left">The index in the Questions list table of the entry listing any second and subsequent Questions in the Question section for the Query or Response.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">answer-index</td>
+      <td class="left">The index in the RR list table of the entry listing the Answer Resource Record sections for the Query or Response.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">authority-index</td>
+      <td class="left">The index in the RR list table of the entry listing the Authority Resource Record sections for the Query or Response.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">additional-index</td>
+      <td class="left">The index in the RR list table of the entry listing the Additional Resource Record sections for the Query or Response.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.19"><a href="#rfc.section.7.19">7.19.</a> <a href="#address-event-counts" id="address-event-counts">Address Event counts</a></h1>
+<p id="rfc.section.7.19.p.1">This table holds counts of various IP related events relating to traffic with individual client addresses.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">ae-type</td>
+      <td class="left">Unsigned</td>
+      <td class="left">The type of event. The following events types are currently defined:</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">0. TCP reset.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">1. ICMP time exceeded.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">2. ICMP destination unreachable.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">3. ICMPv6 time exceeded.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">4. ICMPv6 destination unreachable.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left">5. ICMPv6 packet too big.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">ae-code</td>
+      <td class="left">Unsigned</td>
+      <td class="left">A code relating to the event. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">ae-address-index</td>
+      <td class="left">Unsigned</td>
+      <td class="left">The index in the IP address table of the client address.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">ae-count</td>
+      <td class="left">Unsigned</td>
+      <td class="left">The number of occurrences of this event during the block collection period.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.7.20"><a href="#rfc.section.7.20">7.20.</a> <a href="#malformed-packet-records" id="malformed-packet-records">Malformed packet records</a></h1>
+<p id="rfc.section.7.20.p.1">This optional table records the original wire format content of malformed packets (see <a href="#malformed-packets">Section 8</a>).  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Field</th>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">time-useconds</td>
+      <td class="left">A</td>
+      <td class="left">Packet timestamp as an offset in microseconds from the Block preamble Timestamp.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">time-pseconds</td>
+      <td class="left">A</td>
+      <td class="left">Picosecond component of the timestamp. Optional.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="left">packet-content</td>
+      <td class="left">Byte string</td>
+      <td class="left">The packet content in wire format.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.8"><a href="#rfc.section.8">8.</a> <a href="#malformed-packets" id="malformed-packets">Malformed Packets</a></h1>
+<p id="rfc.section.8.p.1">In the context of generating a C-DNS file it is assumed that only those packets which can be parsed to produce a well-formed DNS message are stored in the C-DNS format. This means as a minimum: </p>
+<p/>
+
+<ul>
+  <li>The packet has a well-formed 12 bytes DNS Header</li>
+  <li>The section counts are consistent with the section contents</li>
+  <li>All of the resource records can be parsed</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.8.p.3">In principle, packets that do not meet these criteria could be classified into two categories: </p>
+<p/>
+
+<ul>
+  <li>Partially malformed: those packets which can be decoded sufficiently to extract <ul><li>a DNS header (and therefore a DNS transaction ID)</li><li>a QDCOUNT</li><li>the first Question in the Question section if QDCOUNT is greater than 0</li></ul><p> but suffer other issues while parsing. This is the minimum information required to attempt Query/Response matching as described in </p><a href="#matching-algorithm">Section 10.1</a></li>
+  <li>Completely malformed: those packets that cannot be decoded to this extent.</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.8.p.5">An open question is whether there is value in attempting to process partially malformed packets in an analogous manner to well formed packets in terms of attempting to match them with the corresponding query or response. This could be done by creating 'placeholder' records during Query/Response matching with just the information extracted as above. If the packet were then matched the resulting C-DNS Q/R data item would include a flag to indicate a malformed record (in addition to capturing the wire format of the packet).  </p>
+<p id="rfc.section.8.p.6">An advantage of this would be that it would result in more meaningful statistics about matched packets because, for example, some partially malformed queries could be matched to responses. However it would only apply to those queries where the first Question is well formed. It could also simplify the downstream analysis of C-DNS files and the reconstruction of packet streams from C-DNS.  </p>
+<p id="rfc.section.8.p.7">A disadvantage is that this adds complexity to the Query/Response matching and data representation, could potentially lead to false matches and some additional statistics would be required (e.g. counts for matched-partially-malformed, unmatched-partially-malformed, completely-malformed).  </p>
+<h1 id="rfc.section.9"><a href="#rfc.section.9">9.</a> <a href="#cdns-to-pcap" id="cdns-to-pcap">C-DNS to PCAP</a></h1>
+<p id="rfc.section.9.p.1">It is possible to re-construct PCAP files from the C-DNS format in a lossy fashion.  Some of the issues with reconstructing both the DNS payload and the full packet stream are outlined here.  </p>
+<p id="rfc.section.9.p.2">The reconstruction depends on whether or not all the optional sections of both the query and response were captured in the C-DNS file.  Clearly, if they were not all captured, the reconstruction will be imperfect.  </p>
+<p id="rfc.section.9.p.3">Even if all sections of the response were captured, one cannot reconstruct the DNS response payload exactly due to the fact that some DNS names in the message on the wire may have been compressed.  <a href="#name-compression">Section 9.1</a> discusses this is more detail.  </p>
+<p id="rfc.section.9.p.4">Some transport information is not captured in the C-DNS format. For example, the following aspects of the original packet stream cannot be re-constructed from the C-DNS format: </p>
+<p/>
+
+<ul>
+  <li>IP fragmentation</li>
+  <li>TCP stream information: <ul><li>Multiple DNS messages may have been sent in a single TCP segment</li><li>A DNS payload may have be split across multiple TCP segments</li><li>Multiple DNS messages may have be sent on a single TCP session</li></ul></li>
+  <li>Malformed DNS messages if the wire format is not recorded</li>
+  <li>Any Non-DNS messages that were in the original packet stream e.g. ICMP</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.9.p.6">Simple assumptions can be made on the reconstruction: fragmented and DNS-over-TCP messages can be reconstructed into single packets and a single TCP session can be constructed for each TCP packet.  </p>
+<p id="rfc.section.9.p.7">Additionally, if malformed packets and Non-DNS packets are captured separately, they can be merged with packet captures reconstructed from C-DNS to produce a more complete packet stream.  </p>
+<h1 id="rfc.section.9.1"><a href="#rfc.section.9.1">9.1.</a> <a href="#name-compression" id="name-compression">Name Compression</a></h1>
+<p id="rfc.section.9.1.p.1">All the names stored in the C-DNS format are full domain names; no DNS style name compression is used on the individual names within the format. Therefore when reconstructing a packet, name compression must be used in order to reproduce the on the wire representation of the packet.  </p>
+<p><a href="#RFC1035">[RFC1035]</a> name compression works by substituting trailing sections of a name with a reference back to the occurrence of those sections earlier in the message.  Not all name server software uses the same algorithm when compressing domain names within the responses. Some attempt maximum recompression at the expense of runtime resources, others use heuristics to balance compression and speed and others use different rules for what is a valid compression target.  </p>
+<p id="rfc.section.9.1.p.3">This means that responses to the same question from different name server software which match in terms of DNS payload content (header, counts, RRs with name compression removed) do not necessarily match byte-for-byte on the wire.  </p>
+<p id="rfc.section.9.1.p.4">Therefore, it is not possible to ensure that the DNS response payload is reconstructed byte-for-byte from C-DNS data. However, it can at least, in principle, be reconstructed to have the correct payload length (since the original response length is captured) if there is enough knowledge of the commonly implemented name compression algorithms. For example, a simplistic approach would be to try each algorithm in turn to see if it reproduces the original length, stopping at the first match. This would not guarantee the correct algorithm has been used as it is possible to match the length whilst still not matching the on the wire bytes but, without further information added to the C-DNS data, this is the best that can be achieved.  </p>
+<p><a href="#dns-name-compression-example">Appendix B</a> presents an example of two different compression algorithms used by well-known name server software.  </p>
+<h1 id="rfc.section.10"><a href="#rfc.section.10">10.</a> <a href="#data-collection" id="data-collection">Data Collection</a></h1>
+<p id="rfc.section.10.p.1">This section describes a non-normative proposed algorithm for the processing of a captured stream of DNS queries and responses and matching queries/responses where possible.  </p>
+<p id="rfc.section.10.p.2">For the purposes of this discussion, it is assumed that the input has been pre-processed such that: </p>
+<p/>
+
+<ol>
+  <li>All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed</li>
+  <li>Each message is associated with transport metadata required to generate the Primary ID (see <a href="#primary-id">Section 10.2.1</a>)</li>
+  <li>Each message has a well-formed DNS header of 12 bytes and (if present) the first Question in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.</li>
+</ol>
+
+<p> </p>
+<p id="rfc.section.10.p.4">DNS messages are processed in the order they are delivered to the application.  It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.  </p>
+<p id="rfc.section.10.p.5">TODO: Discuss the corner cases resulting from this in more detail.  </p>
+<h1 id="rfc.section.10.1"><a href="#rfc.section.10.1">10.1.</a> <a href="#matching-algorithm" id="matching-algorithm">Matching algorithm</a></h1>
+<p id="rfc.section.10.1.p.1">A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram: </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/packet_matching.png">Figure showing the Query/Response matching algorithm format (PNG)</a> </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/packet_matching.svg">Figure showing the Query/Response matching algorithm format (SVG)</a> </p>
+<p id="rfc.section.10.1.p.4">Further details of the algorithm are given in the following sections.  </p>
+<h1 id="rfc.section.10.2"><a href="#rfc.section.10.2">10.2.</a> <a href="#message-identifiers" id="message-identifiers">Message identifiers</a></h1>
+<h1 id="rfc.section.10.2.1"><a href="#rfc.section.10.2.1">10.2.1.</a> <a href="#primary-id" id="primary-id">Primary ID (required)</a></h1>
+<p id="rfc.section.10.2.1.p.1">A Primary ID is constructed for each message. It is composed of the following data: </p>
+<p/>
+
+<ol>
+  <li>Source IP Address</li>
+  <li>Destination IP Address</li>
+  <li>Source Port</li>
+  <li>Destination Port</li>
+  <li>Transport</li>
+  <li>DNS Message ID</li>
+</ol>
+
+<p> </p>
+<h1 id="rfc.section.10.2.2"><a href="#rfc.section.10.2.2">10.2.2.</a> <a href="#secondary-id" id="secondary-id">Secondary ID (optional)</a></h1>
+<p id="rfc.section.10.2.2.p.1">If present, the first Question in the Question section is used as a secondary ID for each message. Note that there may be well formed DNS queries that have a QDCOUNT of 0, and some responses may have a QDCOUNT of 0 (for example, responses with RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used in matching.  </p>
+<h1 id="rfc.section.10.3"><a href="#rfc.section.10.3">10.3.</a> <a href="#algorithm-parameters" id="algorithm-parameters">Algorithm Parameters</a></h1>
+<p/>
+
+<ol>
+  <li>Query timeout</li>
+  <li>Skew timeout</li>
+</ol>
+
+<p> </p>
+<h1 id="rfc.section.10.4"><a href="#rfc.section.10.4">10.4.</a> <a href="#algorithm-requirements" id="algorithm-requirements">Algorithm Requirements</a></h1>
+<p id="rfc.section.10.4.p.1">The algorithm is designed to handle the following input data: </p>
+<p/>
+
+<ol>
+  <li>Multiple queries with the same Primary ID (but different Secondary ID) arriving before any responses for these queries are seen.</li>
+  <li>Multiple queries with the same Primary and Secondary ID arriving before any responses for these queries are seen.</li>
+  <li>Queries for which no later response can be found within the specified timeout.  <br/></li>
+  <li>Responses for which no previous query can be found within the specified timeout.</li>
+</ol>
+
+<p> </p>
+<h1 id="rfc.section.10.5"><a href="#rfc.section.10.5">10.5.</a> <a href="#algorithm-limitations" id="algorithm-limitations">Algorithm Limitations</a></h1>
+<p id="rfc.section.10.5.p.1">For cases 1 and 2 listed in the above requirements, it is not possible to unambiguously match queries with responses.  This algorithm chooses to match to the earliest query with the correct Primary and Secondary ID.  </p>
+<h1 id="rfc.section.10.6"><a href="#rfc.section.10.6">10.6.</a> <a href="#workspace" id="workspace">Workspace</a></h1>
+<p id="rfc.section.10.6.p.1">A FIFO structure is used to hold the Q/R data items during processing.  </p>
+<h1 id="rfc.section.10.7"><a href="#rfc.section.10.7">10.7.</a> <a href="#output" id="output">Output</a></h1>
+<p id="rfc.section.10.7.p.1">The output is a list of Q/R data items. Both the Query and Response elements are optional in these items, therefore Q/R data items have one of three types of content: </p>
+<p/>
+
+<ol>
+  <li>A matched pair of query and response messages</li>
+  <li>A query message with no response</li>
+  <li>A response message with no query</li>
+</ol>
+
+<p> </p>
+<p id="rfc.section.10.7.p.3">The timestamp of a list item is that of the query for cases 1 and 2 and that of the response for case 3.  </p>
+<h1 id="rfc.section.10.8"><a href="#rfc.section.10.8">10.8.</a> <a href="#post-processing" id="post-processing">Post Processing</a></h1>
+<p id="rfc.section.10.8.p.1">When ending capture, all remaining entries in the Q/R data item FIFO should be treated as timed out queries.  </p>
+<h1 id="rfc.section.11"><a href="#rfc.section.11">11.</a> <a href="#implementation-status" id="implementation-status">Implementation Status</a></h1>
+<p id="rfc.section.11.p.1">[Note to RFC Editor: please remove this section and reference to <a href="#RFC7942">[RFC7942]</a> prior to publication.] </p>
+<p id="rfc.section.11.p.2">This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in <a href="#RFC7942">[RFC7942]</a>.  The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs.  Please note that the listing of any individual implementation here does not imply endorsement by the IETF.  Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors.  This is not intended as, and must not be construed to be, a catalog of available implementations or their features.  Readers are advised to note that other implementations may exist.  </p>
+<p id="rfc.section.11.p.3">According to <a href="#RFC7942">[RFC7942]</a>, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature.  It is up to the individual working groups to use this information as they see fit".  </p>
+<h1 id="rfc.section.11.1"><a href="#rfc.section.11.1">11.1.</a> <a href="#dnsstats-compactor" id="dnsstats-compactor">DNS-STATS Compactor</a></h1>
+<p id="rfc.section.11.1.p.1">ICANN/Sinodun IT have developed an open source implementation called DNS-STATS Compactor.  The Compactor is a suite of tools which can capture DNS traffic (from either a network interface or a PCAP file) and store it in the Compacted-DNS (C-DNS) file format. PCAP files for the captured traffic can also be reconstructed. See <a href="https://github.com/dns-stats/compactor/wiki">Compactor</a>.  </p>
+<p id="rfc.section.11.1.p.2">This implementation: </p>
+<p/>
+
+<ul>
+  <li>is mature but has only been deployed for testing in a single environment so is not yet classified as production ready.</li>
+  <li>covers the whole of the specification described in the -03 draft with the exception of support for malformed packets (<a href="#malformed-packets">Section 8</a>) and pico second time resolution.  (Note: this implementation does allow malformed packets to be dumped to a PCAP file).</li>
+  <li>is released under the Mozilla Public License Version 2.0.</li>
+  <li>has a users mailing list available, see <a href="https://mm.dns-stats.org/mailman/listinfo/dns-stats-users">dns-stats-users</a>.</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.11.1.p.4">There is also some discussion of issues encountered during development available at <a href="https://www.sinodun.com/2017/06/compressing-pcap-files/">Compressing Pcap Files</a> and <a href="https://www.sinodun.com/2017/06/more-on-debian-jessieubuntu-trusty-packet-capture-woes/">Packet Capture</a>.  </p>
+<p id="rfc.section.11.1.p.5">This information was last updated on 29th of June 2017.  </p>
+<h1 id="rfc.section.12"><a href="#rfc.section.12">12.</a> <a href="#iana-considerations" id="iana-considerations">IANA Considerations</a></h1>
+<p id="rfc.section.12.p.1">None </p>
+<h1 id="rfc.section.13"><a href="#rfc.section.13">13.</a> <a href="#security-considerations" id="security-considerations">Security Considerations</a></h1>
+<p id="rfc.section.13.p.1">Any control interface MUST perform authentication and encryption.  </p>
+<p id="rfc.section.13.p.2">Any data upload MUST be authenticated and encrypted.  </p>
+<h1 id="rfc.section.14"><a href="#rfc.section.14">14.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a></h1>
+<p id="rfc.section.14.p.1">The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful discussions on binary formats, compression and packet matching. Also Jan Vcelak and Wouter Wijngaards for discussions on name compression and Paul Hoffman for a detailed review of the document and the C-DNS CDDL.  </p>
+<p id="rfc.section.14.p.2">Thanks also to Robert Edmonds and Jerry Lundstr&#246;m for review.  </p>
+<p id="rfc.section.14.p.3">Also, Miek Gieben for <a href="https://github.com/miekg/mmark">mmark</a> </p>
+<h1 id="rfc.section.15"><a href="#rfc.section.15">15.</a> <a href="#changelog" id="changelog">Changelog</a></h1>
+<p id="rfc.section.15.p.1">draft-ietf-dnsop-dns-capture-format-04 </p>
+<p/>
+
+<ul>
+  <li>Correct query-d0 to query-do in CDDL</li>
+  <li>Clarify that map keys are unsigned integers</li>
+  <li>Add Type to Class/type table</li>
+  <li>Clarify storage format in section 7.12</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.15.p.3">draft-ietf-dnsop-dns-capture-format-03 </p>
+<p/>
+
+<ul>
+  <li>Added an Implementation Status section</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.15.p.5">draft-ietf-dnsop-dns-capture-format-02 </p>
+<p/>
+
+<ul>
+  <li>Update qr_data_format.png to match CDDL</li>
+  <li>Editorial clarifications and improvements</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.15.p.7">draft-ietf-dnsop-dns-capture-format-01 </p>
+<p/>
+
+<ul>
+  <li>Many editorial improvements by Paul Hoffman</li>
+  <li>Included discussion of malformed packet handling</li>
+  <li>Improved Appendix C on Comparison of Binary Formats</li>
+  <li>Now using C-DNS field names in the tables in section 8</li>
+  <li>A handful of new fields included (CDDL updated)</li>
+  <li>Timestamps now include optional picoseconds</li>
+  <li>Added details of block statistics</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.15.p.9">draft-ietf-dnsop-dns-capture-format-00 </p>
+<p/>
+
+<ul>
+  <li>Changed dnstap.io to dnstap.info</li>
+  <li>qr_data_format.png was cut off at the bottom</li>
+  <li>Update authors address</li>
+  <li>Improve wording in Abstract</li>
+  <li>Changed DNS-STAT to C-DNS in CDDL</li>
+  <li>Set the format version in the CDDL</li>
+  <li>Added a TODO: Add block statistics</li>
+  <li>Added a TODO: Add extend to support pico/nano. Also do this for Time offset and Response delay</li>
+  <li>Added a TODO: Need to develop optional representation of malformed packets within C-DNS and what this means for packet matching.  This may influence which fields are optional in the rest of the representation.</li>
+  <li>Added section on design goals to Introduction</li>
+  <li>Added a TODO: Can Class be optimised?  Should a class of IN be inferred if not present?</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.15.p.11">draft-dickinson-dnsop-dns-capture-format-00 </p>
+<p/>
+
+<ul>
+  <li>Initial commit</li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.references"><a href="#rfc.references">16.</a> References</h1>
+<h1 id="rfc.references.1"><a href="#rfc.references.1">16.1.</a> Normative References</h1>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="RFC1035">[RFC1035]</b>
+      </td>
+      <td class="top"><a>Mockapetris, P.</a>, "<a href="http://tools.ietf.org/html/rfc1035">Domain names - implementation and specification</a>", STD 13, RFC 1035, DOI 10.17487/RFC1035, November 1987.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC2119">[RFC2119]</b>
+      </td>
+      <td class="top"><a>Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC7049">[RFC7049]</b>
+      </td>
+      <td class="top"><a>Bormann, C.</a> and <a>P. Hoffman</a>, "<a href="http://tools.ietf.org/html/rfc7049">Concise Binary Object Representation (CBOR)</a>", RFC 7049, DOI 10.17487/RFC7049, October 2013.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.references.2"><a href="#rfc.references.2">16.2.</a> Informative References</h1>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="ditl">[ditl]</b>
+      </td>
+      <td class="top"><a>DNS-OARC</a>, "<a href="https://www.dns-oarc.net/oarc/data/ditl">DITL</a>", 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="dnscap">[dnscap]</b>
+      </td>
+      <td class="top"><a>DNS-OARC</a>, "<a href="https://www.dns-oarc.net/tools/dnscap">DNSCAP</a>", 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="dnstap">[dnstap]</b>
+      </td>
+      <td class="top"><a>dnstap.info</a>, "<a href="http://dnstap.info/">dnstap</a>", 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="dsc">[dsc]</b>
+      </td>
+      <td class="top"><a title="Verisign">Wessels, D.</a> and <a title="DNS-OARC">J. Lundstrom</a>, "<a href="https://www.dns-oarc.net/tools/dsc">DSC</a>", 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="I-D.daley-dnsxml">[I-D.daley-dnsxml]</b>
+      </td>
+      <td class="top"><a>Daley, J.</a>, <a>Morris, S.</a> and <a>J. Dickinson</a>, "<a href="http://tools.ietf.org/html/draft-daley-dnsxml-00">dnsxml - A standard XML representation of DNS data</a>", Internet-Draft draft-daley-dnsxml-00, July 2013.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="I-D.greevenbosch-appsawg-cbor-cddl">[I-D.greevenbosch-appsawg-cbor-cddl]</b>
+      </td>
+      <td class="top"><a>Birkholz, H.</a>, <a>Vigano, C.</a> and <a>C. Bormann</a>, "<a href="http://tools.ietf.org/html/draft-greevenbosch-appsawg-cbor-cddl-11">Concise data definition language (CDDL): a notational convention to express CBOR data structures</a>", Internet-Draft draft-greevenbosch-appsawg-cbor-cddl-11, July 2017.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="I-D.hoffman-dns-in-json">[I-D.hoffman-dns-in-json]</b>
+      </td>
+      <td class="top"><a>Hoffman, P.</a>, "<a href="http://tools.ietf.org/html/draft-hoffman-dns-in-json-13">Representing DNS Messages in JSON</a>", Internet-Draft draft-hoffman-dns-in-json-13, October 2017.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="packetq">[packetq]</b>
+      </td>
+      <td class="top"><a>.SE - The Internet Infrastructure Foundation</a>, "<a href="https://github.com/dotse/PacketQ">PacketQ</a>", 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="pcap">[pcap]</b>
+      </td>
+      <td class="top"><a>tcpdump.org</a>, "<a href="http://www.tcpdump.org/">PCAP</a>", 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="pcapng">[pcapng]</b>
+      </td>
+      <td class="top"><a href="mailto:tuexen@fh-muenster.de" title="Muenster Univ. of Appl. Sciences">Tuexen, M.</a>, <a href="mailto:fulvio.risso@polito.it" title="Politecnico di Torino">Risso, F.</a>, <a href="mailto:jasper@packet-foo.com" title="Airbus DS CyberSecurity">Bongertz, J.</a>, <a href="mailto:gerald@wireshark.org" title="Wireshark">Combs, G.</a> and <a href="mailto:guy@alum.mit.edu">G. Harris</a>, "<a href="https://github.com/pcapng/pcapng">pcap-ng</a>", 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC7159">[RFC7159]</b>
+      </td>
+      <td class="top"><a>Bray, T.</a>, "<a href="http://tools.ietf.org/html/rfc7159">The JavaScript Object Notation (JSON) Data Interchange Format</a>", RFC 7159, DOI 10.17487/RFC7159, March 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC7942">[RFC7942]</b>
+      </td>
+      <td class="top"><a>Sheffer, Y.</a> and <a>A. Farrel</a>, "<a href="http://tools.ietf.org/html/rfc7942">Improving Awareness of Running Code: The Implementation Status Section</a>", BCP 205, RFC 7942, DOI 10.17487/RFC7942, July 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="rrtypes">[rrtypes]</b>
+      </td>
+      <td class="top"><a>IANA</a>, "<a href="http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4">RR types</a>", 2016.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.appendix.A"><a href="#rfc.appendix.A">Appendix A.</a> <a href="#cddl" id="cddl">CDDL</a></h1>
+<pre>
+; CDDL specification of the file format for C-DNS, 
+; which describes a collection of DNS messages and
+; traffic meta-data.
+
+File = [
+    file-type-id  : tstr, ; = "C-DNS"
+    file-preamble : FilePreamble,
+    file-blocks   : [* Block],
+]
+
+FilePreamble = {
+    major-format-version =&gt; uint,  ; = 1
+    minor-format-version =&gt; uint,  ; = 0
+    ? private-version    =&gt; uint,
+    ? configuration      =&gt; Configuration,
+    ? generator-id       =&gt; tstr,
+    ? host-id            =&gt; tstr,
+}
+
+major-format-version = 0
+minor-format-version = 1
+private-version      = 2
+configuration        = 3
+generator-id         = 4
+host-id              = 5
+
+Configuration = {
+    ? query-timeout      =&gt; uint,
+    ? skew-timeout       =&gt; uint,
+    ? snaplen            =&gt; uint,
+    ? promisc            =&gt; uint,
+    ? interfaces         =&gt; [* tstr],
+    ? server-addresses   =&gt; [* IPAddress], ; Hint for later analysis
+    ? vlan-ids           =&gt; [* uint],
+    ? filter             =&gt; tstr,
+    ? query-options      =&gt; QRCollectionSections,
+    ? response-options   =&gt; QRCollectionSections,
+    ? accept-rr-types    =&gt; [* uint],
+    ? ignore-rr-types    =&gt; [* uint],
+    ? max-block-qr-items =&gt; uint,
+    ? collect-malformed  =&gt; uint,
+}
+
+QRCollectionSectionValues = &amp;(
+    question  : 0, ; Second &amp; subsequent questions
+    answer    : 1,
+    authority : 2,
+    additional: 3,
+)
+QRCollectionSections = uint .bits QRCollectionSectionValues
+
+query-timeout      = 0
+skew-timeout       = 1
+snaplen            = 2
+promisc            = 3
+interfaces         = 4
+vlan-ids           = 5
+filter             = 6
+query-options      = 7
+response-options   = 8
+accept-rr-types    = 9
+ignore-rr-types    = 10
+server-addresses   = 11
+max-block-qr-items = 12
+collect-malformed  = 13
+
+Block = {
+    preamble                =&gt; BlockPreamble,
+    ? statistics            =&gt; BlockStatistics,
+    tables                  =&gt; BlockTables,
+    queries                 =&gt; [* QueryResponse],
+    ? address-event-counts  =&gt; [* AddressEventCount],
+    ? malformed-packet-data =&gt; [* MalformedPacket],
+}
+
+preamble              = 0
+statistics            = 1
+tables                = 2
+queries               = 3
+address-event-counts  = 4
+malformed-packet-data = 5
+
+BlockPreamble = {
+    earliest-time =&gt; Timeval
+}
+
+earliest-time = 1
+
+Timeval = [
+    seconds       : uint,
+    microseconds  : uint,
+    ? picoseconds : uint,
+]
+
+BlockStatistics = {
+    ? total-packets                =&gt; uint,
+    ? total-pairs                  =&gt; uint,
+    ? unmatched-queries            =&gt; uint,
+    ? unmatched-responses          =&gt; uint,
+    ? malformed-packets            =&gt; uint,
+}
+
+total-packets                = 0
+total-pairs                  = 1
+unmatched-queries            = 2
+unmatched-responses          = 3
+malformed-packets            = 4
+
+BlockTables = {
+    ip-address =&gt; [* IPAddress],
+    classtype  =&gt; [* ClassType],
+    name-rdata =&gt; [* bstr], ; Holds both Name RDATA and RDATA
+    query-sig  =&gt; [* QuerySignature]
+    ? qlist    =&gt; [* QuestionList],
+    ? qrr      =&gt; [* Question],
+    ? rrlist   =&gt; [* RRList],
+    ? rr       =&gt; [* RR],
+}
+
+ip-address = 0
+classtype  = 1
+name-rdata = 2
+query-sig  = 3
+qlist      = 4
+qrr        = 5
+rrlist     = 6
+rr         = 7
+
+QueryResponse = {
+    time-useconds         =&gt; uint, ; Time offset from start of block
+    ? time-pseconds       =&gt; uint, ; in microseconds and picoseconds
+    client-address-index  =&gt; uint,
+    client-port           =&gt; uint,
+    transaction-id        =&gt; uint,
+    query-signature-index =&gt; uint,
+    ? client-hoplimit     =&gt; uint,
+    ? delay-useconds      =&gt; int,
+    ? delay-pseconds      =&gt; int, ; Has same sign as delay-useconds
+    ? query-name-index    =&gt; uint,
+    ? query-size          =&gt; uint, ; DNS size of query
+    ? response-size       =&gt; uint, ; DNS size of response
+    ? query-extended      =&gt; QueryResponseExtended,
+    ? response-extended   =&gt; QueryResponseExtended,
+}
+
+time-useconds         = 0
+time-pseconds         = 1
+client-address-index  = 2
+client-port           = 3
+transaction-id        = 4
+query-signature-index = 5
+client-hoplimit       = 6
+delay-useconds        = 7
+delay-pseconds        = 8
+query-name-index      = 9
+query-size            = 10
+response-size         = 11
+query-extended        = 12
+response-extended     = 13
+
+ClassType = {
+    type  =&gt; uint,
+    class =&gt; uint,
+}
+
+type  = 0
+class = 1
+
+DNSFlagValues = &amp;(
+    query-cd   : 0,
+    query-ad   : 1,
+    query-z    : 2,
+    query-ra   : 3,
+    query-rd   : 4,
+    query-tc   : 5,
+    query-aa   : 6,
+    query-do   : 7,
+    response-cd: 8,
+    response-ad: 9,
+    response-z : 10,
+    response-ra: 11,
+    response-rd: 12,
+    response-tc: 13,
+    response-aa: 14,
+)
+DNSFlags = uint .bits DNSFlagValues
+
+QueryResponseFlagValues = &amp;(
+    has-query               : 0,
+    has-reponse             : 1,
+    query-has-question      : 2,
+    query-has-opt           : 3,
+    response-has-opt        : 4,
+    response-has-no-question: 5,
+)
+QueryResponseFlags = uint .bits QueryResponseFlagValues
+
+TransportFlagValues = &amp;(
+    tcp               : 0,
+    ipv6              : 1,
+    query-trailingdata: 2,
+)
+TransportFlags = uint .bits TransportFlagValues
+
+QuerySignature = {
+    server-address-index    =&gt; uint,
+    server-port             =&gt; uint,
+    transport-flags         =&gt; TransportFlags,
+    qr-sig-flags            =&gt; QueryResponseFlags,
+    ? query-opcode          =&gt; uint,
+    qr-dns-flags            =&gt; DNSFlags,
+    ? query-rcode           =&gt; uint,
+    ? query-classtype-index =&gt; uint,
+    ? query-qd-count        =&gt; uint,
+    ? query-an-count        =&gt; uint,
+    ? query-ar-count        =&gt; uint,
+    ? query-ns-count        =&gt; uint,
+    ? edns-version          =&gt; uint,
+    ? udp-buf-size          =&gt; uint,
+    ? opt-rdata-index       =&gt; uint,
+    ? response-rcode        =&gt; uint,
+}
+
+server-address-index  = 0
+server-port           = 1
+transport-flags       = 2
+qr-sig-flags          = 3
+query-opcode          = 4
+qr-dns-flags          = 5
+query-rcode           = 6
+query-classtype-index = 7
+query-qd-count        = 8
+query-an-count        = 9
+query-ar-count        = 10
+query-ns-count        = 11
+edns-version          = 12
+udp-buf-size          = 13
+opt-rdata-index       = 14
+response-rcode        = 15
+
+QuestionList = [
+    * uint, ; Index of Question
+]
+
+Question = {                 ; Second and subsequent questions
+    name-index      =&gt; uint, ; Index to a name in the name-rdata table
+    classtype-index =&gt; uint,
+}
+
+name-index      = 0
+classtype-index = 1
+
+RRList = [
+    * uint, ; Index of RR
+]
+
+RR = {
+    name-index      =&gt; uint, ; Index to a name in the name-rdata table
+    classtype-index =&gt; uint,
+    ttl             =&gt; uint,
+    rdata-index     =&gt; uint, ; Index to RDATA in the name-rdata table
+}
+
+ttl         = 2
+rdata-index = 3
+
+QueryResponseExtended = {
+    ? question-index   =&gt; uint, ; Index of QuestionList
+    ? answer-index     =&gt; uint, ; Index of RRList
+    ? authority-index  =&gt; uint,
+    ? additional-index =&gt; uint,
+}
+
+question-index   = 0
+answer-index     = 1
+authority-index  = 2
+additional-index = 3
+
+AddressEventCount = {
+    ae-type          =&gt; &amp;AddressEventType,
+    ? ae-code        =&gt; uint,
+    ae-address-index =&gt; uint,
+    ae-count         =&gt; uint,
+}
+
+ae-type          = 0
+ae-code          = 1
+ae-address-index = 2
+ae-count         = 3
+
+AddressEventType = (
+    tcp-reset              : 0,
+    icmp-time-exceeded     : 1,
+    icmp-dest-unreachable  : 2,
+    icmpv6-time-exceeded   : 3,
+    icmpv6-dest-unreachable: 4,
+    icmpv6-packet-too-big  : 5,
+)
+
+MalformedPacket = {
+    time-useconds   =&gt; uint, ; Time offset from start of block
+    ? time-pseconds =&gt; uint, ; in microseconds and picoseconds
+    packet-content  =&gt; bstr, ; Raw packet contents
+}
+
+time-useconds    = 0
+time-pseconds    = 1
+packet-content   = 2
+
+IPv4Address = bstr .size 4
+IPv6Address = bstr .size 16
+IPAddress = IPv4Address / IPv6Address
+</pre>
+<h1 id="rfc.appendix.B"><a href="#rfc.appendix.B">Appendix B.</a> <a href="#dns-name-compression-example" id="dns-name-compression-example">DNS Name compression example</a></h1>
+<p id="rfc.section.B.p.1">The basic algorithm, which follows the guidance in <a href="#RFC1035">[RFC1035]</a>, is simply to collect each name, and the offset in the packet at which it starts, during packet construction. As each name is added, it is offered to each of the collected names in order of collection, starting from the first name. If labels at the end of the name can be replaced with a reference back to part (or all) of the earlier name, and if the uncompressed part of the name is shorter than any compression already found, the earlier name is noted as the compression target for the name.  </p>
+<p id="rfc.section.B.p.2">The following tables illustrate the process. In an example packet, the first name is example.com.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="right">N</th>
+      <th class="left">Name</th>
+      <th class="left">Uncompressed</th>
+      <th class="left">Compression Target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="right">1</td>
+      <td class="left">example.com</td>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.B.p.3">The next name added is bar.com. This is matched against example.com. The com part of this can be used as a compression target, with the remaining uncompressed part of the name being bar.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="right">N</th>
+      <th class="left">Name</th>
+      <th class="left">Uncompressed</th>
+      <th class="left">Compression Target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="right">1</td>
+      <td class="left">example.com</td>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="right">2</td>
+      <td class="left">bar.com</td>
+      <td class="left">bar</td>
+      <td class="left">1 + offset to com</td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.B.p.4">The third name added is www.bar.com. This is first matched against example.com, and as before this is recorded as a compression target, with the remaining uncompressed part of the name being www.bar. It is then matched against the second name, which again can be a compression target. Because the remaining uncompressed part of the name is www, this is an improved compression, and so it is adopted.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="right">N</th>
+      <th class="left">Name</th>
+      <th class="left">Uncompressed</th>
+      <th class="left">Compression Target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="right">1</td>
+      <td class="left">example.com</td>
+      <td class="left"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="right">2</td>
+      <td class="left">bar.com</td>
+      <td class="left">bar</td>
+      <td class="left">1 + offset to com</td>
+    </tr>
+    <tr>
+      <td class="right">3</td>
+      <td class="left">www.bar.com</td>
+      <td class="left">www</td>
+      <td class="left">2</td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.B.p.5">As an optimization, if a name is already perfectly compressed (in other words, the uncompressed part of the name is empty), then no further names will be considered for compression.  </p>
+<h1 id="rfc.appendix.B.1"><a href="#rfc.appendix.B.1">B.1.</a> <a href="#nsd-compression-algorithm" id="nsd-compression-algorithm">NSD compression algorithm</a></h1>
+<p id="rfc.section.B.1.p.1">Using the above basic algorithm the packet lengths of responses generated by <a href="https://www.nlnetlabs.nl/projects/nsd/">NSD</a> can be matched almost exactly. At the time of writing, a tiny number (&lt;.01%) of the reconstructed packets had incorrect lengths.  </p>
+<h1 id="rfc.appendix.B.2"><a href="#rfc.appendix.B.2">B.2.</a> <a href="#knot-authoritative-compression-algorithm" id="knot-authoritative-compression-algorithm">Knot Authoritative compression algorithm</a></h1>
+<p id="rfc.section.B.2.p.1">The <a href="https://www.knot-dns.cz/">Knot Authoritative</a> name server uses different compression behavior, which is the result of internal optimization designed to balance runtime speed with compression size gains. In brief, and omitting complications, Knot  Authoritative will only consider the QNAME and names in the immediately preceding RR section in an RRSET as compression targets.  </p>
+<p id="rfc.section.B.2.p.2">A set of smart heuristics as described below can be implemented to mimic this and while not perfect it produces output nearly, but not quite, as good a match as with NSD.  The heuristics are: </p>
+<p/>
+
+<ol>
+  <li>A match is only perfect if the name is completely compressed AND the TYPE of the section in which the name occurs matches the TYPE of the name used as the compression target.</li>
+  <li>If the name occurs in RDATA: <ul><li>If the compression target name is in a query, then only the first RR in an RRSET can use that name as a compression target.</li><li>The compression target name MUST be in RDATA.</li><li>The name section TYPE must match the compression target name section TYPE.</li><li>The compression target name MUST be in the immediately preceding RR in the RRSET.</li></ul></li>
+</ol>
+
+<p> </p>
+<p id="rfc.section.B.2.p.4">Using this algorithm less than 0.1% of the reconstructed packets had incorrect lengths.  </p>
+<h1 id="rfc.appendix.B.3"><a href="#rfc.appendix.B.3">B.3.</a> <a href="#observed-differences" id="observed-differences">Observed differences</a></h1>
+<p id="rfc.section.B.3.p.1">In sample traffic collected on a root name server around 2-4% of responses generated by Knot had different packet lengths to those produced by NSD.  </p>
+<h1 id="rfc.appendix.C"><a href="#rfc.appendix.C">Appendix C.</a> <a href="#comparison-of-binary-formats" id="comparison-of-binary-formats">Comparison of Binary Formats</a></h1>
+<p id="rfc.section.C.p.1">Several binary serialisation formats were considered, and for completeness were also compared to JSON.  </p>
+<p/>
+
+<ul>
+  <li><a href="https://avro.apache.org/">Apache Avro</a>. Data is stored according to a pre-defined schema. The schema itself is always included in the data file. Data can therefore be stored untagged, for a smaller serialisation size, and be written and read by an Avro library.  <ul><li>At the time of writing, Avro libraries are available for C, C++, C#, Java, Python, Ruby and PHP. Optionally tools are available for C++, Java and C# to generate code for encoding and decoding.</li></ul></li>
+  <li><a href="https://developers.google.com/protocol-buffers/">Google Protocol Buffers</a>. Data is stored according to a pre-defined schema. The schema is used by a generator to generate code for encoding and decoding the data. Data can therefore be stored untagged, for a smaller serialisation size.  The schema is not stored with the data, so unlike Avro cannot be read with a generic library.  <ul><li>Code must be generated for a particular data schema to to read and write data using that schema. At the time of writing, the Google code generator can currently generate code for encoding and decoding a schema for C++, Go, Java, Python, Ruby, C#, Objective-C, Javascript and PHP.</li></ul></li>
+  <li><a href="http://cbor.io">CBOR</a>. Defined in <a href="#RFC7049">[RFC7049]</a>, this serialisation format is comparable to JSON but with a binary representation. It does not use a pre-defined schema, so data is always stored tagged. However, CBOR data schemas can be described using CDDL <a href="#I-D.greevenbosch-appsawg-cbor-cddl">[I-D.greevenbosch-appsawg-cbor-cddl]</a> and tools exist to verify data files conform to the schema.  <ul><li>CBOR is a simple format, and simple to implement. At the time of writing, the CBOR website lists implementations for 16 languages.</li></ul></li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.C.p.3">Avro and Protocol Buffers both allow storage of untagged data, but because they rely on the data schema for this, their implementation is considerably more complex than CBOR. Using Avro or Protocol Buffers in an unsupported environment would require notably greater development effort compared to CBOR.  </p>
+<p id="rfc.section.C.p.4">A test program was written which reads input from a PCAP file and writes output using one of two basic structures; either a simple structure, where each query/response pair is represented in a single record entry, or the C-DNS block structure.  </p>
+<p id="rfc.section.C.p.5">The resulting output files were then compressed using a variety of common general-purpose lossless compression tools to explore the compressibility of the formats. The compression tools employed were: </p>
+<p/>
+
+<ul>
+  <li><a href="https://github.com/kubo/snzip">snzip</a>. A command line compression tool based on the <a href="http://google.github.io/snappy/">Google Snappy</a> library.</li>
+  <li><a href="http://lz4.github.io/lz4/">lz4</a>. The command line compression tool from the reference C LZ4 implementation.</li>
+  <li><a href="http://www.gzip.org/">gzip</a>. The ubiquitous GNU zip tool.</li>
+  <li><a href="http://facebook.github.io/zstd/">zstd</a>. Compression using the Zstandard algorithm.</li>
+  <li><a href="http://tukaani.org/xz/">xz</a>. A popular compression tool noted for high compression.</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.C.p.7">In all cases the compression tools were run using their default settings.  </p>
+<p id="rfc.section.C.p.8">Note that this draft does not mandate the use of compression, nor any particular compression scheme, but it anticipates that in practice output data will be subject to general-purpose compression, and so this should be taken into consideration.  </p>
+<p><samp>test.pcap</samp>, a 662Mb capture of sample data from a root instance was used for the comparison. The following table shows the formatted size and size after compression (abbreviated to Comp. in the table headers), together with the task resident set size (RSS) and the user time taken by the compression. File sizes are in Mb, RSS in kb and user time in seconds.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Format</th>
+      <th class="right">File size</th>
+      <th class="left">Comp.</th>
+      <th class="right">Comp. size</th>
+      <th class="right">RSS</th>
+      <th class="right">User time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">PCAP</td>
+      <td class="right">661.87</td>
+      <td class="left">snzip</td>
+      <td class="right">212.48</td>
+      <td class="right">2696</td>
+      <td class="right">1.26</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">lz4</td>
+      <td class="right">181.58</td>
+      <td class="right">6336</td>
+      <td class="right">1.35</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">gzip</td>
+      <td class="right">153.46</td>
+      <td class="right">1428</td>
+      <td class="right">18.20</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">zstd</td>
+      <td class="right">87.07</td>
+      <td class="right">3544</td>
+      <td class="right">4.27</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">xz</td>
+      <td class="right">49.09</td>
+      <td class="right">97416</td>
+      <td class="right">160.79</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="right"/>
+      <td class="right"/>
+    </tr>
+    <tr>
+      <td class="left">JSON simple</td>
+      <td class="right">4113.92</td>
+      <td class="left">snzip</td>
+      <td class="right">603.78</td>
+      <td class="right">2656</td>
+      <td class="right">5.72</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">lz4</td>
+      <td class="right">386.42</td>
+      <td class="right">5636</td>
+      <td class="right">5.25</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">gzip</td>
+      <td class="right">271.11</td>
+      <td class="right">1492</td>
+      <td class="right">73.00</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">zstd</td>
+      <td class="right">133.43</td>
+      <td class="right">3284</td>
+      <td class="right">8.68</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">xz</td>
+      <td class="right">51.98</td>
+      <td class="right">97412</td>
+      <td class="right">600.74</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="right"/>
+      <td class="right"/>
+    </tr>
+    <tr>
+      <td class="left">Avro simple</td>
+      <td class="right">640.45</td>
+      <td class="left">snzip</td>
+      <td class="right">148.98</td>
+      <td class="right">2656</td>
+      <td class="right">0.90</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">lz4</td>
+      <td class="right">111.92</td>
+      <td class="right">5828</td>
+      <td class="right">0.99</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">gzip</td>
+      <td class="right">103.07</td>
+      <td class="right">1540</td>
+      <td class="right">11.52</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">zstd</td>
+      <td class="right">49.08</td>
+      <td class="right">3524</td>
+      <td class="right">2.50</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">xz</td>
+      <td class="right">22.87</td>
+      <td class="right">97308</td>
+      <td class="right">90.34</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="right"/>
+      <td class="right"/>
+    </tr>
+    <tr>
+      <td class="left">CBOR simple</td>
+      <td class="right">764.82</td>
+      <td class="left">snzip</td>
+      <td class="right">164.57</td>
+      <td class="right">2664</td>
+      <td class="right">1.11</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">lz4</td>
+      <td class="right">120.98</td>
+      <td class="right">5892</td>
+      <td class="right">1.13</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">gzip</td>
+      <td class="right">110.61</td>
+      <td class="right">1428</td>
+      <td class="right">12.88</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">zstd</td>
+      <td class="right">54.14</td>
+      <td class="right">3224</td>
+      <td class="right">2.77</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">xz</td>
+      <td class="right">23.43</td>
+      <td class="right">97276</td>
+      <td class="right">111.48</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="right"/>
+      <td class="right"/>
+    </tr>
+    <tr>
+      <td class="left">PBuf simple</td>
+      <td class="right">749.51</td>
+      <td class="left">snzip</td>
+      <td class="right">167.16</td>
+      <td class="right">2660</td>
+      <td class="right">1.08</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">lz4</td>
+      <td class="right">123.09</td>
+      <td class="right">5824</td>
+      <td class="right">1.14</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">gzip</td>
+      <td class="right">112.05</td>
+      <td class="right">1424</td>
+      <td class="right">12.75</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">zstd</td>
+      <td class="right">53.39</td>
+      <td class="right">3388</td>
+      <td class="right">2.76</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">xz</td>
+      <td class="right">23.99</td>
+      <td class="right">97348</td>
+      <td class="right">106.47</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="right"/>
+      <td class="right"/>
+    </tr>
+    <tr>
+      <td class="left">JSON block</td>
+      <td class="right">519.77</td>
+      <td class="left">snzip</td>
+      <td class="right">106.12</td>
+      <td class="right">2812</td>
+      <td class="right">0.93</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">lz4</td>
+      <td class="right">104.34</td>
+      <td class="right">6080</td>
+      <td class="right">0.97</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">gzip</td>
+      <td class="right">57.97</td>
+      <td class="right">1604</td>
+      <td class="right">12.70</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">zstd</td>
+      <td class="right">61.51</td>
+      <td class="right">3396</td>
+      <td class="right">3.45</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">xz</td>
+      <td class="right">27.67</td>
+      <td class="right">97524</td>
+      <td class="right">169.10</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="right"/>
+      <td class="right"/>
+    </tr>
+    <tr>
+      <td class="left">Avro block</td>
+      <td class="right">60.45</td>
+      <td class="left">snzip</td>
+      <td class="right">48.38</td>
+      <td class="right">2688</td>
+      <td class="right">0.20</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">lz4</td>
+      <td class="right">48.78</td>
+      <td class="right">8540</td>
+      <td class="right">0.22</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">gzip</td>
+      <td class="right">39.62</td>
+      <td class="right">1576</td>
+      <td class="right">2.92</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">zstd</td>
+      <td class="right">29.63</td>
+      <td class="right">3612</td>
+      <td class="right">1.25</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">xz</td>
+      <td class="right">18.28</td>
+      <td class="right">97564</td>
+      <td class="right">25.81</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="right"/>
+      <td class="right"/>
+    </tr>
+    <tr>
+      <td class="left">CBOR block</td>
+      <td class="right">75.25</td>
+      <td class="left">snzip</td>
+      <td class="right">53.27</td>
+      <td class="right">2684</td>
+      <td class="right">0.24</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">lz4</td>
+      <td class="right">51.88</td>
+      <td class="right">8008</td>
+      <td class="right">0.28</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">gzip</td>
+      <td class="right">41.17</td>
+      <td class="right">1548</td>
+      <td class="right">4.36</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">zstd</td>
+      <td class="right">30.61</td>
+      <td class="right">3476</td>
+      <td class="right">1.48</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">xz</td>
+      <td class="right">18.15</td>
+      <td class="right">97556</td>
+      <td class="right">38.78</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="right"/>
+      <td class="right"/>
+    </tr>
+    <tr>
+      <td class="left">PBuf block</td>
+      <td class="right">67.98</td>
+      <td class="left">snzip</td>
+      <td class="right">51.10</td>
+      <td class="right">2636</td>
+      <td class="right">0.24</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">lz4</td>
+      <td class="right">52.39</td>
+      <td class="right">8304</td>
+      <td class="right">0.24</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">gzip</td>
+      <td class="right">40.19</td>
+      <td class="right">1520</td>
+      <td class="right">3.63</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">zstd</td>
+      <td class="right">31.61</td>
+      <td class="right">3576</td>
+      <td class="right">1.40</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="right"/>
+      <td class="left">xz</td>
+      <td class="right">17.94</td>
+      <td class="right">97440</td>
+      <td class="right">33.99</td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.C.p.10">The above results are discussed in the following sections.  </p>
+<h1 id="rfc.appendix.C.1"><a href="#rfc.appendix.C.1">C.1.</a> <a href="#comparison-with-full-pcap-files" id="comparison-with-full-pcap-files">Comparison with full PCAP files</a></h1>
+<p id="rfc.section.C.1.p.1">An important first consideration is whether moving away from PCAP offers significant benefits.  </p>
+<p id="rfc.section.C.1.p.2">The simple binary formats are typically larger than PCAP, even though they omit some information such as Ethernet MAC addresses. But not only do they require less CPU to compress than PCAP, the resulting compressed files are smaller than compressed PCAP.  </p>
+<h1 id="rfc.appendix.C.2"><a href="#rfc.appendix.C.2">C.2.</a> <a href="#simple-versus-block-coding" id="simple-versus-block-coding">Simple versus block coding</a></h1>
+<p id="rfc.section.C.2.p.1">The intention of the block coding is to perform data de-duplication on query/response records within the block. The simple and block formats above store exactly the same information for each query/response record. This information is parsed from the DNS traffic in the input PCAP file, and in all cases each field has an identifier and the field data is typed.  </p>
+<p id="rfc.section.C.2.p.2">The data de-duplication on the block formats show an order of magnitude reduction in the size of the format file size against the simple formats. As would be expected, the compression tools are able to find and exploit a lot of this duplication, but as the de-duplication process uses knowledge of DNS traffic, it is able to retain a size advantage. This advantage reduces as stronger compression is applied, as again would be expected, but even with the strongest compression applied the block formatted data remains around 75% of the size of the simple format and its compression requires roughly a third of the CPU time.  </p>
+<h1 id="rfc.appendix.C.3"><a href="#rfc.appendix.C.3">C.3.</a> <a href="#binary-versus-text-formats" id="binary-versus-text-formats">Binary versus text formats</a></h1>
+<p id="rfc.section.C.3.p.1">Text data formats offer many advantages over binary formats, particularly in the areas of ad-hoc data inspection and extraction. It was therefore felt worthwhile to carry out a direct comparison, implementing JSON versions of the simple and block formats.  </p>
+<p id="rfc.section.C.3.p.2">Concentrating on JSON block format, the format files produced are a significant fraction of an order of magnitude larger than binary formats. The impact on file size after compression is as might be expected from that starting point; the stronger compression produces files that are 150% of the size of similarly compressed binary format, and require over 4x more CPU to compress.  </p>
+<h1 id="rfc.appendix.C.4"><a href="#rfc.appendix.C.4">C.4.</a> <a href="#performance" id="performance">Performance</a></h1>
+<p id="rfc.section.C.4.p.1">Concentrating again on the block formats, all three produce format files that are close to an order of magnitude smaller that the original <samp>test.pcap</samp> file.  CBOR produces the largest files and Avro the smallest, 20% smaller than CBOR.  </p>
+<p id="rfc.section.C.4.p.2">However, once compression is taken into account, the size difference narrows. At medium compression (with gzip), the size difference is 4%.  Using strong compression (with xz) the difference reduces to 2%, with Avro the largest and Protocol Buffers the smallest, although CBOR and Protocol Buffers require slightly more compression CPU.  </p>
+<p id="rfc.section.C.4.p.3">The measurements presented above do not include data on the CPU required to generate the format files. Measurements indicate that writing Avro requires 10% more CPU than CBOR or Protocol Buffers.  It appears, therefore, that Avro's advantage in compression CPU usage is probably offset by a larger CPU requirement in writing Avro.  </p>
+<h1 id="rfc.appendix.C.5"><a href="#rfc.appendix.C.5">C.5.</a> <a href="#conclusions" id="conclusions">Conclusions</a></h1>
+<p id="rfc.section.C.5.p.1">The above assessments lead us to the choice of a binary format file using blocking.  </p>
+<p id="rfc.section.C.5.p.2">As noted previously, this draft anticipates that output data will be subject to compression. There is no compelling case for one particular binary serialisation format in terms of either final file size or machine resources consumed, so the choice must be largely based on other factors. CBOR was therefore chosen as the binary serialisation format for the reasons listed in <a href="#choice-of-cbor">Section 6</a>.  </p>
+<h1 id="rfc.appendix.C.6"><a href="#rfc.appendix.C.6">C.6.</a> <a href="#block-size-choice" id="block-size-choice">Block size choice</a></h1>
+<p id="rfc.section.C.6.p.1">Given the choice of a CBOR format using blocking, the question arises of what an appropriate default value for the maximum number of query/response pairs in a block should be. This has two components; what is the impact on performance of using different block sizes in the format file, and what is the impact on the size of the format file before and after compression.  </p>
+<p id="rfc.section.C.6.p.2">The following table addresses the performance question, showing the impact on the performance of a C++ program converting <samp>test.pcap</samp> to C-DNS. File size is in Mb, resident set size (RSS) in kb.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="right">Block size</th>
+      <th class="right">File size</th>
+      <th class="right">RSS</th>
+      <th class="right">User time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="right">1000</td>
+      <td class="right">133.46</td>
+      <td class="right">612.27</td>
+      <td class="right">15.25</td>
+    </tr>
+    <tr>
+      <td class="right">5000</td>
+      <td class="right">89.85</td>
+      <td class="right">676.82</td>
+      <td class="right">14.99</td>
+    </tr>
+    <tr>
+      <td class="right">10000</td>
+      <td class="right">76.87</td>
+      <td class="right">752.40</td>
+      <td class="right">14.53</td>
+    </tr>
+    <tr>
+      <td class="right">20000</td>
+      <td class="right">67.86</td>
+      <td class="right">750.75</td>
+      <td class="right">14.49</td>
+    </tr>
+    <tr>
+      <td class="right">40000</td>
+      <td class="right">61.88</td>
+      <td class="right">736.30</td>
+      <td class="right">14.29</td>
+    </tr>
+    <tr>
+      <td class="right">80000</td>
+      <td class="right">58.08</td>
+      <td class="right">694.16</td>
+      <td class="right">14.28</td>
+    </tr>
+    <tr>
+      <td class="right">160000</td>
+      <td class="right">55.94</td>
+      <td class="right">733.84</td>
+      <td class="right">14.44</td>
+    </tr>
+    <tr>
+      <td class="right">320000</td>
+      <td class="right">54.41</td>
+      <td class="right">799.20</td>
+      <td class="right">13.97</td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.C.6.p.3">Increasing block size, therefore, tends to increase maximum RSS a little, with no significant effect (if anything a small reduction) on CPU consumption.  </p>
+<p id="rfc.section.C.6.p.4">The following figure plots the effect of increasing block size on output file size for different compressions.  </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.png">Figure showing effect of block size on file size (PNG)</a> </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg">Figure showing effect of block size on file size (SVG)</a> </p>
+<p id="rfc.section.C.6.p.7">From the above, there is obviously scope for tuning the default block size to the compression being employed, traffic characteristics, frequency of output file rollover etc. Using a strong compression, block sizes over 10,000 query/response pairs would seem to offer limited improvements.  </p>
+<h1 id="rfc.authors">
+  <a href="#rfc.authors">Authors' Addresses</a>
+</h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">John Dickinson</span> 
+	  <span class="n hidden">
+		<span class="family-name">Dickinson</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Sinodun IT</span>
+	<span class="adr">
+	  <span class="vcardline">Magdalen Centre</span>
+<span class="vcardline">Oxford Science Park</span>
+
+	  <span class="vcardline">
+		<span class="locality">Oxford</span>,  
+		<span class="region"></span>
+		<span class="code">OX4 4GA</span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:jad@sinodun.com">jad@sinodun.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Jim Hague</span> 
+	  <span class="n hidden">
+		<span class="family-name">Hague</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Sinodun IT</span>
+	<span class="adr">
+	  <span class="vcardline">Magdalen Centre</span>
+<span class="vcardline">Oxford Science Park</span>
+
+	  <span class="vcardline">
+		<span class="locality">Oxford</span>,  
+		<span class="region"></span>
+		<span class="code">OX4 4GA</span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:jim@sinodun.com">jim@sinodun.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Sara Dickinson</span> 
+	  <span class="n hidden">
+		<span class="family-name">Dickinson</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Sinodun IT</span>
+	<span class="adr">
+	  <span class="vcardline">Magdalen Centre</span>
+<span class="vcardline">Oxford Science Park</span>
+
+	  <span class="vcardline">
+		<span class="locality">Oxford</span>,  
+		<span class="region"></span>
+		<span class="code">OX4 4GA</span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:sara@sinodun.com">sara@sinodun.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Terry Manderson</span> 
+	  <span class="n hidden">
+		<span class="family-name">Manderson</span>
+	  </span>
+	</span>
+	<span class="org vcardline">ICANN</span>
+	<span class="adr">
+	  <span class="vcardline">12025 Waterfront Drive</span>
+<span class="vcardline">Suite 300</span>
+
+	  <span class="vcardline">
+		<span class="locality">Los Angeles</span>,  
+		<span class="region"></span>
+		<span class="code">CA 90094-2536</span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:terry.manderson@icann.org">terry.manderson@icann.org</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">John Bond</span> 
+	  <span class="n hidden">
+		<span class="family-name">Bond</span>
+	  </span>
+	</span>
+	<span class="org vcardline">ICANN</span>
+	<span class="adr">
+	  <span class="vcardline">12025 Waterfront Drive</span>
+<span class="vcardline">Suite 300</span>
+
+	  <span class="vcardline">
+		<span class="locality">Los Angeles</span>,  
+		<span class="region"></span>
+		<span class="code">CA 90094-2536</span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:john.bond@icann.org">john.bond@icann.org</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>

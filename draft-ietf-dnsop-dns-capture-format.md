@@ -1184,15 +1184,23 @@ draft-dickinson-dnsop-dns-capture-format-00
     unmatched-responses          = 3
     malformed-packets            = 4
 
+    QuestionTables = (
+        qlist => [* QuestionList],
+        qrr   => [* Question]
+    )
+
+    RRTables = (
+        rrlist => [* RRList],
+        rr     => [* RR]
+    )
+
     BlockTables = {
         ip-address => [* IPAddress],
         classtype  => [* ClassType],
         name-rdata => [* bstr], ; Holds both Name RDATA and RDATA
-        query-sig  => [* QuerySignature]
-        ? qlist    => [* QuestionList],
-        ? qrr      => [* Question],
-        ? rrlist   => [* RRList],
-        ? rr       => [* RR],
+        query-sig  => [* QuerySignature],
+        ? QuestionTables,
+        ? RRTables
     }
 
     ip-address = 0

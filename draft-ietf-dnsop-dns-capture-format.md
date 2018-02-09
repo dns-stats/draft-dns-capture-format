@@ -264,7 +264,7 @@ ideas of lists and objects, and thus requires very little familiarization for th
 * CBOR is a simple format, and can easily be implemented from scratch if necessary. More complex formats
 require library support which may present problems on unusual platforms.
 * CBOR can also be easily converted to text formats such as JSON ([@RFC7159]) for debugging and other human inspection requirements.
-* CBOR data schemas can be described using CDDL [@?I-D.greevenbosch-appsawg-cbor-cddl]. 
+* CBOR data schemas can be described using CDDL [@?I-D.ietf-cbor-cddl]. 
 
 # The C-DNS format
 
@@ -479,7 +479,7 @@ server-port | A | The server port.
 transport-flags | A | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
  | | Bit 0. Transport type. 0 = UDP, 1 = TCP.
  | | Bit 1. IP type. 0 = IPv4, 1 = IPv6.
- | | Bit 2. Trailing bytes in query payload. The DNS query message in the UDP payload was followed by some additional bytes, which were discarded.
+ | | Bit 2. Trailing bytes in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.
 ||
 qr-sig-flags | A | Bit flags indicating information present in this Q/R data item. Bit 0 is the least significant bit.
  | | Bit 0. 1 if a Query is present.
@@ -620,7 +620,7 @@ response-extended | R | Extended Response information. This item is only present
 
 An implementation must always collect basic Q/R information. It may be configured to collect details on Question, Answer, Authority and Additional sections of the Query, the Response or both. Note that only the second and subsequent Questions of any Question section are collected (the details of the first are in the basic information), and that OPT Records are not collected in the Additional section.
 
-The query-size and response-size fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message and will therefore include any trailing bytes if present. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present. For TCP it is the size of the DNS message as specified in the two-byte message length header.
+The query-size and response-size fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present. 
 
 The Extended information is a CBOR map as follows. Each item in the map is present only if collection of the relevant details is configured. Each item in the map has an unsigned value and an unsigned integer key.
 
@@ -1184,15 +1184,23 @@ draft-dickinson-dnsop-dns-capture-format-00
     unmatched-responses          = 3
     malformed-packets            = 4
 
+    QuestionTables = (
+        qlist => [* QuestionList],
+        qrr   => [* Question]
+    )
+
+    RRTables = (
+        rrlist => [* RRList],
+        rr     => [* RR]
+    )
+
     BlockTables = {
         ip-address => [* IPAddress],
         classtype  => [* ClassType],
         name-rdata => [* bstr], ; Holds both Name RDATA and RDATA
-        query-sig  => [* QuerySignature]
-        ? qlist    => [* QuestionList],
-        ? qrr      => [* Question],
-        ? rrlist   => [* RRList],
-        ? rr       => [* RR],
+        query-sig  => [* QuerySignature],
+        ? QuestionTables,
+        ? RRTables
     }
 
     ip-address = 0
@@ -1498,7 +1506,7 @@ completeness were also compared to JSON.
   is comparable to JSON but with a binary representation. It does not
   use a pre-defined schema, so data is always stored tagged. However,
   CBOR data schemas can be described using CDDL
-  [@?I-D.greevenbosch-appsawg-cbor-cddl] and tools exist to verify
+  [@?I-D.ietf-cbor-cddl] and tools exist to verify
   data files conform to the schema.
 
     * CBOR is a simple format, and simple to implement. At the time of writing,

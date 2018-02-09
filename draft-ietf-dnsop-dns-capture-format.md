@@ -242,13 +242,13 @@ The following figures show purely schematic representations of the C-DNS format 
 structure of the C-DNS format. (#the-cdns-format) provides a detailed discussion of the CBOR representation
 and individual elements.
 
-![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/cdns_format.png)
+![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/cdns_format.png)
 
-![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/cdns_format.svg)
+![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/cdns_format.svg)
 
-![Figure showing the Q/R data item and Block tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/qr_data_format.png)
+![Figure showing the Q/R data item and Block tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.png)
 
-![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/qr_data_format.svg)
+![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg)
 
 # Choice of CBOR
 
@@ -780,9 +780,9 @@ TODO: Discuss the corner cases resulting from this in more detail.
 
 A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
-![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/packet_matching.png)
+![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/packet_matching.png)
 
-![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-04/packet_matching.svg)
+![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/packet_matching.svg)
 
 Further details of the algorithm are given in the following sections.
 

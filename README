@@ -3,7 +3,7 @@ Building
 
 To generate the txt from the markdown use something like:
 
-mmark -xml2 -page draft-ietf-dnsop-dns-capture-format.md > draft-ietf-dnsop-dns-capture-format.xml && xml2rfc --text draft-ietf-dnsop-dns-capture-format.xml && rm draft-ietf-dnsop-dns-capture-format.xml && mv draft-ietf-dnsop-dns-capture-format.txt draft-03/draft-ietf-dnsop-dns-capture-format-03.txt
+mmark -xml2 -page draft-ietf-dnsop-dns-capture-format.md > draft-ietf-dnsop-dns-capture-format.xml && xml2rfc --text draft-ietf-dnsop-dns-capture-format.xml && rm draft-ietf-dnsop-dns-capture-format.xml && mv draft-ietf-dnsop-dns-capture-format.txt draft-05/draft-ietf-dnsop-dns-capture-format-03.txt
 
 mmark can be found here https://github.com/miekg/mmark
 

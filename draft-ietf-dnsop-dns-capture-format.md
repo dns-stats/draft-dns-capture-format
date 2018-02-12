@@ -1120,7 +1120,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     table-field-hints   = 2
     opcodes             = 3
     rr-types            = 4
-    storage-flags              = 5
+    storage-flags       = 5
 
     TableFieldHints = {
         query-response             => QueryResponseFieldHints,
@@ -1160,19 +1160,20 @@ draft-dickinson-dnsop-dns-capture-format-00
         server-address     : 0,
         server-port        : 1,
         transport-flags    : 2,
-        signature-flags    : 3,
-        query-opcode       : 4,
-        dns-flags          : 5,
-        query-rcode        : 6,
-        query-class-type   : 7,
-        query-qdcount      : 8,
-        query-ancount      : 9,
-        query-arcount      : 10,
-        query-nscount      : 11,
-        query-edns-version : 12,
-        query-udp-size     : 13,
-        query-opt-rdata    : 14,
-        response-rcode     : 15,
+        qr-type            : 3,
+        qr-sig-flags       : 4,
+        query-opcode       : 5,
+        dns-flags          : 6,
+        query-rcode        : 7,
+        query-class-type   : 8,
+        query-qdcount      : 9,
+        query-ancount      : 10,
+        query-arcount      : 11,
+        query-nscount      : 12,
+        query-edns-version : 13,
+        query-udp-size     : 14,
+        query-opt-rdata    : 15,
+        response-rcode     : 16,
     )
     QuerySignatureFieldHints = uint .bits QuerySignatureFieldHintValues
 
@@ -1243,22 +1244,22 @@ draft-dickinson-dnsop-dns-capture-format-00
         ? parameters-index => uint .default 0,
     }
 
-    earliest-time   = 0
-    parameter-index = 1
+    earliest-time    = 0
+    parameters-index = 1
 
     BlockStatistics = {
-        ? total-packets       => uint,
-        ? total-pairs         => uint,
-        ? unmatched-queries   => uint,
-        ? unmatched-responses => uint,
-        ? malformed-packets   => uint,
+        ? total-packets             => uint,
+        ? total-pairs               => uint,
+        ? total-unmatched-queries   => uint,
+        ? total-unmatched-responses => uint,
+        ? total-malformed-messages  => uint,
     }
 
     total-packets                = 0
     total-pairs                  = 1
-    unmatched-queries            = 2
-    unmatched-responses          = 3
-    malformed-packets            = 4
+    total-unmatched-queries      = 2
+    total-unmatched-responses    = 3
+    total-malformed-packets      = 4
 
     QuestionTables = (
         qlist => [+ QuestionList],
@@ -1355,26 +1356,37 @@ draft-dickinson-dnsop-dns-capture-format-00
         response-has-opt        : 4,
         response-has-no-question: 5,
         response-cache-hit      : 6,
-        response-cache-miss     : 7,
     )
     QueryResponseFlags = uint .bits QueryResponseFlagValues
 
-    TransportFlagValues = &(
-        ipv4              : 0,
-        ipv6              : 1,
-        udp               : 2,
-        tcp               : 3,
-        tls               : 4,
-        dtls              : 5,
-
-        query-trailingdata: 6,
+    Transport = &(
+        udp               : 0,
+        tcp               : 1,
+        tls               : 2,
+        dtls              : 3,
     )
+
+    TransportFlagValues = &(
+        ip-version         : 0,     ; 0=IPv4, 1=IPv6
+        ; Transport value bits 1-4
+        query-trailingdata : 5,
+    ) / (1..4)
     TransportFlags = uint .bits TransportFlagValues
+
+    QueryResponseType = &(
+        stub      : 0,
+        client    : 1,
+        resolver  : 2,
+        auth      : 3,
+        forwarder : 4,
+        tool      : 5,
+    )
 
     QuerySignature = {
         ? server-address-index  => uint,
         ? server-port           => uint,
         ? transport-flags       => TransportFlags,
+        ? qr-type               => QueryResponseType,
         ? qr-sig-flags          => QueryResponseFlags,
         ? query-opcode          => uint,
         ? qr-dns-flags          => DNSFlags,
@@ -1393,19 +1405,20 @@ draft-dickinson-dnsop-dns-capture-format-00
     server-address-index  = 0
     server-port           = 1
     transport-flags       = 2
-    qr-sig-flags          = 3
-    query-opcode          = 4
-    qr-dns-flags          = 5
-    query-rcode           = 6
-    query-classtype-index = 7
-    query-qd-count        = 8
-    query-an-count        = 9
-    query-ar-count        = 10
-    query-ns-count        = 11
-    edns-version          = 12
-    udp-buf-size          = 13
-    opt-rdata-index       = 14
-    response-rcode        = 15
+    qr-type               = 3
+    qr-sig-flags          = 4
+    query-opcode          = 5
+    qr-dns-flags          = 6
+    query-rcode           = 7
+    query-classtype-index = 8
+    query-qd-count        = 9
+    query-an-count        = 10
+    query-ar-count        = 11
+    query-ns-count        = 12
+    edns-version          = 13
+    udp-buf-size          = 14
+    opt-rdata-index       = 15
+    response-rcode        = 16
 
     QuestionList = [+ uint]               ; Index of Question
 

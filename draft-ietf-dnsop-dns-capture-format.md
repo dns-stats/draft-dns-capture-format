@@ -580,7 +580,6 @@ qr-sig-flags | A | Bit flags indicating information present in this Q/R data ite
  | | Bit 3. 1 if a Query is present and it has an OPT Resource Record.
  | | Bit 4. 1 if a Response is present and it has an OPT Resource Record.
  | | Bit 5. 1 if a Response is present but has no Question.
- | | Bit 6. 1 if a Response came from the server cache.
 ||
 query-opcode | Q | Query OPCODE.
 ||
@@ -1450,7 +1449,6 @@ draft-dickinson-dnsop-dns-capture-format-00
         query-has-opt           : 3,
         response-has-opt        : 4,
         response-has-no-question: 5,
-        response-cache-hit      : 6,
     )
     QueryResponseFlags = uint .bits QueryResponseFlagValues
 

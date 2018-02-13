@@ -938,6 +938,10 @@ The timestamp of a list item is that of the query for cases 1 and 2 and that of 
 
 When ending capture, all remaining entries in the Q/R data item FIFO should be treated as timed out queries.
 
+# Implementation guidance
+
+TODO: Insert remarks on implementation (e.g. use of CBOR fixed arrays/maps versus variable length in CBOR) here.
+
 # Implementation Status
 
 [Note to RFC Editor: please remove this section and reference to [@RFC7942] prior to publication.]

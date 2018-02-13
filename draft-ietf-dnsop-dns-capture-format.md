@@ -210,31 +210,32 @@ the Question section from the response, if present, as an identifying QNAME).
     * Rationale: A Query and Response represents the basic level of a clients interaction with the server. Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data
 of the two messages.
 
-2. Each Q/R data item will comprise a default Q/R data description and a set of optional sections.
-Inclusion of optional sections shall be configurable.
-    * Rationale: Different users will have different requirements for data to be available for analysis. 
+2. All fields in each data item will be optional.
+    * Rationale: Different users will have different requirements for data to be available for analysis.
 Users with minimal requirements should not have to pay the cost of recording full data, however this will
 limit the ability to reconstruct packet captures. For example, omitting the resource records from a Response will
-reduce the files size, and in principle responses can be synthesized if there is enough context.
+reduce C-DNS file size, and in principle responses can be synthesized if there is enough context.
 
-3. Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and 
-referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
+3. Multiple data items will be collected into blocks in the format. Common data in a block will be abstracted and
+referenced from individual data items by indexing. The maximum number of data items in a block will be configurable.
     * Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.
 Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
-    * It is anticipated that the files produced can be subject to further compression using general purpose compression tools. 
+    * It is anticipated that the files produced can be subject to further compression using general purpose compression tools.
 Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
     * [TODO: Further discussion of commonality between DNS messages e.g. common query signatures, a finite set of
 valid responses from authoritatives]
 
-4. Metadata about other packets received can optionally be included in each block. For example, counts of malformed DNS packets and non-DNS packets
+4. Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.
 
-5. The wire format content of malformed DNS packets can optionally be recorded.
+5. The wire format content of malformed DNS messages can optionally be recorded.
 
     * Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
-      that it cannot represent "malformed" DNS messages (see (#malformed-messages)). Only those messages that can be transformed reasonably into the
-      structured format can be represented by the format. However this can result in rather misleading statistics. For example, a malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages available directly in the C-DNS file.
-
+      that it cannot represent "malformed" DNS messages (see (#malformed-messages)). Only those messages that can be transformed into the
+      structured format can be represented by the format. However this can result in rather misleading statistics. For example, a
+      malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code
+      FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages
+      available directly in the C-DNS file.
 
 # Conceptual Overview
 
@@ -367,7 +368,7 @@ will never appear because the application does not record them.
 
 Field | Type | Description
 :----|:----|:-----
-query-response | Unsigned | Hints indicating which query response data fields are collected. If the data field is collected the bit it set.
+query-response | Unsigned | Hints indicating which query response data fields are collected. If the data field is collected the bit is set.
  | | Bit 0. time-offset
  | | Bit 1. client-address-index
  | | Bit 2. client-port
@@ -386,7 +387,7 @@ query-response | Unsigned | Hints indicating which query response data fields ar
  | | Bit 15. response-answer-sections
  | | Bit 16. response-authority-sections
  | | Bit 17. response-additional-sections
-query-signature | Unsigned | Hints indicating which query signature data fields are collected. If the data field is collected the bit it set.
+query-signature | Unsigned | Hints indicating which query signature data fields are collected. If the data field is collected the bit is set.
  | | Bit 0. server-address
  | | Bit 1. server-port
  | | Bit 2. transport-flags
@@ -411,7 +412,7 @@ implementation-dependent | Unsigned | Collection hints for implementation-specif
 
 ## Collection parameter contents
 
-The collection parameters contains the following items. All are optional.
+The collection parameters contain the following items. All are optional.
 
 Field | Type | Description
 :----|:----|:-----
@@ -431,9 +432,9 @@ vlan-ids | Array of unsigned | Identifiers of VLANs selected for collection.
 ||
 filter | Text string | 'tcpdump' [@pcap] style filter for input.
 ||
-generator-id | Text string | String identifying the collection program. Optional.
+generator-id | Text string | String identifying the collection program.
 ||
-host-id | Text string | String identifying the collecting host. Empty if converting an existing packet capture file. Optional.
+host-id | Text string | String identifying the collecting host. Empty if converting an existing packet capture file.
 
 ## Block contents
 
@@ -459,12 +460,12 @@ The block preamble map contains overall information for the block.
 
 Field | Type | Description
 :-----|:-----|:-----------
-earliest-time | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two. The first element is the number of seconds since the Posix epoch, an unsigned integer time_t. The second is an unsigned integer with the number of ticks since the start of the second.
+earliest-time | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two elements. The first element is the number of seconds since the Posix epoch, an unsigned integer time_t. The second is an unsigned integer with the number of ticks since the start of the second.
 parameters-index | Unsigned | The index of the set of parameters applicable to this block. Optional. If omitted, parameter set 0 is used.
 
 ## Block statistics
 
-The block statistics section contains some basic statistical information about the block. All are optional.
+The block statistics section contains some basic statistical information about the block. All items are optional.
 
 Field | Type | Description
 :-----|:-----|:-----------
@@ -480,7 +481,7 @@ Implementations may choose to add additional implementation-specific fields to t
 
 The block table map contains the block tables. Each element, or table, is an array. The following tables detail the contents of each block table.
 
-The Present column in the following tables indicates the circumstances when an optional field will be present. A Q/R data item may be:
+The Present column in the following tables indicates the circumstances when an optional field will be present (assuming that field is not omitted because it is not collected by the application). A Q/R data item may be:
 
 * A Query plus a Response.
 * A Query without a Response.
@@ -524,7 +525,7 @@ name-rdata | Byte string | The NAME or RDATA contents (uncompressed).
 
 ## Malformed message table
 
-The table `malformed-data` holds the contents of all Malformed message items in the block. Each item in the table is a CBOR map.
+The table `malformed-data` holds the contents of all Malformed message items in the block. Each item in the table is a CBOR map containing the following items.
 
 Field | Type | Description
 :-----|:-----|:-----------
@@ -679,7 +680,7 @@ The following abbreviations are used in the Present (P) column
 Each item in the map has an unsigned value (with the exception of those listed below) and an unsigned integer key.
 
 * query-extended and response-extended which are of type Extended Information.
-* delay-useconds and delay-pseconds which are integers (The delay can be negative if the network stack/capture library returns them out of order.)
+* delay is a positive or negative integer (The delay can be negative if the network stack/capture library returns packets out of order.)
 
 <!-- Evade mmark bug -->
 
@@ -770,6 +771,8 @@ In the context of generating a C-DNS file it is assumed that only those DNS mess
 * The section counts are consistent with the section contents
 * All of the resource records can be parsed
 
+TODO: Rewrite section. Following is not suitable for current design.
+
 In principle, packets that do not meet these criteria could be classified into two categories:
 
 * Partially malformed: those packets which can be decoded sufficiently
@@ -790,11 +793,11 @@ A disadvantage is that this adds complexity to the Query/Response matching and d
 # C-DNS to PCAP
 
 It is possible to re-construct PCAP files from the C-DNS format in a lossy fashion.
-Some of the issues with reconstructing both the DNS payload and the 
+Some of the issues with reconstructing both the DNS payload and the
 full packet stream are outlined here.
 
 The reconstruction depends on whether or not all the optional sections
-of both the query and response were captured in the C-DNS file. 
+of both the query and response were captured in the C-DNS file.
 Clearly, if they were not all captured, the reconstruction will be imperfect.
 
 Even if all sections of the response were captured, one cannot reconstruct the DNS
@@ -1014,6 +1017,14 @@ Thanks also to Robert Edmonds and Jerry Lundström for review.
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+
+draft-ietf-dnsop-dns-capture-format-05
+
+* Make all data items optional
+* Variable sub-second timing granularity
+* Record malformed messages
+* Add implementation guidance
+* Add response bailiwick and query response type (dnstap)
 
 draft-ietf-dnsop-dns-capture-format-04
 
@@ -1357,7 +1368,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     total-pairs                  = 1
     total-unmatched-queries      = 2
     total-unmatched-responses    = 3
-    total-malformed-packets      = 4
+    total-malformed-messages     = 4
 
     QuestionTables = (
         qlist => [+ QuestionList],

@@ -543,7 +543,7 @@ message-content | Byte string | The raw contents of the DNS message.
 
 The table `query-sig` holds elements of the Q/R data item that are often common between multiple individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned integer key. All items are optional.
 
-The following abbreviations are used in the Present (P) column 
+The following abbreviations are used in the Present (P) column
 
 * Q = QUERY
 * A = Always
@@ -551,6 +551,8 @@ The following abbreviations are used in the Present (P) column
 * QO = QUERY, OPT
 * QR = QUERY & RESPONSE
 * R = RESPONSE
+
+<!-- Evade mmark bug -->
 
 Field | P | Description
 :-----|:--------|:-----------
@@ -679,6 +681,8 @@ Each item in the map has an unsigned value (with the exception of those listed b
 
 * query-extended and response-extended which are of type Extended Information.
 * delay-useconds and delay-pseconds which are integers (The delay can be negative if the network stack/capture library returns them out of order.)
+
+<!-- Evade mmark bug -->
 
 Field | P | Description
 :-----|:--------|:-----------

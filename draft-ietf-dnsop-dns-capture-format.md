@@ -72,12 +72,12 @@
 %%%
 
 .# Abstract
-This document describes a data representation for collections of 
+This document describes a data representation for collections of
 DNS messages.
 The format is designed for efficient storage and transmission of large packet captures of DNS traffic;
-it attempts to minimize the size of such packet capture files but retain the 
-full DNS message contents along with the most useful transport metadata. 
-It is intended to assist with 
+it attempts to minimize the size of such packet capture files but retain the
+full DNS message contents along with the most useful transport metadata.
+It is intended to assist with
 the development of DNS traffic monitoring applications.
 
 {mainmatter}
@@ -86,7 +86,7 @@ the development of DNS traffic monitoring applications.
 
 There has long been a need to collect DNS queries and responses
 on authoritative and recursive name servers for monitoring and analysis.
-This data is used in a number of ways including traffic monitoring, 
+This data is used in a number of ways including traffic monitoring,
 analyzing network attacks and "day in the life" (DITL) [@ditl] analysis.
 
 A wide variety of tools already exist that facilitate the collection of
@@ -96,8 +96,8 @@ The PCAP [@pcap] or PCAP-NG [@pcapng] formats are typically used in practice for
 formats can contain a great deal of additional information that is not directly pertinent to DNS traffic analysis
 and thus unnecessarily increases the capture file size.
 
-There has also been work on using text based formats to describe 
-DNS packets such as [@?I-D.daley-dnsxml], [@?I-D.hoffman-dns-in-json], but these are largely 
+There has also been work on using text based formats to describe
+DNS packets such as [@?I-D.daley-dnsxml], [@?I-D.hoffman-dns-in-json], but these are largely
 aimed at producing convenient representations of single messages.
 
 Many DNS operators may receive hundreds of thousands of queries per second on a single
@@ -157,7 +157,7 @@ design choices or other limitations that are common to many DNS installations an
     * On servers that are under DoS attack
     * On servers that are unwitting intermediaries in DoS attacks
 * Traffic can be collected via a variety of mechanisms
-    * On the same hardware as the name server itself 
+    * On the same hardware as the name server itself
     * Using a network tap on an adjacent host to listen to DNS traffic
     * Using port mirroring to listen from another host
 * The capabilities of data collection (and upload) networks vary
@@ -184,18 +184,18 @@ with the most limited use case in mind such that:
 Because of these considerations, a major factor in the design of the
 format is minimal storage size of the capture files.
 
-Another significant consideration for any application that records DNS traffic 
+Another significant consideration for any application that records DNS traffic
 is that the running of the name server software and the transmission of
 DNS queries and responses are the most important jobs of a name server; capturing data is not.
 Any data collection system co-located with the name server needs to be intelligent enough to
-carefully manage its CPU, disk, memory and network 
+carefully manage its CPU, disk, memory and network
 utilization. This leads to designing a format that requires a relatively low
 overhead to produce and minimizes the requirement for further potentially costly
 compression.
 
 However, it was also essential that interoperability with less restricted
 infrastructure was maintained. In particular, it is highly desirable that the
-collection format should facilitate the re-creation of common formats (such as PCAP) that are as 
+collection format should facilitate the re-creation of common formats (such as PCAP) that are as
 close to the original as is realistic given the restrictions above.
 
 
@@ -204,7 +204,7 @@ close to the original as is realistic given the restrictions above.
 This section presents some of the major design considerations used in the development of the C-DNS format.
 
 1. The basic unit of data is a combined DNS Query and the associated Response (a "Q/R data item"). The same structure
-will be used for unmatched Queries and Responses. Queries without Responses will be 
+will be used for unmatched Queries and Responses. Queries without Responses will be
 captured omitting the response data. Responses without queries will be captured omitting the Query data (but using
 the Question section from the response, if present, as an identifying QNAME).
     * Rationale: A Query and Response represents the basic level of a clients interaction with the server. Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data
@@ -256,16 +256,16 @@ and individual elements.
 This document presents a detailed format description using CBOR, the Concise Binary Object Representation defined in [@!RFC7049].
 
 The choice of CBOR was made taking a number of factors into account.
- 
-* CBOR is a binary representation, and thus is economical in storage space. 
+
+* CBOR is a binary representation, and thus is economical in storage space.
 * Other binary representations were investigated, and whilst all had attractive features,
 none had a significant advantage over CBOR. See (#comparison-of-binary-formats) for some discussion of this.
-* CBOR is an IETF standard and familiar to IETF participants. It is based on the now-common 
+* CBOR is an IETF standard and familiar to IETF participants. It is based on the now-common
 ideas of lists and objects, and thus requires very little familiarization for those in the wider industry.
 * CBOR is a simple format, and can easily be implemented from scratch if necessary. More complex formats
 require library support which may present problems on unusual platforms.
 * CBOR can also be easily converted to text formats such as JSON ([@RFC7159]) for debugging and other human inspection requirements.
-* CBOR data schemas can be described using CDDL [@?I-D.ietf-cbor-cddl]. 
+* CBOR data schemas can be described using CDDL [@?I-D.ietf-cbor-cddl].
 
 # The C-DNS format
 
@@ -776,10 +776,10 @@ TODO: Rewrite section. Following is not suitable for current design.
 In principle, packets that do not meet these criteria could be classified into two categories:
 
 * Partially malformed: those packets which can be decoded sufficiently
-to extract 
+to extract
     * a DNS header (and therefore a DNS transaction ID)
     * a QDCOUNT
-    * the first Question in the Question section if QDCOUNT is greater than 0 
+    * the first Question in the Question section if QDCOUNT is greater than 0
 
       but suffer other issues while parsing. This is the minimum information required to attempt Query/Response matching as described in (#matching-algorithm)
 * Completely malformed: those packets that cannot be decoded to this extent.
@@ -810,7 +810,7 @@ information is not captured in the C-DNS format. For example, the following aspe
 of the original packet stream cannot be re-constructed from the C-DNS format:
 
 * IP fragmentation
-* TCP stream information: 
+* TCP stream information:
      * Multiple DNS messages may have been sent in a single TCP segment
      * A DNS payload may have be split across multiple TCP segments
      * Multiple DNS messages may have be sent on a single TCP session
@@ -834,22 +834,22 @@ packet.
 
 [@!RFC1035] name compression works by substituting trailing sections of a name with a
 reference back to the occurrence of those sections earlier in the message.
-Not all name server software uses the same algorithm when compressing domain names 
+Not all name server software uses the same algorithm when compressing domain names
 within the responses. Some attempt maximum recompression
 at the expense of runtime resources, others use heuristics to balance compression
-and speed and others use different rules for what is a valid compression target. 
+and speed and others use different rules for what is a valid compression target.
 
 This means that responses to the
-same question from different name server software which match in terms of DNS payload 
+same question from different name server software which match in terms of DNS payload
 content (header, counts, RRs with name compression removed) do
-not necessarily match byte-for-byte on the wire. 
+not necessarily match byte-for-byte on the wire.
 
 Therefore, it is not possible to ensure that the DNS response payload is reconstructed
 byte-for-byte from C-DNS data. However, it can at least, in principle, be reconstructed to have the correct payload
 length (since the original response length is captured) if there is enough knowledge of the
 commonly implemented name compression algorithms. For example, a simplistic approach would be
 to try each algorithm in turn
-to see if it reproduces the original length, stopping at the first match. This would not 
+to see if it reproduces the original length, stopping at the first match. This would not
 guarantee the correct algorithm has been used as it is possible to match the length
 whilst still not matching the on the wire bytes but, without further information added to the C-DNS data, this is the
 best that can be achieved.
@@ -914,8 +914,8 @@ The algorithm is designed to handle the following input data:
 
 1. Multiple queries with the same Primary ID (but different Secondary ID) arriving before any responses for these queries are seen.
 1. Multiple queries with the same Primary and Secondary ID arriving before any responses for these queries are seen.
-1. Queries for which no later response can be found within the specified timeout.  
-1. Responses for which no previous query can be found within the specified timeout. 
+1. Queries for which no later response can be found within the specified timeout.
+1. Responses for which no previous query can be found within the specified timeout.
 
 ## Algorithm Limitations
 
@@ -972,7 +972,7 @@ to use this information as they see fit".
 ## DNS-STATS Compactor
 
 ICANN/Sinodun IT have developed an open source implementation called DNS-STATS Compactor.
-The Compactor is a suite of tools which can capture DNS traffic (from either a 
+The Compactor is a suite of tools which can capture DNS traffic (from either a
 network interface or a PCAP file) and store it in the Compacted-DNS (C-DNS) file
 format. PCAP files for the captured traffic can also be reconstructed. See
 [Compactor](https://github.com/dns-stats/compactor/wiki).
@@ -1008,7 +1008,7 @@ Any data upload MUST be authenticated and encrypted.
 
 # Acknowledgements
 
-The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful discussions on binary 
+The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful discussions on binary
 formats, compression and packet matching. Also Jan Vcelak and Wouter Wijngaards for discussions on
 name compression and Paul Hoffman for a detailed review of the document and the C-DNS CDDL.
 
@@ -1185,7 +1185,7 @@ draft-dickinson-dnsop-dns-capture-format-00
 
 # CDDL
 
-    ; CDDL specification of the file format for C-DNS, 
+    ; CDDL specification of the file format for C-DNS,
     ; which describes a collection of DNS messages and
     ; traffic meta-data.
 
@@ -1619,12 +1619,12 @@ to part (or all) of the earlier name, and if the uncompressed part of the name
 is shorter than any compression already found, the earlier name is noted as the
 compression target for the name.
 
-The following tables illustrate the process. In an example packet, the first 
+The following tables illustrate the process. In an example packet, the first
 name is example.com.
 
 N | Name | Uncompressed | Compression Target
 ---:|:-----|:-----|:-----------
-1 | example.com | | 
+1 | example.com | |
 
 The next name added is bar.com. This is matched against example.com. The
 com part of this can be used as a compression target, with the remaining
@@ -1632,7 +1632,7 @@ uncompressed part of the name being bar.
 
 N | Name | Uncompressed | Compression Target
 ---:|:-----|:-----|:-----------
-1 | example.com | | 
+1 | example.com | |
 2 | bar.com | bar | 1 + offset to com
 
 The third name added is www.bar.com. This is first matched against
@@ -1644,7 +1644,7 @@ and so it is adopted.
 
 N | Name | Uncompressed | Compression Target
 ---:|:-----|:-----|:-----------
-1 | example.com | | 
+1 | example.com | |
 2 | bar.com | bar | 1 + offset to com
 3 | www.bar.com | www | 2
 

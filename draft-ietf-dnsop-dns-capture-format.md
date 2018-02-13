@@ -345,7 +345,7 @@ Field | Type | Description
 :----|:----|:-----
 ticks-per-second | Unsigned | Sub-second timing is recorded in ticks. This specifies the number of ticks in a second.
 ||
-max-block-qr-items | Unsigned | The maximum number of Query/Response items in a block.
+max-block-items | Unsigned | The maximum number of each record type (queries, address event counts or malformed messages) in a block. A hint on the resources needed to process the file.
 ||
 table-field-hints | Map of items | Collection of data field present hints.
 ||
@@ -1203,7 +1203,7 @@ draft-dickinson-dnsop-dns-capture-format-00
 
     StorageParameters = {
         ticks-per-second     => uint,
-        max-block-qr-items   => uint,
+        max-block-items      => uint,
         table-field-hints    => TableFieldHints,
         opcodes              => [+ uint],
         rr-types             => [+ uint],
@@ -1211,7 +1211,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     }
 
     ticks-per-second    = 0
-    max-block-qr-items  = 1
+    max-block-items     = 1
     table-field-hints   = 2
     opcodes             = 3
     rr-types            = 4

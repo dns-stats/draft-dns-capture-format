@@ -328,7 +328,7 @@ private-version | Unsigned | Version indicator available for private use by appl
 ||
 parameters | Array of items | Sets of parameters relating to the file. The preamble to each block indicates which set applies to the block.
 
-## File parameter set contents
+### File parameter set contents
 
 A single set of file parameters contains the following maps.
 
@@ -338,7 +338,7 @@ storage | Map of items | Parameters relating to data storage in the file.
 ||
 collection | Map of items | Parameters relating to collection of the data. Optional.
 
-## Storage parameter contents
+#### Storage parameter contents
 
 The storage parameters contains the following items.
 
@@ -358,7 +358,7 @@ storage-flags | Unsigned | Bit flags indicating attributes of collected data.
  | | Bit 0. The data has been anonymised.
  | | Bit 1. The data is sampled data.
 
-## Storage parameter table field hints
+##### Storage parameter table field hints
 
 In order to provide maximum flexibility for storing data required for particular processing, all data fields
 in C-DNS are optional. This, though, raises the problem of whether a particular field is missing from a record
@@ -410,7 +410,7 @@ other-tables | Unsigned | Hints indicating which other tables are collected. If 
  | | Bit 1. Address event counts
 implementation-dependent | Unsigned | Collection hints for implementation-specific items. Values of this field are implementation specific. Optional.
 
-## Collection parameter contents
+### Collection parameter contents
 
 The collection parameters contain the following items. All are optional.
 
@@ -442,19 +442,19 @@ Each block contains the following items.
 
 Field | Type | Description
 :----|:----|:-----
-preamble | Map of items | Overall information for the block.
+preamble | Map of items | Overall information for the block. See (#block-preamble-contents).
 ||
-statistics | Map of statistics | Statistics about the block. Optional.
+statistics | Map of statistics | Statistics about the block. See (#block-statistics-contents).
 ||
-tables | Map of tables | The tables containing data referenced by individual Q/R data items. Optional.
+tables | Map of tables | The tables containing data referenced by individual Q/R data items. See (#block-table-contents).
 ||
-queries | Array of Q/R data items | Details of individual Q/R data items. Optional.
+queries | Array of Q/R data items | Details of individual Q/R data items. See (#queryresponse-data).
 ||
-address-event-counts | Array of Address Event counts | Per client counts of ICMP messages and TCP resets. Optional.
+address-event-counts | Array of Address Event Counts | Per client counts of ICMP messages and TCP resets. See (#address-event-count-contents).
 ||
-malformed-messages | Array of malformed packets | Wire contents of malformed DNS messages. Optional.
+malformed-messages | Array of malformed packets | Wire contents of malformed DNS messages. See (#malformed-message-record-contents).
 
-## Block preamble map
+### Block preamble contents
 
 The block preamble map contains overall information for the block.
 
@@ -463,7 +463,7 @@ Field | Type | Description
 earliest-time | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two elements. The first element is the number of seconds since the Posix epoch, an unsigned integer time_t. The second is an unsigned integer with the number of ticks since the start of the second.
 parameters-index | Unsigned | The index of the set of parameters applicable to this block. Optional. If omitted, parameter set 0 is used.
 
-## Block statistics
+### Block statistics contents
 
 The block statistics section contains some basic statistical information about the block. All items are optional.
 
@@ -477,32 +477,23 @@ malformed-messages | Unsigned | Number of malformed messages found in input for 
 
 Implementations may choose to add additional implementation-specific fields to the statistics.
 
-## Block table map
+### Block table contents
 
-The block table map contains the block tables. Each element, or table, is an array. The following tables detail the contents of each block table.
-
-The Present column in the following tables indicates the circumstances when an optional field will be present (assuming that field is not omitted because it is not collected by the application). A Q/R data item may be:
-
-* A Query plus a Response.
-* A Query without a Response.
-* A Response without a Query.
-
-Also:
-
-* A Query and/or a Response may contain an OPT section.
-* A Question may or may not be present. If the Query is available, the Question section of the Query is used. If no Query is available, the Question section of the Response is used. Unless otherwise noted, a Question refers to the first Question in the Question section.
-
-So, for example, a field listed with a Present value of QUERY is present whenever the Q/R data item contains a Query. If the pair contains a Response only, the field will not be present.
-
-## IP address table
-
-The table `ip-address` holds all client and server IP addresses in the block. Each item in the table is a single IP address.
+The block table map contains the block tables. Each element, or table, is an array. The map contains the following items.
 
 Field | Type | Description
 :-----|:-----|:-----------
-ip-address | Byte string | The IP address, in network byte order. The string is 4 bytes long for an IPv4 address, 16 bytes long for an IPv6 address.
+ip-address | Array of byte string | IP addresses, in network byte order. Each string is 4 bytes long for an IPv4 address, 16 bytes long for an IPv6 address.
+classtype | Array of CLASS/TYPE | CLASS/TYPE items (see (#classtype-table-contents)).
+name-rdata | Array of byte string | NAME and RDATA data. Each entry is the contents of a single NAME or RDATA. Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
+query-sig | Array of QuerySignature | Query signatures (see (#query-signature-table-contents)).
+qlist | Array of array of unsigned | Question lists. Each entry is a list of indexes to the question data in the qrr table.
+qrr | Array of Question | Question data. Each entry is the contents of a single question, where a question is the second or subsequent question in a query (see (#question-table-contents)).
+rrlist | Array of array of unsigned | RR lists. Each entry is a list of indexes to the RR data in the rr table.
+rr | Array of RR | RR data. Each entry is the contents of a single RR (see (#resource-record-rr-table-contents)).
+malformed-data | Array of MalformedData | Malformed message contents. Each entry is the contents of a single malformed message (see (#malformed-message-data-table-contents)).
 
-## Class/Type table
+#### CLASS/TYPE table contents
 
 The table `classtype` holds pairs of RR CLASS and TYPE values. Each item in the table is a CBOR map.
 
@@ -512,35 +503,7 @@ type | Unsigned  | TYPE value.
 ||
 class | Unsigned | CLASS value.
 
-## Name/RDATA table
-
-The table `name-rdata` holds the contents of all NAME or RDATA items in the block. Each item in the table is the content of a single NAME or RDATA.
-
-Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no
-DNS style name compression is used on the individual names/labels within the format.
-
-Field | Type | Description
-:-----|:-----|:-----------
-name-rdata | Byte string | The NAME or RDATA contents (uncompressed).
-
-## Malformed message table
-
-The table `malformed-data` holds the contents of all Malformed message items in the block. Each item in the table is a CBOR map containing the following items.
-
-Field | Type | Description
-:-----|:-----|:-----------
-server-address-index | Unsigned | The index in the IP address table of the server IP address.
-||
-server-port | Unsigned | The server port.
-||
-transport-flags | Unsigned | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
- | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
- | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
- | | Bit 5. Trailing bytes in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.
-||
-message-content | Byte string | The raw contents of the DNS message.
-
-## Query Signature table
+#### Query Signature table contents
 
 The table `query-sig` holds elements of the Q/R data item that are often common between multiple individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned integer key. All items are optional.
 
@@ -603,7 +566,7 @@ qr-dns-flags | A | Bit flags with values from the Query and Response DNS flags. 
 ||
 query-rcode | Q | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 ||
-query-classtype-index | QT | The index in the Class/Type table of the CLASS and TYPE of the first Question.
+query-classtype-index | QT | The index in the CLASS/TYPE table of the CLASS and TYPE of the first Question.
 ||
 query-qd-count | QT | The QDCOUNT in the Query, or Response if no Query present.
 ||
@@ -621,7 +584,7 @@ opt-rdata-index | QO | The index in the NAME/RDATA table of the OPT RDATA.
 ||
 response-rcode | R | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 
-## Question table
+#### Question table contents
 
 The table `qrr` holds details on individual Questions in a Question section. Each item in the table is a CBOR map containing a single Question. Each item in the map has an unsigned value and an unsigned integer key. This data is optionally collected.
 
@@ -629,9 +592,9 @@ Field | Description
 :-----|:-----------
 name-index | The index in the NAME/RDATA table of the QNAME.
 ||
-classtype-index | The index in the Class/Type table of the CLASS and TYPE of the Question.
+classtype-index | The index in the CLASS/TYPE table of the CLASS and TYPE of the Question.
 
-## Resource Record (RR) table
+#### Resource Record (RR) table contents
 
 The table `rr` holds details on individual Resource Records in RR sections. Each item in the table is a CBOR map containing a single Resource Record. This data is optionally collected.
 
@@ -639,27 +602,29 @@ Field | Description
 :-----|:-----------
 name-index | The index in the NAME/RDATA table of the NAME.
 ||
-classtype-index | The index in the Class/Type table of the CLASS and TYPE of the RR.
+classtype-index | The index in the CLASS/TYPE table of the CLASS and TYPE of the RR.
 ||
 ttl | The RR Time to Live.
 ||
 rdata-index | The index in the NAME/RDATA table of the RR RDATA.
 
-## Question list table
+#### Malformed message data table contents
 
-The table `qlist` holds a list of second and subsequent individual Questions in a Question section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.
+The table `malformed-data` holds the contents of all Malformed message items in the block. Each item in the table is a CBOR map containing the following items.
 
-Field | Description
-:-----|:-----------
-question | The index in the Question table of the individual Question.
+Field | Type | Description
+:-----|:-----|:-----------
+server-address-index | Unsigned | The index in the IP address table of the server IP address.
+||
+server-port | Unsigned | The server port.
+||
+transport-flags | Unsigned | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
+ | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
+ | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
+||
+message-content | Byte string | The raw contents of the DNS message.
 
-## Resource Record list table
-
-The table `rrlist` holds a list of individual Resource Records in a Answer, Authority or Additional section. Each item in the table is a CBOR unsigned integer. This data is optionally collected.
-
-Field | Description
-:-----|:-----------
-rr | The index in the Resource Record table of the individual Resource Record.
+<!-- Evade mmark bug -->
 
 ## Query/Response data
 
@@ -706,15 +671,15 @@ query-size | R | DNS query message size (see below).
 ||
 response-size | R | DNS query message size (see below).
 ||
-response-processing-data | R | Data on response processing (see below).
+response-processing-data | R | Data on response processing (see (#response-processing-data-contents)).
 ||
-query-extended | Q | Extended Query information. This item is only present if collection of extra Query information is configured. Optional.
+query-extended | Q | Extended Query data  (see (#extended-queryresponse-data-contents)).
 ||
-response-extended | R | Extended Response information. This item is only present if collection of extra Response information is configured. Optional.
-
-An implementation must always collect basic Q/R information. It may be configured to collect details on Question, Answer, Authority and Additional sections of the Query, the Response or both. Note that only the second and subsequent Questions of any Question section are collected (the details of the first are in the basic information), and that OPT Records are not collected in the Additional section.
+response-extended | R | Extended Response data (see (#extended-queryresponse-data-contents)).
 
 The query-size and response-size fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.
+
+### Response processing data contents
 
 The response processing data is information on the server processing that produced the response. It is a CBOR map as follows; each item is optional.
 
@@ -726,6 +691,8 @@ processing-flags | Flags relating to response processing.
  | | Bit 0. 1 if the response came from cache.
 
 QUESTION: Should this be a signature item?
+
+### Extended Query/Response data contents
 
 The Extended information is a CBOR map as follows. Each item in the map is present only if collection of the relevant details is configured. Each item in the map has an unsigned value and an unsigned integer key.
 
@@ -739,7 +706,7 @@ authority-index | The index in the RR list table of the entry listing the Author
 ||
 additional-index | The index in the RR list table of the entry listing the Additional Resource Record sections for the Query or Response.
 
-## Address Event counts
+## Address Event Count contents
 
 This table holds counts of various IP related events relating to traffic
 with individual client addresses.
@@ -760,7 +727,7 @@ ae-address-index | Unsigned | The index in the IP address table of the client ad
 ||
 ae-count | Unsigned | The number of occurrences of this event during the block collection period.
 
-## Malformed message records
+## Malformed message record contents
 
 This optional table records the original wire format content of malformed messages (see (#malformed-messages)).
 
@@ -1041,7 +1008,7 @@ draft-ietf-dnsop-dns-capture-format-04
 
 * Correct query-d0 to query-do in CDDL
 * Clarify that map keys are unsigned integers
-* Add Type to Class/type table
+* Add Type to Class/Type table
 * Clarify storage format in section 7.12
 
 draft-ietf-dnsop-dns-capture-format-03
@@ -1200,139 +1167,146 @@ draft-dickinson-dnsop-dns-capture-format-00
     ; which describes a collection of DNS messages and
     ; traffic meta-data.
 
+    ;
+    ; The overall structure of a file.
+    ;
     File = [
         file-type-id  : tstr .regexp "C-DNS",
         file-preamble : FilePreamble,
         file-blocks   : [* Block],
     ]
 
+    ;
+    ; The file preamble.
+    ;
     FilePreamble = {
         major-format-version => uint .eq 1,
         minor-format-version => uint .eq 0,
         ? private-version    => uint,
         parameters           => [+ Parameters],
     }
-
     major-format-version = 0
     minor-format-version = 1
     private-version      = 2
     parameters           = 3
 
+    ; Parameters for data stored in a block.
     Parameters = {
         storage      => StorageParameters,
         ? collection => CollectionParameters,
     }
-
     storage    = 0
     collection = 1
 
-    StorageParameters = {
-        ticks-per-second     => uint,
-        max-block-items      => uint,
-        table-field-hints    => TableFieldHints,
-        opcodes              => [+ uint],
-        rr-types             => [+ uint],
-        ? storage-flags      => StorageFlags,
-    }
+      StorageParameters = {
+          ticks-per-second     => uint,
+          max-block-items      => uint,
+          table-field-hints    => TableFieldHints,
+          opcodes              => [+ uint],
+          rr-types             => [+ uint],
+          ? storage-flags      => StorageFlags,
+      }
+      ticks-per-second    = 0
+      max-block-items     = 1
+      table-field-hints   = 2
+      opcodes             = 3
+      rr-types            = 4
+      storage-flags       = 5
 
-    ticks-per-second    = 0
-    max-block-items     = 1
-    table-field-hints   = 2
-    opcodes             = 3
-    rr-types            = 4
-    storage-flags       = 5
+        ; A hint indicates if the collection method will output the
+        ; field or will ignore the field if present.
+        TableFieldHints = {
+            query-response             => QueryResponseFieldHints,
+            query-signature            => QuerySignatureFieldHints,
+            other-tables               => OtherTableFieldHints,
+            ? implementation-dependent => uint,
+        }
+        query-response           = 0
+        query-signature          = 1
+        other-tables             = 2
+        implementation-dependent = 3
 
-    TableFieldHints = {
-        query-response             => QueryResponseFieldHints,
-        query-signature            => QuerySignatureFieldHints,
-        other-tables               => OtherTableFieldHints,
-        ? implementation-dependent => uint,
-    }
+          QueryResponseFieldHintValues = &(
+              time-offset                  : 0,
+              client-address-index         : 1,
+              client-port                  : 2,
+              transaction-id               : 3,
+              query-signature-index        : 4,
+              client-hoplimit              : 5,
+              response-delay               : 6,
+              query-name-index             : 7,
+              query-size                   : 8,
+              response-size                : 9,
+              response-processing-data     : 10,
+              query-question-sections      : 11,    ; Second & subsequent questions
+              query-answer-sections        : 12,
+              query-authority-sections     : 13,
+              query-additional-sections    : 14,
+              response-answer-sections     : 15,
+              response-authority-sections  : 16,
+              response-additional-sections : 17,
+          )
+          QueryResponseFieldHints = uint .bits QueryResponseFieldHintValues
 
-    query-response           = 0
-    query-signature          = 1
-    other-tables             = 2
-    implementation-dependent = 3
+          QuerySignatureFieldHintValues =&(
+              server-address     : 0,
+              server-port        : 1,
+              transport-flags    : 2,
+              qr-type            : 3,
+              qr-sig-flags       : 4,
+              query-opcode       : 5,
+              dns-flags          : 6,
+              query-rcode        : 7,
+              query-class-type   : 8,
+              query-qdcount      : 9,
+              query-ancount      : 10,
+              query-arcount      : 11,
+              query-nscount      : 12,
+              query-edns-version : 13,
+              query-udp-size     : 14,
+              query-opt-rdata    : 15,
+              response-rcode     : 16,
+          )
+          QuerySignatureFieldHints = uint .bits QuerySignatureFieldHintValues
 
-    QueryResponseFieldHintValues = &(
-        time-offset                  : 0,
-        client-address-index         : 1,
-        client-port                  : 2,
-        transaction-id               : 3,
-        query-signature-index        : 4,
-        client-hoplimit              : 5,
-        response-delay               : 6,
-        query-name-index             : 7,
-        query-size                   : 8,
-        response-size                : 9,
-        response-processing-data     : 10,
-        query-question-sections      : 11,    ; Second & subsequent questions
-        query-answer-sections        : 12,
-        query-authority-sections     : 13,
-        query-additional-sections    : 14,
-        response-answer-sections     : 15,
-        response-authority-sections  : 16,
-        response-additional-sections : 17,
-    )
-    QueryResponseFieldHints = uint .bits QueryResponseFieldHintValues
+          OtherTableFieldHintValues = &(
+              malformed-messages-table   : 0,
+              address-event-counts-table : 1,
+          )
+          OtherTableFieldHints = uint .bits OtherTableFieldHintValues
 
-    QuerySignatureFieldHintValues =&(
-        server-address     : 0,
-        server-port        : 1,
-        transport-flags    : 2,
-        qr-type            : 3,
-        qr-sig-flags       : 4,
-        query-opcode       : 5,
-        dns-flags          : 6,
-        query-rcode        : 7,
-        query-class-type   : 8,
-        query-qdcount      : 9,
-        query-ancount      : 10,
-        query-arcount      : 11,
-        query-nscount      : 12,
-        query-edns-version : 13,
-        query-udp-size     : 14,
-        query-opt-rdata    : 15,
-        response-rcode     : 16,
-    )
-    QuerySignatureFieldHints = uint .bits QuerySignatureFieldHintValues
+        StorageFlagValues = &(
+            anonymised-data      : 0,
+            sampled-data         : 1,
+        )
+        StorageFlags = uint .bits StorageFlagValues
 
-    OtherTableFieldHintValues = &(
-        malformed-messages-table   : 0,
-        address-event-counts-table : 1,
-    )
-    OtherTableFieldHints = uint .bits OtherTableFieldHintValues
+      CollectionParameters = {
+          ? query-timeout      => uint,
+          ? skew-timeout       => uint,
+          ? snaplen            => uint,
+          ? promisc            => uint,
+          ? interfaces         => [+ tstr],
+          ? server-addresses   => [+ IPAddress], ; Hint for later analysis
+          ? vlan-ids           => [+ uint],
+          ? filter             => tstr,
+          ? generator-id       => tstr,
+          ? host-id            => tstr,
+      }
+      query-timeout      = 0
+      skew-timeout       = 1
+      snaplen            = 2
+      promisc            = 3
+      interfaces         = 4
+      server-addresses   = 5
+      vlan-ids           = 6
+      filter             = 7
+      generator-id       = 8
+      host-id            = 9
 
-    StorageFlagValues = &(
-        anonymised-data      : 0,
-        sampled-data         : 1,
-    )
-    StorageFlags = uint .bits StorageFlagValues
-
-    CollectionParameters = {
-        ? query-timeout      => uint,
-        ? skew-timeout       => uint,
-        ? snaplen            => uint,
-        ? promisc            => uint,
-        ? interfaces         => [+ tstr],
-        ? server-addresses   => [+ IPAddress], ; Hint for later analysis
-        ? vlan-ids           => [+ uint],
-        ? filter             => tstr,
-        ? generator-id       => tstr,
-        ? host-id            => tstr,
-    }
-
-    query-timeout      = 0
-    skew-timeout       = 1
-    snaplen            = 2
-    promisc            = 3
-    interfaces         = 4
-    server-addresses   = 5
-    vlan-ids           = 6
-    filter             = 7
-    generator-id       = 8
-    host-id            = 9
-
+    ;
+    ; Data in the file is stored in Blocks.
+    ;
     Block = {
         preamble                => BlockPreamble,
         ? statistics            => BlockStatistics, ; Much of this could be derived
@@ -1341,13 +1315,22 @@ draft-dickinson-dnsop-dns-capture-format-00
         ? address-event-counts  => [+ AddressEventCount],
         ? malformed-messages    => [+ MalformedMessage],
     }
-
     preamble              = 0
     statistics            = 1
     tables                = 2
     queries               = 3
     address-event-counts  = 4
     malformed-messages    = 5
+
+    ;
+    ; The (mandatory) preamble to a block.
+    ;
+    BlockPreamble = {
+        ? earliest-time    => Timestamp,
+        ? parameters-index => uint .default 0,
+    }
+    earliest-time    = 0
+    parameters-index = 1
 
     ; Ticks are subsecond intervals. The number of ticks in a second is file/block
     ; metadata. Signed and unsigned tick types are defined.
@@ -1359,14 +1342,9 @@ draft-dickinson-dnsop-dns-capture-format-00
         timestamp-uticks : uticks,
     ]
 
-    BlockPreamble = {
-        ? earliest-time    => Timestamp,
-        ? parameters-index => uint .default 0,
-    }
-
-    earliest-time    = 0
-    parameters-index = 1
-
+    ;
+    ; Statistics about the block contents.
+    ;
     BlockStatistics = {
         ? total-packets             => uint,
         ? total-pairs               => uint,
@@ -1374,23 +1352,15 @@ draft-dickinson-dnsop-dns-capture-format-00
         ? total-unmatched-responses => uint,
         ? total-malformed-messages  => uint,
     }
-
     total-packets                = 0
     total-pairs                  = 1
     total-unmatched-queries      = 2
     total-unmatched-responses    = 3
     total-malformed-messages     = 4
 
-    QuestionTables = (
-        qlist => [+ QuestionList],
-        qrr   => [+ Question]
-    )
-
-    RRTables = (
-        rrlist => [+ RRList],
-        rr     => [+ RR]
-    )
-
+    ;
+    ; Tables of common data referenced from records in a block.
+    ;
     BlockTables = {
         ? ip-address     => [+ IPAddress],
         ? classtype      => [+ ClassType],
@@ -1399,8 +1369,7 @@ draft-dickinson-dnsop-dns-capture-format-00
         ? QuestionTables,
         ? RRTables,
         ? malformed-data => [+ MalformedMessageData],
-     }
-
+    }
     ip-address     = 0
     classtype      = 1
     name-rdata     = 2
@@ -1411,95 +1380,16 @@ draft-dickinson-dnsop-dns-capture-format-00
     rr             = 7
     malformed-data = 8
 
-    QueryResponse = {
-        ? time-offset              => uticks,     ; Time offset from start of block
-        ? client-address-index     => uint,
-        ? client-port              => uint,
-        ? transaction-id           => uint,
-        ? query-signature-index    => uint,
-        ? client-hoplimit          => uint,
-        ? response-delay           => ticks,
-        ? query-name-index         => uint,
-        ? query-size               => uint,       ; DNS size of query
-        ? response-size            => uint,       ; DNS size of response
-        ? response-processing-data => ResponseProcessingData,
-        ? query-extended           => QueryResponseExtended,
-        ? response-extended        => QueryResponseExtended,
-    }
-
-    time-offset              = 0
-    client-address-index     = 1
-    client-port              = 2
-    transaction-id           = 3
-    query-signature-index    = 4
-    client-hoplimit          = 5
-    response-delay           = 6
-    query-name-index         = 7
-    query-size               = 8
-    response-size            = 9
-    response-processing-data = 10
-    query-extended           = 11
-    response-extended        = 12
+    IPv4Address = bstr .size 4
+    IPv6Address = bstr .size 16
+    IPAddress = IPv4Address / IPv6Address
 
     ClassType = {
         type  => uint,
         class => uint,
     }
-
     type  = 0
     class = 1
-
-    DNSFlagValues = &(
-        query-cd   : 0,
-        query-ad   : 1,
-        query-z    : 2,
-        query-ra   : 3,
-        query-rd   : 4,
-        query-tc   : 5,
-        query-aa   : 6,
-        query-do   : 7,
-        response-cd: 8,
-        response-ad: 9,
-        response-z : 10,
-        response-ra: 11,
-        response-rd: 12,
-        response-tc: 13,
-        response-aa: 14,
-    )
-    DNSFlags = uint .bits DNSFlagValues
-
-    QueryResponseFlagValues = &(
-        has-query               : 0,
-        has-reponse             : 1,
-        query-has-question      : 2,
-        query-has-opt           : 3,
-        response-has-opt        : 4,
-        response-has-no-question: 5,
-    )
-    QueryResponseFlags = uint .bits QueryResponseFlagValues
-
-    Transport = &(
-        udp               : 0,
-        tcp               : 1,
-        tls               : 2,
-        dtls              : 3,
-    )
-
-    TransportFlagValues = &(
-        ip-version         : 0,     ; 0=IPv4, 1=IPv6
-        ; Transport value bits 1-4
-        query-trailingdata : 5,
-    ) / (1..4)
-    TransportFlags = uint .bits TransportFlagValues
-
-    QueryResponseType = &(
-        stub      : 0,
-        client    : 1,
-        resolver  : 2,
-        auth      : 3,
-        forwarder : 4,
-        tool      : 5,
-    )
 
     QuerySignature = {
         ? server-address-index  => uint,
@@ -1520,7 +1410,6 @@ draft-dickinson-dnsop-dns-capture-format-00
         ? opt-rdata-index       => uint,
         ? response-rcode        => uint,
     }
-
     server-address-index  = 0
     server-port           = 1
     transport-flags       = 2
@@ -1539,28 +1428,148 @@ draft-dickinson-dnsop-dns-capture-format-00
     opt-rdata-index       = 15
     response-rcode        = 16
 
-    QuestionList = [+ uint]               ; Index of Question
+      Transport = &(
+          udp               : 0,
+          tcp               : 1,
+          tls               : 2,
+          dtls              : 3,
+      )
 
-    Question = {                          ; Second and subsequent questions
-        name-index      => uint,          ; Index to a name in the name-rdata table
-        classtype-index => uint,
+      TransportFlagValues = &(
+          ip-version         : 0,     ; 0=IPv4, 1=IPv6
+          ; Transport value bits 1-4
+          query-trailingdata : 5,
+      ) / (1..4)
+      TransportFlags = uint .bits TransportFlagValues
+
+      QueryResponseType = &(
+          stub      : 0,
+          client    : 1,
+          resolver  : 2,
+          auth      : 3,
+          forwarder : 4,
+          tool      : 5,
+      )
+
+      QueryResponseFlagValues = &(
+          has-query               : 0,
+          has-reponse             : 1,
+          query-has-question      : 2,
+          query-has-opt           : 3,
+          response-has-opt        : 4,
+          response-has-no-question: 5,
+      )
+      QueryResponseFlags = uint .bits QueryResponseFlagValues
+
+      DNSFlagValues = &(
+          query-cd   : 0,
+          query-ad   : 1,
+          query-z    : 2,
+          query-ra   : 3,
+          query-rd   : 4,
+          query-tc   : 5,
+          query-aa   : 6,
+          query-do   : 7,
+          response-cd: 8,
+          response-ad: 9,
+          response-z : 10,
+          response-ra: 11,
+          response-rd: 12,
+          response-tc: 13,
+          response-aa: 14,
+      )
+      DNSFlags = uint .bits DNSFlagValues
+
+    QuestionTables = (
+        qlist => [+ QuestionList],
+        qrr   => [+ Question]
+    )
+
+      QuestionList = [+ uint]           ; Index of Question
+
+      Question = {                      ; Second and subsequent questions
+          name-index      => uint,      ; Index to a name in the name-rdata table
+          classtype-index => uint,
+      }
+      name-index      = 0
+      classtype-index = 1
+
+    RRTables = (
+        rrlist => [+ RRList],
+        rr     => [+ RR]
+    )
+
+      RRList = [+ uint]                     ; Index of RR
+
+      RR = {
+          name-index      => uint,          ; Index to a name in the name-rdata table
+          classtype-index => uint,
+          ttl             => uint,
+          rdata-index     => uint,          ; Index to RDATA in the name-rdata table
+      }
+      ; Other map key values already defined above.
+      ttl         = 2
+      rdata-index = 3
+
+    MalformedMessageData = {
+        ? server-address-index   => uint,
+        ? server-port            => uint,
+        ? mm-transport-flags     => MalformedTransportFlags,
+        ? mm-content             => bstr,   ; Raw packet contents
     }
-
-    name-index      = 0
-    classtype-index = 1
-
-    RRList = [+ uint]                     ; Index of RR
-
-    RR = {
-        name-index      => uint,          ; Index to a name in the name-rdata table
-        classtype-index => uint,
-        ttl             => uint,
-        rdata-index     => uint,          ; Index to RDATA in the name-rdata table
-    }
-
     ; Other map key values already defined above.
-    ttl         = 2
-    rdata-index = 3
+    mm-transport-flags      = 2
+    mm-content              = 3
+
+      MalformedTransportFlagValues = &(
+          ip-version         : 0,     ; 0=IPv4, 1=IPv6
+          ; Transport value bits 1-4
+      ) / (1..4)
+      MalformedTransportFlags = uint .bits MalformedTransportFlagValues
+
+    ;
+    ; A single query/response pair.
+    ;
+    QueryResponse = {
+        ? time-offset              => uticks,     ; Time offset from start of block
+        ? client-address-index     => uint,
+        ? client-port              => uint,
+        ? transaction-id           => uint,
+        ? query-signature-index    => uint,
+        ? client-hoplimit          => uint,
+        ? response-delay           => ticks,
+        ? query-name-index         => uint,
+        ? query-size               => uint,       ; DNS size of query
+        ? response-size            => uint,       ; DNS size of response
+        ? response-processing-data => ResponseProcessingData,
+        ? query-extended           => QueryResponseExtended,
+        ? response-extended        => QueryResponseExtended,
+    }
+    time-offset              = 0
+    client-address-index     = 1
+    client-port              = 2
+    transaction-id           = 3
+    query-signature-index    = 4
+    client-hoplimit          = 5
+    response-delay           = 6
+    query-name-index         = 7
+    query-size               = 8
+    response-size            = 9
+    response-processing-data = 10
+    query-extended           = 11
+    response-extended        = 12
+
+    ResponseProcessingData = {
+        ? bailiwick-index  => uint,
+        ? processing-flags => ResponseProcessingFlags,
+    }
+    bailiwick-index = 0
+    processing-flags = 1
+
+      ResponseProcessingFlagValues = &(
+          from-cache : 0,
+      )
+      ResponseProcessingFlags = uint .bits ResponseProcessingFlagValues
 
     QueryResponseExtended = {
         ? question-index   => uint,       ; Index of QuestionList
@@ -1568,32 +1577,20 @@ draft-dickinson-dnsop-dns-capture-format-00
         ? authority-index  => uint,
         ? additional-index => uint,
     }
-
     question-index   = 0
     answer-index     = 1
     authority-index  = 2
     additional-index = 3
 
-    ResponseProcessingFlagValues = &(
-        from-cache : 0,
-    )
-    ResponseProcessingFlags = uint .bits ResponseProcessingFlagValues
-
-    ResponseProcessingData = {
-        ? bailiwick-index  => uint,
-        ? processing-flags => ResponseProcessingFlags,
-    }
-
-    bailiwick-index = 0
-    processing-flags = 1
-
+    ;
+    ; Address event data.
+    ;
     AddressEventCount = {
         ae-type          => &AddressEventType,
         ? ae-code        => uint,
         ae-address-index => uint,
         ae-count         => uint,
     }
-
     ae-type          = 0
     ae-code          = 1
     ae-address-index = 2
@@ -1608,29 +1605,17 @@ draft-dickinson-dnsop-dns-capture-format-00
         icmpv6-packet-too-big  : 5,
     )
 
-    MalformedMessageData = {
-        ? server-address-index    => uint,
-        ? server-port             => uint,
-        ? transport-flags         => TransportFlags,
-        ? message-content         => bstr,   ; Raw packet contents
-    }
-
-    ; Other map key values already defined above.
-    message-content = 3
-
+    ;
+    ; Malformed messages.
+    ;
     MalformedMessage = {
         ? time-offset           => uticks,   ; Time offset from start of block
         ? client-address-index  => uint,
         ? client-port           => uint,
         ? message-data-index    => uint,
     }
-
     ; Other map key values already defined above.
     message-data-index = 3
-
-    IPv4Address = bstr .size 4
-    IPv6Address = bstr .size 16
-    IPAddress = IPv4Address / IPv6Address
 
 # DNS Name compression example
 

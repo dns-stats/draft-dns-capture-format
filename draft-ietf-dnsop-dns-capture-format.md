@@ -379,7 +379,7 @@ query-response | Unsigned | Hints indicating which query response data fields ar
  | | Bit 7. query-name-index
  | | Bit 8. query-size
  | | Bit 9. response-size
- | | Bit 10. response-bailiwick-index
+ | | Bit 10. response-processing-data
  | | Bit 11. query-question-sections
  | | Bit 12. query-answer-sections
  | | Bit 13. query-authority-sections
@@ -706,7 +706,7 @@ query-size | R | DNS query message size (see below).
 ||
 response-size | R | DNS query message size (see below).
 ||
-response-bailiwick-index | R | The index in the NAME/RDATA table of the response bailiwick.
+response-processing-data | R | Data on response processing (see below).
 ||
 query-extended | Q | Extended Query information. This item is only present if collection of extra Query information is configured. Optional.
 ||
@@ -715,6 +715,17 @@ response-extended | R | Extended Response information. This item is only present
 An implementation must always collect basic Q/R information. It may be configured to collect details on Question, Answer, Authority and Additional sections of the Query, the Response or both. Note that only the second and subsequent Questions of any Question section are collected (the details of the first are in the basic information), and that OPT Records are not collected in the Additional section.
 
 The query-size and response-size fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.
+
+The response processing data is information on the server processing that produced the response. It is a CBOR map as follows; each item is optional.
+
+Field | Description
+:-----|:-----------
+bailiwick-index | The index in the NAME/RDATA table of the response bailiwick.
+||
+processing-flags | Flags relating to response processing.
+ | | Bit 0. 1 if the response came from cache.
+
+QUESTION: Should this be a signature item?
 
 The Extended information is a CBOR map as follows. Each item in the map is present only if collection of the relevant details is configured. Each item in the map has an unsigned value and an unsigned integer key.
 
@@ -1254,7 +1265,7 @@ draft-dickinson-dnsop-dns-capture-format-00
         query-name-index             : 7,
         query-size                   : 8,
         response-size                : 9,
-        response-bailiwick-index     : 10,
+        response-processing-data     : 10,
         query-question-sections      : 11,    ; Second & subsequent questions
         query-answer-sections        : 12,
         query-authority-sections     : 13,
@@ -1411,7 +1422,7 @@ draft-dickinson-dnsop-dns-capture-format-00
         ? query-name-index         => uint,
         ? query-size               => uint,       ; DNS size of query
         ? response-size            => uint,       ; DNS size of response
-        ? response-bailiwick-index => uint,
+        ? response-processing-data => ResponseProcessingData,
         ? query-extended           => QueryResponseExtended,
         ? response-extended        => QueryResponseExtended,
     }
@@ -1426,7 +1437,7 @@ draft-dickinson-dnsop-dns-capture-format-00
     query-name-index         = 7
     query-size               = 8
     response-size            = 9
-    response-bailiwick-index = 10
+    response-processing-data = 10
     query-extended           = 11
     response-extended        = 12
 
@@ -1562,6 +1573,19 @@ draft-dickinson-dnsop-dns-capture-format-00
     answer-index     = 1
     authority-index  = 2
     additional-index = 3
+
+    ResponseProcessingFlagValues = &(
+        from-cache : 0,
+    )
+    ResponseProcessingFlags = uint .bits ResponseProcessingFlagValues
+
+    ResponseProcessingData = {
+        ? bailiwick-index  => uint,
+        ? processing-flags => ResponseProcessingFlags,
+    }
+
+    bailiwick-index = 0
+    processing-flags = 1
 
     AddressEventCount = {
         ae-type          => &AddressEventType,

@@ -288,31 +288,43 @@ however sample data for a root server indicated that block sizes up to
 ## Optional data items
 
 To enable applications to store data to their precise requirements in
-as space-efficient manner as possible, all fields in major Q/R data
-items (and malformed message items) are optional. In other words, an
+as space-efficient manner as possible, all fields in the following arrays are optional
+
+* Query/Response
+* Query Signature
+* Malformed messages
+
+In other words, an
 application can choose to omit any data item that is not required for
-its use case.
+its use case. In addition, implementations may be configured not to record all RRs, or messages with certain OPCODES.
 
-This does, however, means that an application consuming data held in a C-DNS file faces two problems:
+This does, however, mean that a consumer of a C-DNS file faces two problems:
 
-1. How can it quickly determine whether the file contains the data items it requires to complete its task?
-2. How can it know if a data item is not present because it was not recorded, or because the data item
-   was not present in the original data stream?
+1. How can it quickly determine whether a file contains the data items it requires to complete a particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?
 
-For example, consider an application attempting to regenerate an
-approximation of the original wire traffic.  It has a minimum set of
-data that must be present; for example, the timestamp of each item,
-the transport associated with each Q/R data item, whether each Q/R
-data item contains a query and response, a query with no response, or
-a response with no query, the DNS flags for query and response,
-etc. Also, if there is no query OPT RDATA present, is that because the
-query did not contain an OPT, or because that data was not stored?
+2. How can it determine if a data item is not present because it was 
+  a. explicitly not recorded or
+  b. not present in the original data stream/the data item was not available to the collecting application
+  
+For example, an application capturing C-DNS data from within a nameserver implementation is unlikely to be able to record the client-hoplimit. Or, if there is no query ARCount recorded and no query OPT RDATA recorded, is that because no query contained an OPT, or because that data was not stored?
 
 The parameters in the file preamble therefore include mandatory
 storage parameters. These contain hints specifying whether writer of
 the file recorded each data item if present. An application can use
 these to quickly determine whether the input data is rich enough for
 its needs.
+
+### Optional RRs and OPCODES
+
+Also included in the storage parameters is an explicit list of the RR types and 
+OPCODES that were recorded. Using an explicit list removes any ambiguity about 
+whether the OPCODE/RR type was not recognised by the collecting implementation 
+or whether it was specifically configured not to record it.
+
+For the case of unrecognised OPCODES the message may be parsable (for example, if it has a format similar enough to the one described in RFC1035 **ref) or it may not. Similarly for unrecognised RR types the RDATA can still be stored, but the collector will not be able to process it to remove, for example, name compression pointers.
+
+QUESTION: Should the storage parameters additionally define whether unrecognised OPCODES/RR types are stored ?
+
 
 # C-DNS format detailed description
 

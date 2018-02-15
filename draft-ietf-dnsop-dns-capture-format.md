@@ -1201,459 +1201,461 @@ draft-dickinson-dnsop-dns-capture-format-00
 
 # CDDL
 
-    ; CDDL specification of the file format for C-DNS,
-    ; which describes a collection of DNS messages and
-    ; traffic meta-data.
+~~~~~
+; CDDL specification of the file format for C-DNS,
+; which describes a collection of DNS messages and
+; traffic meta-data.
 
-    ;
-    ; The overall structure of a file.
-    ;
-    File = [
-        file-type-id  : tstr .regexp "C-DNS",
-        file-preamble : FilePreamble,
-        file-blocks   : [* Block],
-    ]
+;
+; The overall structure of a file.
+;
+File = [
+    file-type-id  : tstr .regexp "C-DNS",
+    file-preamble : FilePreamble,
+    file-blocks   : [* Block],
+]
 
-    ;
-    ; The file preamble.
-    ;
-    FilePreamble = {
-        major-format-version => uint .eq 1,
-        minor-format-version => uint .eq 0,
-        ? private-version    => uint,
-        parameters           => [+ Parameters],
+;
+; The file preamble.
+;
+FilePreamble = {
+    major-format-version => uint .eq 1,
+    minor-format-version => uint .eq 0,
+    ? private-version    => uint,
+    parameters           => [+ Parameters],
+}
+major-format-version = 0
+minor-format-version = 1
+private-version      = 2
+parameters           = 3
+
+; Parameters for data stored in a block.
+Parameters = {
+    storage      => StorageParameters,
+    ? collection => CollectionParameters,
+}
+storage    = 0
+collection = 1
+
+  StorageParameters = {
+      ticks-per-second     => uint,
+      max-block-items      => uint,
+      table-field-hints    => TableFieldHints,
+      opcodes              => [+ uint],
+      rr-types             => [+ uint],
+      ? storage-flags      => StorageFlags,
+  }
+  ticks-per-second    = 0
+  max-block-items     = 1
+  table-field-hints   = 2
+  opcodes             = 3
+  rr-types            = 4
+  storage-flags       = 5
+
+    ; A hint indicates if the collection method will output the
+    ; field or will ignore the field if present.
+    TableFieldHints = {
+        query-response             => QueryResponseFieldHints,
+        query-signature            => QuerySignatureFieldHints,
+        other-tables               => OtherTableFieldHints,
+        ? implementation-dependent => uint,
     }
-    major-format-version = 0
-    minor-format-version = 1
-    private-version      = 2
-    parameters           = 3
+    query-response           = 0
+    query-signature          = 1
+    other-tables             = 2
+    implementation-dependent = 3
 
-    ; Parameters for data stored in a block.
-    Parameters = {
-        storage      => StorageParameters,
-        ? collection => CollectionParameters,
-    }
-    storage    = 0
-    collection = 1
-
-      StorageParameters = {
-          ticks-per-second     => uint,
-          max-block-items      => uint,
-          table-field-hints    => TableFieldHints,
-          opcodes              => [+ uint],
-          rr-types             => [+ uint],
-          ? storage-flags      => StorageFlags,
-      }
-      ticks-per-second    = 0
-      max-block-items     = 1
-      table-field-hints   = 2
-      opcodes             = 3
-      rr-types            = 4
-      storage-flags       = 5
-
-        ; A hint indicates if the collection method will output the
-        ; field or will ignore the field if present.
-        TableFieldHints = {
-            query-response             => QueryResponseFieldHints,
-            query-signature            => QuerySignatureFieldHints,
-            other-tables               => OtherTableFieldHints,
-            ? implementation-dependent => uint,
-        }
-        query-response           = 0
-        query-signature          = 1
-        other-tables             = 2
-        implementation-dependent = 3
-
-          QueryResponseFieldHintValues = &(
-              time-offset                  : 0,
-              client-address-index         : 1,
-              client-port                  : 2,
-              transaction-id               : 3,
-              query-signature-index        : 4,
-              client-hoplimit              : 5,
-              response-delay               : 6,
-              query-name-index             : 7,
-              query-size                   : 8,
-              response-size                : 9,
-              response-processing-data     : 10,
-              query-question-sections      : 11,    ; Second & subsequent questions
-              query-answer-sections        : 12,
-              query-authority-sections     : 13,
-              query-additional-sections    : 14,
-              response-answer-sections     : 15,
-              response-authority-sections  : 16,
-              response-additional-sections : 17,
-          )
-          QueryResponseFieldHints = uint .bits QueryResponseFieldHintValues
-
-          QuerySignatureFieldHintValues =&(
-              server-address     : 0,
-              server-port        : 1,
-              transport-flags    : 2,
-              qr-type            : 3,
-              qr-sig-flags       : 4,
-              query-opcode       : 5,
-              dns-flags          : 6,
-              query-rcode        : 7,
-              query-class-type   : 8,
-              query-qdcount      : 9,
-              query-ancount      : 10,
-              query-arcount      : 11,
-              query-nscount      : 12,
-              query-edns-version : 13,
-              query-udp-size     : 14,
-              query-opt-rdata    : 15,
-              response-rcode     : 16,
-          )
-          QuerySignatureFieldHints = uint .bits QuerySignatureFieldHintValues
-
-          OtherTableFieldHintValues = &(
-              malformed-messages-table   : 0,
-              address-event-counts-table : 1,
-          )
-          OtherTableFieldHints = uint .bits OtherTableFieldHintValues
-
-        StorageFlagValues = &(
-            anonymised-data      : 0,
-            sampled-data         : 1,
-        )
-        StorageFlags = uint .bits StorageFlagValues
-
-      CollectionParameters = {
-          ? query-timeout      => uint,
-          ? skew-timeout       => uint,
-          ? snaplen            => uint,
-          ? promisc            => uint,
-          ? interfaces         => [+ tstr],
-          ? server-addresses   => [+ IPAddress], ; Hint for later analysis
-          ? vlan-ids           => [+ uint],
-          ? filter             => tstr,
-          ? generator-id       => tstr,
-          ? host-id            => tstr,
-      }
-      query-timeout      = 0
-      skew-timeout       = 1
-      snaplen            = 2
-      promisc            = 3
-      interfaces         = 4
-      server-addresses   = 5
-      vlan-ids           = 6
-      filter             = 7
-      generator-id       = 8
-      host-id            = 9
-
-    ;
-    ; Data in the file is stored in Blocks.
-    ;
-    Block = {
-        preamble                => BlockPreamble,
-        ? statistics            => BlockStatistics, ; Much of this could be derived
-        ? tables                => BlockTables,
-        ? queries               => [+ QueryResponse],
-        ? address-event-counts  => [+ AddressEventCount],
-        ? malformed-messages    => [+ MalformedMessage],
-    }
-    preamble              = 0
-    statistics            = 1
-    tables                = 2
-    queries               = 3
-    address-event-counts  = 4
-    malformed-messages    = 5
-
-    ;
-    ; The (mandatory) preamble to a block.
-    ;
-    BlockPreamble = {
-        ? earliest-time    => Timestamp,
-        ? parameters-index => uint .default 0,
-    }
-    earliest-time    = 0
-    parameters-index = 1
-
-    ; Ticks are subsecond intervals. The number of ticks in a second is file/block
-    ; metadata. Signed and unsigned tick types are defined.
-    ticks = int
-    uticks = uint
-
-    Timestamp = [
-        timestamp-secs   : uint,
-        timestamp-uticks : uticks,
-    ]
-
-    ;
-    ; Statistics about the block contents.
-    ;
-    BlockStatistics = {
-        ? total-packets             => uint,
-        ? total-pairs               => uint,
-        ? total-unmatched-queries   => uint,
-        ? total-unmatched-responses => uint,
-        ? total-malformed-messages  => uint,
-    }
-    total-packets                = 0
-    total-pairs                  = 1
-    total-unmatched-queries      = 2
-    total-unmatched-responses    = 3
-    total-malformed-messages     = 4
-
-    ;
-    ; Tables of common data referenced from records in a block.
-    ;
-    BlockTables = {
-        ? ip-address     => [+ IPAddress],
-        ? classtype      => [+ ClassType],
-        ? name-rdata     => [+ bstr],            ; Holds both Name RDATA and RDATA
-        ? query-sig      => [+ QuerySignature],
-        ? QuestionTables,
-        ? RRTables,
-        ? malformed-data => [+ MalformedMessageData],
-    }
-    ip-address     = 0
-    classtype      = 1
-    name-rdata     = 2
-    query-sig      = 3
-    qlist          = 4
-    qrr            = 5
-    rrlist         = 6
-    rr             = 7
-    malformed-data = 8
-
-    IPv4Address = bstr .size 4
-    IPv6Address = bstr .size 16
-    IPAddress = IPv4Address / IPv6Address
-
-    ClassType = {
-        type  => uint,
-        class => uint,
-    }
-    type  = 0
-    class = 1
-
-    QuerySignature = {
-        ? server-address-index  => uint,
-        ? server-port           => uint,
-        ? transport-flags       => TransportFlags,
-        ? qr-type               => QueryResponseType,
-        ? qr-sig-flags          => QueryResponseFlags,
-        ? query-opcode          => uint,
-        ? qr-dns-flags          => DNSFlags,
-        ? query-rcode           => uint,
-        ? query-classtype-index => uint,
-        ? query-qd-count        => uint,
-        ? query-an-count        => uint,
-        ? query-ar-count        => uint,
-        ? query-ns-count        => uint,
-        ? edns-version          => uint,
-        ? udp-buf-size          => uint,
-        ? opt-rdata-index       => uint,
-        ? response-rcode        => uint,
-    }
-    server-address-index  = 0
-    server-port           = 1
-    transport-flags       = 2
-    qr-type               = 3
-    qr-sig-flags          = 4
-    query-opcode          = 5
-    qr-dns-flags          = 6
-    query-rcode           = 7
-    query-classtype-index = 8
-    query-qd-count        = 9
-    query-an-count        = 10
-    query-ar-count        = 11
-    query-ns-count        = 12
-    edns-version          = 13
-    udp-buf-size          = 14
-    opt-rdata-index       = 15
-    response-rcode        = 16
-
-      Transport = &(
-          udp               : 0,
-          tcp               : 1,
-          tls               : 2,
-          dtls              : 3,
+      QueryResponseFieldHintValues = &(
+          time-offset                  : 0,
+          client-address-index         : 1,
+          client-port                  : 2,
+          transaction-id               : 3,
+          query-signature-index        : 4,
+          client-hoplimit              : 5,
+          response-delay               : 6,
+          query-name-index             : 7,
+          query-size                   : 8,
+          response-size                : 9,
+          response-processing-data     : 10,
+          query-question-sections      : 11,    ; Second & subsequent questions
+          query-answer-sections        : 12,
+          query-authority-sections     : 13,
+          query-additional-sections    : 14,
+          response-answer-sections     : 15,
+          response-authority-sections  : 16,
+          response-additional-sections : 17,
       )
+      QueryResponseFieldHints = uint .bits QueryResponseFieldHintValues
 
-      TransportFlagValues = &(
-          ip-version         : 0,     ; 0=IPv4, 1=IPv6
-          ; Transport value bits 1-4
-          query-trailingdata : 5,
-      ) / (1..4)
-      TransportFlags = uint .bits TransportFlagValues
-
-      QueryResponseType = &(
-          stub      : 0,
-          client    : 1,
-          resolver  : 2,
-          auth      : 3,
-          forwarder : 4,
-          tool      : 5,
+      QuerySignatureFieldHintValues =&(
+          server-address     : 0,
+          server-port        : 1,
+          transport-flags    : 2,
+          qr-type            : 3,
+          qr-sig-flags       : 4,
+          query-opcode       : 5,
+          dns-flags          : 6,
+          query-rcode        : 7,
+          query-class-type   : 8,
+          query-qdcount      : 9,
+          query-ancount      : 10,
+          query-arcount      : 11,
+          query-nscount      : 12,
+          query-edns-version : 13,
+          query-udp-size     : 14,
+          query-opt-rdata    : 15,
+          response-rcode     : 16,
       )
+      QuerySignatureFieldHints = uint .bits QuerySignatureFieldHintValues
 
-      QueryResponseFlagValues = &(
-          has-query               : 0,
-          has-reponse             : 1,
-          query-has-question      : 2,
-          query-has-opt           : 3,
-          response-has-opt        : 4,
-          response-has-no-question: 5,
+      OtherTableFieldHintValues = &(
+          malformed-messages-table   : 0,
+          address-event-counts-table : 1,
       )
-      QueryResponseFlags = uint .bits QueryResponseFlagValues
+      OtherTableFieldHints = uint .bits OtherTableFieldHintValues
 
-      DNSFlagValues = &(
-          query-cd   : 0,
-          query-ad   : 1,
-          query-z    : 2,
-          query-ra   : 3,
-          query-rd   : 4,
-          query-tc   : 5,
-          query-aa   : 6,
-          query-do   : 7,
-          response-cd: 8,
-          response-ad: 9,
-          response-z : 10,
-          response-ra: 11,
-          response-rd: 12,
-          response-tc: 13,
-          response-aa: 14,
-      )
-      DNSFlags = uint .bits DNSFlagValues
-
-    QuestionTables = (
-        qlist => [+ QuestionList],
-        qrr   => [+ Question]
+    StorageFlagValues = &(
+        anonymised-data      : 0,
+        sampled-data         : 1,
     )
+    StorageFlags = uint .bits StorageFlagValues
 
-      QuestionList = [+ uint]           ; Index of Question
+  CollectionParameters = {
+      ? query-timeout      => uint,
+      ? skew-timeout       => uint,
+      ? snaplen            => uint,
+      ? promisc            => uint,
+      ? interfaces         => [+ tstr],
+      ? server-addresses   => [+ IPAddress], ; Hint for later analysis
+      ? vlan-ids           => [+ uint],
+      ? filter             => tstr,
+      ? generator-id       => tstr,
+      ? host-id            => tstr,
+  }
+  query-timeout      = 0
+  skew-timeout       = 1
+  snaplen            = 2
+  promisc            = 3
+  interfaces         = 4
+  server-addresses   = 5
+  vlan-ids           = 6
+  filter             = 7
+  generator-id       = 8
+  host-id            = 9
 
-      Question = {                      ; Second and subsequent questions
-          name-index      => uint,      ; Index to a name in the name-rdata table
-          classtype-index => uint,
-      }
-      name-index      = 0
-      classtype-index = 1
+;
+; Data in the file is stored in Blocks.
+;
+Block = {
+    preamble                => BlockPreamble,
+    ? statistics            => BlockStatistics, ; Much of this could be derived
+    ? tables                => BlockTables,
+    ? queries               => [+ QueryResponse],
+    ? address-event-counts  => [+ AddressEventCount],
+    ? malformed-messages    => [+ MalformedMessage],
+}
+preamble              = 0
+statistics            = 1
+tables                = 2
+queries               = 3
+address-event-counts  = 4
+malformed-messages    = 5
 
-    RRTables = (
-        rrlist => [+ RRList],
-        rr     => [+ RR]
-    )
+;
+; The (mandatory) preamble to a block.
+;
+BlockPreamble = {
+    ? earliest-time    => Timestamp,
+    ? parameters-index => uint .default 0,
+}
+earliest-time    = 0
+parameters-index = 1
 
-      RRList = [+ uint]                     ; Index of RR
+; Ticks are subsecond intervals. The number of ticks in a second is file/block
+; metadata. Signed and unsigned tick types are defined.
+ticks = int
+uticks = uint
 
-      RR = {
-          name-index      => uint,          ; Index to a name in the name-rdata table
-          classtype-index => uint,
-          ttl             => uint,
-          rdata-index     => uint,          ; Index to RDATA in the name-rdata table
-      }
-      ; Other map key values already defined above.
-      ttl         = 2
-      rdata-index = 3
+Timestamp = [
+    timestamp-secs   : uint,
+    timestamp-uticks : uticks,
+]
 
-    MalformedMessageData = {
-        ? server-address-index   => uint,
-        ? server-port            => uint,
-        ? mm-transport-flags     => MalformedTransportFlags,
-        ? mm-content             => bstr,   ; Raw packet contents
-    }
-    ; Other map key values already defined above.
-    mm-transport-flags      = 2
-    mm-content              = 3
+;
+; Statistics about the block contents.
+;
+BlockStatistics = {
+    ? total-packets             => uint,
+    ? total-pairs               => uint,
+    ? total-unmatched-queries   => uint,
+    ? total-unmatched-responses => uint,
+    ? total-malformed-messages  => uint,
+}
+total-packets                = 0
+total-pairs                  = 1
+total-unmatched-queries      = 2
+total-unmatched-responses    = 3
+total-malformed-messages     = 4
 
-      MalformedTransportFlagValues = &(
-          ip-version         : 0,     ; 0=IPv4, 1=IPv6
-          ; Transport value bits 1-4
-      ) / (1..4)
-      MalformedTransportFlags = uint .bits MalformedTransportFlagValues
+;
+; Tables of common data referenced from records in a block.
+;
+BlockTables = {
+    ? ip-address     => [+ IPAddress],
+    ? classtype      => [+ ClassType],
+    ? name-rdata     => [+ bstr],            ; Holds both Name RDATA and RDATA
+    ? query-sig      => [+ QuerySignature],
+    ? QuestionTables,
+    ? RRTables,
+    ? malformed-data => [+ MalformedMessageData],
+}
+ip-address     = 0
+classtype      = 1
+name-rdata     = 2
+query-sig      = 3
+qlist          = 4
+qrr            = 5
+rrlist         = 6
+rr             = 7
+malformed-data = 8
 
-    ;
-    ; A single query/response pair.
-    ;
-    QueryResponse = {
-        ? time-offset              => uticks,     ; Time offset from start of block
-        ? client-address-index     => uint,
-        ? client-port              => uint,
-        ? transaction-id           => uint,
-        ? query-signature-index    => uint,
-        ? client-hoplimit          => uint,
-        ? response-delay           => ticks,
-        ? query-name-index         => uint,
-        ? query-size               => uint,       ; DNS size of query
-        ? response-size            => uint,       ; DNS size of response
-        ? response-processing-data => ResponseProcessingData,
-        ? query-extended           => QueryResponseExtended,
-        ? response-extended        => QueryResponseExtended,
-    }
-    time-offset              = 0
-    client-address-index     = 1
-    client-port              = 2
-    transaction-id           = 3
-    query-signature-index    = 4
-    client-hoplimit          = 5
-    response-delay           = 6
-    query-name-index         = 7
-    query-size               = 8
-    response-size            = 9
-    response-processing-data = 10
-    query-extended           = 11
-    response-extended        = 12
+IPv4Address = bstr .size 4
+IPv6Address = bstr .size 16
+IPAddress = IPv4Address / IPv6Address
 
-    ResponseProcessingData = {
-        ? bailiwick-index  => uint,
-        ? processing-flags => ResponseProcessingFlags,
-    }
-    bailiwick-index = 0
-    processing-flags = 1
+ClassType = {
+    type  => uint,
+    class => uint,
+}
+type  = 0
+class = 1
 
-      ResponseProcessingFlagValues = &(
-          from-cache : 0,
-      )
-      ResponseProcessingFlags = uint .bits ResponseProcessingFlagValues
+QuerySignature = {
+    ? server-address-index  => uint,
+    ? server-port           => uint,
+    ? transport-flags       => TransportFlags,
+    ? qr-type               => QueryResponseType,
+    ? qr-sig-flags          => QueryResponseFlags,
+    ? query-opcode          => uint,
+    ? qr-dns-flags          => DNSFlags,
+    ? query-rcode           => uint,
+    ? query-classtype-index => uint,
+    ? query-qd-count        => uint,
+    ? query-an-count        => uint,
+    ? query-ar-count        => uint,
+    ? query-ns-count        => uint,
+    ? edns-version          => uint,
+    ? udp-buf-size          => uint,
+    ? opt-rdata-index       => uint,
+    ? response-rcode        => uint,
+}
+server-address-index  = 0
+server-port           = 1
+transport-flags       = 2
+qr-type               = 3
+qr-sig-flags          = 4
+query-opcode          = 5
+qr-dns-flags          = 6
+query-rcode           = 7
+query-classtype-index = 8
+query-qd-count        = 9
+query-an-count        = 10
+query-ar-count        = 11
+query-ns-count        = 12
+edns-version          = 13
+udp-buf-size          = 14
+opt-rdata-index       = 15
+response-rcode        = 16
 
-    QueryResponseExtended = {
-        ? question-index   => uint,       ; Index of QuestionList
-        ? answer-index     => uint,       ; Index of RRList
-        ? authority-index  => uint,
-        ? additional-index => uint,
-    }
-    question-index   = 0
-    answer-index     = 1
-    authority-index  = 2
-    additional-index = 3
+  Transport = &(
+      udp               : 0,
+      tcp               : 1,
+      tls               : 2,
+      dtls              : 3,
+  )
 
-    ;
-    ; Address event data.
-    ;
-    AddressEventCount = {
-        ae-type          => &AddressEventType,
-        ? ae-code        => uint,
-        ae-address-index => uint,
-        ae-count         => uint,
-    }
-    ae-type          = 0
-    ae-code          = 1
-    ae-address-index = 2
-    ae-count         = 3
+  TransportFlagValues = &(
+      ip-version         : 0,     ; 0=IPv4, 1=IPv6
+      ; Transport value bits 1-4
+      query-trailingdata : 5,
+  ) / (1..4)
+  TransportFlags = uint .bits TransportFlagValues
 
-    AddressEventType = (
-        tcp-reset              : 0,
-        icmp-time-exceeded     : 1,
-        icmp-dest-unreachable  : 2,
-        icmpv6-time-exceeded   : 3,
-        icmpv6-dest-unreachable: 4,
-        icmpv6-packet-too-big  : 5,
-    )
+  QueryResponseType = &(
+      stub      : 0,
+      client    : 1,
+      resolver  : 2,
+      auth      : 3,
+      forwarder : 4,
+      tool      : 5,
+  )
 
-    ;
-    ; Malformed messages.
-    ;
-    MalformedMessage = {
-        ? time-offset           => uticks,   ; Time offset from start of block
-        ? client-address-index  => uint,
-        ? client-port           => uint,
-        ? message-data-index    => uint,
-    }
-    ; Other map key values already defined above.
-    message-data-index = 3
+  QueryResponseFlagValues = &(
+      has-query               : 0,
+      has-reponse             : 1,
+      query-has-question      : 2,
+      query-has-opt           : 3,
+      response-has-opt        : 4,
+      response-has-no-question: 5,
+  )
+  QueryResponseFlags = uint .bits QueryResponseFlagValues
+
+  DNSFlagValues = &(
+      query-cd   : 0,
+      query-ad   : 1,
+      query-z    : 2,
+      query-ra   : 3,
+      query-rd   : 4,
+      query-tc   : 5,
+      query-aa   : 6,
+      query-do   : 7,
+      response-cd: 8,
+      response-ad: 9,
+      response-z : 10,
+      response-ra: 11,
+      response-rd: 12,
+      response-tc: 13,
+      response-aa: 14,
+  )
+  DNSFlags = uint .bits DNSFlagValues
+
+QuestionTables = (
+    qlist => [+ QuestionList],
+    qrr   => [+ Question]
+)
+
+  QuestionList = [+ uint]           ; Index of Question
+
+  Question = {                      ; Second and subsequent questions
+      name-index      => uint,      ; Index to a name in the name-rdata table
+      classtype-index => uint,
+  }
+  name-index      = 0
+  classtype-index = 1
+
+RRTables = (
+    rrlist => [+ RRList],
+    rr     => [+ RR]
+)
+
+  RRList = [+ uint]                     ; Index of RR
+
+  RR = {
+      name-index      => uint,          ; Index to a name in the name-rdata table
+      classtype-index => uint,
+      ttl             => uint,
+      rdata-index     => uint,          ; Index to RDATA in the name-rdata table
+  }
+  ; Other map key values already defined above.
+  ttl         = 2
+  rdata-index = 3
+
+MalformedMessageData = {
+    ? server-address-index   => uint,
+    ? server-port            => uint,
+    ? mm-transport-flags     => MalformedTransportFlags,
+    ? mm-content             => bstr,   ; Raw packet contents
+}
+; Other map key values already defined above.
+mm-transport-flags      = 2
+mm-content              = 3
+
+  MalformedTransportFlagValues = &(
+      ip-version         : 0,     ; 0=IPv4, 1=IPv6
+      ; Transport value bits 1-4
+  ) / (1..4)
+  MalformedTransportFlags = uint .bits MalformedTransportFlagValues
+
+;
+; A single query/response pair.
+;
+QueryResponse = {
+    ? time-offset              => uticks,     ; Time offset from start of block
+    ? client-address-index     => uint,
+    ? client-port              => uint,
+    ? transaction-id           => uint,
+    ? query-signature-index    => uint,
+    ? client-hoplimit          => uint,
+    ? response-delay           => ticks,
+    ? query-name-index         => uint,
+    ? query-size               => uint,       ; DNS size of query
+    ? response-size            => uint,       ; DNS size of response
+    ? response-processing-data => ResponseProcessingData,
+    ? query-extended           => QueryResponseExtended,
+    ? response-extended        => QueryResponseExtended,
+}
+time-offset              = 0
+client-address-index     = 1
+client-port              = 2
+transaction-id           = 3
+query-signature-index    = 4
+client-hoplimit          = 5
+response-delay           = 6
+query-name-index         = 7
+query-size               = 8
+response-size            = 9
+response-processing-data = 10
+query-extended           = 11
+response-extended        = 12
+
+ResponseProcessingData = {
+    ? bailiwick-index  => uint,
+    ? processing-flags => ResponseProcessingFlags,
+}
+bailiwick-index = 0
+processing-flags = 1
+
+  ResponseProcessingFlagValues = &(
+      from-cache : 0,
+  )
+  ResponseProcessingFlags = uint .bits ResponseProcessingFlagValues
+
+QueryResponseExtended = {
+    ? question-index   => uint,       ; Index of QuestionList
+    ? answer-index     => uint,       ; Index of RRList
+    ? authority-index  => uint,
+    ? additional-index => uint,
+}
+question-index   = 0
+answer-index     = 1
+authority-index  = 2
+additional-index = 3
+
+;
+; Address event data.
+;
+AddressEventCount = {
+    ae-type          => &AddressEventType,
+    ? ae-code        => uint,
+    ae-address-index => uint,
+    ae-count         => uint,
+}
+ae-type          = 0
+ae-code          = 1
+ae-address-index = 2
+ae-count         = 3
+
+AddressEventType = (
+    tcp-reset              : 0,
+    icmp-time-exceeded     : 1,
+    icmp-dest-unreachable  : 2,
+    icmpv6-time-exceeded   : 3,
+    icmpv6-dest-unreachable: 4,
+    icmpv6-packet-too-big  : 5,
+)
+
+;
+; Malformed messages.
+;
+MalformedMessage = {
+    ? time-offset           => uticks,   ; Time offset from start of block
+    ? client-address-index  => uint,
+    ? client-port           => uint,
+    ? message-data-index    => uint,
+}
+; Other map key values already defined above.
+message-data-index = 3
+~~~~~
 
 # DNS Name compression example
 

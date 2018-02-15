@@ -437,6 +437,7 @@ query-response | M | U | Hints indicating which query response data fields are c
  | | | Bit 15. response-answer-sections
  | | | Bit 16. response-authority-sections
  | | | Bit 17. response-additional-sections
+ | | |
 query-signature | M | U | Hints indicating which query signature data fields are collected. If the data field is collected the bit is set.
  | | | Bit 0. server-address
  | | | Bit 1. server-port
@@ -455,10 +456,12 @@ query-signature | M | U | Hints indicating which query signature data fields are
  | | | Bit 14. query-udp-size
  | | | Bit 15. query-opt-rdata
  | | | Bit 16. response-rcode
+ | | |
 other-tables | M | U | Hints indicating which other tables are collected. If the table is collected the bit is set.
  | | | Bit 0. Malformed messages
  | | | Bit 1. Address event counts
-implementation-dependent | O | U | Collection hints for implementation-specific items. Values of this field are implementation specific.
+ | | |
+implementation -dependent | O | U | Collection hints for implementation-specific items. Values of this field are implementation specific.
 
 ### Collection parameter contents
 
@@ -500,7 +503,7 @@ tables | O | M | The tables containing data referenced by individual Q/R data it
 ||
 queries | O | A | Details of individual Q/R data items. See (#queryresponse-data). If present, the array must not be empty.
 ||
-address-event-counts | O | A | Per client counts of ICMP messages and TCP resets. See (#address-event-count-contents). If present, the array must not be empty.
+address-event -counts | O | A | Per client counts of ICMP messages and TCP resets. See (#address-event-count-contents). If present, the array must not be empty.
 ||
 malformed-messages | O | A | Wire contents of malformed DNS messages. See (#malformed-message-record-contents). If present, the array must not be empty.
 
@@ -511,6 +514,7 @@ The block preamble map contains overall information for the block.
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
 earliest-time | O | A | A timestamp (2 unsigned integers) for the earliest record in the block. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block are also omitted.
+| | |
 parameters-index | O | U | The index of the parameters applicable to this block (see (#file-parameter-contents)). If not present, index 0 is used.
 
 ### Block statistics contents
@@ -520,9 +524,13 @@ The block statistics section contains some basic statistical information about t
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
 total-packets | O | U | Total number of packets processed from the input traffic stream during collection of the block data.
+| | | 
 total-pairs | O | U | Total number of Q/R data items in the block.
+| | | 
 unmatched-queries | O | U | Number of unmatched queries in the block.
+| | | 
 unmatched-responses | O | U | Number of unmatched responses in the block.
+| | | 
 malformed-messages | O | U | Number of malformed messages found in input for the block.
 
 ### Block table contents
@@ -539,13 +547,21 @@ The map contains the following items.
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
 ip-address | O | A | IP addresses (byte strings), in network byte order. Each string is 4 bytes long for an IPv4 address, 16 bytes long for an IPv6 address.
+| | | 
 classtype | O | A | CLASS/TYPE items (see (#classtype-table-contents)).
+| | | 
 name-rdata | O | A | NAME and RDATA data (byte strings). Each entry is the contents of a single NAME or RDATA. Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
+| | | 
 query-sig | O | A | Query signatures (see (#query-signature-table-contents)).
+| | | 
 qlist | O | A | Question lists (arrays of unsigned integers). Each entry in a list is an index to question data in the qrr table.
+| | | 
 qrr | O | A | Question data. Each entry is the contents of a single question, where a question is the second or subsequent question in a query. See (#question-table-contents).
+| | | 
 rrlist | O | A | RR lists (arrays of unsigned integers). Each entry in a list is an index to RR data in the rr table.
+| | | 
 rr | O | A | RR data. Each entry is the contents of a single RR. See (#resource-record-rr-table-contents).
+| | | 
 malformed-data | O | A | Malformed message contents. Each entry is the contents of a single malformed message.  See (#malformed-message-data-table-contents).
 
 #### CLASS/TYPE table contents
@@ -566,7 +582,7 @@ the table is a CBOR map.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-server-address-index | O | U | The index in the IP address table of the server IP address. See (#block-table-contents).
+server-address -index | O | U | The index in the IP address table of the server IP address. See (#block-table-contents).
 ||
 server-port | O | U | The server port.
 ||
@@ -612,7 +628,7 @@ qr-dns-flags | O | U | Bit flags with values from the Query and Response DNS fla
 ||
 query-rcode | O | U | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 ||
-query-classtype-index | O | U | The index in the CLASS/TYPE table of the CLASS and TYPE of the first Question. See (#block-table-contents).
+query-classtype -index | O | U | The index in the CLASS/TYPE table of the CLASS and TYPE of the first Question. See (#block-table-contents).
 ||
 query-qd-count | O | U | The QDCOUNT in the Query, or Response if no Query present.
 ||
@@ -665,7 +681,7 @@ the following items.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-server-address-index | O | U | The index in the IP address table of the server IP address. See (#block-table-contents).
+server-address -index | O | U | The index in the IP address table of the server IP address. See (#block-table-contents).
 ||
 server-port | O | U | The server port.
 ||
@@ -707,7 +723,7 @@ query-size | O | U | DNS query message size (see below).
 ||
 response-size | O | U | DNS query message size (see below).
 ||
-response-processing-data | O | M | Data on response processing. See (#response-processing-data-contents).
+response-processing -data | O | M | Data on response processing. See (#response-processing-data-contents).
 ||
 query-extended | O | M | Extended Query data. See (#extended-queryresponse-data-contents).
 ||

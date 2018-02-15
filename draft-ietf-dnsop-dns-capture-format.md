@@ -285,6 +285,24 @@ The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
+## Storage parameters
+
+The parameters item referenced in the text and diagrams above includes
+storage parameters; information about the data stored in the C-DNS file.
+
+These parameters include:
+
+* The sub-second timing resolution used by the data.
+* Information on which optional data items appear in the data. See (#optional-data-items).
+* Recognised opcodes and RR types.
+* Flags indicating whether the data is sampled or anonymised.
+* Client and server IPv4 and IPv6 address prefixes.
+
+If IP address prefixes are given, only the prefix bits of addresses
+are stored. For example, if a client IPv4 prefix of 16 is specified, a
+client address of 192.0.2.1 will be stored as 0xc000 (192.0), reducing
+address storage space requirements.
+
 ## Optional data items
 
 To enable applications to store data to their precise requirements in
@@ -411,6 +429,15 @@ rr-types | M | A | List of RR types (unsigned integers) handled by the collectio
 storage-flags | O | U | Bit flags indicating attributes of collected data.
  | | | Bit 0. The data has been anonymised.
  | | | Bit 1. The data is sampled data.
+||
+client-address -prefix-ipv4 | O | U | IPv4 client address prefix length. If specified, only the address prefix bits are stored.
+||
+client-address -prefix-ipv6 | O | U | IPv6 client address prefix length. If specified, only the address prefix bits are stored.
+||
+server-address -prefix-ipv4 | O | U | IPv4 server address prefix length. If specified, only the address prefix bits are stored.
+||
+server-address -prefix-ipv6 | O | U | IPv6 server address prefix length. If specified, only the address prefix bits are stored.
+
 
 ##### Storage parameter table field hints
 
@@ -546,7 +573,7 @@ The map contains the following items.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-ip-address | O | A | IP addresses (byte strings), in network byte order. Each string is 4 bytes long for an IPv4 address, 16 bytes long for an IPv6 address.
+ip-address | O | A | IP addresses (byte strings), in network byte order. If client or server address prefixes are set, only the address prefix bits are stored. Each string is therefore up to 4 bytes long for an IPv4 address, or up to 16 bytes long for an IPv6 address. See (#storage-parameter-contents).
 | | | 
 classtype | O | A | CLASS/TYPE items (see (#classtype-table-contents)).
 | | | 
@@ -1254,19 +1281,27 @@ storage    = 0
 collection = 1
 
   StorageParameters = {
-      ticks-per-second     => uint,
-      max-block-items      => uint,
-      table-field-hints    => TableFieldHints,
-      opcodes              => [+ uint],
-      rr-types             => [+ uint],
-      ? storage-flags      => StorageFlags,
+      ticks-per-second             => uint,
+      max-block-items              => uint,
+      table-field-hints            => TableFieldHints,
+      opcodes                      => [+ uint],
+      rr-types                     => [+ uint],
+      ? storage-flags              => StorageFlags,
+      ? client-address-prefix-ipv4 => uint,
+      ? client-address-prefix-ipv6 => uint,
+      ? server-address-prefix-ipv4 => uint,
+      ? server-address-prefix-ipv6 => uint,
   }
-  ticks-per-second    = 0
-  max-block-items     = 1
-  table-field-hints   = 2
-  opcodes             = 3
-  rr-types            = 4
-  storage-flags       = 5
+  ticks-per-second           = 0
+  max-block-items            = 1
+  table-field-hints          = 2
+  opcodes                    = 3
+  rr-types                   = 4
+  storage-flags              = 5
+  client-address-prefix-ipv4 = 6
+  client-address-prefix-ipv6 = 7
+  server-address-prefix-ipv4 = 8
+  server-address-prefix-ipv6 = 9
 
     ; A hint indicates if the collection method will output the
     ; field or will ignore the field if present.

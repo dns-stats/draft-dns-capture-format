@@ -291,455 +291,483 @@ The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
-If no field type is specified, then the field is unsigned.
+### Map quantities
+
+All map keys are integers with values specified in the CDDL. String keys
+would significantly bloat the file size.
+
+All key values specified are positive integers under 24,
+so their CBOR representation is a single byte.
+
+All maps have have additional implementation-specific
+entries. Negative integer map keys are reserved for these values.  Key
+values from -1 to -24 also have a single byte CBOR representation, so
+such implementation-specific extensions are not at any space
+efficiency disadvantage.
+
+### Optional data items
+
+To enable applications to store data to their precise requirements in
+as space-efficient manner as possible, all fields in major Q/R data
+items (and malformed message items) are optional. In other words, an
+application can choose to omit any data item that is not required for
+its use case.
+
+This does, however, means that an application consuming data held in a C-DNS file faces two problems:
+
+1. How can it quickly determine whether the file contains the data items it requires to complete its task?
+2. How can it know if a data item is not present because it was not recorded, or because the data item
+   was not present in the original data stream?
+
+For example, consider an application attempting to regenerate an
+approximation of the original wire traffic.  It has a minimum set of
+data that must be present; for example, the timestamp of each item,
+the transport associated with each Q/R data item, whether each Q/R
+data item contains a query and response, a query with no response, or
+a response with no query, the DNS flags for query and response,
+etc. Also, if there is no query OPT RDATA present, is that because the
+query did not contain an OPT, or because that data was not stored?
+
+The parameters in the file preamble therefore include mandatory
+storage parameters. These contain hints specifying whether writer of
+the file recorded each data item if present. An application can use
+these to quickly determine whether the input data is rich enough for
+its needs.
+
+## Format description
+
+A detailed description of each element of the C-DNS structure follows.
 
 In all quantities that contain bit flags, bit 0 indicates the least significant bit.
-An item described as an index is the index of the Q/R data item in the referenced table.
+
+An item described as an index is the index of the data item in the referenced table.
 Indexes are 0-based.
 
-All map keys are integers with values specified in the CDDL (string keys
-would significantly bloat the file size). All values specified in CDDL are positive
-integers. Negative integer map keys are reserved for implementation-specific
-extensions.
+All items in any map are marked Optional (O) if they may be omitted,
+or Mandatory (M) if they must be present.
 
-## File header contents
+### File header contents
 
 The file header contains the following:
 
-Field | Type | Description
-:----|:----|:-----
-file-type-id | Text string | String "C-DNS" identifying the file type.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+file-type-id | M | Text string | String "C-DNS" identifying the file type.
 ||
-file-preamble | Map of items | Version and parameter information for the whole file.
+file-preamble | M | Map | Version and parameter information for the whole file. See (#file-preamble-contents).
 ||
-file-blocks | Array of Blocks | The data blocks.
+file-blocks | M | Array | The data blocks. The array may be empty if the file contains no data. See (#block-contents).
 
-## File preamble contents
+### File preamble contents
 
 The file preamble contains the following:
 
-Field | Type | Description
-:----|:----|:-----
-major-format-version | Unsigned | Unsigned integer '1'. The major version of format used in file.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+major-format-version | M | Unsigned | Unsigned integer '1'. The major version of format used in file.
 ||
-minor-format-version | Unsigned | Unsigned integer '0'. The minor version of format used in file.
+minor-format-version | M | Unsigned | Unsigned integer '0'. The minor version of format used in file.
 ||
-private-version | Unsigned | Version indicator available for private use by applications. Optional.
+private-version | O | Unsigned | Version indicator available for private use by applications.
 ||
-parameters | Array of items | Sets of parameters relating to the file. The preamble to each block indicates which set applies to the block.
+parameters | M | Array | List of parameters relating to the file. The preamble to each block indicates which list entry applies to the block. The list must contain at least one entry. See (#file-parameter-contents).
 
-### File parameter set contents
+#### File parameter contents
 
-A single set of file parameters contains the following maps.
+A single item of file parameters contains the following maps.
 
-Field | Type | Description
-:----|:----|:-----
-storage | Map of items | Parameters relating to data storage in the file.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+storage | M | Map | Parameters relating to data storage in the file. See (#storage-parameter-contents).
 ||
-collection | Map of items | Parameters relating to collection of the data. Optional.
+collection | O | Map | Parameters relating to collection of the data. See (#collection-parameter-contents).
 
-#### Storage parameter contents
+##### Storage parameter contents
 
 The storage parameters contains the following items.
 
-Field | Type | Description
-:----|:----|:-----
-ticks-per-second | Unsigned | Sub-second timing is recorded in ticks. This specifies the number of ticks in a second.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+ticks-per-second | M | Unsigned | Sub-second timing is recorded in ticks. This specifies the number of ticks in a second.
 ||
-max-block-items | Unsigned | The maximum number of each record type (queries, address event counts or malformed messages) in a block. A hint on the resources needed to process the file.
+max-block-items | M | Unsigned | The maximum number of each record type (queries, address event counts or malformed messages) in a block. A hint on the resources needed to process the file.
 ||
-table-field-hints | Map of items | Collection of data field present hints.
+table-field-hints | M | Map | Collection of data field present hints. See (#storage-parameter-table-field-hints).
 ||
-opcodes | Array of items | List of opcodes handled by the collection application.
+opcodes | M | Array of unsigned | List of opcodes handled by the collection application.
 ||
-rr-types | Array of items | List of RR types handled by the collection application.
+rr-types | M | Array of unsigned | List of RR types handled by the collection application.
 ||
-storage-flags | Unsigned | Bit flags indicating attributes of collected data.
- | | Bit 0. The data has been anonymised.
- | | Bit 1. The data is sampled data.
+storage-flags | O | Unsigned | Bit flags indicating attributes of collected data.
+ | | | Bit 0. The data has been anonymised.
+ | | | Bit 1. The data is sampled data.
 
-##### Storage parameter table field hints
+###### Storage parameter table field hints
 
-In order to provide maximum flexibility for storing data required for particular processing, all data fields
-in C-DNS are optional. This, though, raises the problem of whether a particular field is missing from a record
-because that field did not occur in the recorded data, or is absent simply because the collecting application
-does not record that field. These hints indicate which fields the collecting application records, and which
-will never appear because the application does not record them.
+These hints indicate which fields the collecting application records.
 
-Field | Type | Description
-:----|:----|:-----
-query-response | Unsigned | Hints indicating which query response data fields are collected. If the data field is collected the bit is set.
- | | Bit 0. time-offset
- | | Bit 1. client-address-index
- | | Bit 2. client-port
- | | Bit 3. transaction-id
- | | Bit 4. query-signature-index
- | | Bit 5. client-hoplimit
- | | Bit 6. response-delay
- | | Bit 7. query-name-index
- | | Bit 8. query-size
- | | Bit 9. response-size
- | | Bit 10. response-processing-data
- | | Bit 11. query-question-sections
- | | Bit 12. query-answer-sections
- | | Bit 13. query-authority-sections
- | | Bit 14. query-additional-sections
- | | Bit 15. response-answer-sections
- | | Bit 16. response-authority-sections
- | | Bit 17. response-additional-sections
-query-signature | Unsigned | Hints indicating which query signature data fields are collected. If the data field is collected the bit is set.
- | | Bit 0. server-address
- | | Bit 1. server-port
- | | Bit 2. transport-flags
- | | Bit 3. qr-type
- | | Bit 4. qr-sig-flags
- | | Bit 5. query-opcode
- | | Bit 6. dns-flags
- | | Bit 7. query-rcode
- | | Bit 8. query-class-type
- | | Bit 9. query-qdcount
- | | Bit 10. query-ancount
- | | Bit 11. query-arcount
- | | Bit 12. query-nscount
- | | Bit 13. query-edns-version
- | | Bit 14. query-udp-size
- | | Bit 15. query-opt-rdata
- | | Bit 16. response-rcode
-other-tables | Unsigned | Hints indicating which other tables are collected. If the table is collected the bit is set.
- | | Bit 0. Malformed messages
- | | Bit 1. Address event counts
-implementation-dependent | Unsigned | Collection hints for implementation-specific items. Values of this field are implementation specific. Optional.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+query-response | M | Unsigned | Hints indicating which query response data fields are collected. If the data field is collected the bit is set.
+ | | | Bit 0. time-offset
+ | | | Bit 1. client-address-index
+ | | | Bit 2. client-port
+ | | | Bit 3. transaction-id
+ | | | Bit 4. query-signature-index
+ | | | Bit 5. client-hoplimit
+ | | | Bit 6. response-delay
+ | | | Bit 7. query-name-index
+ | | | Bit 8. query-size
+ | | | Bit 9. response-size
+ | | | Bit 10. response-processing-data
+ | | | Bit 11. query-question-sections
+ | | | Bit 12. query-answer-sections
+ | | | Bit 13. query-authority-sections
+ | | | Bit 14. query-additional-sections
+ | | | Bit 15. response-answer-sections
+ | | | Bit 16. response-authority-sections
+ | | | Bit 17. response-additional-sections
+query-signature | M | Unsigned | Hints indicating which query signature data fields are collected. If the data field is collected the bit is set.
+ | | | Bit 0. server-address
+ | | | Bit 1. server-port
+ | | | Bit 2. transport-flags
+ | | | Bit 3. qr-type
+ | | | Bit 4. qr-sig-flags
+ | | | Bit 5. query-opcode
+ | | | Bit 6. dns-flags
+ | | | Bit 7. query-rcode
+ | | | Bit 8. query-class-type
+ | | | Bit 9. query-qdcount
+ | | | Bit 10. query-ancount
+ | | | Bit 11. query-arcount
+ | | | Bit 12. query-nscount
+ | | | Bit 13. query-edns-version
+ | | | Bit 14. query-udp-size
+ | | | Bit 15. query-opt-rdata
+ | | | Bit 16. response-rcode
+other-tables | M | Unsigned | Hints indicating which other tables are collected. If the table is collected the bit is set.
+ | | | Bit 0. Malformed messages
+ | | | Bit 1. Address event counts
+implementation-dependent | O | Unsigned | Collection hints for implementation-specific items. Values of this field are implementation specific.
 
-### Collection parameter contents
+#### Collection parameter contents
 
-The collection parameters contain the following items. All are optional.
+The collection parameters contain the following items.
 
-Field | Type | Description
-:----|:----|:-----
-query-timeout | Unsigned | To be matched with a query, a response must arrive within this number of seconds.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+query-timeout | O | Unsigned | To be matched with a query, a response must arrive within this number of seconds.
 ||
-skew-timeout | Unsigned | The network stack may report a response before the corresponding query. A response is not considered to be missing a query until after this many micro-seconds.
+skew-timeout | O | Unsigned | The network stack may report a response before the corresponding query. A response is not considered to be missing a query until after this many micro-seconds.
 ||
-snaplen | Unsigned | Collect up to this many bytes per packet.
+snaplen | O | Unsigned | Collect up to this many bytes per packet.
 ||
-promisc | Unsigned | 1 if promiscuous mode was enabled on the interface, 0 otherwise.
+promisc | O | Unsigned | 1 if promiscuous mode was enabled on the interface, 0 otherwise.
 ||
-interfaces | Array of text strings | Identifiers of the interfaces used for collection.
+interfaces | O | Array of text strings | Identifiers of the interfaces used for collection.
 ||
-server-addresses | Array of byte strings | Server collection IP addresses. Hint for downstream analysers; does not affect collection.
+server-addresses | O | Array of byte strings | Server collection IP addresses. Hint for downstream analysers; does not affect collection.
 ||
-vlan-ids | Array of unsigned | Identifiers of VLANs selected for collection.
+vlan-ids | O | Array of unsigned | Identifiers of VLANs selected for collection.
 ||
-filter | Text string | 'tcpdump' [@pcap] style filter for input.
+filter | O | Text string | `tcpdump` [@pcap] style filter for input.
 ||
-generator-id | Text string | String identifying the collection program.
+generator-id | O | Text string | String identifying the collection program.
 ||
-host-id | Text string | String identifying the collecting host. Empty if converting an existing packet capture file.
+host-id | O | Text string | String identifying the collecting host. Empty if converting an existing packet capture file.
 
-## Block contents
+### Block contents
 
 Each block contains the following items.
 
-Field | Type | Description
-:----|:----|:-----
-preamble | Map of items | Overall information for the block. See (#block-preamble-contents).
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+preamble | M | Map | Overall information for the block. See (#block-preamble-contents).
 ||
-statistics | Map of statistics | Statistics about the block. See (#block-statistics-contents).
+statistics | O | Map | Statistics about the block. See (#block-statistics-contents).
 ||
-tables | Map of tables | The tables containing data referenced by individual Q/R data items. See (#block-table-contents).
+tables | O | Map | The tables containing data referenced by individual Q/R data items. See (#block-table-contents).
 ||
-queries | Array of Q/R data items | Details of individual Q/R data items. See (#queryresponse-data).
+queries | O | Array | Details of individual Q/R data items. See (#queryresponse-data). If present, the array must not be empty.
 ||
-address-event-counts | Array of Address Event Counts | Per client counts of ICMP messages and TCP resets. See (#address-event-count-contents).
+address-event-counts | O | Array | Per client counts of ICMP messages and TCP resets. See (#address-event-count-contents). If present, the array must not be empty.
 ||
-malformed-messages | Array of malformed packets | Wire contents of malformed DNS messages. See (#malformed-message-record-contents).
+malformed-messages | O | Array | Wire contents of malformed DNS messages. See (#malformed-message-record-contents). If present, the array must not be empty.
 
-### Block preamble contents
+#### Block preamble contents
 
 The block preamble map contains overall information for the block.
 
-Field | Type | Description
-:-----|:-----|:-----------
-earliest-time | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two elements. The first element is the number of seconds since the Posix epoch, an unsigned integer time_t. The second is an unsigned integer with the number of ticks since the start of the second.
-parameters-index | Unsigned | The index of the set of parameters applicable to this block. Optional. If omitted, parameter set 0 is used.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+earliest-time | O | Array of unsigned | A timestamp for the earliest record in the block. The timestamp is specified as a CBOR array with two elements. The first element is the number of seconds since the Posix epoch, an unsigned integer `time_t`. The second is an unsigned integer with the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block are also omitted.
+parameters-index | O | Unsigned | The index of the parameters applicable to this block (see (#file-parameter-contents)). If not present, index 0 is used.
 
-### Block statistics contents
+#### Block statistics contents
 
 The block statistics section contains some basic statistical information about the block. All items are optional.
 
-Field | Type | Description
-:-----|:-----|:-----------
-total-packets | Unsigned | Total number of packets processed from the input traffic stream during collection of the block data.
-total-pairs | Unsigned | Total number of Q/R data items in the block.
-unmatched-queries | Unsigned | Number of unmatched queries in the block.
-unmatched-responses | Unsigned | Number of unmatched responses in the block.
-malformed-messages | Unsigned | Number of malformed messages found in input for the block.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+total-packets | O | Unsigned | Total number of packets processed from the input traffic stream during collection of the block data.
+total-pairs | O | Unsigned | Total number of Q/R data items in the block.
+unmatched-queries | O | Unsigned | Number of unmatched queries in the block.
+unmatched-responses | O | Unsigned | Number of unmatched responses in the block.
+malformed-messages | O | Unsigned | Number of malformed messages found in input for the block.
 
-Implementations may choose to add additional implementation-specific fields to the statistics.
+#### Block table contents
 
-### Block table contents
+The block table map contains the block tables. Each element, or table,
+is an array which, if present, must not be empty.
 
-The block table map contains the block tables. Each element, or table, is an array. The map contains the following items.
+The item `qlist` contains indexes to values in the `qrr`
+item. Therefore, if `qlist` is present, `qrr` must also be
+present. Similarly, if `rrlist` is present, `rr` must also be present.
 
-Field | Type | Description
-:-----|:-----|:-----------
-ip-address | Array of byte string | IP addresses, in network byte order. Each string is 4 bytes long for an IPv4 address, 16 bytes long for an IPv6 address.
-classtype | Array of CLASS/TYPE | CLASS/TYPE items (see (#classtype-table-contents)).
-name-rdata | Array of byte string | NAME and RDATA data. Each entry is the contents of a single NAME or RDATA. Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
-query-sig | Array of QuerySignature | Query signatures (see (#query-signature-table-contents)).
-qlist | Array of array of unsigned | Question lists. Each entry is a list of indexes to the question data in the qrr table.
-qrr | Array of Question | Question data. Each entry is the contents of a single question, where a question is the second or subsequent question in a query (see (#question-table-contents)).
-rrlist | Array of array of unsigned | RR lists. Each entry is a list of indexes to the RR data in the rr table.
-rr | Array of RR | RR data. Each entry is the contents of a single RR (see (#resource-record-rr-table-contents)).
-malformed-data | Array of MalformedData | Malformed message contents. Each entry is the contents of a single malformed message (see (#malformed-message-data-table-contents)).
+The map contains the following items.
 
-#### CLASS/TYPE table contents
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+ip-address | O | Array of byte string | IP addresses, in network byte order. Each string is 4 bytes long for an IPv4 address, 16 bytes long for an IPv6 address.
+classtype | O | Array | CLASS/TYPE items (see (#classtype-table-contents)).
+name-rdata | O | Array of byte string | NAME and RDATA data. Each entry is the contents of a single NAME or RDATA. Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
+query-sig | O | Array | Query signatures (see (#query-signature-table-contents)).
+qlist | O | Array of array of unsigned | Question lists. Each entry is a list of indexes to the question data in the qrr table.
+qrr | O | Array | Question data. Each entry is the contents of a single question, where a question is the second or subsequent question in a query (see (#question-table-contents)).
+rrlist | O | Array of array of unsigned | RR lists. Each entry is a list of indexes to the RR data in the rr table.
+rr | O | Array | RR data. Each entry is the contents of a single RR (see (#resource-record-rr-table-contents)).
+malformed-data | O | Array | Malformed message contents. Each entry is the contents of a single malformed message (see (#malformed-message-data-table-contents)).
+
+##### CLASS/TYPE table contents
 
 The table `classtype` holds pairs of RR CLASS and TYPE values. Each item in the table is a CBOR map.
 
-Field | Type | Description
-:-----|:-----|:-----------
-type | Unsigned  | TYPE value.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+type | M | Unsigned  | TYPE value.
 ||
-class | Unsigned | CLASS value.
+class | M | Unsigned | CLASS value.
 
-#### Query Signature table contents
+##### Query Signature table contents
 
-The table `query-sig` holds elements of the Q/R data item that are often common between multiple individual Q/R data items. Each item in the table is a CBOR map. Each item in the map has an unsigned value and an unsigned integer key. All items are optional.
+The table `query-sig` holds elements of the Q/R data item that are
+often common between multiple individual Q/R data items. Each item in
+the table is a CBOR map.
 
-The following abbreviations are used in the Present (P) column
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+server-address-index | O | Unsigned | The index in the IP address table (see (#block-table-contents)) of the server IP address.
+||
+server-port | O | Unsigned | The server port.
+||
+transport-flags | O | Unsigned | Bit flags describing the transport used to service the query.
+ | | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
+ | | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
+ | | | Bit 5. Trailing bytes in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.
+||
+qr-type | O | Unsigned | Type of Query/Response transaction.
+ | | | 0 = Stub. A query from a stub resolver.
+ | | | 1 = Client. An incoming query to a recursive resolver.
+ | | | 2 = Resolver. A query sent from a recursive resolver to an authorative resolver.
+ | | | 3 = Authorative. A query to an authorative resolver.
+ | | | 4 = Forwarder. A query sent from a recursive resolver to an upstream recursive resolver.
+ | | | 5 = Tool. A query sent to a server by a server tool.
+||
+qr-sig-flags | O | Unsigned | Bit flags indicating information present in this Q/R data item.
+ | | | Bit 0. 1 if a Query is present.
+ | | | Bit 1. 1 if a Response is present.
+ | | | Bit 2. 1 if one or more Question is present.
+ | | | Bit 3. 1 if a Query is present and it has an OPT Resource Record.
+ | | | Bit 4. 1 if a Response is present and it has an OPT Resource Record.
+ | | | Bit 5. 1 if a Response is present but has no Question.
+||
+query-opcode | O | Unsigned | Query OPCODE.
+||
+qr-dns-flags | O | Unsigned | Bit flags with values from the Query and Response DNS flags. Flag values are 0 if the Query or Response is not present.
+ | | | Bit 0. Query Checking Disabled (CD).
+ | | | Bit 1. Query Authenticated Data (AD).
+ | | | Bit 2. Query reserved (Z).
+ | | | Bit 3. Query Recursion Available (RA).
+ | | | Bit 4. Query Recursion Desired (RD).
+ | | | Bit 5. Query TrunCation (TC).
+ | | | Bit 6. Query Authoritative Answer (AA).
+ | | | Bit 7. Query DNSSEC answer OK (DO).
+ | | | Bit 8. Response Checking Disabled (CD).
+ | | | Bit 9. Response Authenticated Data (AD).
+ | | | Bit 10. Response reserved (Z).
+ | | | Bit 11. Response Recursion Available (RA).
+ | | | Bit 12. Response Recursion Desired (RD).
+ | | | Bit 13. Response TrunCation (TC).
+ | | | Bit 14. Response Authoritative Answer (AA).
+||
+query-rcode | O | Unsigned | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
+||
+query-classtype-index | O | Unsigned | The index in the CLASS/TYPE table (see (#block-table-contents)) of the CLASS and TYPE of the first Question.
+||
+query-qd-count | O | Unsigned | The QDCOUNT in the Query, or Response if no Query present.
+||
+query-an-count | O | Unsigned | Query ANCOUNT.
+||
+query-ar-count | O | Unsigned | Query ARCOUNT.
+||
+query-ns-count | O | Unsigned | Query NSCOUNT.
+||
+edns-version | O | Unsigned | The Query EDNS version.
+||
+udp-buf-size | O | Unsigned | The Query EDNS sender's UDP payload size.
+||
+opt-rdata-index | O | Unsigned | The index in the NAME/RDATA table (see (#block-table-contents)) of the OPT RDATA.
+||
+response-rcode | O | Unsigned | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 
-* Q = QUERY
-* A = Always
-* QT = QUESTION
-* QO = QUERY, OPT
-* QR = QUERY & RESPONSE
-* R = RESPONSE
+##### Question table contents
 
-<!-- Evade mmark bug -->
+The table `qrr` holds details on individual Questions in a Question
+section. Each item in the table is a CBOR map containing a single
+Question.
 
-Field | P | Description
-:-----|:--------|:-----------
-server-address-index | A | The index in the IP address table of the server IP address.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+name-index | M | Unsigned | The index in the NAME/RDATA table (see (#block-table-contents)) of the QNAME.
 ||
-server-port | A | The server port.
-||
-transport-flags | A | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
- | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
- | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
- | | Bit 5. Trailing bytes in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.
-||
-qr-type | Unsigned | Type of Query/Response transaction.
- | | 0 = Stub. A query from a stub resolver.
- | | 1 = Client. An incoming query to a recursive resolver.
- | | 2 = Resolver. A query sent from a recursive resolver to an authorative resolver.
- | | 3 = Authorative. A query to an authorative resolver.
- | | 4 = Forwarder. A query sent from a recursive resolver to an upstream recursive resolver.
- | | 5 = Tool. A query sent to a server by a server tool.
-||
-qr-sig-flags | A | Bit flags indicating information present in this Q/R data item. Bit 0 is the least significant bit.
- | | Bit 0. 1 if a Query is present.
- | | Bit 1. 1 if a Response is present.
- | | Bit 2. 1 if one or more Question is present.
- | | Bit 3. 1 if a Query is present and it has an OPT Resource Record.
- | | Bit 4. 1 if a Response is present and it has an OPT Resource Record.
- | | Bit 5. 1 if a Response is present but has no Question.
-||
-query-opcode | Q | Query OPCODE.
-||
-qr-dns-flags | A | Bit flags with values from the Query and Response DNS flags. Bit 0 is the least significant bit. Flag values are 0 if the Query or Response is not present.
- | | Bit 0. Query Checking Disabled (CD).
- | | Bit 1. Query Authenticated Data (AD).
- | | Bit 2. Query reserved (Z).
- | | Bit 3. Query Recursion Available (RA).
- | | Bit 4. Query Recursion Desired (RD).
- | | Bit 5. Query TrunCation (TC).
- | | Bit 6. Query Authoritative Answer (AA).
- | | Bit 7. Query DNSSEC answer OK (DO).
- | | Bit 8. Response Checking Disabled (CD).
- | | Bit 9. Response Authenticated Data (AD).
- | | Bit 10. Response reserved (Z).
- | | Bit 11. Response Recursion Available (RA).
- | | Bit 12. Response Recursion Desired (RD).
- | | Bit 13. Response TrunCation (TC).
- | | Bit 14. Response Authoritative Answer (AA).
-||
-query-rcode | Q | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
-||
-query-classtype-index | QT | The index in the CLASS/TYPE table of the CLASS and TYPE of the first Question.
-||
-query-qd-count | QT | The QDCOUNT in the Query, or Response if no Query present.
-||
-query-an-count | Q | Query ANCOUNT.
-||
-query-ar-count | Q | Query ARCOUNT.
-||
-query-ns-count | Q | Query NSCOUNT.
-||
-edns-version | QO | The Query EDNS version.
-||
-udp-buf-size | QO | The Query EDNS sender's UDP payload size.
-||
-opt-rdata-index | QO | The index in the NAME/RDATA table of the OPT RDATA.
-||
-response-rcode | R | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
+classtype-index | M | Unsigned | The index in the CLASS/TYPE table (see (#block-table-contents)) of the CLASS and TYPE of the Question.
 
-#### Question table contents
+##### Resource Record (RR) table contents
 
-The table `qrr` holds details on individual Questions in a Question section. Each item in the table is a CBOR map containing a single Question. Each item in the map has an unsigned value and an unsigned integer key. This data is optionally collected.
+The table `rr` holds details on individual Resource Records in RR
+sections.
 
-Field | Description
-:-----|:-----------
-name-index | The index in the NAME/RDATA table of the QNAME.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+name-index | M | Unsigned | The index in the NAME/RDATA table (see (#block-table-contents)) of the NAME.
 ||
-classtype-index | The index in the CLASS/TYPE table of the CLASS and TYPE of the Question.
-
-#### Resource Record (RR) table contents
-
-The table `rr` holds details on individual Resource Records in RR sections. Each item in the table is a CBOR map containing a single Resource Record. This data is optionally collected.
-
-Field | Description
-:-----|:-----------
-name-index | The index in the NAME/RDATA table of the NAME.
+classtype-index | M | Unsigned | The index in the CLASS/TYPE table (see (#block-table-contents)) of the CLASS and TYPE of the RR.
 ||
-classtype-index | The index in the CLASS/TYPE table of the CLASS and TYPE of the RR.
+ttl | M | Unsigned | The RR Time to Live.
 ||
-ttl | The RR Time to Live.
-||
-rdata-index | The index in the NAME/RDATA table of the RR RDATA.
+rdata-index | M | Unsigned | The index in the NAME/RDATA table (see (#block-table-contents)) of the RR RDATA.
 
-#### Malformed message data table contents
+##### Malformed message data table contents
 
-The table `malformed-data` holds the contents of all Malformed message items in the block. Each item in the table is a CBOR map containing the following items.
+The table `malformed-data` holds the contents of all Malformed message
+items in the block. Each item in the table is a CBOR map containing
+the following items.
 
-Field | Type | Description
-:-----|:-----|:-----------
-server-address-index | Unsigned | The index in the IP address table of the server IP address.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+server-address-index | O | Unsigned | The index in the IP address table (see (#block-table-contents)) of the server IP address.
 ||
-server-port | Unsigned | The server port.
+server-port | O | Unsigned | The server port.
 ||
-transport-flags | Unsigned | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
- | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
- | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
+transport-flags | O | Unsigned | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
+ | | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
+ | | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
 ||
-message-content | Byte string | The raw contents of the DNS message.
+message-content | O | Byte string | The raw contents of the DNS message.
 
 <!-- Evade mmark bug -->
 
-## Query/Response data
+### Query/Response data
 
-The block Q/R data is a CBOR array of individual Q/R data items. Each item in the array is a CBOR map containing details on the individual Q/R data item.
-All items are optional.
+The block Q/R data is a CBOR array of individual Q/R data items. Each
+item in the array is a CBOR map containing details on the individual
+Q/R data item.
 
 Note that there is no requirement that the elements of the Q/R array are presented in strict chronological order.
 
-The following abbreviations are used in the Present (P) column
-
-* Q = QUERY
-* A = Always
-* QT = QUESTION
-* QO = QUERY, OPT
-* QR = QUERY & RESPONSE
-* R = RESPONSE
-
-Each item in the map has an unsigned value (with the exception of those listed below) and an unsigned integer key.
-
-* query-extended and response-extended which are of type Extended Information.
-* delay is a positive or negative integer (The delay can be negative if the network stack/capture library returns packets out of order.)
-
-<!-- Evade mmark bug -->
-
-Field | P | Description
-:-----|:--------|:-----------
-time-offset | A | Q/R timestamp as an offset in ticks from the Block preamble Timestamp. The timestamp is the timestamp of the Query, or the Response if there is no Query.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+time-offset | O | Unsigned | Q/R timestamp as an offset in ticks from the Block preamble Timestamp. The timestamp is the timestamp of the Query, or the Response if there is no Query.
 ||
-client-address-index | A | The index in the IP address table of the client IP address.
+client-address-index | O | Unsigned | The index in the IP address (see (#block-table-contents)) table of the client IP address.
 ||
-client-port | A | The client port.
+client-port | O | Unsigned | The client port.
 ||
-transaction-id | A | DNS transaction identifier.
+transaction-id | O | Unsigned | DNS transaction identifier.
 ||
-query-signature-index | A | The index of the Query Signature table record for this data item.
+query-signature-index | O | Unsigned | The index of the Query Signature table (see (#block-table-contents)) record for this data item.
 ||
-client-hoplimit | Q | The IPv4 TTL or IPv6 Hoplimit from the Query packet.
+client-hoplimit | O | Unsigned | The IPv4 TTL or IPv6 Hoplimit from the Query packet.
 ||
-response-delay | QR | The time difference between Query and Response, in ticks. Only present if there is a query and a response.
+response-delay | O | Signed | The time difference between Query and Response, in ticks. Only present if there is a query and a response. The delay can be negative if the network stack/capture library returns packets out of order.
 ||
-query-name-index | QT | The index in the NAME/RDATA table of the QNAME for the first Question.
+query-name-index | O | Unsigned | The index in the NAME/RDATA table (see (#block-table-contents)) of the QNAME for the first Question.
 ||
-query-size | R | DNS query message size (see below).
+query-size | O | Unsigned | DNS query message size (see below).
 ||
-response-size | R | DNS query message size (see below).
+response-size | O | Unsigned | DNS query message size (see below).
 ||
-response-processing-data | R | Data on response processing (see (#response-processing-data-contents)).
+response-processing-data | O | Map | Data on response processing (see (#response-processing-data-contents)).
 ||
-query-extended | Q | Extended Query data  (see (#extended-queryresponse-data-contents)).
+query-extended | O | Map | Extended Query data  (see (#extended-queryresponse-data-contents)).
 ||
-response-extended | R | Extended Response data (see (#extended-queryresponse-data-contents)).
+response-extended | O | Map | Extended Response data (see (#extended-queryresponse-data-contents)).
 
 The query-size and response-size fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.
 
-### Response processing data contents
+#### Response processing data contents
 
-The response processing data is information on the server processing that produced the response. It is a CBOR map as follows; each item is optional.
+The response processing data is information on the server processing that produced the response. It is a CBOR map as follows.
 
-Field | Description
-:-----|:-----------
-bailiwick-index | The index in the NAME/RDATA table of the response bailiwick.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+bailiwick-index | O | Unsigned | The index in the NAME/RDATA table (see (#block-table-contents)) of the response bailiwick.
 ||
-processing-flags | Flags relating to response processing.
- | | Bit 0. 1 if the response came from cache.
+processing-flags | O | Unsigned | Flags relating to response processing.
+ | | | Bit 0. 1 if the response came from cache.
 
 QUESTION: Should this be a signature item?
 
-### Extended Query/Response data contents
+#### Extended Query/Response data contents
 
-The Extended information is a CBOR map as follows. Each item in the map is present only if collection of the relevant details is configured. Each item in the map has an unsigned value and an unsigned integer key.
+The Extended information is a CBOR map as follows. Each item in the
+map is present only if collection of the relevant details is
+configured.
 
-Field | Description
-:-----|:-----------
-question-index | The index in the Questions list table of the entry listing any second and subsequent Questions in the Question section for the Query or Response.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+question-index | O | Unsigned | The index in the Questions list table (see (#block-table-contents)) of the entry listing any second and subsequent Questions in the Question section for the Query or Response.
 ||
-answer-index | The index in the RR list table of the entry listing the Answer Resource Record sections for the Query or Response.
+answer-index | O | Unsigned | The index in the RR list table (see (#block-table-contents)) of the entry listing the Answer Resource Record sections for the Query or Response.
 ||
-authority-index | The index in the RR list table of the entry listing the Authority Resource Record sections for the Query or Response.
+authority-index | O | Unsigned | The index in the RR list table (see (#block-table-contents)) of the entry listing the Authority Resource Record sections for the Query or Response.
 ||
-additional-index | The index in the RR list table of the entry listing the Additional Resource Record sections for the Query or Response.
+additional-index | O | Unsigned | The index in the RR list table (see (#block-table-contents)) of the entry listing the Additional Resource Record sections for the Query or Response.
 
-## Address Event Count contents
+### Address Event Count contents
 
 This table holds counts of various IP related events relating to traffic
 with individual client addresses.
 
-Field | Type | Description
-:-----|:-----|:-----------
-ae-type | Unsigned | The type of event. The following events types are currently defined:
- | | 0. TCP reset.
- | | 1. ICMP time exceeded.
- | | 2. ICMP destination unreachable.
- | | 3. ICMPv6 time exceeded.
- | | 4. ICMPv6 destination unreachable.
- | | 5. ICMPv6 packet too big.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+ae-type | M | Unsigned | The type of event. The following events types are currently defined:
+ | | | 0. TCP reset.
+ | | | 1. ICMP time exceeded.
+ | | | 2. ICMP destination unreachable.
+ | | | 3. ICMPv6 time exceeded.
+ | | | 4. ICMPv6 destination unreachable.
+ | | | 5. ICMPv6 packet too big.
 ||
-ae-code | Unsigned | A code relating to the event. Optional.
+ae-code | O | Unsigned | A code relating to the event.
 ||
-ae-address-index | Unsigned | The index in the IP address table of the client address.
+ae-address-index | M | Unsigned | The index in the IP address table (see (#block-table-contents)) of the client address.
 ||
-ae-count | Unsigned | The number of occurrences of this event during the block collection period.
+ae-count | M | Unsigned | The number of occurrences of this event during the block collection period.
 
-## Malformed message record contents
+### Malformed message record contents
 
 This optional table records the original wire format content of malformed messages (see (#malformed-messages)).
 
-Field | Type | Description
-:-----|:-----|:-----------
-time-offset | Unsigned | Message timestamp as an offset in ticks from the Block preamble Timestamp.
+Field | Opt | Type | Description
+:-----|:----|:-----|:-----------
+time-offset | O | Unsigned | Message timestamp as an offset in ticks from the Block preamble Timestamp.
 ||
-client-address-index | Unsigned | The index in the IP address table of the client IP address.
+client-address-index | O | Unsigned | The index in the IP address table (see (#block-table-contents)) of the client IP address.
 ||
-client-port | Unsigned | The client port.
+client-port | O | Unsigned | The client port.
 ||
-message-data-index | Unsigned | The index in the Malformed messages table of the message data for this message.
+message-data-index | O | Unsigned | The index in the Malformed messages table (see (#block-table-contents)) of the message data for this message.
 
 # Malformed Messages
 

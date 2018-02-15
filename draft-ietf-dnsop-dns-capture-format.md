@@ -562,7 +562,7 @@ rrlist | O | A | RR lists (arrays of unsigned integers). Each entry in a list is
 | | | 
 rr | O | A | RR data. Each entry is the contents of a single RR. See (#resource-record-rr-table-contents).
 | | | 
-malformed-data | O | A | Malformed message contents. Each entry is the contents of a single malformed message.  See (#malformed-message-data-table-contents).
+malformed-data | O | A | Malformed message contents. Each entry is the contents of a single malformed message.  See (#malformed-data-table-contents).
 
 #### CLASS/TYPE table contents
 
@@ -673,9 +673,9 @@ ttl | M | U | The RR Time to Live.
 ||
 rdata-index | M | U | The index in the NAME/RDATA table of the RR RDATA. See (#block-table-contents).
 
-#### Malformed message data table contents
+#### Malformed data table contents
 
-The table `malformed-data` holds the contents of all Malformed message
+The table `malformed-data` holds content for malformed message
 items in the block. Each item in the table is a CBOR map containing
 the following items.
 

@@ -320,10 +320,10 @@ This does, however, mean that a consumer of a C-DNS file faces two problems:
 
 1. How can it quickly determine whether a file contains the data items it requires to complete a particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?
 
-2. How can it determine if a data item is not present because it was 
+2. How can it determine if a data item is not present because it was
   a. explicitly not recorded or
   b. not present in the original data stream/the data item was not available to the collecting application
-  
+
 For example, an application capturing C-DNS data from within a nameserver implementation is unlikely to be able to record the client-hoplimit. Or, if there is no query ARCount recorded and no query OPT RDATA recorded, is that because no query contained an OPT, or because that data was not stored?
 
 The parameters in the file preamble therefore include mandatory
@@ -334,9 +334,9 @@ its needs.
 
 ### Optional RRs and OPCODES
 
-Also included in the storage parameters is an explicit list of the RR types and 
-OPCODES that were recorded. Using an explicit list removes any ambiguity about 
-whether the OPCODE/RR type was not recognised by the collecting implementation 
+Also included in the storage parameters is an explicit list of the RR types and
+OPCODES that were recorded. Using an explicit list removes any ambiguity about
+whether the OPCODE/RR type was not recognised by the collecting implementation
 or whether it was specifically configured not to record it.
 
 For the case of unrecognised OPCODES the message may be parsable (for example, if it has a format similar enough to the one described in RFC1035 **ref) or it may not. Similarly for unrecognised RR types the RDATA can still be stored, but the collector will not be able to process it to remove, for example, name compression pointers.
@@ -563,13 +563,13 @@ The block statistics section contains some basic statistical information about t
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
 total-packets | O | U | Total number of packets processed from the input traffic stream during collection of the block data.
-| | | 
+| | |
 total-pairs | O | U | Total number of Q/R data items in the block.
-| | | 
+| | |
 unmatched-queries | O | U | Number of unmatched queries in the block.
-| | | 
+| | |
 unmatched-responses | O | U | Number of unmatched responses in the block.
-| | | 
+| | |
 malformed-messages | O | U | Number of malformed messages found in input for the block.
 
 ### Block table contents
@@ -586,21 +586,21 @@ The map contains the following items.
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
 ip-address | O | A | IP addresses (byte strings), in network byte order. If client or server address prefixes are set, only the address prefix bits are stored. Each string is therefore up to 4 bytes long for an IPv4 address, or up to 16 bytes long for an IPv6 address. See (#storage-parameter-contents).
-| | | 
+| | |
 classtype | O | A | CLASS/TYPE items (see (#classtype-table-contents)).
-| | | 
+| | |
 name-rdata | O | A | NAME and RDATA data (byte strings). Each entry is the contents of a single NAME or RDATA. Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
-| | | 
+| | |
 query-sig | O | A | Query signatures (see (#query-signature-table-contents)).
-| | | 
+| | |
 qlist | O | A | Question lists (arrays of unsigned integers). Each entry in a list is an index to question data in the qrr table.
-| | | 
+| | |
 qrr | O | A | Question data. Each entry is the contents of a single question, where a question is the second or subsequent question in a query. See (#question-table-contents).
-| | | 
+| | |
 rrlist | O | A | RR lists (arrays of unsigned integers). Each entry in a list is an index to RR data in the rr table.
-| | | 
+| | |
 rr | O | A | RR data. Each entry is the contents of a single RR. See (#resource-record-rr-table-contents).
-| | | 
+| | |
 malformed-data | O | A | Malformed message contents. Each entry is the contents of a single malformed message.  See (#malformed-data-table-contents).
 
 #### CLASS/TYPE table contents

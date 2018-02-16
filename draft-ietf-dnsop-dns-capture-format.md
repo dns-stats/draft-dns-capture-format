@@ -877,30 +877,55 @@ message-data-index | O | U | The index in the Malformed messages table of the me
 
 # Malformed Messages
 
-In the context of generating a C-DNS file it is assumed that only those DNS messages which can be parsed to produce a well-formed DNS message are stored in the C-DNS format. This means as a minimum:
+In the context of generating a C-DNS file it is assumed that only
+those DNS messages which can be parsed to produce a well-formed DNS
+message are stored in the C-DNS format and that all other messages will be recorded (if at all) as malformed messages.
 
-* The packet has a well-formed 12 bytes DNS Header
+Parsing a well-formed message means as a minimum:
+
+* The packet has a well-formed 12 byte DNS Header
 * The section counts are consistent with the section contents
 * All of the resource records can be parsed
-
-TODO: Rewrite section. Following is not suitable for current design.
 
 In principle, packets that do not meet these criteria could be classified into two categories:
 
 * Partially malformed: those packets which can be decoded sufficiently
 to extract
-    * a DNS header (and therefore a DNS transaction ID)
-    * a QDCOUNT
+
+    * a well-formed 12 byte DNS header (and therefore a DNS transaction ID)
     * the first Question in the Question section if QDCOUNT is greater than 0
 
-      but suffer other issues while parsing. This is the minimum information required to attempt Query/Response matching as described in (#matching-algorithm)
+but suffer other issues while parsing. This is the minimum information required to attempt Query/Response matching as described in (#matching-algorithm).
+
 * Completely malformed: those packets that cannot be decoded to this extent.
 
-An open question is whether there is value in attempting to process partially malformed messages in an analogous manner to well formed messages in terms of attempting to match them with the corresponding query or response. This could be done by creating 'placeholder' records during Query/Response matching with just the information extracted as above. If the packet were then matched the resulting C-DNS Q/R data item would include a flag to indicate a malformed record (in addition to capturing the wire format of the packet).
+An open question is whether there is value in attempting to process
+partially malformed messages in an analogous manner to well formed
+messages in terms of attempting to match them with the corresponding
+query or response. This could be done by creating 'placeholder'
+records during Query/Response matching with just the information
+extracted as above. If the packet were then matched the resulting
+C-DNS Q/R data item would include flags to indicate a malformed query
+or response or both record (in addition to capturing the wire format
+of the packet).
 
-An advantage of this would be that it would result in more meaningful statistics about matched packets because, for example, some partially malformed queries could be matched to responses. However it would only apply to those queries where the first Question is well formed. It could also simplify the downstream analysis of C-DNS files and the reconstruction of packet streams from C-DNS.
+An advantage of this would be that it would result in more meaningful
+statistics about matched packets because, for example, some partially
+malformed queries could be matched to responses. However it would only
+apply to those queries where the first Question is well formed. It
+could also simplify the downstream analysis of C-DNS files and the
+reconstruction of packet streams from C-DNS.
 
-A disadvantage is that this adds complexity to the Query/Response matching and data representation, could potentially lead to false matches and some additional statistics would be required (e.g. counts for matched-partially-malformed, unmatched-partially-malformed, completely-malformed).
+A disadvantage is that this adds complexity to the Query/Response
+matching and data representation, could potentially lead to false
+matches and some additional statistics would be required (e.g. counts
+for matched-partially-malformed, unmatched-partially-malformed,
+completely-malformed).
+
+QUESTION: There has been no feedback to date requesting further work
+on the processing partially malformed messages. The editors are
+inclined not to include it in this version. It could be the subject
+of a future extension.
 
 # C-DNS to PCAP
 

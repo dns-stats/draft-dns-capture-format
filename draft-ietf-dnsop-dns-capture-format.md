@@ -769,7 +769,7 @@ bailiwick-index | O | U | The index in the NAME/RDATA table of the response bail
 processing-flags | O | U | Flags relating to response processing.
  | | | Bit 0. 1 if the response came from cache.
 
-QUESTION: Should this be a signature item?
+QUESTION: Should this be an item in the Query Signature?
 
 ### Extended Query/Response data contents
 

@@ -29,7 +29,7 @@ $(XML): $(DRAFT).md $(OUTDIREXISTS); mmark -xml2 -page $< $@
 $(HTML): $(XML) ; xml2rfc --html -o $@ $<
 $(TXT): $(XML) ; xml2rfc --text -o $@ $<
 
-$(OUTDIR)/%.png: %.odg ; unoconv -o $(OUTDIR) --format=png $<
-$(OUTDIR)/%.svg: %.odg ; unoconv -o $(OUTDIR) --format=svg $<
+$(OUTDIR)/%.png: %.odg ; unoconv -o $@ --format=png $<
+$(OUTDIR)/%.svg: %.odg ; unoconv -o $@ --format=svg $<
 
 clean: ; rm $(XML) $(HTML) $(TXT) $(GRAPHICS)

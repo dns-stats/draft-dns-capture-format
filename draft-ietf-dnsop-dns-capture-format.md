@@ -231,11 +231,12 @@ valid responses from authoritatives]
 5. The wire format content of malformed DNS messages can optionally be recorded.
 
     * Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
-      that it cannot represent "malformed" DNS messages (see (#malformed-messages)). Only those messages that can be transformed into the
-      structured format can be represented by the format. However this can result in rather misleading statistics. For example, a
-      malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code
-      FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages
+      that it cannot represent "malformed" DNS messages (see (#malformed-messages)). Only those messages that can be fully parsed and transformed into the
+      structured format can be fully represented. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages
       available directly in the C-DNS file.
+      Note, however, this can result in rather misleading statistics. For example, a
+      malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code
+      FORMERR appearing as 'unmatched'. 
 
 # Choice of CBOR
 
@@ -270,7 +271,7 @@ and individual elements.
 ![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg)
 
 A C-DNS file begins with a file header containing a file-type-id identifier and
-a file-preamble. The file-preamble contains information on the file format version and an array of block-parameters items (the contents of which describe collection and storage parameters used for one or more blocks).
+a file-preamble. The file-preamble contains information on the file format version and an array of block-parameters items (the contents of which include collection and storage parameters used for one or more blocks).
 
 The file header is followed by a series of data blocks.
 
@@ -303,7 +304,7 @@ fields stored in the C-DNS file.
 These parameters include:
 
 * The sub-second timing resolution used by the data.
-* Information on which optional data items appear in the data. See (#optional-data-items).
+* Information (hints) on which optional data items can be expected to appear in the data. See (#optional-data-items).
 * Recorded OPCODES and RR types. See (#optional-rrs-and-opcodes).
 * Flags indicating whether the data is sampled or anonymised. See #sampling-and-anonymisation).
 * Client and server IPv4 and IPv6 address prefixes. See (#ip-address-storage)
@@ -335,8 +336,8 @@ implementation is unlikely to be able to record the client-hoplimit. Or, if
 there is no query ARCount recorded and no query OPT RDATA recorded, is that 
 because no query contained an OPT RR, or because that data was not stored?
 
-The storage parameters hints therefore specifying whether the writer of
-the file recorded each data item if present. An application consuming that file 
+The storage parameters hints therefore specify whether the writer of
+the file recorded each data item if it was present. An application consuming that file 
 can then use
 these to quickly determine whether the input data is rich enough for its needs. 
 

@@ -207,23 +207,28 @@ This section presents some of the major design considerations used in the develo
 will be used for unmatched Queries and Responses. Queries without Responses will be
 captured omitting the response data. Responses without queries will be captured omitting the Query data (but using
 the Question section from the response, if present, as an identifying QNAME).
-    * Rationale: A Query and Response represents the basic level of a clients interaction with the server. Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data
-of the two messages.
+
+    * Rationale: A Query and Response represents the basic level of a clients interaction with the server.
+      Also, combining the Query and Response into one item often reduces storage requirements due to
+      commonality in the data of the two messages.
 
 2. All fields in each Q/R data item will be optional.
+
     * Rationale: Different users will have different requirements for data to be available for analysis.
-Users with minimal requirements should not have to pay the cost of recording full data, however this will
-limit the ability to reconstruct packet captures. For example, omitting the resource records from a Response will
-reduce C-DNS file size, and in principle responses can be synthesized if there is enough context.
+      Users with minimal requirements should not have to pay the cost of recording full data, however this will
+      limit the ability to perform certain kinds of data analysis and also reconstruct packet captures.
+      For example, omitting the resource records from a Response will
+      reduce C-DNS file size, and in principle responses can be synthesized if there is enough context.
 
 3. Multiple data items will be collected into blocks in the format. Common data in a block will be abstracted and
 referenced from individual data items by indexing. The maximum number of data items in a block will be configurable.
+
     * Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.
-Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
+      Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
     * It is anticipated that the files produced can be subject to further compression using general purpose compression tools.
-Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
+      Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
     * [TODO: Further discussion of commonality between DNS messages e.g. common query signatures, a finite set of
-valid responses from authoritatives]
+      valid responses from authoritatives]
 
 4. Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.
@@ -270,7 +275,7 @@ and individual elements.
 ![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg)
 
 A C-DNS file begins with a file header containing a file type identifier and
-a preamble. The preamble contains information on file format version and parameters.
+a preamble. The preamble contains information on file format version and block parameters.
 
 The file header is followed by a series of data blocks.
 
@@ -287,7 +292,7 @@ however sample data for a root server indicated that block sizes up to
 
 ## Storage parameters
 
-The parameters item referenced in the text and diagrams above includes
+The block parameters item referenced in the text and diagrams above includes
 storage parameters; information about the data stored in the C-DNS file.
 
 These parameters include:
@@ -326,7 +331,7 @@ This does, however, mean that a consumer of a C-DNS file faces two problems:
 
 For example, an application capturing C-DNS data from within a nameserver implementation is unlikely to be able to record the client-hoplimit. Or, if there is no query ARCount recorded and no query OPT RDATA recorded, is that because no query contained an OPT, or because that data was not stored?
 
-The parameters in the file preamble therefore include mandatory
+The block parameters in the file preamble therefore include mandatory
 storage parameters. These contain hints specifying whether writer of
 the file recorded each data item if present. An application can use
 these to quickly determine whether the input data is rich enough for
@@ -410,17 +415,17 @@ minor-format-version | M | U | Unsigned integer '0'. The minor version of format
 ||
 private-version | O | U | Version indicator available for private use by applications.
 ||
-parameters | M | A | List of parameters relating to the file. The preamble to each block indicates which list entry applies to the block. The list must contain at least one entry. See (#file-parameter-contents).
+block-parameters | M | A | List of parameters relating to blocks in the file. The preamble to each block indicates which list entry applies to the block. The list must contain at least one entry. See (#block-parameter-contents).
 
-### File parameter contents
+### Block parameter contents
 
-A single item of file parameters contains the following maps.
+A single item of block parameters contains the following maps.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-storage | M | M | Parameters relating to data storage in the file. See (#storage-parameter-contents).
+storage | M | M | Parameters relating to data storage in the block. See (#storage-parameter-contents).
 ||
-collection | O | M | Parameters relating to collection of the data. See (#collection-parameter-contents).
+collection | O | M | Parameters relating to collection of the data in the block. See (#collection-parameter-contents).
 
 #### Storage parameter contents
 
@@ -489,8 +494,8 @@ query-signature | M | U | Hints indicating which query signature data fields are
  | | | Bit 8. query-class-type
  | | | Bit 9. query-qdcount
  | | | Bit 10. query-ancount
- | | | Bit 11. query-arcount
- | | | Bit 12. query-nscount
+ | | | Bit 11. query-nscount
+ | | | Bit 12. query-arcount
  | | | Bit 13. query-edns-version
  | | | Bit 14. query-udp-size
  | | | Bit 15. query-opt-rdata
@@ -554,7 +559,7 @@ Field | O | T | Description
 :-----|:-:|:-:|:-----------
 earliest-time | O | A | A timestamp (2 unsigned integers) for the earliest record in the block. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block are also omitted.
 | | |
-parameters-index | O | U | The index of the parameters applicable to this block (see (#file-parameter-contents)). If not present, index 0 is used.
+block-parameters-index | O | U | The index of the block parameters applicable to this block. If not present, index 0 is used. See (#file-parameter-contents).
 
 ### Block statistics contents
 
@@ -562,7 +567,7 @@ The block statistics section contains some basic statistical information about t
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-total-packets | O | U | Total number of packets processed from the input traffic stream during collection of the block data.
+total-messages | O | U | Total number of DNS messages processed from the input traffic stream during collection of the block data.
 | | |
 total-pairs | O | U | Total number of Q/R data items in the block.
 | | |
@@ -587,11 +592,11 @@ Field | O | T | Description
 :-----|:-:|:-:|:-----------
 ip-address | O | A | IP addresses (byte strings), in network byte order. If client or server address prefixes are set, only the address prefix bits are stored. Each string is therefore up to 4 bytes long for an IPv4 address, or up to 16 bytes long for an IPv6 address. See (#storage-parameter-contents).
 | | |
-classtype | O | A | CLASS/TYPE items (see (#classtype-table-contents)).
+classtype | O | A | CLASS/TYPE items. See (#classtype-table-contents).
 | | |
 name-rdata | O | A | NAME and RDATA data (byte strings). Each entry is the contents of a single NAME or RDATA. Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
 | | |
-query-sig | O | A | Query signatures (see (#query-signature-table-contents)).
+query-sig | O | A | Query signatures. See (#query-signature-table-contents).
 | | |
 qlist | O | A | Question lists (arrays of unsigned integers). Each entry in a list is an index to question data in the qrr table.
 | | |
@@ -673,9 +678,9 @@ query-qd-count | O | U | The QDCOUNT in the Query, or Response if no Query prese
 ||
 query-an-count | O | U | Query ANCOUNT.
 ||
-query-ar-count | O | U | Query ARCOUNT.
-||
 query-ns-count | O | U | Query NSCOUNT.
+||
+query-ar-count | O | U | Query ARCOUNT.
 ||
 edns-version | O | U | The Query EDNS version.
 ||
@@ -822,7 +827,7 @@ ae-count | M | U | The number of occurrences of this event during the block coll
 
 ## Malformed message record contents
 
-This optional table records the original wire format content of malformed messages (see (#malformed-messages)).
+This optional table records the original wire format content of malformed messages. See (#malformed-messages).
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -1014,7 +1019,40 @@ When ending capture, all remaining entries in the Q/R data item FIFO should be t
 
 # Implementation guidance
 
-TODO: Insert remarks on implementation (e.g. use of CBOR fixed arrays/maps versus variable length in CBOR) here.
+TODO: Topics in this section need further expansion.
+
+## Optional data
+
+Making data fields optional increases reader complexity, and how this might be managed.
+
+## Trailing data in TCP
+
+What exactly do we mean by trailing data in TCP.
+
+## CBOR
+
+In CBOR, arrays, maps, byte strings and text strings can be
+represented as fixed length or indefinite length quantities. A fixed
+length quantity specifies the number of constituent elements in the
+value header. For arrays and maps, an indefinite length quantity
+terminates the values with a `break` value. Byte strings and text
+strings concatenate following fixed length strings until reaching a
+`break`.
+
+C-DNS writers are free to choose either representation, and readers
+must accept both. Implementors of C-DNS writers are recommended,
+though, to prefer fixed length.
+
+* Reader performance may benefit from knowing in advance the size of large items to be read.
+* If an array or map contains 23 or fewer elements, fixed length takes one byte fewer.
+* Fixed-length strings always have a more compact representation.
+
+## Omitting opcode and RR types
+
+A common implementation requirement is to collect only a subset of RR
+types (and possibly opcodes). Another is to not collect RDATA when it
+exceeds a threshold size. For example, avoid collecting AXFR and IXFR
+RDATA.
 
 # Implementation Status
 
@@ -1277,15 +1315,14 @@ FilePreamble = {
     major-format-version => uint .eq 1,
     minor-format-version => uint .eq 0,
     ? private-version    => uint,
-    parameters           => [+ Parameters],
+    block-parameters     => [+ BlockParameters],
 }
 major-format-version = 0
 minor-format-version = 1
 private-version      = 2
-parameters           = 3
+block-parameters     = 3
 
-; Parameters for data stored in a block.
-Parameters = {
+BlockParameters = {
     storage      => StorageParameters,
     ? collection => CollectionParameters,
 }
@@ -1428,11 +1465,11 @@ malformed-messages    = 5
 ; The (mandatory) preamble to a block.
 ;
 BlockPreamble = {
-    ? earliest-time    => Timestamp,
-    ? parameters-index => uint .default 0,
+    ? earliest-time          => Timestamp,
+    ? block-parameters-index => uint .default 0,
 }
-earliest-time    = 0
-parameters-index = 1
+earliest-time          = 0
+block-parameters-index = 1
 
 ; Ticks are subsecond intervals. The number of ticks in a second is file/block
 ; metadata. Signed and unsigned tick types are defined.
@@ -1448,13 +1485,13 @@ Timestamp = [
 ; Statistics about the block contents.
 ;
 BlockStatistics = {
-    ? total-packets             => uint,
+    ? total-messages            => uint,
     ? total-pairs               => uint,
     ? total-unmatched-queries   => uint,
     ? total-unmatched-responses => uint,
     ? total-malformed-messages  => uint,
 }
-total-packets                = 0
+total-messages               = 0
 total-pairs                  = 1
 total-unmatched-queries      = 2
 total-unmatched-responses    = 3
@@ -1505,8 +1542,8 @@ QuerySignature = {
     ? query-classtype-index => uint,
     ? query-qd-count        => uint,
     ? query-an-count        => uint,
-    ? query-ar-count        => uint,
     ? query-ns-count        => uint,
+    ? query-ar-count        => uint,
     ? edns-version          => uint,
     ? udp-buf-size          => uint,
     ? opt-rdata-index       => uint,
@@ -1523,8 +1560,8 @@ query-rcode           = 7
 query-classtype-index = 8
 query-qd-count        = 9
 query-an-count        = 10
-query-ar-count        = 11
 query-ns-count        = 12
+query-ar-count        = 12
 edns-version          = 13
 udp-buf-size          = 14
 opt-rdata-index       = 15

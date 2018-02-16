@@ -270,7 +270,7 @@ and individual elements.
 ![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg)
 
 A C-DNS file begins with a file header containing a file-type-id identifier and
-a file-preamble. The file-preamble contains information on the file format version and a parameters array (the contents of which describe collection and storage parameters).
+a file-preamble. The file-preamble contains information on the file format version and an array of block-parameters items (the contents of which describe collection and storage parameters used for one or more blocks).
 
 The file header is followed by a series of data blocks.
 
@@ -285,19 +285,19 @@ The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
-### Per block parameters
+### Block parameters
 
-A valid use case is wanting to merge C-DNS files from different sources. To 
-support this, an array of parameters items is stored in the file header with 
-a minimum of one item at index 0. The block header preamble item then contains 
-an optional index for the parameters item that applies for that 
+An array of block-parameters items is stored in the file header (with 
+a minimum of one item at index 0) in order to support use cases such as wanting 
+to merge C-DNS files from different sources. The block header preamble item then
+contains an optional index for the block-parameters item that applies for that 
 block; if not present the index defaults to 0. Hence, in effect, a global 
-parameters item is defined which can then be overridden per block.
+block-parameters item is defined which can then be overridden per block.
 
 ## Storage parameters
 
-The parameters item includes a
-storage-parameters item - this contains information about the specific data 
+The block-parameters item includes a
+storage parameters item - this contains information about the specific data 
 fields stored in the C-DNS file.
 
 These parameters include:
@@ -439,11 +439,11 @@ minor-format-version | M | U | Unsigned integer '0'. The minor version of format
 ||
 private-version | O | U | Version indicator available for private use by applications.
 ||
-parameters | M | A | List of parameters relating to the file. The preamble to each block indicates which list entry applies to the block. The list must contain at least one entry. See (#file-parameter-contents).
+block-parameters | M | A | List of parameters relating to one or more blocks. The preamble to each block indicates which array entry applies to the block. The array must contain at least one entry. See (#block-parameter-contents).
 
-### File parameter contents
+### Block parameter contents
 
-A single item of file parameters contains the following maps.
+A single item of block parameters contains the following maps.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -583,7 +583,7 @@ Field | O | T | Description
 :-----|:-:|:-:|:-----------
 earliest-time | O | A | A timestamp (2 unsigned integers) for the earliest record in the block. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block are also omitted.
 | | |
-parameters-index | O | U | The index of the parameters applicable to this block (see (#file-parameter-contents)). If not present, index 0 is used.
+block-parameters-index | O | U | The index of the parameters applicable to this block (see (#block-parameter-contents)). If not present, index 0 is used.
 
 ### Block statistics contents
 
@@ -1308,7 +1308,7 @@ FilePreamble = {
     major-format-version => uint .eq 1,
     minor-format-version => uint .eq 0,
     ? private-version    => uint,
-    parameters           => [+ Parameters],
+    block-parameters     => [+ BlockParameters],
 }
 major-format-version = 0
 minor-format-version = 1
@@ -1316,7 +1316,7 @@ private-version      = 2
 parameters           = 3
 
 ; Parameters for data stored in a block.
-Parameters = {
+BlockParameters = {
     storage      => StorageParameters,
     ? collection => CollectionParameters,
 }

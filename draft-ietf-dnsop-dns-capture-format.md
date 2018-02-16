@@ -1062,24 +1062,6 @@ Making data fields optional increases reader complexity, and how this might be m
 
 What exactly do we mean by trailing data in TCP.
 
-## CBOR
-
-In CBOR, arrays, maps, byte strings and text strings can be
-represented as fixed length or indefinite length quantities. A fixed
-length quantity specifies the number of constituent elements in the
-value header. For arrays and maps, an indefinite length quantity
-terminates the values with a `break` value. Byte strings and text
-strings concatenate following fixed length strings until reaching a
-`break`.
-
-C-DNS writers are free to choose either representation, and readers
-must accept both. Implementors of C-DNS writers are recommended,
-though, to prefer fixed length.
-
-* Reader performance may benefit from knowing in advance the size of large items to be read.
-* If an array or map contains 23 or fewer elements, fixed length takes one byte fewer.
-* Fixed-length strings always have a more compact representation.
-
 ## Omitting opcode and RR types
 
 A common implementation requirement is to collect only a subset of RR

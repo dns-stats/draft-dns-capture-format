@@ -100,8 +100,8 @@ There has also been work on using text based formats to describe
 DNS packets such as [@?I-D.daley-dnsxml], [@?I-D.hoffman-dns-in-json], but these are largely
 aimed at producing convenient representations of single messages.
 
-Many DNS operators may receive hundreds of thousands of queries per second on a single
-name server instance so
+Many DNS operators may receive hundreds of thousands of queries per second on
+single name server instance so
 a mechanism to minimize the storage size (and therefore upload overhead) of the
 data collected is highly desirable.
 
@@ -236,11 +236,12 @@ referenced from individual data items by indexing. The maximum number of data it
 5. The wire format content of malformed DNS messages can optionally be recorded.
 
     * Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
-      that it cannot represent "malformed" DNS messages (see (#malformed-messages)). Only those messages that can be transformed into the
-      structured format can be represented by the format. However this can result in rather misleading statistics. For example, a
-      malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code
-      FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages
+      that it cannot represent "malformed" DNS messages (see (#malformed-messages)). Only those messages that can be fully parsed and transformed into the
+      structured format can be fully represented. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages
       available directly in the C-DNS file.
+      Note, however, this can result in rather misleading statistics. For example, a
+      malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code
+      FORMERR appearing as 'unmatched'.
 
 # Choice of CBOR
 
@@ -274,12 +275,13 @@ and individual elements.
 
 ![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg)
 
-A C-DNS file begins with a file header containing a file type identifier and
-a preamble. The preamble contains information on file format version and block parameters.
+A C-DNS file begins with a file header containing a file-type-id identifier and
+a file-preamble. The file-preamble contains information on the file format version and an array of block-parameters items
+(the contents of which include collection and storage parameters used for one or more blocks).
 
 The file header is followed by a series of data blocks.
 
-A block consists of a block header, containing various tables of common data,
+A block consists of a block header, containing a preamble item, various tables of common data,
 and some statistics for the traffic received over the block. The block header
 is then followed by a list of the Q/R data items detailing the queries and responses
 received during processing of the block input. The list of Q/R data items is in turn followed
@@ -290,25 +292,30 @@ The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
+### Block parameters
+
+An array of block-parameters items is stored in the file header (with
+a minimum of one item at index 0) in order to support use cases such as wanting
+to merge C-DNS files from different sources. The block header preamble item then
+contains an optional index for the block-parameters item that applies for that
+block; if not present the index defaults to 0. Hence, in effect, a global
+block-parameters item is defined which can then be overridden per block.
+
 ## Storage parameters
 
-The block parameters item referenced in the text and diagrams above includes
-storage parameters; information about the data stored in the C-DNS file.
+The block-parameters item includes a
+storage parameters item - this contains information about the specific data
+fields stored in the C-DNS file.
 
 These parameters include:
 
 * The sub-second timing resolution used by the data.
-* Information on which optional data items appear in the data. See (#optional-data-items).
-* Recognised opcodes and RR types.
-* Flags indicating whether the data is sampled or anonymised.
-* Client and server IPv4 and IPv6 address prefixes.
+* Information (hints) on which optional data items can be expected to appear in the data. See (#optional-data-items).
+* Recorded OPCODES and RR types. See (#optional-rrs-and-opcodes).
+* Flags indicating whether the data is sampled or anonymised. See #sampling-and-anonymisation).
+* Client and server IPv4 and IPv6 address prefixes. See (#ip-address-storage)
 
-If IP address prefixes are given, only the prefix bits of addresses
-are stored. For example, if a client IPv4 prefix of 16 is specified, a
-client address of 192.0.2.1 will be stored as 0xc000 (192.0), reducing
-address storage space requirements.
-
-## Optional data items
+### Optional data items
 
 To enable applications to store data to their precise requirements in
 as space-efficient manner as possible, all fields in the following arrays are optional
@@ -319,7 +326,8 @@ as space-efficient manner as possible, all fields in the following arrays are op
 
 In other words, an
 application can choose to omit any data item that is not required for
-its use case. In addition, implementations may be configured not to record all RRs, or messages with certain OPCODES.
+its use case. In addition, implementations may be configured to not record all
+RRs, or only record messages with certain OPCODES.
 
 This does, however, mean that a consumer of a C-DNS file faces two problems:
 
@@ -329,13 +337,17 @@ This does, however, mean that a consumer of a C-DNS file faces two problems:
   a. explicitly not recorded or
   b. not present in the original data stream/the data item was not available to the collecting application
 
-For example, an application capturing C-DNS data from within a nameserver implementation is unlikely to be able to record the client-hoplimit. Or, if there is no query ARCount recorded and no query OPT RDATA recorded, is that because no query contained an OPT, or because that data was not stored?
+For example, an application capturing C-DNS data from within a nameserver
+implementation is unlikely to be able to record the client-hoplimit. Or, if
+there is no query ARCount recorded and no query OPT RDATA recorded, is that
+because no query contained an OPT RR, or because that data was not stored?
 
-The block parameters in the file preamble therefore include mandatory
-storage parameters. These contain hints specifying whether writer of
-the file recorded each data item if present. An application can use
-these to quickly determine whether the input data is rich enough for
-its needs.
+The storage parameters hints therefore specify whether the writer of
+the file recorded each data item if it was present. An application consuming that file
+can then use
+these to quickly determine whether the input data is rich enough for its needs.
+
+QUESTION: Should the items within certain arrays also be optional e.g. within the RR array should all of Name index, ClassType, TTL and RDATA be optional
 
 ### Optional RRs and OPCODES
 
@@ -344,10 +356,29 @@ OPCODES that were recorded. Using an explicit list removes any ambiguity about
 whether the OPCODE/RR type was not recognised by the collecting implementation
 or whether it was specifically configured not to record it.
 
-For the case of unrecognised OPCODES the message may be parsable (for example, if it has a format similar enough to the one described in RFC1035 **ref) or it may not. Similarly for unrecognised RR types the RDATA can still be stored, but the collector will not be able to process it to remove, for example, name compression pointers.
+For the case of unrecognised OPCODES the message may be parsable (for example,
+if it has a format similar enough to the one described in [@!RFC1035]) or it
+may not. Similarly for unrecognised RR types the RDATA can still be stored, but
+the collector will not be able to process it to remove, for example, name
+compression pointers.
 
-QUESTION: Should the storage parameters additionally define whether unrecognised OPCODES/RR types are stored ?
+QUESTION: Should the storage parameters additionally define whether unrecognised
+OPCODES/RR types are stored ?
 
+### Sampling and Anonymisation
+
+The format contains flags that can be used to indicate if the data is either
+anonymised or produced from sample data.
+
+QUESTION: Should fields be added to indicate the sampling/anonymisation method
+used and if so should text strings be used?
+
+### IP Address storage
+
+If IP address prefixes are given, only the prefix bits of addresses
+are stored. For example, if a client IPv4 prefix of 16 is specified, a
+client address of 192.0.2.1 will be stored as 0xc000 (192.0), reducing
+address storage space requirements.
 
 # C-DNS format detailed description
 
@@ -415,7 +446,7 @@ minor-format-version | M | U | Unsigned integer '0'. The minor version of format
 ||
 private-version | O | U | Version indicator available for private use by applications.
 ||
-block-parameters | M | A | List of parameters relating to blocks in the file. The preamble to each block indicates which list entry applies to the block. The list must contain at least one entry. See (#block-parameter-contents).
+block-parameters | M | A | List of parameters relating to one or more blocks. The preamble to each block indicates which array entry applies to the block. The array must contain at least one entry. See (#block-parameter-contents).
 
 ### Block parameter contents
 
@@ -439,9 +470,9 @@ max-block-items | M | U | The maximum number of each record type (queries, addre
 ||
 table-field-hints | M | M | Collection of data field present hints. See (#storage-parameter-table-field-hints).
 ||
-opcodes | M | A | List of opcodes (unsigned integers) handled by the collection application.
+opcodes | M | A | List of OPCODES (unsigned integers) recorded by the collection application.
 ||
-rr-types | M | A | List of RR types (unsigned integers) handled by the collection application.
+rr-types | M | A | List of RR types (unsigned integers) recorded by the collection application.
 ||
 storage-flags | O | U | Bit flags indicating attributes of collected data.
  | | | Bit 0. The data has been anonymised.
@@ -559,7 +590,7 @@ Field | O | T | Description
 :-----|:-:|:-:|:-----------
 earliest-time | O | A | A timestamp (2 unsigned integers) for the earliest record in the block. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block are also omitted.
 | | |
-block-parameters-index | O | U | The index of the block parameters applicable to this block. If not present, index 0 is used. See (#file-parameter-contents).
+block-parameters-index | O | U | The index of the block parameters applicable to this block. If not present, index 0 is used. See (#block-parameter-contents).
 
 ### Block statistics contents
 
@@ -689,6 +720,8 @@ udp-buf-size | O | U | The Query EDNS sender's UDP payload size.
 opt-rdata-index | O | U | The index in the NAME/RDATA table of the OPT RDATA. See (#block-table-contents).
 ||
 response-rcode | O | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
+
+QUESTION: Currently we collect OPT RDATA as a blob as this is consistent with re-uses the generic mechanism for RDATA storage. Should we break individual EDNS(0) options out and store then individually in new Block table? This would potentially allow us to exploit option commonality and also make anonymising ECS client subnet easier.
 
 #### Question table contents
 

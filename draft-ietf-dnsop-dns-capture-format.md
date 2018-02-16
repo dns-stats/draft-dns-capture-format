@@ -343,8 +343,8 @@ there is no query ARCount recorded and no query OPT RDATA recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
 
 The storage parameters hints therefore specify whether the writer of
-the file recorded each data item if it was present. An application consuming that file
-can then use
+the file recorded each data item if it was present. An application consuming
+that file can then use
 these to quickly determine whether the input data is rich enough for its needs.
 
 QUESTION: Should the items within certain arrays also be optional e.g. within the RR array should all of Name index, ClassType, TTL and RDATA be optional
@@ -469,7 +469,7 @@ Field | O | T | Description
 :-----|:-:|:-:|:-----------
 ticks-per-second | M | U | Sub-second timing is recorded in ticks. This specifies the number of ticks in a second.
 ||
-max-block-items | M | U | The maximum number of each record type (queries, address event counts or malformed messages) in a block. A hint on the resources needed to process the file.
+max-block-items | M | U | The maximum number of each record type (queries, address event counts or malformed messages) in a block. An indication of the resources needed to process the file.
 ||
 table-field-hints | M | M | Collection of data field present hints. See (#storage-parameter-table-field-hints).
 ||
@@ -817,7 +817,7 @@ The response processing data is information on the server processing that produc
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-bailiwick-index | O | U | The index in the NAME/RDATA table of the response bailiwick. See (#block-table-contents).
+bailiwick-index | O | U | The index in the name-data table of owner name for the response bailiwick. See (#block-table-contents).
 ||
 processing-flags | O | U | Flags relating to response processing.
  | | | Bit 0. 1 if the response came from cache.

@@ -373,6 +373,9 @@ anonymised or produced from sample data.
 QUESTION: Should fields be added to indicate the sampling/anonymisation method
 used and if so should text strings be used?
 
+QUESTION: Should there be another flag to indicate that names have
+been normalised (e.g. converted to uniform case)?
+
 ### IP Address storage
 
 If IP address prefixes are given, only the prefix bits of addresses
@@ -1056,18 +1059,20 @@ TODO: Topics in this section need further expansion.
 
 ## Optional data
 
-Making data fields optional increases reader complexity, and how this might be managed.
+When reading data where items required for reader function are
+missing, readers may wish to provide configurable default values to be
+used in their output.
 
 ## Trailing data in TCP
 
-What exactly do we mean by trailing data in TCP.
+Clearify the impact of processing wire captures which includes
+trailing data in TCP. What will appear trailing data, what will appear
+as malformed messages?
 
-## Omitting opcode and RR types
+## Limiting collection of RDATA
 
-A common implementation requirement is to collect only a subset of RR
-types (and possibly opcodes). Another is to not collect RDATA when it
-exceeds a threshold size. For example, avoid collecting AXFR and IXFR
-RDATA.
+Implementations should consider providing a configurable maximum RDATA size for capture.
+For example, to avoid memory issues when confronted with large XFR records.
 
 # Implementation Status
 

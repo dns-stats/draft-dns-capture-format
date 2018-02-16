@@ -545,6 +545,8 @@ implementation -dependent | O | U | Collection hints for implementation-specific
 
 The collection parameters contain the following items.
 
+These parameters have no default. If they do not appear, nothing can be inferred about their value.
+
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
 query-timeout | O | U | To be matched with a query, a response must arrive within this number of seconds.

@@ -350,7 +350,7 @@ whether the OPCODE/RR type was not recognised by the collecting implementation
 or whether it was specifically configured not to record it.
 
 For the case of unrecognised OPCODES the message may be parsable (for example, 
-if it has a format similar enough to the one described in RFC1035 **ref) or it 
+if it has a format similar enough to the one described in [@!RFC1035]) or it 
 may not. Similarly for unrecognised RR types the RDATA can still be stored, but 
 the collector will not be able to process it to remove, for example, name 
 compression pointers.

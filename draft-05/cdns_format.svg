@@ -158,7 +158,7 @@
       <g id="id11">
        <rect class="BoundingBox" stroke="none" fill="none" x="3968" y="11978" width="7003" height="1003"/>
        <path fill="none" stroke="rgb(0,0,0)" d="M 7469,12979 L 3969,12979 3969,11979 10969,11979 10969,12979 7469,12979 Z"/>
-       <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="6324" y="12627"><tspan fill="rgb(0,0,0)" stroke="none">Block tables</tspan></tspan></tspan></text>
+       <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="6303" y="12627"><tspan fill="rgb(0,0,0)" stroke="none">Block arrays</tspan></tspan></tspan></text>
       </g>
      </g>
      <g class="com.sun.star.drawing.CustomShape">
@@ -215,7 +215,7 @@
        <g id="id19">
         <rect class="BoundingBox" stroke="none" fill="none" x="3975" y="19533" width="7003" height="1003"/>
         <path fill="none" stroke="rgb(0,0,0)" d="M 7476,20534 L 3976,20534 3976,19534 10976,19534 10976,20534 7476,20534 Z"/>
-        <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="6331" y="20182"><tspan fill="rgb(0,0,0)" stroke="none">Block tables</tspan></tspan></tspan></text>
+        <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="6310" y="20182"><tspan fill="rgb(0,0,0)" stroke="none">Block arrays</tspan></tspan></tspan></text>
        </g>
       </g>
       <g class="com.sun.star.drawing.CustomShape">

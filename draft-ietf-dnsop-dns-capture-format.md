@@ -117,7 +117,7 @@ This document contains:
 * A discussion of the major design considerations in developing an efficient
   data representation for collections of DNS messages (#design-considerations)
 * A description of why CBOR [@!RFC7049] was chosen for this format (#choice-of-cbor)
-* A conceptual overview of the C-DNS format (#cdns-format-overview)
+* A conceptual overview of the C-DNS format (#cdns-format-conceptual-overview)
 * The definition of the C-DNS format for the collection of DNS messages (#cdns-format-detailed-description).
 * Notes on converting C-DNS data to PCAP format (#cdns-to-pcap)
 * Some high level implementation considerations for applications designed to
@@ -259,9 +259,7 @@ require library support which may present problems on unusual platforms.
 * CBOR can also be easily converted to text formats such as JSON ([@RFC7159]) for debugging and other human inspection requirements.
 * CBOR data schemas can be described using CDDL [@?I-D.ietf-cbor-cddl].
 
-# C-DNS format overview
-
-## Conceptual Overview
+# C-DNS format conceptual Overview
 
 The following figures show purely schematic representations of the C-DNS format to convey the high-level
 structure of the C-DNS format. (#cdns-format-detailed-description) provides a detailed discussion of the CBOR representation
@@ -315,7 +313,7 @@ These parameters include:
 * Flags indicating whether the data is sampled or anonymised. See #sampling-and-anonymisation).
 * Client and server IPv4 and IPv6 address prefixes. See (#ip-address-storage)
 
-## Optional data items
+### Optional data items
 
 To enable applications to store data to their precise requirements in
 as space-efficient manner as possible, all fields in the following tables are optional:
@@ -353,7 +351,7 @@ QUESTION: Should the items within certain tables also be optional
 e.g. within the RR table should all of Name index, ClassType, TTL and
 RDATA be optional?
 
-## Optional RRs and OPCODES
+### Optional RRs and OPCODES
 
 Also included in the storage parameters is an explicit table of the RR types and
 OPCODES that were recorded. Using an explicit table removes any ambiguity about
@@ -369,7 +367,7 @@ compression pointers.
 QUESTION: Should the storage parameters additionally define whether unrecognised
 OPCODES/RR types are stored ?
 
-## Sampling and Anonymisation
+### Sampling and Anonymisation
 
 The format contains flags that can be used to indicate if the data is either
 anonymised or produced from sample data.
@@ -380,7 +378,7 @@ used and if so should text strings be used?
 QUESTION: Should there be another flag to indicate that names have
 been normalised (e.g. converted to uniform case)?
 
-## IP Address storage
+### IP Address storage
 
 If IP address prefixes are given, only the prefix bits of addresses
 are stored. For example, if a client IPv4 prefix of 16 is specified, a

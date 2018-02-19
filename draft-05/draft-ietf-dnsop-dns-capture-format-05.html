@@ -379,30 +379,29 @@
 <link href="#rfc.section.3" rel="Chapter" title="3 Data Collection Use Cases"/>
 <link href="#rfc.section.4" rel="Chapter" title="4 Design Considerations"/>
 <link href="#rfc.section.5" rel="Chapter" title="5 Choice of CBOR"/>
-<link href="#rfc.section.6" rel="Chapter" title="6 C-DNS format overview"/>
-<link href="#rfc.section.6.1" rel="Chapter" title="6.1 Conceptual Overview"/>
-<link href="#rfc.section.6.2" rel="Chapter" title="6.2 Block parameters"/>
-<link href="#rfc.section.6.3" rel="Chapter" title="6.3 Storage parameters"/>
-<link href="#rfc.section.6.4" rel="Chapter" title="6.4 Optional data items"/>
-<link href="#rfc.section.6.5" rel="Chapter" title="6.5 Optional RRs and OPCODES"/>
-<link href="#rfc.section.6.6" rel="Chapter" title="6.6 Sampling and Anonymisation"/>
-<link href="#rfc.section.6.7" rel="Chapter" title="6.7 IP Address storage"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 C-DNS format conceptual Overview"/>
+<link href="#rfc.section.6.1" rel="Chapter" title="6.1 Block parameters"/>
+<link href="#rfc.section.6.2" rel="Chapter" title="6.2 Storage parameters"/>
+<link href="#rfc.section.6.2.1" rel="Chapter" title="6.2.1 Optional data items"/>
+<link href="#rfc.section.6.2.2" rel="Chapter" title="6.2.2 Optional RRs and OPCODES"/>
+<link href="#rfc.section.6.2.3" rel="Chapter" title="6.2.3 Sampling and Anonymisation"/>
+<link href="#rfc.section.6.2.4" rel="Chapter" title="6.2.4 IP Address storage"/>
 <link href="#rfc.section.7" rel="Chapter" title="7 C-DNS format detailed description"/>
 <link href="#rfc.section.7.1" rel="Chapter" title="7.1 Map quantities and indexes"/>
 <link href="#rfc.section.7.2" rel="Chapter" title="7.2 Tabular representation"/>
-<link href="#rfc.section.7.3" rel="Chapter" title="7.3 File header contents"/>
-<link href="#rfc.section.7.4" rel="Chapter" title="7.4 File preamble contents"/>
-<link href="#rfc.section.7.4.1" rel="Chapter" title="7.4.1 Block parameter contents"/>
-<link href="#rfc.section.7.4.2" rel="Chapter" title="7.4.2 Collection parameter contents"/>
-<link href="#rfc.section.7.5" rel="Chapter" title="7.5 Block contents"/>
-<link href="#rfc.section.7.5.1" rel="Chapter" title="7.5.1 Block preamble contents"/>
-<link href="#rfc.section.7.5.2" rel="Chapter" title="7.5.2 Block statistics contents"/>
-<link href="#rfc.section.7.5.3" rel="Chapter" title="7.5.3 Block array contents"/>
-<link href="#rfc.section.7.6" rel="Chapter" title="7.6 Query/Response data"/>
-<link href="#rfc.section.7.6.1" rel="Chapter" title="7.6.1 Response processing data contents"/>
-<link href="#rfc.section.7.6.2" rel="Chapter" title="7.6.2 Extended Query/Response data contents"/>
-<link href="#rfc.section.7.7" rel="Chapter" title="7.7 Address Event Count contents"/>
-<link href="#rfc.section.7.8" rel="Chapter" title="7.8 Malformed message record contents"/>
+<link href="#rfc.section.7.3" rel="Chapter" title="7.3 &quot;File&quot;"/>
+<link href="#rfc.section.7.4" rel="Chapter" title="7.4 &quot;FilePreamble&quot;"/>
+<link href="#rfc.section.7.4.1" rel="Chapter" title="7.4.1 &quot;BlockParameters&quot;"/>
+<link href="#rfc.section.7.4.2" rel="Chapter" title="7.4.2 &quot;CollectionParameters&quot;"/>
+<link href="#rfc.section.7.5" rel="Chapter" title="7.5 &quot;Block&quot;"/>
+<link href="#rfc.section.7.5.1" rel="Chapter" title="7.5.1 &quot;BlockPreamble&quot;"/>
+<link href="#rfc.section.7.5.2" rel="Chapter" title="7.5.2 &quot;BlockStatistics&quot;"/>
+<link href="#rfc.section.7.5.3" rel="Chapter" title="7.5.3 &quot;BlockTables&quot;"/>
+<link href="#rfc.section.7.6" rel="Chapter" title="7.6 &quot;QueryResponse&quot;"/>
+<link href="#rfc.section.7.6.1" rel="Chapter" title="7.6.1 &quot;ResponseProcessingData&quot;"/>
+<link href="#rfc.section.7.6.2" rel="Chapter" title="7.6.2 &quot;QueryResponseExtended&quot;"/>
+<link href="#rfc.section.7.7" rel="Chapter" title="7.7 &quot;AddressEventCount&quot;"/>
+<link href="#rfc.section.7.8" rel="Chapter" title="7.8 &quot;MalformedMessage&quot;"/>
 <link href="#rfc.section.8" rel="Chapter" title="8 Malformed Messages"/>
 <link href="#rfc.section.9" rel="Chapter" title="9 C-DNS to PCAP"/>
 <link href="#rfc.section.9.1" rel="Chapter" title="9.1 Name Compression"/>
@@ -528,30 +527,29 @@
 <li>3.   <a href="#rfc.section.3">Data Collection Use Cases</a></li>
 <li>4.   <a href="#rfc.section.4">Design Considerations</a></li>
 <li>5.   <a href="#rfc.section.5">Choice of CBOR</a></li>
-<li>6.   <a href="#rfc.section.6">C-DNS format overview</a></li>
-<ul><li>6.1.   <a href="#rfc.section.6.1">Conceptual Overview</a></li>
-<li>6.2.   <a href="#rfc.section.6.2">Block parameters</a></li>
-<li>6.3.   <a href="#rfc.section.6.3">Storage parameters</a></li>
-<li>6.4.   <a href="#rfc.section.6.4">Optional data items</a></li>
-<li>6.5.   <a href="#rfc.section.6.5">Optional RRs and OPCODES</a></li>
-<li>6.6.   <a href="#rfc.section.6.6">Sampling and Anonymisation</a></li>
-<li>6.7.   <a href="#rfc.section.6.7">IP Address storage</a></li>
-</ul><li>7.   <a href="#rfc.section.7">C-DNS format detailed description</a></li>
+<li>6.   <a href="#rfc.section.6">C-DNS format conceptual Overview</a></li>
+<ul><li>6.1.   <a href="#rfc.section.6.1">Block parameters</a></li>
+<li>6.2.   <a href="#rfc.section.6.2">Storage parameters</a></li>
+<ul><li>6.2.1.   <a href="#rfc.section.6.2.1">Optional data items</a></li>
+<li>6.2.2.   <a href="#rfc.section.6.2.2">Optional RRs and OPCODES</a></li>
+<li>6.2.3.   <a href="#rfc.section.6.2.3">Sampling and Anonymisation</a></li>
+<li>6.2.4.   <a href="#rfc.section.6.2.4">IP Address storage</a></li>
+</ul></ul><li>7.   <a href="#rfc.section.7">C-DNS format detailed description</a></li>
 <ul><li>7.1.   <a href="#rfc.section.7.1">Map quantities and indexes</a></li>
 <li>7.2.   <a href="#rfc.section.7.2">Tabular representation</a></li>
-<li>7.3.   <a href="#rfc.section.7.3">File header contents</a></li>
-<li>7.4.   <a href="#rfc.section.7.4">File preamble contents</a></li>
-<ul><li>7.4.1.   <a href="#rfc.section.7.4.1">Block parameter contents</a></li>
-<li>7.4.2.   <a href="#rfc.section.7.4.2">Collection parameter contents</a></li>
-</ul><li>7.5.   <a href="#rfc.section.7.5">Block contents</a></li>
-<ul><li>7.5.1.   <a href="#rfc.section.7.5.1">Block preamble contents</a></li>
-<li>7.5.2.   <a href="#rfc.section.7.5.2">Block statistics contents</a></li>
-<li>7.5.3.   <a href="#rfc.section.7.5.3">Block array contents</a></li>
-</ul><li>7.6.   <a href="#rfc.section.7.6">Query/Response data</a></li>
-<ul><li>7.6.1.   <a href="#rfc.section.7.6.1">Response processing data contents</a></li>
-<li>7.6.2.   <a href="#rfc.section.7.6.2">Extended Query/Response data contents</a></li>
-</ul><li>7.7.   <a href="#rfc.section.7.7">Address Event Count contents</a></li>
-<li>7.8.   <a href="#rfc.section.7.8">Malformed message record contents</a></li>
+<li>7.3.   <a href="#rfc.section.7.3">"File"</a></li>
+<li>7.4.   <a href="#rfc.section.7.4">"FilePreamble"</a></li>
+<ul><li>7.4.1.   <a href="#rfc.section.7.4.1">"BlockParameters"</a></li>
+<li>7.4.2.   <a href="#rfc.section.7.4.2">"CollectionParameters"</a></li>
+</ul><li>7.5.   <a href="#rfc.section.7.5">"Block"</a></li>
+<ul><li>7.5.1.   <a href="#rfc.section.7.5.1">"BlockPreamble"</a></li>
+<li>7.5.2.   <a href="#rfc.section.7.5.2">"BlockStatistics"</a></li>
+<li>7.5.3.   <a href="#rfc.section.7.5.3">"BlockTables"</a></li>
+</ul><li>7.6.   <a href="#rfc.section.7.6">"QueryResponse"</a></li>
+<ul><li>7.6.1.   <a href="#rfc.section.7.6.1">"ResponseProcessingData"</a></li>
+<li>7.6.2.   <a href="#rfc.section.7.6.2">"QueryResponseExtended"</a></li>
+</ul><li>7.7.   <a href="#rfc.section.7.7">"AddressEventCount"</a></li>
+<li>7.8.   <a href="#rfc.section.7.8">"MalformedMessage"</a></li>
 </ul><li>8.   <a href="#rfc.section.8">Malformed Messages</a></li>
 <li>9.   <a href="#rfc.section.9">C-DNS to PCAP</a></li>
 <ul><li>9.1.   <a href="#rfc.section.9.1">Name Compression</a></li>
@@ -617,7 +615,7 @@
   <li>A discussion of the some common use cases in which such DNS data is collected <a href="#data-collection-use-cases">Section 3</a></li>
   <li>A discussion of the major design considerations in developing an efficient data representation for collections of DNS messages <a href="#design-considerations">Section 4</a></li>
   <li>A description of why CBOR <a href="#RFC7049">[RFC7049]</a> was chosen for this format <a href="#choice-of-cbor">Section 5</a></li>
-  <li>A conceptual overview of the C-DNS format <a href="#cdns-format-overview">Section 6</a></li>
+  <li>A conceptual overview of the C-DNS format <a href="#cdns-format-conceptual-overview">Section 6</a></li>
   <li>The definition of the C-DNS format for the collection of DNS messages <a href="#cdns-format-detailed-description">Section 7</a>.</li>
   <li>Notes on converting C-DNS data to PCAP format <a href="#cdns-to-pcap">Section 9</a></li>
   <li>Some high level implementation considerations for applications designed to produce C-DNS <a href="#data-collection">Section 10</a></li>
@@ -684,35 +682,34 @@
 </ul>
 
 <p> </p>
-<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#cdns-format-overview" id="cdns-format-overview">C-DNS format overview</a></h1>
-<h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#conceptual-overview" id="conceptual-overview">Conceptual Overview</a></h1>
-<p id="rfc.section.6.1.p.1">The following figures show purely schematic representations of the C-DNS format to convey the high-level structure of the C-DNS format. <a href="#cdns-format-detailed-description">Section 7</a> provides a detailed discussion of the CBOR representation and individual elements.  </p>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#cdns-format-conceptual-overview" id="cdns-format-conceptual-overview">C-DNS format conceptual Overview</a></h1>
+<p id="rfc.section.6.p.1">The following figures show purely schematic representations of the C-DNS format to convey the high-level structure of the C-DNS format. <a href="#cdns-format-detailed-description">Section 7</a> provides a detailed discussion of the CBOR representation and individual elements.  </p>
 <p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/cdns_format.png">Figure showing the C-DNS format (PNG)</a> </p>
 <p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/cdns_format.svg">Figure showing the C-DNS format (SVG)</a> </p>
-<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.png">Figure showing the Q/R data item and Block arrays format (PNG)</a> </p>
-<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg">Figure showing the Q/R data item and Block arrays format (SVG)</a> </p>
-<p id="rfc.section.6.1.p.6">A C-DNS file begins with a file header containing a file-type-id identifier and a file-preamble. The file-preamble contains information on the file format version and an array of block-parameters items (the contents of which include collection and storage parameters used for one or more blocks).  </p>
-<p id="rfc.section.6.1.p.7">The file header is followed by a series of data blocks.  </p>
-<p id="rfc.section.6.1.p.8">A block consists of a block header, containing a preamble item, various arrays of common data, and some statistics for the traffic received over the block. The block header is then followed by an array of the Q/R data items detailing the queries and responses received during processing of the block input. The array of Q/R data items is in turn followed by an array of per-client counts of particular IP events and an array of malformed messages that occurred during collection of the block data.  </p>
-<p id="rfc.section.6.1.p.9">The exact nature of the DNS data will affect what block size is the best fit, however sample data for a root server indicated that block sizes up to 10,000 Q/R data items give good results. See <a href="#block-size-choice">Appendix C.6</a> for more details.  </p>
-<h1 id="rfc.section.6.2"><a href="#rfc.section.6.2">6.2.</a> <a href="#block-parameters" id="block-parameters">Block parameters</a></h1>
-<p id="rfc.section.6.2.p.1">An array of block parameters items is stored in the file header (with a minimum of one item at index 0) in order to support use cases such as wanting to merge C-DNS files from different sources. The block header preamble item then contains an optional index for the block parameters item that applies for that block; if not present the index defaults to 0. Hence, in effect, a global block-parameters item is defined which can then be overridden per block.  </p>
-<h1 id="rfc.section.6.3"><a href="#rfc.section.6.3">6.3.</a> <a href="#storage-parameters" id="storage-parameters">Storage parameters</a></h1>
-<p id="rfc.section.6.3.p.1">The block parameters item includes a storage parameters item - this contains information about the specific data fields stored in the C-DNS file.  </p>
-<p id="rfc.section.6.3.p.2">These parameters include: </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.png">Figure showing the Q/R data item and Block tables format (PNG)</a> </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg">Figure showing the Q/R data item and Block tables format (SVG)</a> </p>
+<p id="rfc.section.6.p.6">A C-DNS file begins with a file header containing a file-type-id identifier and a file-preamble. The file-preamble contains information on the file format version and an table of block-parameters items (the contents of which include collection and storage parameters used for one or more blocks).  </p>
+<p id="rfc.section.6.p.7">The file header is followed by a series of data blocks.  </p>
+<p id="rfc.section.6.p.8">A block consists of a block header, containing a preamble item, various tables of common data, and some statistics for the traffic received over the block. The block header is then followed by an table of the Q/R data items detailing the queries and responses received during processing of the block input. The table of Q/R data items is in turn followed by an table of per-client counts of particular IP events and an table of malformed messages that occurred during collection of the block data.  </p>
+<p id="rfc.section.6.p.9">The exact nature of the DNS data will affect what block size is the best fit, however sample data for a root server indicated that block sizes up to 10,000 Q/R data items give good results. See <a href="#block-size-choice">Appendix C.6</a> for more details.  </p>
+<h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#block-parameters" id="block-parameters">Block parameters</a></h1>
+<p id="rfc.section.6.1.p.1">An table of block parameters items is stored in the file header (with a minimum of one item at index 0) in order to support use cases such as wanting to merge C-DNS files from different sources. The block header preamble item then contains an optional index for the block parameters item that applies for that block; if not present the index defaults to 0. Hence, in effect, a global block-parameters item is defined which can then be overridden per block.  </p>
+<h1 id="rfc.section.6.2"><a href="#rfc.section.6.2">6.2.</a> <a href="#storage-parameters" id="storage-parameters">Storage parameters</a></h1>
+<p id="rfc.section.6.2.p.1">The block parameters item includes a storage parameters item - this contains information about the specific data fields stored in the C-DNS file.  </p>
+<p id="rfc.section.6.2.p.2">These parameters include: </p>
 <p/>
 
 <ul>
   <li>The sub-second timing resolution used by the data.</li>
-  <li>Information (hints) on which optional data items can be expected to appear in the data. See <a href="#optional-data-items">Section 6.4</a>.</li>
-  <li>Recorded OPCODES and RR types. See <a href="#optional-rrs-and-opcodes">Section 6.5</a>.</li>
+  <li>Information (hints) on which optional data items can be expected to appear in the data. See <a href="#optional-data-items">Section 6.2.1</a>.</li>
+  <li>Recorded OPCODES and RR types. See <a href="#optional-rrs-and-opcodes">Section 6.2.2</a>.</li>
   <li>Flags indicating whether the data is sampled or anonymised. See #sampling-and-anonymisation).</li>
-  <li>Client and server IPv4 and IPv6 address prefixes. See <a href="#ip-address-storage">Section 6.7</a></li>
+  <li>Client and server IPv4 and IPv6 address prefixes. See <a href="#ip-address-storage">Section 6.2.4</a></li>
 </ul>
 
 <p> </p>
-<h1 id="rfc.section.6.4"><a href="#rfc.section.6.4">6.4.</a> <a href="#optional-data-items" id="optional-data-items">Optional data items</a></h1>
-<p id="rfc.section.6.4.p.1">To enable applications to store data to their precise requirements in as space-efficient manner as possible, all fields in the following arrays are optional: </p>
+<h1 id="rfc.section.6.2.1"><a href="#rfc.section.6.2.1">6.2.1.</a> <a href="#optional-data-items" id="optional-data-items">Optional data items</a></h1>
+<p id="rfc.section.6.2.1.p.1">To enable applications to store data to their precise requirements in as space-efficient manner as possible, all fields in the following tables are optional: </p>
 <p/>
 
 <ul>
@@ -722,8 +719,8 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.6.4.p.3">In other words, an application can choose to omit any data item that is not required for its use case. In addition, implementations may be configured to not record all RRs, or only record messages with certain OPCODES.  </p>
-<p id="rfc.section.6.4.p.4">This does, however, mean that a consumer of a C-DNS file faces two problems: </p>
+<p id="rfc.section.6.2.1.p.3">In other words, an application can choose to omit any data item that is not required for its use case. In addition, implementations may be configured to not record all RRs, or only record messages with certain OPCODES.  </p>
+<p id="rfc.section.6.2.1.p.4">This does, however, mean that a consumer of a C-DNS file faces two problems: </p>
 <p/>
 
 <ol>
@@ -732,26 +729,26 @@
 </ol>
 
 <p> </p>
-<p id="rfc.section.6.4.p.6">For example, an application capturing C-DNS data from within a nameserver implementation is unlikely to be able to record the client hoplimit. Or, if there is no query ARCount recorded and no query OPT RDATA recorded, is that because no query contained an OPT RR, or because that data was not stored? </p>
-<p id="rfc.section.6.4.p.7">The storage parameters hints therefore specify whether the writer of the file recorded each data item if it was present. An application consuming that file can then use these to quickly determine whether the input data is rich enough for its needs.  </p>
-<p id="rfc.section.6.4.p.8">QUESTION: Should the items within certain arrays also be optional e.g. within the RR array should all of Name index, ClassType, TTL and RDATA be optional? </p>
-<h1 id="rfc.section.6.5"><a href="#rfc.section.6.5">6.5.</a> <a href="#optional-rrs-and-opcodes" id="optional-rrs-and-opcodes">Optional RRs and OPCODES</a></h1>
-<p id="rfc.section.6.5.p.1">Also included in the storage parameters is an explicit array of the RR types and OPCODES that were recorded. Using an explicit array removes any ambiguity about whether the OPCODE/RR type was not recognised by the collecting implementation or whether it was specifically configured not to record it.  </p>
-<p id="rfc.section.6.5.p.2">For the case of unrecognised OPCODES the message may be parsable (for example, if it has a format similar enough to the one described in <a href="#RFC1035">[RFC1035]</a>) or it may not. Similarly for unrecognised RR types the RDATA can still be stored, but the collector will not be able to process it to remove, for example, name compression pointers.  </p>
-<p id="rfc.section.6.5.p.3">QUESTION: Should the storage parameters additionally define whether unrecognised OPCODES/RR types are stored ? </p>
-<h1 id="rfc.section.6.6"><a href="#rfc.section.6.6">6.6.</a> <a href="#sampling-and-anonymisation" id="sampling-and-anonymisation">Sampling and Anonymisation</a></h1>
-<p id="rfc.section.6.6.p.1">The format contains flags that can be used to indicate if the data is either anonymised or produced from sample data.  </p>
-<p id="rfc.section.6.6.p.2">QUESTION: Should fields be added to indicate the sampling/anonymisation method used and if so should text strings be used? </p>
-<p id="rfc.section.6.6.p.3">QUESTION: Should there be another flag to indicate that names have been normalised (e.g. converted to uniform case)? </p>
-<h1 id="rfc.section.6.7"><a href="#rfc.section.6.7">6.7.</a> <a href="#ip-address-storage" id="ip-address-storage">IP Address storage</a></h1>
-<p id="rfc.section.6.7.p.1">If IP address prefixes are given, only the prefix bits of addresses are stored. For example, if a client IPv4 prefix of 16 is specified, a client address of 192.0.2.1 will be stored as 0xc000 (192.0), reducing address storage space requirements.  </p>
+<p id="rfc.section.6.2.1.p.6">For example, an application capturing C-DNS data from within a nameserver implementation is unlikely to be able to record the client hoplimit. Or, if there is no query ARCount recorded and no query OPT RDATA recorded, is that because no query contained an OPT RR, or because that data was not stored? </p>
+<p id="rfc.section.6.2.1.p.7">The storage parameters hints therefore specify whether the writer of the file recorded each data item if it was present. An application consuming that file can then use these to quickly determine whether the input data is rich enough for its needs.  </p>
+<p id="rfc.section.6.2.1.p.8">QUESTION: Should the items within certain tables also be optional e.g. within the RR table should all of Name index, ClassType, TTL and RDATA be optional? </p>
+<h1 id="rfc.section.6.2.2"><a href="#rfc.section.6.2.2">6.2.2.</a> <a href="#optional-rrs-and-opcodes" id="optional-rrs-and-opcodes">Optional RRs and OPCODES</a></h1>
+<p id="rfc.section.6.2.2.p.1">Also included in the storage parameters is an explicit table of the RR types and OPCODES that were recorded. Using an explicit table removes any ambiguity about whether the OPCODE/RR type was not recognised by the collecting implementation or whether it was specifically configured not to record it.  </p>
+<p id="rfc.section.6.2.2.p.2">For the case of unrecognised OPCODES the message may be parsable (for example, if it has a format similar enough to the one described in <a href="#RFC1035">[RFC1035]</a>) or it may not. Similarly for unrecognised RR types the RDATA can still be stored, but the collector will not be able to process it to remove, for example, name compression pointers.  </p>
+<p id="rfc.section.6.2.2.p.3">QUESTION: Should the storage parameters additionally define whether unrecognised OPCODES/RR types are stored ? </p>
+<h1 id="rfc.section.6.2.3"><a href="#rfc.section.6.2.3">6.2.3.</a> <a href="#sampling-and-anonymisation" id="sampling-and-anonymisation">Sampling and Anonymisation</a></h1>
+<p id="rfc.section.6.2.3.p.1">The format contains flags that can be used to indicate if the data is either anonymised or produced from sample data.  </p>
+<p id="rfc.section.6.2.3.p.2">QUESTION: Should fields be added to indicate the sampling/anonymisation method used and if so should text strings be used? </p>
+<p id="rfc.section.6.2.3.p.3">QUESTION: Should there be another flag to indicate that names have been normalised (e.g. converted to uniform case)? </p>
+<h1 id="rfc.section.6.2.4"><a href="#rfc.section.6.2.4">6.2.4.</a> <a href="#ip-address-storage" id="ip-address-storage">IP Address storage</a></h1>
+<p id="rfc.section.6.2.4.p.1">If IP address prefixes are given, only the prefix bits of addresses are stored. For example, if a client IPv4 prefix of 16 is specified, a client address of 192.0.2.1 will be stored as 0xc000 (192.0), reducing address storage space requirements.  </p>
 <h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> <a href="#cdns-format-detailed-description" id="cdns-format-detailed-description">C-DNS format detailed description</a></h1>
 <p id="rfc.section.7.p.1">The CDDL definition for the C-DNS format is given in <a href="#cddl">Appendix A</a>.  </p>
 <h1 id="rfc.section.7.1"><a href="#rfc.section.7.1">7.1.</a> <a href="#map-quantities-and-indexes" id="map-quantities-and-indexes">Map quantities and indexes</a></h1>
 <p id="rfc.section.7.1.p.1">All map keys are integers with values specified in the CDDL. String keys would significantly bloat the file size.  </p>
 <p id="rfc.section.7.1.p.2">All key values specified are positive integers under 24, so their CBOR representation is a single byte.  </p>
 <p id="rfc.section.7.1.p.3">Implementations may choose to add additional implementation-specific entries to any map. Negative integer map keys are reserved for these values. Key values from -1 to -24 also have a single byte CBOR representation, so such implementation-specific extensions are not at any space efficiency disadvantage.  </p>
-<p id="rfc.section.7.1.p.4">An item described as an index is the index of the data item in the referenced array.  Indexes are 0-based.  </p>
+<p id="rfc.section.7.1.p.4">An item described as an index is the index of the data item in the referenced table.  Indexes are 0-based.  </p>
 <h1 id="rfc.section.7.2"><a href="#rfc.section.7.2">7.2.</a> <a href="#tabular-representation" id="tabular-representation">Tabular representation</a></h1>
 <p id="rfc.section.7.2.p.1">The following sections present the C-DNS specification in tabular format with a detailed description of each item.  </p>
 <p id="rfc.section.7.2.p.2">In all quantities that contain bit flags, bit 0 indicates the least significant bit, i.e. flag <samp>n</samp> in quantity <samp>q</samp> is on if <samp>(q &amp; (1 &lt;&lt; n)) != 0</samp>.  </p>
@@ -765,8 +762,8 @@
 
 <p> </p>
 <p id="rfc.section.7.2.p.5">In the case of maps and arrays, more information on the type of each value, include the CDDL definition name if applicable, is given in the description.  </p>
-<h1 id="rfc.section.7.3"><a href="#rfc.section.7.3">7.3.</a> <a href="#file-header-contents" id="file-header-contents">File header contents</a></h1>
-<p id="rfc.section.7.3.p.1">The file header (<samp>File</samp>) contains the following: </p>
+<h1 id="rfc.section.7.3"><a href="#rfc.section.7.3">7.3.</a> <a href="#file" id="file">"File"</a></h1>
+<p id="rfc.section.7.3.p.1">A C-DNS file has an outer structure <samp>File</samp>, a map that contains the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -793,7 +790,7 @@
       <td class="left">file-preamble</td>
       <td class="center">M</td>
       <td class="center">M</td>
-      <td class="left">Version and parameter information for the whole file. See <a href="#file-preamble-contents">Section 7.4</a>.</td>
+      <td class="left"><samp>FilePreamble</samp>. Version and parameter information for the whole file. See <a href="#filepreamble">Section 7.4</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -805,12 +802,12 @@
       <td class="left">file-blocks</td>
       <td class="center">M</td>
       <td class="center">A</td>
-      <td class="left">The data blocks. The array may be empty if the file contains no data. See <a href="#block-contents">Section 7.5</a>.</td>
+      <td class="left">Array of <samp>Block</samp>. The array may be empty if the file contains no data. See <a href="#block">Section 7.5</a>.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.4"><a href="#rfc.section.7.4">7.4.</a> <a href="#file-preamble-contents" id="file-preamble-contents">File preamble contents</a></h1>
-<p id="rfc.section.7.4.p.1">The file preamble (<samp>FilePreamble</samp>) contains the following: </p>
+<h1 id="rfc.section.7.4"><a href="#rfc.section.7.4">7.4.</a> <a href="#filepreamble" id="filepreamble">"FilePreamble"</a></h1>
+<p id="rfc.section.7.4.p.1">Information about data in the file. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -861,12 +858,12 @@
       <td class="left">block-parameters</td>
       <td class="center">M</td>
       <td class="center">A</td>
-      <td class="left">Array of parameters relating to one or more blocks. The preamble to each block indicates which array entry applies to the block. The array must contain at least one entry. See <a href="#block-parameter-contents">Section 7.4.1</a>.</td>
+      <td class="left">Array of <samp>BlockParameters</samp>. The preamble to each <samp>Block</samp> indicates which array entry applies to the block. The array must contain at least one entry. See <a href="#block-parameters">Section 6.1</a>.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.4.1"><a href="#rfc.section.7.4.1">7.4.1.</a> <a href="#block-parameter-contents" id="block-parameter-contents">Block parameter contents</a></h1>
-<p id="rfc.section.7.4.1.p.1">A single item of block parameters (<samp>BlockParameters</samp>) contains the following maps.  </p>
+<h1 id="rfc.section.7.4.1"><a href="#rfc.section.7.4.1">7.4.1.</a> <a href="#blockparameters" id="blockparameters">"BlockParameters"</a></h1>
+<p id="rfc.section.7.4.1.p.1">Parameters relating to data in one or more <samp>Block</samp>s. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -881,7 +878,7 @@
       <td class="left">storage</td>
       <td class="center">M</td>
       <td class="center">M</td>
-      <td class="left">Parameters relating to data storage in the block. See <a href="#storage-parameter-contents">Section 7.4.1.1</a>.</td>
+      <td class="left"><samp>StorageParameters</samp>. Parameters relating to data storage in a <samp>Block</samp>. See <a href="#storageparameters">Section 7.4.1.1</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -893,12 +890,12 @@
       <td class="left">collection</td>
       <td class="center">O</td>
       <td class="center">M</td>
-      <td class="left">Parameters relating to collection of the data in the block. See <a href="#collection-parameter-contents">Section 7.4.2</a>.</td>
+      <td class="left"><samp>CollectionParameters</samp>. Parameters relating to collection of the data in a <samp>Block</samp>. See <a href="#collectionparameters">Section 7.4.2</a>.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.4.1.1"><a href="#rfc.section.7.4.1.1">7.4.1.1.</a> <a href="#storage-parameter-contents" id="storage-parameter-contents">Storage parameter contents</a></h1>
-<p id="rfc.section.7.4.1.1.p.1">The storage parameters (<samp>StorageParameters</samp>) contains the following items.  </p>
+<h1 id="rfc.section.7.4.1.1"><a href="#rfc.section.7.4.1.1">7.4.1.1.</a> <a href="#storageparameters" id="storageparameters">"StorageParameters"</a></h1>
+<p id="rfc.section.7.4.1.1.p.1">Parameters relating to how data is stored in the file. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -934,10 +931,10 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">array-field-hints</td>
+      <td class="left">table-field-hints</td>
       <td class="center">M</td>
       <td class="center">M</td>
-      <td class="left">Collection of data field present hints. See <a href="#array-field-hints">Section 7.4.1.1.1</a>.</td>
+      <td class="left"><samp>TableFieldHints</samp>. Collection of data field present hints. See <a href="#tablefieldhints">Section 7.4.1.1.1</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1037,8 +1034,8 @@
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.4.1.1.1"><a href="#rfc.section.7.4.1.1.1">7.4.1.1.1.</a> <a href="#array-field-hints" id="array-field-hints">Array field hints</a></h1>
-<p id="rfc.section.7.4.1.1.1.p.1">These hints (<samp>ArrayFieldHints</samp>) indicate which fields the collecting application records.  </p>
+<h1 id="rfc.section.7.4.1.1.1"><a href="#rfc.section.7.4.1.1.1">7.4.1.1.1.</a> <a href="#tablefieldhints" id="tablefieldhints">"TableFieldHints"</a></h1>
+<p id="rfc.section.7.4.1.1.1.p.1">A map indicating which fields the collecting application records.  </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -1053,7 +1050,7 @@
       <td class="left">query-response</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">Hints indicating which query response data fields are collected. If the data field is collected the bit is set.</td>
+      <td class="left">Hints indicating which <samp>QueryResponse</samp> fields are collected. If the field is collected the bit is set.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1173,7 +1170,7 @@
       <td class="left">query-signature</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">Hints indicating which query signature data fields are collected. If the data field is collected the bit is set.</td>
+      <td class="left">Hints indicating which <samp>QuerySignature</samp> fields are collected. If the field is collected the bit is set.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1284,10 +1281,10 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">other-arrays</td>
+      <td class="left">other-tables</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">Hints indicating which other arrays are collected. If the array is collected the bit is set.</td>
+      <td class="left">Hints indicating which other data types are collected. If the data type is collected the bit is set.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1315,8 +1312,8 @@
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.4.2"><a href="#rfc.section.7.4.2">7.4.2.</a> <a href="#collection-parameter-contents" id="collection-parameter-contents">Collection parameter contents</a></h1>
-<p id="rfc.section.7.4.2.p.1">The collection parameters (<samp>CollectionParameters</samp>) contain the following items.  </p>
+<h1 id="rfc.section.7.4.2"><a href="#rfc.section.7.4.2">7.4.2.</a> <a href="#collectionparameters" id="collectionparameters">"CollectionParameters"</a></h1>
+<p id="rfc.section.7.4.2.p.1">Parameters relating to how data in the file was collected. A map containing the following items.  </p>
 <p id="rfc.section.7.4.2.p.2">These parameters have no default. If they do not appear, nothing can be inferred about their value.  </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
@@ -1444,8 +1441,8 @@
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.5"><a href="#rfc.section.7.5">7.5.</a> <a href="#block-contents" id="block-contents">Block contents</a></h1>
-<p id="rfc.section.7.5.p.1">Each block (<samp>Block</samp>) contains the following items.  </p>
+<h1 id="rfc.section.7.5"><a href="#rfc.section.7.5">7.5.</a> <a href="#block" id="block">"Block"</a></h1>
+<p id="rfc.section.7.5.p.1">A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -1460,7 +1457,7 @@
       <td class="left">preamble</td>
       <td class="center">M</td>
       <td class="center">M</td>
-      <td class="left">Overall information for the block. See <a href="#block-preamble-contents">Section 7.5.1</a>.</td>
+      <td class="left"><samp>BlockPreamble</samp>. Overall information for the block. See <a href="#blockpreamble">Section 7.5.1</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1472,7 +1469,7 @@
       <td class="left">statistics</td>
       <td class="center">O</td>
       <td class="center">M</td>
-      <td class="left">Statistics about the block. See <a href="#block-statistics-contents">Section 7.5.2</a>.</td>
+      <td class="left"><samp>BlockStatistics</samp>. Statistics about the block. See <a href="#blockstatistics">Section 7.5.2</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1481,10 +1478,10 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">arrays</td>
+      <td class="left">tables</td>
       <td class="center">O</td>
       <td class="center">M</td>
-      <td class="left">The arrays containing data referenced by individual Q/R data items. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left"><samp>BlockTables</samp>. The arrays containing data referenced by individual <samp>QueryResponse</samp> or <samp>MalformedMessage</samp> items. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1496,7 +1493,7 @@
       <td class="left">queries</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">Details of individual Q/R data items. See <a href="#queryresponse-data">Section 7.6</a>. If present, the array must not be empty.</td>
+      <td class="left">Array of <samp>QueryResponse</samp>. Details of individual <samp>QueryResponse</samp> items. See <a href="#queryresponse">Section 7.6</a>. If present, the array must not be empty.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1508,7 +1505,7 @@
       <td class="left">address-event -counts</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">Per client counts of ICMP messages and TCP resets. See <a href="#address-event-count-contents">Section 7.7</a>. If present, the array must not be empty.</td>
+      <td class="left">Array of <samp>AddressEventCount</samp>. Per client counts of ICMP messages and TCP resets. See <a href="#addresseventcount">Section 7.7</a>. If present, the array must not be empty.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1520,12 +1517,12 @@
       <td class="left">malformed-messages</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">Wire contents of malformed DNS messages. See <a href="#malformed-message-record-contents">Section 7.8</a>. If present, the array must not be empty.</td>
+      <td class="left">Array of <samp>MalformedMessage</samp>. Wire contents of malformed DNS messages. See <a href="#malformedmessage">Section 7.8</a>. If present, the array must not be empty.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.5.1"><a href="#rfc.section.7.5.1">7.5.1.</a> <a href="#block-preamble-contents" id="block-preamble-contents">Block preamble contents</a></h1>
-<p id="rfc.section.7.5.1.p.1">The block preamble map (<samp>BlockPreamble</samp>) contains overall information for the block.  </p>
+<h1 id="rfc.section.7.5.1"><a href="#rfc.section.7.5.1">7.5.1.</a> <a href="#blockpreamble" id="blockpreamble">"BlockPreamble"</a></h1>
+<p id="rfc.section.7.5.1.p.1">Overall information for a <samp>Block</samp>. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -1552,12 +1549,12 @@
       <td class="left">block-parameters-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index of the block parameters applicable to this block. If not present, index 0 is used. See <a href="#block-parameter-contents">Section 7.4.1</a>.</td>
+      <td class="left">The index of the <samp>FilePreamble</samp>/<samp>block-parameters</samp> table applicable to this block. If not present, index 0 is used. See <a href="#blockparameters">Section 7.4.1</a>.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.5.2"><a href="#rfc.section.7.5.2">7.5.2.</a> <a href="#block-statistics-contents" id="block-statistics-contents">Block statistics contents</a></h1>
-<p id="rfc.section.7.5.2.p.1">The block statistics map (<samp>BlockStatistics</samp>) contains some basic statistical information about the block. All items are optional.  </p>
+<h1 id="rfc.section.7.5.2"><a href="#rfc.section.7.5.2">7.5.2.</a> <a href="#blockstatistics" id="blockstatistics">"BlockStatistics"</a></h1>
+<p id="rfc.section.7.5.2.p.1">Basic statistical information about a <samp>Block</samp>. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -1572,7 +1569,7 @@
       <td class="left">total-messages</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Total number of DNS messages processed from the input traffic stream during collection of the block data.</td>
+      <td class="left">Total number of DNS messages processed from the input traffic stream during collection of data in this <samp>Block</samp>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1584,7 +1581,7 @@
       <td class="left">total-pairs</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Total number of Q/R data items in the block.</td>
+      <td class="left">Total number of Q/R data items in this <samp>Block</samp>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1596,7 +1593,7 @@
       <td class="left">unmatched-queries</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Number of unmatched queries in the block.</td>
+      <td class="left">Number of unmatched queries in this <samp>Block</samp>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1608,7 +1605,7 @@
       <td class="left">unmatched-responses</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Number of unmatched responses in the block.</td>
+      <td class="left">Number of unmatched responses in this <samp>Block</samp>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1620,12 +1617,12 @@
       <td class="left">malformed-messages</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Number of malformed messages found in input for the block.</td>
+      <td class="left">Number of malformed messages found in input for this <samp>Block</samp>.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.5.3"><a href="#rfc.section.7.5.3">7.5.3.</a> <a href="#block-array-contents" id="block-array-contents">Block array contents</a></h1>
-<p id="rfc.section.7.5.3.p.1">The block array map (<samp>BlockArrays</samp>) contains the block arrays. Each element, or array, is an array which, if present, must not be empty.  </p>
+<h1 id="rfc.section.7.5.3"><a href="#rfc.section.7.5.3">7.5.3.</a> <a href="#blocktables" id="blocktables">"BlockTables"</a></h1>
+<p id="rfc.section.7.5.3.p.1">Arrays containing data referenced by individual <samp>QueryResponse</samp> or <samp>MalformedMessage</samp> items in this <samp>Block</samp>.  Each element is an array which, if present, must not be empty.  </p>
 <p id="rfc.section.7.5.3.p.2">The item <samp>qlist</samp> contains indexes to values in the <samp>qrr</samp> item. Therefore, if <samp>qlist</samp> is present, <samp>qrr</samp> must also be present. Similarly, if <samp>rrlist</samp> is present, <samp>rr</samp> must also be present.  </p>
 <p id="rfc.section.7.5.3.p.3">The map contains the following items.  </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
@@ -1642,7 +1639,7 @@
       <td class="left">ip-address</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">IP addresses (byte strings), in network byte order (<samp>IPAddress</samp>). If client or server address prefixes are set, only the address prefix bits are stored. Each string is therefore up to 4 bytes long for an IPv4 address, or up to 16 bytes long for an IPv6 address. See <a href="#storage-parameter-contents">Section 7.4.1.1</a>.</td>
+      <td class="left">Array of byte strings. IP addresses, in network byte order. If client or server address prefixes are set, only the address prefix bits are stored. Each string is therefore up to 4 bytes long for an IPv4 address, or up to 16 bytes long for an IPv6 address. See <a href="#storageparameters">Section 7.4.1.1</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1654,7 +1651,7 @@
       <td class="left">classtype</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">CLASS/TYPE items. See <a href="#classtype-array-contents">Section 7.5.3.1</a>.</td>
+      <td class="left">Array of <samp>ClassType</samp>. RR class and type information. See <a href="#classtype">Section 7.5.3.1</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1666,7 +1663,7 @@
       <td class="left">name-rdata</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">NAME and RDATA data (byte strings). Each entry is the contents of a single NAME or RDATA. Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.</td>
+      <td class="left">Array of byte strings. Each entry is the contents of a single NAME or RDATA. Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1678,7 +1675,7 @@
       <td class="left">query-sig</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">Query signatures. See <a href="#query-signature-array-contents">Section 7.5.3.2</a>.</td>
+      <td class="left">Array of <samp>QuerySignature</samp>. Query signatures. See <a href="#querysignature">Section 7.5.3.2</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1690,7 +1687,7 @@
       <td class="left">qlist</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">Question arrays (arrays of unsigned integers, <samp>QuestionList</samp>). Each entry is an array of indexes to question data in the <samp>qrr</samp> array.</td>
+      <td class="left">Array of <samp>QuestionList</samp>. A <samp>QuestionList</samp> is an array of unsigned integers, indexes to <samp>Question</samp> items in the <samp>qrr</samp> table.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1702,7 +1699,7 @@
       <td class="left">qrr</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">Question data. Each entry is the contents of a single question, where a question is the second or subsequent question in a query. See <a href="#question-array-contents">Section 7.5.3.3</a>.</td>
+      <td class="left">Array of <samp>Question</samp>. Each entry is the contents of a single question, where a question is the second or subsequent question in a query. See <a href="#question">Section 7.5.3.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1714,7 +1711,7 @@
       <td class="left">rrlist</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">RR arrays (arrays of unsigned integers, <samp>RRList</samp>). Each entry in an array of indexes to RR data in the <samp>rr</samp> array.</td>
+      <td class="left">Array of <samp>RRList</samp>. An <samp>RRList</samp> is an array of unsigned integers, indexes to <samp>RR</samp> items in the <samp>rr</samp> table.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1726,7 +1723,7 @@
       <td class="left">rr</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">RR data. Each entry is the contents of a single RR. See <a href="#resource-record-rr-array-contents">Section 7.5.3.4</a>.</td>
+      <td class="left">Array of <samp>RR</samp>. Each entry is the contents of a single RR. See <a href="#rr">Section 7.5.3.4</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1738,12 +1735,12 @@
       <td class="left">malformed-data</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">Malformed message contents. Each entry is the contents of a single malformed message.  See <a href="#malformed-data-array-contents">Section 7.5.3.5</a>.</td>
+      <td class="left">Array of <samp>MalformedMessageData</samp>. Each entry is the contents of a malformed message.  See <a href="#malformedmessagedata">Section 7.5.3.5</a>.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.5.3.1"><a href="#rfc.section.7.5.3.1">7.5.3.1.</a> <a href="#classtype-array-contents" id="classtype-array-contents">CLASS/TYPE array contents</a></h1>
-<p id="rfc.section.7.5.3.1.p.1">The array of CLASS/TYPE map items (<samp>ClassType</samp>) holds pairs of RR CLASS and TYPE values.  </p>
+<h1 id="rfc.section.7.5.3.1"><a href="#rfc.section.7.5.3.1">7.5.3.1.</a> <a href="#classtype" id="classtype">"ClassType"</a></h1>
+<p id="rfc.section.7.5.3.1.p.1">RR class and type information. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -1774,8 +1771,8 @@
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.5.3.2"><a href="#rfc.section.7.5.3.2">7.5.3.2.</a> <a href="#query-signature-array-contents" id="query-signature-array-contents">Query Signature array contents</a></h1>
-<p id="rfc.section.7.5.3.2.p.1">The array of Query Signature map items (<samp>QuerySignature</samp>) holds elements of the Q/R data item that are often common between multiple individual Q/R data items.  </p>
+<h1 id="rfc.section.7.5.3.2"><a href="#rfc.section.7.5.3.2">7.5.3.2.</a> <a href="#querysignature" id="querysignature">"QuerySignature"</a></h1>
+<p id="rfc.section.7.5.3.2.p.1">Elements of a Q/R data item that are often common between multiple individual Q/R data items.  </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -1790,7 +1787,7 @@
       <td class="left">server-address -index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays IP addresses array <samp>ip-address</samp> of the server IP address. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>ip-address</samp> table of the server IP address. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2066,7 +2063,7 @@
       <td class="left">query-classtype -index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays CLASS/TYPE array <samp>classtype</samp> of the CLASS and TYPE of the first Question. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>classtype</samp> table of the CLASS and TYPE of the first Question. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2150,7 +2147,7 @@
       <td class="left">opt-rdata-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays NAME/RDATA array <samp>name-rdata</samp> of the OPT RDATA. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>name-rdata</samp> table of the OPT RDATA. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2166,9 +2163,9 @@
     </tr>
   </tbody>
 </table>
-<p id="rfc.section.7.5.3.2.p.2">QUESTION: Currently we collect OPT RDATA as a blob as this is consistent with re-uses the generic mechanism for RDATA storage. Should we break individual EDNS(0) options out and store then individually in new Block array? This would potentially allow us to exploit option commonality and also make anonymising ECS client subnet easier.  </p>
-<h1 id="rfc.section.7.5.3.3"><a href="#rfc.section.7.5.3.3">7.5.3.3.</a> <a href="#question-array-contents" id="question-array-contents">Question array contents</a></h1>
-<p id="rfc.section.7.5.3.3.p.1">The array of Question map items (<samp>Question</samp>) holds details on individual Questions in a Question section.  </p>
+<p id="rfc.section.7.5.3.2.p.2">QUESTION: Currently we collect OPT RDATA as a blob as this is consistent with re-uses the generic mechanism for RDATA storage. Should we break individual EDNS(0) options out and store then individually in new Block table? This would potentially allow us to exploit option commonality and also make anonymising ECS client subnet easier.  </p>
+<h1 id="rfc.section.7.5.3.3"><a href="#rfc.section.7.5.3.3">7.5.3.3.</a> <a href="#question" id="question">"Question"</a></h1>
+<p id="rfc.section.7.5.3.3.p.1">Details on individual Questions in a Question section. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -2183,7 +2180,7 @@
       <td class="left">name-index</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays NAME/RDATA array <samp>name-rdata</samp> of the QNAME. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>name-rdata</samp> table of the QNAME. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2195,12 +2192,12 @@
       <td class="left">classtype-index</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays CLASS/TYPE array <samp>classtype</samp> of the CLASS and TYPE of the Question. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>classtype</samp> table of the CLASS and TYPE of the Question. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.5.3.4"><a href="#rfc.section.7.5.3.4">7.5.3.4.</a> <a href="#resource-record-rr-array-contents" id="resource-record-rr-array-contents">Resource Record (RR) array contents</a></h1>
-<p id="rfc.section.7.5.3.4.p.1">The array of RR map items (<samp>RR</samp>) holds details on individual Resource Records in RR sections.  </p>
+<h1 id="rfc.section.7.5.3.4"><a href="#rfc.section.7.5.3.4">7.5.3.4.</a> <a href="#rr" id="rr">"RR"</a></h1>
+<p id="rfc.section.7.5.3.4.p.1">Details on individual Resource Records in RR sections. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -2215,7 +2212,7 @@
       <td class="left">name-index</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays NAME/RDATA array <samp>name-rdata</samp> of the NAME. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>name-rdata</samp> table of the NAME. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2227,7 +2224,7 @@
       <td class="left">classtype-index</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays CLASS/TYPE array <samp>classtype</samp> of the CLASS and TYPE of the RR. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>classtype</samp> table of the CLASS and TYPE of the RR. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2251,12 +2248,12 @@
       <td class="left">rdata-index</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays NAME/RDATA array <samp>name-rdata</samp> of the RR RDATA. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>name-rdata</samp> table of the RR RDATA. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.5.3.5"><a href="#rfc.section.7.5.3.5">7.5.3.5.</a> <a href="#malformed-data-array-contents" id="malformed-data-array-contents">Malformed data array contents</a></h1>
-<p id="rfc.section.7.5.3.5.p.1">The array of malformed message data map items (<samp>MalformedMessageData</samp>) holds details on malformed message items in the block.  </p>
+<h1 id="rfc.section.7.5.3.5"><a href="#rfc.section.7.5.3.5">7.5.3.5.</a> <a href="#malformedmessagedata" id="malformedmessagedata">"MalformedMessageData"</a></h1>
+<p id="rfc.section.7.5.3.5.p.1">Details on malformed message items in the block. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -2271,7 +2268,7 @@
       <td class="left">server-address -index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays IP address array <samp>ip-address</samp> of the server IP address. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>ip-address</samp> table of the server IP address. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2323,9 +2320,9 @@
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.6"><a href="#rfc.section.7.6">7.6.</a> <a href="#queryresponse-data" id="queryresponse-data">Query/Response data</a></h1>
-<p id="rfc.section.7.6.p.1">The array of Query/Response map items (<samp>QueryResponse</samp>) holds details on individual Q/R data items.  </p>
-<p id="rfc.section.7.6.p.2">Note that there is no requirement that the elements of the Q/R array are presented in strict chronological order.  </p>
+<h1 id="rfc.section.7.6"><a href="#rfc.section.7.6">7.6.</a> <a href="#queryresponse" id="queryresponse">"QueryResponse"</a></h1>
+<p id="rfc.section.7.6.p.1">Details on individual Q/R data items. A map containing the following items.  </p>
+<p id="rfc.section.7.6.p.2">Note that there is no requirement that the elements of the <samp>Block</samp>/<samp>queries</samp> array are presented in strict chronological order.  </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -2340,7 +2337,7 @@
       <td class="left">time-offset</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Q/R timestamp as an offset in ticks from the Block preamble <samp>earliest-time</samp>. The timestamp is the timestamp of the Query, or the Response if there is no Query.</td>
+      <td class="left">Q/R timestamp as an offset in ticks from <samp>BlockPreamble</samp>/<samp>earliest-time</samp>. The timestamp is the timestamp of the Query, or the Response if there is no Query.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2352,7 +2349,7 @@
       <td class="left">client-address-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays IP address array <samp>ip-address</samp> of the client IP address. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>ip-address</samp> table of the client IP address. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2388,7 +2385,7 @@
       <td class="left">query-signature-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays Query Signature array <samp>query-sig</samp> of the Query Signature record for this data item. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>query-sig</samp> table of the <samp>QuerySignature</samp> record for this data item. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2424,7 +2421,7 @@
       <td class="left">query-name-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays NAME/RDATA array <samp>name-rdata</samp> of the QNAME for the first Question. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>name-rdata</samp> table of the QNAME for the first Question. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2460,7 +2457,7 @@
       <td class="left">response-processing -data</td>
       <td class="center">O</td>
       <td class="center">M</td>
-      <td class="left">Data on response processing. See <a href="#response-processing-data-contents">Section 7.6.1</a>.</td>
+      <td class="left"><samp>ResponseProcessingData</samp>. Data on response processing. See <a href="#responseprocessingdata">Section 7.6.1</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2472,7 +2469,7 @@
       <td class="left">query-extended</td>
       <td class="center">O</td>
       <td class="center">M</td>
-      <td class="left">Extended Query data. See <a href="#extended-queryresponse-data-contents">Section 7.6.2</a>.</td>
+      <td class="left"><samp>QueryResponseExtended</samp>. Extended Query data. See <a href="#queryresponseextended">Section 7.6.2</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2484,13 +2481,13 @@
       <td class="left">response-extended</td>
       <td class="center">O</td>
       <td class="center">M</td>
-      <td class="left">Extended Response data. See <a href="#extended-queryresponse-data-contents">Section 7.6.2</a>.</td>
+      <td class="left"><samp>QueryResponseExtended</samp>. Extended Response data. See <a href="#queryresponseextended">Section 7.6.2</a>.</td>
     </tr>
   </tbody>
 </table>
 <p id="rfc.section.7.6.p.3">The <samp>query-size</samp> and <samp>response-size</samp> fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.  </p>
-<h1 id="rfc.section.7.6.1"><a href="#rfc.section.7.6.1">7.6.1.</a> <a href="#response-processing-data-contents" id="response-processing-data-contents">Response processing data contents</a></h1>
-<p id="rfc.section.7.6.1.p.1">The response processing data map (<samp>ResponseProcessingData</samp>) is information on the server processing that produced the response.  </p>
+<h1 id="rfc.section.7.6.1"><a href="#rfc.section.7.6.1">7.6.1.</a> <a href="#responseprocessingdata" id="responseprocessingdata">"ResponseProcessingData"</a></h1>
+<p id="rfc.section.7.6.1.p.1">Information on the server processing that produced the response. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -2505,7 +2502,7 @@
       <td class="left">bailiwick-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays NAME/RDATA array <samp>name-rdata</samp> of the owner name for the response bailiwick. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>name-rdata</samp> table of the owner name for the response bailiwick. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2528,8 +2525,8 @@
   </tbody>
 </table>
 <p id="rfc.section.7.6.1.p.2">QUESTION: Should this be an item in the Query Signature? </p>
-<h1 id="rfc.section.7.6.2"><a href="#rfc.section.7.6.2">7.6.2.</a> <a href="#extended-queryresponse-data-contents" id="extended-queryresponse-data-contents">Extended Query/Response data contents</a></h1>
-<p id="rfc.section.7.6.2.p.1">The Query Response Extended information map (<samp>QueryResponseExtended</samp>) holds addition data on the Query/Response. Each item in the map is present only if collection of the relevant details is configured.  </p>
+<h1 id="rfc.section.7.6.2"><a href="#rfc.section.7.6.2">7.6.2.</a> <a href="#queryresponseextended" id="queryresponseextended">"QueryResponseExtended"</a></h1>
+<p id="rfc.section.7.6.2.p.1">Addition data on the Query/Response. A map containing the following items. Each item in the map is present only if collection of the relevant details is configured.  </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -2544,7 +2541,7 @@
       <td class="left">question-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays Questions array <samp>qlist</samp> of the entry listing any second and subsequent Questions in the Question section for the Query or Response. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>qlist</samp> table of the entry listing any second and subsequent Questions in the Question section for the Query or Response. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2556,7 +2553,7 @@
       <td class="left">answer-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays RR array <samp>rrlist</samp> of the entry listing the Answer Resource Record sections for the Query or Response. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>rrlist</samp> table of the entry listing the Answer Resource Record sections for the Query or Response. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2568,7 +2565,7 @@
       <td class="left">authority-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays RR array <samp>rrlist</samp> of the entry listing the Authority Resource Record sections for the Query or Response. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>rrlist</samp> table of the entry listing the Authority Resource Record sections for the Query or Response. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2580,12 +2577,12 @@
       <td class="left">additional-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays RR array <samp>rrlist</samp> of the entry listing the Additional Resource Record sections for the Query or Response. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>rrlist</samp> table of the entry listing the Additional Resource Record sections for the Query or Response. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.7"><a href="#rfc.section.7.7">7.7.</a> <a href="#address-event-count-contents" id="address-event-count-contents">Address Event Count contents</a></h1>
-<p id="rfc.section.7.7.p.1">This array of Address Event Count map items (<samp>AddressEventCount</samp>) holds counts of various IP related events relating to traffic with individual client addresses.  </p>
+<h1 id="rfc.section.7.7"><a href="#rfc.section.7.7">7.7.</a> <a href="#addresseventcount" id="addresseventcount">"AddressEventCount"</a></h1>
+<p id="rfc.section.7.7.p.1">Counts of various IP related events relating to traffic with individual client addresses. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -2660,7 +2657,7 @@
       <td class="left">ae-address-index</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays IP address array <samp>ip-address</samp> of the client address. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the block tables IP address array <samp>ip-address</samp> of the client address. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2676,8 +2673,8 @@
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.section.7.8"><a href="#rfc.section.7.8">7.8.</a> <a href="#malformed-message-record-contents" id="malformed-message-record-contents">Malformed message record contents</a></h1>
-<p id="rfc.section.7.8.p.1">This array of malformed message map items (<samp>MalformedMessage</samp>) records details of malformed messages. See <a href="#malformed-messages">Section 8</a>.  </p>
+<h1 id="rfc.section.7.8"><a href="#rfc.section.7.8">7.8.</a> <a href="#malformedmessage" id="malformedmessage">"MalformedMessage"</a></h1>
+<p id="rfc.section.7.8.p.1">Details of malformed messages. See <a href="#malformed-messages">Section 8</a>. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -2692,7 +2689,7 @@
       <td class="left">time-offset</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Message timestamp as an offset in ticks from the Block preamble <samp>earliest-time</samp>.</td>
+      <td class="left">Message timestamp as an offset in ticks from <samp>BlockPreamble</samp>/<samp>earliest-time</samp>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2704,7 +2701,7 @@
       <td class="left">client-address-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays IP address array <samp>ip-address</samp> of the client IP address. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>ip-address</samp> table of the client IP address. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2728,7 +2725,7 @@
       <td class="left">message-data-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the block arrays malformed messages array <samp>malformed-data</samp> of the message data for this message. See <a href="#block-array-contents">Section 7.5.3</a>.</td>
+      <td class="left">The index in the <samp>BlockTables</samp>/<samp>malformed-data</samp> table of the message data for this message. See <a href="#blocktables">Section 7.5.3</a>.</td>
     </tr>
   </tbody>
 </table>
@@ -2908,7 +2905,6 @@
   <li>Record malformed messages</li>
   <li>Add implementation guidance</li>
   <li>Add response bailiwick and query response type (dnstap)</li>
-  <li>Regularise terminology, e.g. use CBOR data type names <samp>array</samp> not <samp>table</samp>.</li>
 </ul>
 
 <p> </p>

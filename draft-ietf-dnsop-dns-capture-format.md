@@ -456,7 +456,7 @@ minor-format-version | M | U | Unsigned integer '0'. The minor version of format
 ||
 private-version | O | U | Version indicator available for private use by applications.
 ||
-block-parameters | M | A | Array of `BlockParameters`. The preamble to each `Block` indicates which array entry applies to the block. The array must contain at least one entry. See (#block-parameters).
+block-parameters | M | A | Array of `BlockParameters`. The `preamble` item in each `Block` indicates which array entry applies to the block. The array must contain at least one entry. See (#blockparameters).
 
 ### "BlockParameters"
 
@@ -1375,7 +1375,7 @@ collection = 1
   StorageParameters = {
       ticks-per-second             => uint,
       max-block-items              => uint,
-      array-field-hints            => ArrayFieldHints,
+      table-field-hints            => TableFieldHints,
       opcodes                      => [+ uint],
       rr-types                     => [+ uint],
       ? storage-flags              => StorageFlags,
@@ -1386,7 +1386,7 @@ collection = 1
   }
   ticks-per-second           = 0
   max-block-items            = 1
-  array-field-hints          = 2
+  table-field-hints          = 2
   opcodes                    = 3
   rr-types                   = 4
   storage-flags              = 5
@@ -1397,15 +1397,15 @@ collection = 1
 
     ; A hint indicates if the collection method will output the
     ; field or will ignore the field if present.
-    ArrayFieldHints = {
+    TableFieldHints = {
         query-response             => QueryResponseFieldHints,
         query-signature            => QuerySignatureFieldHints,
-        other-arrays               => OtherArrayFieldHints,
+        other-tables               => OtherTableFieldHints,
         ? implementation-dependent => uint,
     }
     query-response           = 0
     query-signature          = 1
-    other-arrays             = 2
+    other-tables             = 2
     implementation-dependent = 3
 
       QueryResponseFieldHintValues = &(
@@ -1451,11 +1451,11 @@ collection = 1
       )
       QuerySignatureFieldHints = uint .bits QuerySignatureFieldHintValues
 
-      OtherArrayFieldHintValues = &(
-          malformed-messages-array   : 0,
-          address-event-counts-array : 1,
+      OtherTableFieldHintValues = &(
+          malformed-messages-table   : 0,
+          address-event-counts-table : 1,
       )
-      OtherArrayFieldHints = uint .bits OtherArrayFieldHintValues
+      OtherTableFieldHints = uint .bits OtherTableFieldHintValues
 
     StorageFlagValues = &(
         anonymised-data      : 0,
@@ -1492,14 +1492,14 @@ collection = 1
 Block = {
     preamble                => BlockPreamble,
     ? statistics            => BlockStatistics, ; Much of this could be derived
-    ? arrays                => BlockArrays,
+    ? tables                => BlockTables,
     ? queries               => [+ QueryResponse],
     ? address-event-counts  => [+ AddressEventCount],
     ? malformed-messages    => [+ MalformedMessage],
 }
 preamble              = 0
 statistics            = 1
-arrays                = 2
+tables                = 2
 queries               = 3
 address-event-counts  = 4
 malformed-messages    = 5
@@ -1541,15 +1541,15 @@ total-unmatched-responses    = 3
 total-malformed-messages     = 4
 
 ;
-; Arrays of common data referenced from records in a block.
+; Tables of common data referenced from records in a block.
 ;
-BlockArrays = {
+BlockTables = {
     ? ip-address     => [+ IPAddress],
     ? classtype      => [+ ClassType],
     ? name-rdata     => [+ bstr],            ; Holds both Name RDATA and RDATA
     ? query-sig      => [+ QuerySignature],
-    ? QuestionArrays,
-    ? RRArrays,
+    ? QuestionTables,
+    ? RRTables,
     ? malformed-data => [+ MalformedMessageData],
 }
 ip-address     = 0
@@ -1662,7 +1662,7 @@ response-rcode        = 16
   )
   DNSFlags = uint .bits DNSFlagValues
 
-QuestionArrays = (
+QuestionTables = (
     qlist => [+ QuestionList],
     qrr   => [+ Question]
 )
@@ -1670,13 +1670,13 @@ QuestionArrays = (
   QuestionList = [+ uint]           ; Index of Question
 
   Question = {                      ; Second and subsequent questions
-      name-index      => uint,      ; Index to a name in the name-rdata array
+      name-index      => uint,      ; Index to a name in the name-rdata table
       classtype-index => uint,
   }
   name-index      = 0
   classtype-index = 1
 
-RRArrays = (
+RRTables = (
     rrlist => [+ RRList],
     rr     => [+ RR]
 )
@@ -1684,10 +1684,10 @@ RRArrays = (
   RRList = [+ uint]                     ; Index of RR
 
   RR = {
-      name-index      => uint,          ; Index to a name in the name-rdata array
+      name-index      => uint,          ; Index to a name in the name-rdata table
       classtype-index => uint,
       ttl             => uint,
-      rdata-index     => uint,          ; Index to RDATA in the name-rdata array
+      rdata-index     => uint,          ; Index to RDATA in the name-rdata table
   }
   ; Other map key values already defined above.
   ttl         = 2

@@ -294,16 +294,16 @@ however sample data for a root server indicated that block sizes up to
 
 ### Block parameters
 
-An array of block-parameters items is stored in the file header (with
+An array of block parameters items is stored in the file header (with
 a minimum of one item at index 0) in order to support use cases such as wanting
 to merge C-DNS files from different sources. The block header preamble item then
-contains an optional index for the block-parameters item that applies for that
+contains an optional index for the block parameters item that applies for that
 block; if not present the index defaults to 0. Hence, in effect, a global
 block-parameters item is defined which can then be overridden per block.
 
 ## Storage parameters
 
-The block-parameters item includes a
+The block parameters item includes a
 storage parameters item - this contains information about the specific data
 fields stored in the C-DNS file.
 
@@ -318,7 +318,7 @@ These parameters include:
 ### Optional data items
 
 To enable applications to store data to their precise requirements in
-as space-efficient manner as possible, all fields in the following arrays are optional
+as space-efficient manner as possible, all fields in the following arrays are optional:
 
 * Query/Response
 * Query Signature
@@ -331,14 +331,16 @@ RRs, or only record messages with certain OPCODES.
 
 This does, however, mean that a consumer of a C-DNS file faces two problems:
 
-1. How can it quickly determine whether a file contains the data items it requires to complete a particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?
+1.  How can it quickly determine whether a file contains the data items it requires to complete a
+    particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?
 
-2. How can it determine if a data item is not present because it was
-  a. explicitly not recorded or
-  b. not present in the original data stream/the data item was not available to the collecting application
+1.  How can it determine if a data item is not present because it was
+    *  explicitly not recorded, or
+    *  either was not present in the original data stream or the data item was not
+       available to the collecting application?
 
 For example, an application capturing C-DNS data from within a nameserver
-implementation is unlikely to be able to record the client-hoplimit. Or, if
+implementation is unlikely to be able to record the client hoplimit. Or, if
 there is no query ARCount recorded and no query OPT RDATA recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
 
@@ -347,7 +349,9 @@ the file recorded each data item if it was present. An application consuming tha
 can then use
 these to quickly determine whether the input data is rich enough for its needs.
 
-QUESTION: Should the items within certain arrays also be optional e.g. within the RR array should all of Name index, ClassType, TTL and RDATA be optional
+QUESTION: Should the items within certain arrays also be optional
+e.g. within the RR array should all of Name index, ClassType, TTL and
+RDATA be optional?
 
 ### Optional RRs and OPCODES
 

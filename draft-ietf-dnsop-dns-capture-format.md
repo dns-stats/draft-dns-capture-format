@@ -292,7 +292,7 @@ The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
-### Block parameters
+## Block parameters
 
 An array of block parameters items is stored in the file header (with
 a minimum of one item at index 0) in order to support use cases such as wanting
@@ -315,7 +315,7 @@ These parameters include:
 * Flags indicating whether the data is sampled or anonymised. See #sampling-and-anonymisation).
 * Client and server IPv4 and IPv6 address prefixes. See (#ip-address-storage)
 
-### Optional data items
+## Optional data items
 
 To enable applications to store data to their precise requirements in
 as space-efficient manner as possible, all fields in the following arrays are optional:
@@ -353,7 +353,7 @@ QUESTION: Should the items within certain arrays also be optional
 e.g. within the RR array should all of Name index, ClassType, TTL and
 RDATA be optional?
 
-### Optional RRs and OPCODES
+## Optional RRs and OPCODES
 
 Also included in the storage parameters is an explicit array of the RR types and
 OPCODES that were recorded. Using an explicit array removes any ambiguity about
@@ -369,7 +369,7 @@ compression pointers.
 QUESTION: Should the storage parameters additionally define whether unrecognised
 OPCODES/RR types are stored ?
 
-### Sampling and Anonymisation
+## Sampling and Anonymisation
 
 The format contains flags that can be used to indicate if the data is either
 anonymised or produced from sample data.
@@ -380,7 +380,7 @@ used and if so should text strings be used?
 QUESTION: Should there be another flag to indicate that names have
 been normalised (e.g. converted to uniform case)?
 
-### IP Address storage
+## IP Address storage
 
 If IP address prefixes are given, only the prefix bits of addresses
 are stored. For example, if a client IPv4 prefix of 16 is specified, a
@@ -399,20 +399,23 @@ would significantly bloat the file size.
 All key values specified are positive integers under 24,
 so their CBOR representation is a single byte.
 
-All maps have have additional implementation-specific
-entries. Negative integer map keys are reserved for these values.  Key
-values from -1 to -24 also have a single byte CBOR representation, so
-such implementation-specific extensions are not at any space
-efficiency disadvantage.
+Implementations may choose to add additional implementation-specific
+entries to any map. Negative integer map keys are reserved for these
+values. Key values from -1 to -24 also have a single byte CBOR
+representation, so such implementation-specific extensions are not at
+any space efficiency disadvantage.
 
 An item described as an index is the index of the data item in the referenced array.
 Indexes are 0-based.
 
 ## Tabular representation
 
-The following sections present the C-DNS specification in tabular format with a detailed description of each item.
+The following sections present the C-DNS specification in tabular
+format with a detailed description of each item.
 
-In all quantities that contain bit flags, bit 0 indicates the least significant bit.
+In all quantities that contain bit flags, bit 0 indicates the least
+significant bit, i.e. flag `n` in quantity `q` is on if `(q & (1 <<
+n)) != 0`.
 
 For the sake of brevity, the following conventions are used in the tables:
 
@@ -427,11 +430,13 @@ For the sake of brevity, the following conventions are used in the tables:
   * M - Map
   * A - Array
 
-In the case of maps and arrays, more information on the type of each value is given in the description.
+In the case of maps and arrays, more information on the type of each
+value, include the CDDL definition name if applicable, is given in the
+description.
 
 ## File header contents
 
-The file header contains the following:
+The file header (`File`) contains the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -443,7 +448,7 @@ file-blocks | M | A | The data blocks. The array may be empty if the file contai
 
 ## File preamble contents
 
-The file preamble contains the following:
+The file preamble (`FilePreamble`) contains the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -457,7 +462,7 @@ block-parameters | M | A | Array of parameters relating to one or more blocks. T
 
 ### Block parameter contents
 
-A single item of block parameters contains the following maps.
+A single item of block parameters (`BlockParameters`) contains the following maps.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -467,7 +472,7 @@ collection | O | M | Parameters relating to collection of the data in the block.
 
 #### Storage parameter contents
 
-The storage parameters contains the following items.
+The storage parameters (`StorageParameters`) contains the following items.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -475,7 +480,7 @@ ticks-per-second | M | U | Sub-second timing is recorded in ticks. This specifie
 ||
 max-block-items | M | U | The maximum number of each record type (queries, address event counts or malformed messages) in a block. A hint on the resources needed to process the file.
 ||
-array-field-hints | M | M | Collection of data field present hints. See (#storage-parameter-array-field-hints).
+array-field-hints | M | M | Collection of data field present hints. See (#array-field-hints).
 ||
 opcodes | M | A | Array of OPCODES (unsigned integers) recorded by the collection application.
 ||
@@ -493,10 +498,9 @@ server-address -prefix-ipv4 | O | U | IPv4 server address prefix length. If spec
 ||
 server-address -prefix-ipv6 | O | U | IPv6 server address prefix length. If specified, only the address prefix bits are stored.
 
+##### Array field hints
 
-##### Storage parameter array field hints
-
-These hints indicate which fields the collecting application records.
+These hints (`ArrayFieldHints`) indicate which fields the collecting application records.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -547,7 +551,7 @@ implementation -dependent | O | U | Collection hints for implementation-specific
 
 ### Collection parameter contents
 
-The collection parameters contain the following items.
+The collection parameters (`CollectionParameters`) contain the following items.
 
 These parameters have no default. If they do not appear, nothing can be inferred about their value.
 
@@ -575,7 +579,7 @@ host-id | O | T | String identifying the collecting host. Empty if converting an
 
 ## Block contents
 
-Each block contains the following items.
+Each block (`Block`) contains the following items.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -593,17 +597,17 @@ malformed-messages | O | A | Wire contents of malformed DNS messages. See (#malf
 
 ### Block preamble contents
 
-The block preamble map contains overall information for the block.
+The block preamble map (`BlockPreamble`) contains overall information for the block.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-earliest-time | O | A | A timestamp (2 unsigned integers) for the earliest record in the block. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block are also omitted.
+earliest-time | O | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the block. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block are also omit the timestamp.
 | | |
 block-parameters-index | O | U | The index of the block parameters applicable to this block. If not present, index 0 is used. See (#block-parameter-contents).
 
 ### Block statistics contents
 
-The block statistics section contains some basic statistical information about the block. All items are optional.
+The block statistics map (`BlockStatistics`) contains some basic statistical information about the block. All items are optional.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -619,7 +623,7 @@ malformed-messages | O | U | Number of malformed messages found in input for the
 
 ### Block array contents
 
-The block array map contains the block arrays. Each element, or array,
+The block array map (`BlockArrays`) contains the block arrays. Each element, or array,
 is an array which, if present, must not be empty.
 
 The item `qlist` contains indexes to values in the `qrr`
@@ -630,7 +634,7 @@ The map contains the following items.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-ip-address | O | A | IP addresses (byte strings), in network byte order. If client or server address prefixes are set, only the address prefix bits are stored. Each string is therefore up to 4 bytes long for an IPv4 address, or up to 16 bytes long for an IPv6 address. See (#storage-parameter-contents).
+ip-address | O | A | IP addresses (byte strings), in network byte order (`IPAddress`). If client or server address prefixes are set, only the address prefix bits are stored. Each string is therefore up to 4 bytes long for an IPv4 address, or up to 16 bytes long for an IPv6 address. See (#storage-parameter-contents).
 | | |
 classtype | O | A | CLASS/TYPE items. See (#classtype-array-contents).
 | | |
@@ -638,11 +642,11 @@ name-rdata | O | A | NAME and RDATA data (byte strings). Each entry is the conte
 | | |
 query-sig | O | A | Query signatures. See (#query-signature-array-contents).
 | | |
-qlist | O | A | Question arrays (arrays of unsigned integers). Each entry in an array is an index to question data in the qrr array.
+qlist | O | A | Question arrays (arrays of unsigned integers, `QuestionList`). Each entry is an array of indexes to question data in the `qrr` array.
 | | |
 qrr | O | A | Question data. Each entry is the contents of a single question, where a question is the second or subsequent question in a query. See (#question-array-contents).
 | | |
-rrlist | O | A | RR arrays (arrays of unsigned integers). Each entry in an array is an index to RR data in the rr array.
+rrlist | O | A | RR arrays (arrays of unsigned integers, `RRList`). Each entry in an array of indexes to RR data in the `rr` array.
 | | |
 rr | O | A | RR data. Each entry is the contents of a single RR. See (#resource-record-rr-array-contents).
 | | |
@@ -650,7 +654,7 @@ malformed-data | O | A | Malformed message contents. Each entry is the contents 
 
 #### CLASS/TYPE array contents
 
-The array `classtype` holds pairs of RR CLASS and TYPE values. Each item in the array is a CBOR map.
+The array of CLASS/TYPE map items (`ClassType`) holds pairs of RR CLASS and TYPE values.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -660,13 +664,12 @@ class | M | U | CLASS value.
 
 #### Query Signature array contents
 
-The array `query-sig` holds elements of the Q/R data item that are
-often common between multiple individual Q/R data items. Each item in
-the array is a CBOR map.
+The array of Query Signature map items (`QuerySignature`) holds elements of the Q/R data item that are
+often common between multiple individual Q/R data items.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-server-address -index | O | U | The index in the IP address array of the server IP address. See (#block-array-contents).
+server-address -index | O | U | The index in the block arrays IP addresses array `ip-address` of the server IP address. See (#block-array-contents).
 ||
 server-port | O | U | The server port.
 ||
@@ -712,7 +715,7 @@ qr-dns-flags | O | U | Bit flags with values from the Query and Response DNS fla
 ||
 query-rcode | O | U | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 ||
-query-classtype -index | O | U | The index in the CLASS/TYPE array of the CLASS and TYPE of the first Question. See (#block-array-contents).
+query-classtype -index | O | U | The index in the block arrays CLASS/TYPE array `classtype` of the CLASS and TYPE of the first Question. See (#block-array-contents).
 ||
 query-qd-count | O | U | The QDCOUNT in the Query, or Response if no Query present.
 ||
@@ -726,7 +729,7 @@ edns-version | O | U | The Query EDNS version.
 ||
 udp-buf-size | O | U | The Query EDNS sender's UDP payload size.
 ||
-opt-rdata-index | O | U | The index in the NAME/RDATA array of the OPT RDATA. See (#block-array-contents).
+opt-rdata-index | O | U | The index in the block arrays NAME/RDATA array `name-rdata` of the OPT RDATA. See (#block-array-contents).
 ||
 response-rcode | O | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 
@@ -734,40 +737,38 @@ QUESTION: Currently we collect OPT RDATA as a blob as this is consistent with re
 
 #### Question array contents
 
-The array `qrr` holds details on individual Questions in a Question
-section. Each item in the array is a CBOR map containing a single
-Question.
+The array of Question map items (`Question`) holds details on individual Questions in a Question
+section.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-name-index | M | U | The index in the NAME/RDATA array of the QNAME. See (#block-array-contents).
+name-index | M | U | The index in the block arrays NAME/RDATA array `name-rdata` of the QNAME. See (#block-array-contents).
 ||
-classtype-index | M | U | The index in the CLASS/TYPE array of the CLASS and TYPE of the Question. See (#block-array-contents).
+classtype-index | M | U | The index in the block arrays CLASS/TYPE array `classtype` of the CLASS and TYPE of the Question. See (#block-array-contents).
 
 #### Resource Record (RR) array contents
 
-The array `rr` holds details on individual Resource Records in RR
+The array of RR map items (`RR`) holds details on individual Resource Records in RR
 sections.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-name-index | M | U | The index in the NAME/RDATA array of the NAME. See (#block-array-contents).
+name-index | M | U | The index in the block arrays NAME/RDATA array `name-rdata` of the NAME. See (#block-array-contents).
 ||
-classtype-index | M | U | The index in the CLASS/TYPE array of the CLASS and TYPE of the RR. See (#block-array-contents).
+classtype-index | M | U | The index in the block arrays CLASS/TYPE array `classtype` of the CLASS and TYPE of the RR. See (#block-array-contents).
 ||
 ttl | M | U | The RR Time to Live.
 ||
-rdata-index | M | U | The index in the NAME/RDATA array of the RR RDATA. See (#block-array-contents).
+rdata-index | M | U | The index in the block arrays NAME/RDATA array `name-rdata` of the RR RDATA. See (#block-array-contents).
 
 #### Malformed data array contents
 
-The array `malformed-data` holds content for malformed message
-items in the block. Each item in the array is a CBOR map containing
-the following items.
+The array of malformed message data map items (`MalformedMessageData`) holds details on malformed message
+items in the block.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-server-address -index | O | U | The index in the IP address array of the server IP address. See (#block-array-contents).
+server-address -index | O | U | The index in the block arrays IP address array `ip-address` of the server IP address. See (#block-array-contents).
 ||
 server-port | O | U | The server port.
 ||
@@ -781,29 +782,27 @@ message-content | O | B | The raw contents of the DNS message.
 
 ## Query/Response data
 
-The block Q/R data is a CBOR array of individual Q/R data items. Each
-item in the array is a CBOR map containing details on the individual
-Q/R data item.
+The array of Query/Response map items (`QueryResponse`) holds details on individual Q/R data items.
 
 Note that there is no requirement that the elements of the Q/R array are presented in strict chronological order.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-time-offset | O | U | Q/R timestamp as an offset in ticks from the Block preamble Timestamp. The timestamp is the timestamp of the Query, or the Response if there is no Query.
+time-offset | O | U | Q/R timestamp as an offset in ticks from the Block preamble `earliest-time`. The timestamp is the timestamp of the Query, or the Response if there is no Query.
 ||
-client-address-index | O | U | The index in the IP address array of the client IP address. See (#block-array-contents).
+client-address-index | O | U | The index in the block arrays IP address array `ip-address` of the client IP address. See (#block-array-contents).
 ||
 client-port | O | U | The client port.
 ||
 transaction-id | O | U | DNS transaction identifier.
 ||
-query-signature-index | O | U | The index of the Query Signature array record for this data item. See (#block-array-contents).
+query-signature-index | O | U | The index in the block arrays Query Signature array `query-sig` of the Query Signature record for this data item. See (#block-array-contents).
 ||
 client-hoplimit | O | U | The IPv4 TTL or IPv6 Hoplimit from the Query packet.
 ||
 response-delay | O | I | The time difference between Query and Response, in ticks. Only present if there is a query and a response. The delay can be negative if the network stack/capture library returns packets out of order.
 ||
-query-name-index | O | U | The index in the NAME/RDATA array of the QNAME for the first Question. See (#block-array-contents).
+query-name-index | O | U | The index in the block arrays NAME/RDATA array `name-rdata` of the QNAME for the first Question. See (#block-array-contents).
 ||
 query-size | O | U | DNS query message size (see below).
 ||
@@ -815,15 +814,15 @@ query-extended | O | M | Extended Query data. See (#extended-queryresponse-data-
 ||
 response-extended | O | M | Extended Response data. See (#extended-queryresponse-data-contents).
 
-The query-size and response-size fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.
+The `query-size` and `response-size` fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.
 
 ### Response processing data contents
 
-The response processing data is information on the server processing that produced the response. It is a CBOR map as follows.
+The response processing data map (`ResponseProcessingData`) is information on the server processing that produced the response.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-bailiwick-index | O | U | The index in the NAME/RDATA array of the response bailiwick. See (#block-array-contents).
+bailiwick-index | O | U | The index in the block arrays NAME/RDATA array `name-rdata` of the response bailiwick. See (#block-array-contents).
 ||
 processing-flags | O | U | Flags relating to response processing.
  | | | Bit 0. 1 if the response came from cache.
@@ -832,23 +831,23 @@ QUESTION: Should this be an item in the Query Signature?
 
 ### Extended Query/Response data contents
 
-The Extended information is a CBOR map as follows. Each item in the
-map is present only if collection of the relevant details is
-configured.
+The Query Response Extended information map (`QueryResponseExtended`)
+holds addition data on the Query/Response. Each item in the map is
+present only if collection of the relevant details is configured.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-question-index | O | U | The index in the Questions array array of the entry listing any second and subsequent Questions in the Question section for the Query or Response. See (#block-array-contents).
+question-index | O | U | The index in the block arrays Questions array `qlist` of the entry listing any second and subsequent Questions in the Question section for the Query or Response. See (#block-array-contents).
 ||
-answer-index | O | U | The index in the RR array array of the entry listing the Answer Resource Record sections for the Query or Response. See (#block-array-contents).
+answer-index | O | U | The index in the block arrays RR array `rrlist` of the entry listing the Answer Resource Record sections for the Query or Response. See (#block-array-contents).
 ||
-authority-index | O | U | The index in the RR array array of the entry listing the Authority Resource Record sections for the Query or Response. See (#block-array-contents).
+authority-index | O | U | The index in the block arrays RR array `rrlist` of the entry listing the Authority Resource Record sections for the Query or Response. See (#block-array-contents).
 ||
-additional-index | O | U | The index in the RR array array of the entry listing the Additional Resource Record sections for the Query or Response. See (#block-array-contents).
+additional-index | O | U | The index in the block arrays RR array `rrlist` of the entry listing the Additional Resource Record sections for the Query or Response. See (#block-array-contents).
 
 ## Address Event Count contents
 
-This array holds counts of various IP related events relating to traffic
+This array of Address Event Count map items (`AddressEventCount`) holds counts of various IP related events relating to traffic
 with individual client addresses.
 
 Field | O | T | Description
@@ -863,23 +862,23 @@ ae-type | M | U | The type of event. The following events types are currently de
 ||
 ae-code | O | U | A code relating to the event.
 ||
-ae-address-index | M | U | The index in the IP address array of the client address. See (#block-array-contents).
+ae-address-index | M | U | The index in the block arrays IP address array `ip-address` of the client address. See (#block-array-contents).
 ||
 ae-count | M | U | The number of occurrences of this event during the block collection period.
 
 ## Malformed message record contents
 
-This optional array records the original wire format content of malformed messages. See (#malformed-messages).
+This array of malformed message map items (`MalformedMessage`) records details of malformed messages. See (#malformed-messages).
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-time-offset | O | U | Message timestamp as an offset in ticks from the Block preamble Timestamp.
+time-offset | O | U | Message timestamp as an offset in ticks from the Block preamble `earliest-time`.
 ||
-client-address-index | O | U | The index in the IP address array of the client IP address. See (#block-array-contents).
+client-address-index | O | U | The index in the block arrays IP address array `ip-address` of the client IP address. See (#block-array-contents).
 ||
 client-port | O | U | The client port.
 ||
-message-data-index | O | U | The index in the Malformed messages array of the message data for this message. See (#block-array-contents).
+message-data-index | O | U | The index in the block arrays malformed messages array `malformed-data` of the message data for this message. See (#block-array-contents).
 
 # Malformed Messages
 

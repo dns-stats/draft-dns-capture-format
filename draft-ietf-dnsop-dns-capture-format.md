@@ -456,7 +456,7 @@ minor-format-version | M | U | Unsigned integer '0'. The minor version of format
 ||
 private-version | O | U | Version indicator available for private use by applications.
 ||
-block-parameters | M | A | Array of `BlockParameters`. The `preamble` item in each `Block` indicates which array entry applies to the block. The array must contain at least one entry. See (#blockparameters).
+block-parameters | M | A | Array of `BlockParameters`. The `block-preamble` item in each `Block` indicates which array entry applies to the block. The array must contain at least one entry. See (#blockparameters).
 
 ### "BlockParameters"
 
@@ -464,9 +464,9 @@ Parameters relating to data in one or more `Block`s. A map containing the follow
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-storage | M | M | `StorageParameters`. Parameters relating to data storage in a `Block`. See (#storageparameters).
+storage-parameters | M | M | `StorageParameters`. Parameters relating to data storage in a `Block`. See (#storageparameters).
 ||
-collection | O | M | `CollectionParameters`. Parameters relating to collection of the data in a `Block`. See (#collectionparameters).
+collection-parameters | O | M | `CollectionParameters`. Parameters relating to collection of the data in a `Block`. See (#collectionparameters).
 
 #### "StorageParameters"
 
@@ -476,7 +476,7 @@ Field | O | T | Description
 :-----|:-:|:-:|:-----------
 ticks-per-second | M | U | Sub-second timing is recorded in ticks. This specifies the number of ticks in a second.
 ||
-max-block-items | M | U | The maximum number of each record type (queries, address event counts or malformed messages) in a block. An indication of the resources needed to process the file.
+max-block-items | M | U | The maximum number of each record type (Q/R items, address event counts or malformed messages) in a block. An indication of the resources needed to process the file.
 ||
 table-field-hints | M | M | `TableFieldHints`. Collection of data field present hints. See (#tablefieldhints).
 ||
@@ -502,12 +502,12 @@ A map indicating which fields the collecting application records.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-query-response | M | U | Hints indicating which `QueryResponse` fields are collected. If the field is collected the bit is set.
+query-response-hints | M | U | Hints indicating which `QueryResponse` fields are collected. If the field is collected the bit is set.
  | | | Bit 0. time-offset
  | | | Bit 1. client-address-index
  | | | Bit 2. client-port
  | | | Bit 3. transaction-id
- | | | Bit 4. query-signature-index
+ | | | Bit 4. qr-signature-index
  | | | Bit 5. client-hoplimit
  | | | Bit 6. response-delay
  | | | Bit 7. query-name-index
@@ -522,7 +522,7 @@ query-response | M | U | Hints indicating which `QueryResponse` fields are colle
  | | | Bit 16. response-authority-sections
  | | | Bit 17. response-additional-sections
  | | |
-query-signature | M | U | Hints indicating which `QuerySignature` fields are collected. If the field is collected the bit is set.
+query-response-signature-hints | M | U | Hints indicating which `QueryResponseSignature` fields are collected. If the field is collected the bit is set.
  | | | Bit 0. server-address
  | | | Bit 1. server-port
  | | | Bit 2. transport-flags
@@ -541,11 +541,9 @@ query-signature | M | U | Hints indicating which `QuerySignature` fields are col
  | | | Bit 15. query-opt-rdata
  | | | Bit 16. response-rcode
  | | |
-other-tables | M | U | Hints indicating which other data types are collected. If the data type is collected the bit is set.
+other-tables-hints | M | U | Hints indicating which other data types are collected. If the data type is collected the bit is set.
  | | | Bit 0. Malformed messages
  | | | Bit 1. Address event counts
- | | |
-implementation -dependent | O | U | Collection hints for implementation-specific items. Values of this field are implementation specific.
 
 ### "CollectionParameters"
 
@@ -581,13 +579,13 @@ A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-preamble | M | M | `BlockPreamble`. Overall information for the block. See (#blockpreamble).
+block-preamble | M | M | `BlockPreamble`. Overall information for the block. See (#blockpreamble).
 ||
-statistics | O | M | `BlockStatistics`. Statistics about the block. See (#blockstatistics).
+block-statistics | O | M | `BlockStatistics`. Statistics about the block. See (#blockstatistics).
 ||
-tables | O | M | `BlockTables`. The arrays containing data referenced by individual `QueryResponse` or `MalformedMessage` items. See (#blocktables).
+block-tables | O | M | `BlockTables`. The arrays containing data referenced by individual `QueryResponse` or `MalformedMessage` items. See (#blocktables).
 ||
-queries | O | A | Array of `QueryResponse`. Details of individual `QueryResponse` items. See (#queryresponse). If present, the array must not be empty.
+query-responses | O | A | Array of `QueryResponse`. Details of individual `QueryResponse` items. See (#queryresponse). If present, the array must not be empty.
 ||
 address-event -counts | O | A | Array of `AddressEventCount`. Per client counts of ICMP messages and TCP resets. See (#addresseventcount). If present, the array must not be empty.
 ||
@@ -638,7 +636,7 @@ classtype | O | A | Array of `ClassType`. RR class and type information. See (#c
 | | |
 name-rdata | O | A | Array of byte strings. Each entry is the contents of a single NAME or RDATA. Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
 | | |
-query-sig | O | A | Array of `QuerySignature`. Query signatures. See (#querysignature).
+qr-sig | O | A | Array of `QueryResponseSignature`. Q/R item signatures. See (#queryresponsesignature).
 | | |
 qlist | O | A | Array of `QuestionList`. A `QuestionList` is an array of unsigned integers, indexes to `Question` items in the `qrr` array.
 | | |
@@ -660,7 +658,7 @@ type | M | U | TYPE value.
 ||
 class | M | U | CLASS value.
 
-#### "QuerySignature"
+#### "QueryResponseSignature"
 
 Elements of a Q/R data item that are often common between multiple
 individual Q/R data items.
@@ -775,17 +773,17 @@ server-address -index | O | U | The index in the `BlockTables`/`ip-address` arra
 ||
 server-port | O | U | The server port.
 ||
-transport-flags | O | U | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
+mm-transport-flags | O | U | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
  | | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
  | | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
 ||
-message-content | O | B | The raw contents of the DNS message.
+mm-payload | O | B | The payload (raw bytes) of the DNS message.
 
 ## "QueryResponse"
 
 Details on individual Q/R data items. A map containing the following items.
 
-Note that there is no requirement that the elements of the `Block`/`queries` array are presented in strict chronological order.
+Note that there is no requirement that the elements of the `Block`/`query-responses` array are presented in strict chronological order.
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -797,7 +795,7 @@ client-port | O | U | The client port.
 ||
 transaction-id | O | U | DNS transaction identifier.
 ||
-query-signature-index | O | U | The index in the `BlockTables`/`query-sig` array of the `QuerySignature` record for this data item. See (#blocktables).
+qr-signature-index | O | U | The index in the `BlockTables`/`qr-sig` array of the `QueryResponseSignature` record for this data item. See (#blocktables).
 ||
 client-hoplimit | O | U | The IPv4 TTL or IPv6 Hoplimit from the Query packet.
 ||
@@ -1390,11 +1388,11 @@ private-version      = 2
 block-parameters     = 3
 
 BlockParameters = {
-    storage      => StorageParameters,
-    ? collection => CollectionParameters,
+    storage-parameters      => StorageParameters,
+    ? collection-parameters => CollectionParameters,
 }
-storage    = 0
-collection = 1
+storage-parameters    = 0
+collection-parameters = 1
 
   StorageParameters = {
       ticks-per-second             => uint,
@@ -1422,22 +1420,20 @@ collection = 1
     ; A hint indicates if the collection method will output the
     ; field or will ignore the field if present.
     TableFieldHints = {
-        query-response             => QueryResponseFieldHints,
-        query-signature            => QuerySignatureFieldHints,
-        other-tables               => OtherTableFieldHints,
-        ? implementation-dependent => uint,
+        query-response-hints           => QueryResponseFieldHints,
+        query-response-signature-hints => QueryResponseSignatureFieldHints,
+        other-tables-hints             => OtherTableFieldHints,
     }
-    query-response           = 0
-    query-signature          = 1
-    other-tables             = 2
-    implementation-dependent = 3
+    query-response-hints           = 0
+    query-response-signature-hints = 1
+    other-tables-hints             = 2
 
       QueryResponseFieldHintValues = &(
           time-offset                  : 0,
           client-address-index         : 1,
           client-port                  : 2,
           transaction-id               : 3,
-          query-signature-index        : 4,
+          qr-signature-index           : 4,
           client-hoplimit              : 5,
           response-delay               : 6,
           query-name-index             : 7,
@@ -1454,7 +1450,7 @@ collection = 1
       )
       QueryResponseFieldHints = uint .bits QueryResponseFieldHintValues
 
-      QuerySignatureFieldHintValues =&(
+      QueryResponseSignatureFieldHintValues =&(
           server-address     : 0,
           server-port        : 1,
           transport-flags    : 2,
@@ -1473,7 +1469,7 @@ collection = 1
           query-opt-rdata    : 15,
           response-rcode     : 16,
       )
-      QuerySignatureFieldHints = uint .bits QuerySignatureFieldHintValues
+      QueryResponseSignatureFieldHints = uint .bits QueryResponseSignatureFieldHintValues
 
       OtherTableFieldHintValues = &(
           malformed-messages-table   : 0,
@@ -1514,17 +1510,17 @@ collection = 1
 ; Data in the file is stored in Blocks.
 ;
 Block = {
-    preamble                => BlockPreamble,
-    ? statistics            => BlockStatistics, ; Much of this could be derived
-    ? tables                => BlockTables,
-    ? queries               => [+ QueryResponse],
+    block-preamble          => BlockPreamble,
+    ? block-statistics      => BlockStatistics, ; Much of this could be derived
+    ? block-tables          => BlockTables,
+    ? query-responses       => [+ QueryResponse],
     ? address-event-counts  => [+ AddressEventCount],
     ? malformed-messages    => [+ MalformedMessage],
 }
-preamble              = 0
-statistics            = 1
-tables                = 2
-queries               = 3
+block-preamble        = 0
+block-statistics      = 1
+block-tables          = 2
+query-responses       = 3
 address-event-counts  = 4
 malformed-messages    = 5
 
@@ -1571,7 +1567,7 @@ BlockTables = {
     ? ip-address     => [+ IPAddress],
     ? classtype      => [+ ClassType],
     ? name-rdata     => [+ bstr],            ; Holds both Name RDATA and RDATA
-    ? query-sig      => [+ QuerySignature],
+    ? qr-sig         => [+ QueryResponseSignature],
     ? QuestionTables,
     ? RRTables,
     ? malformed-data => [+ MalformedMessageData],
@@ -1579,7 +1575,7 @@ BlockTables = {
 ip-address     = 0
 classtype      = 1
 name-rdata     = 2
-query-sig      = 3
+qr-sig         = 3
 qlist          = 4
 qrr            = 5
 rrlist         = 6
@@ -1597,7 +1593,7 @@ ClassType = {
 type  = 0
 class = 1
 
-QuerySignature = {
+QueryResponseSignature = {
     ? server-address-index  => uint,
     ? server-port           => uint,
     ? transport-flags       => TransportFlags,
@@ -1721,11 +1717,11 @@ MalformedMessageData = {
     ? server-address-index   => uint,
     ? server-port            => uint,
     ? mm-transport-flags     => MalformedTransportFlags,
-    ? mm-content             => bstr,   ; Raw packet contents
+    ? mm-payload             => bstr,
 }
 ; Other map key values already defined above.
 mm-transport-flags      = 2
-mm-content              = 3
+mm-payload              = 3
 
   MalformedTransportFlagValues = &(
       ip-version         : 0,     ; 0=IPv4, 1=IPv6
@@ -1741,7 +1737,7 @@ QueryResponse = {
     ? client-address-index     => uint,
     ? client-port              => uint,
     ? transaction-id           => uint,
-    ? query-signature-index    => uint,
+    ? qr-signature-index       => uint,
     ? client-hoplimit          => uint,
     ? response-delay           => ticks,
     ? query-name-index         => uint,
@@ -1755,7 +1751,7 @@ time-offset              = 0
 client-address-index     = 1
 client-port              = 2
 transaction-id           = 3
-query-signature-index    = 4
+qr-signature-index       = 4
 client-hoplimit          = 5
 response-delay           = 6
 query-name-index         = 7

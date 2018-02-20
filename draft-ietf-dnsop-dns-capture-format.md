@@ -272,40 +272,45 @@ and individual elements.
 
 ![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/cdns_format.svg)
 
-![Figure showing the Q/R data item and Block tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.png)
+![Figure showing the Query/Response data item and Block Tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.png)
 
-![Figure showing the Q/R data item and Block tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg)
+![Figure showing the Query/Response item and Block Tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg)
 
-A C-DNS file begins with a file header containing a file-type-id identifier and
-a file-preamble. The file-preamble contains information on the file format version and an array of block-parameters items
-(the contents of which include collection and storage parameters used for one or more blocks).
+A C-DNS file begins with a file header containing a File Type Identifier and
+a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items
+(the contents of which include Collection and Storage Parameters used for one or more blocks).
 
-The file header is followed by a series of data blocks.
+The file header is followed by a series of data Blocks.
 
-A block consists of a block header, containing a preamble item, various arrays of common data,
-and some statistics for the traffic received over the block. The block header
-is then followed by an array of the Q/R data items detailing the queries and responses
-received during processing of the block input. The array of Q/R data items is in turn followed
-by an array of per-client counts of particular IP events and an array of malformed messages
-that occurred during collection of the block data.
+A Block consists of a Block Preamble item, some Block Statistics 
+for the traffic stored within the Block and then various arrays of common data collectively called the Block Tables. This is then
+followed by an array of the Query/Response data items detailing the queries and responses
+stored within the Block. The array of Query/Response data items is in turn followed
+by the Address/Event Counts data items (an array of per-client counts of particular IP events) and then Malfomed Message data itmes (an array of malformed messages
+that stored in the Block).
 
 The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
-## Block parameters
+## Block Parameters
 
-An array of block parameters items is stored in the file header (with
-a minimum of one item at index 0) in order to support use cases such as wanting
-to merge C-DNS files from different sources. The block header preamble item then
-contains an optional index for the block parameters item that applies for that
-block; if not present the index defaults to 0. Hence, in effect, a global
-block-parameters item is defined which can then be overridden per block.
+The details of the Block Parameters items are not shown in the diagrams but are discussed
+here for context. 
 
-## Storage parameters
+An array of Block Parameters items is stored in the File Preamble (with
+a minimum of one item at index 0); a Block Parameters item consists of a collection 
+of Storage and Collection Parameters that applies to any given Block.
+An array is used in order to support use cases such as wanting
+to merge C-DNS files from different sources. The Block Preamble item then
+contains an optional index for the Block Parameters item that applies for that
+Block; if not present the index defaults to 0. Hence, in effect, a global
+Block Parameters item is defined which can then be overridden per Block.
 
-The block parameters item includes a
-storage parameters item - this contains information about the specific data
+## Storage Parameters
+
+The Block Parameters item includes a
+Storage Parameters item - this contains information about the specific data
 fields stored in the C-DNS file.
 
 These parameters include:
@@ -341,13 +346,13 @@ This does, however, mean that a consumer of a C-DNS file faces two problems:
        available to the collecting application?
 
 For example, an application capturing C-DNS data from within a nameserver
-implementation is unlikely to be able to record the client hoplimit. Or, if
+implementation is unlikely to be able to record the Client Hoplimit. Or, if
 there is no query ARCount recorded and no query OPT RDATA recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
 
-The storage parameters hints therefore specify whether the writer of
-the file recorded each data item if it was present. An application consuming
-that file can then use
+The Storage Parameters therefore also contains a Fields Hints item which specifies
+whether the encoder of the file recorded each data item if it was present. 
+An application decoding that file can then use
 these to quickly determine whether the input data is rich enough for its needs.
 
 QUESTION: Should the items within certain tables also be optional
@@ -356,7 +361,7 @@ RDATA be optional?
 
 ### Optional RRs and OPCODES
 
-Also included in the storage parameters is an explicit array of the RR types and
+Also included in the Storage Parameters is an explicit array of the RR types and
 OPCODES that were recorded. Using an explicit array removes any ambiguity about
 whether the OPCODE/RR type was not recognised by the collecting implementation
 or whether it was specifically configured not to record it.
@@ -378,6 +383,7 @@ been normalised (e.g. converted to uniform case)?
 
 ### IP Address storage
 
+The format contains fields to indicate if only IP prefixes were stored. 
 If IP address prefixes are given, only the prefix bits of addresses
 are stored. For example, if a client IPv4 prefix of 16 is specified, a
 client address of 192.0.2.1 will be stored as 0xc000 (192.0), reducing

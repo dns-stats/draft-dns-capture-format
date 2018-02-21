@@ -419,7 +419,10 @@ In all quantities that contain bit flags, bit 0 indicates the least
 significant bit, i.e. flag `n` in quantity `q` is on if `(q & (1 <<
 n)) != 0`.
 
-For the sake of readability all types defined in the CDDL definition are shown in double quotes; Type names are by convention Camel case (e.g. BlockTable), field names are lower-case with hyphens (e.g. block-tables).
+For the sake of readability, all type and field names defined in the
+CDDL definition are shown in double quotes. Type names are by
+convention camel case (e.g. `BlockTable`), field names are lower-case
+with hyphens (e.g. `block-tables`).
 
 For the sake of brevity, the following conventions are used in the tables:
 
@@ -504,7 +507,7 @@ server-address -prefix-ipv6 | O | U | IPv6 server address prefix length. If spec
 
 ##### "FieldHints"
 
-An indicating of which fields the collecting application stores in the arrays with optional fields. A map containing the following:
+An indicator of which fields the collecting application stores in the arrays with optional fields. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -605,7 +608,7 @@ Overall information for a `Block` item. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-earliest-time | O | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block are also omit the timestamp.
+earliest-time | O | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit the timestamp.
 | | |
 block-parameters -index | O | U | The index of the item in the `block-parameters` array (in the `file-premable` item) applicable to this block. If not present, index 0 is used. See (#blockparameters).
 
@@ -1423,7 +1426,7 @@ collection-parameters = 1
   }
   ticks-per-second           = 0
   max-block-items            = 1
-  field-hints          = 2
+  field-hints                = 2
   opcodes                    = 3
   rr-types                   = 4
   storage-flags              = 5
@@ -1437,7 +1440,7 @@ collection-parameters = 1
     FieldHints = {
         query-response-hints           => QueryResponseFieldHints,
         query-response-signature-hints => QueryResponseSignatureFieldHints,
-        other-tables-hints             => OtherFieldHints,
+        other-tables-hints             => OtherTablesFieldHints,
     }
     query-response-hints           = 0
     query-response-signature-hints = 1
@@ -1486,11 +1489,11 @@ collection-parameters = 1
       )
       QueryResponseSignatureFieldHints = uint .bits QueryResponseSignatureFieldHintValues
 
-      OtherTableFieldHintValues = &(
+      OtherTablesFieldHintValues = &(
           malformed-messages-table   : 0,
           address-event-counts-table : 1,
       )
-      OtherFieldHints = uint .bits OtherTableFieldHintValues
+      OtherTablesFieldHints = uint .bits OtherTablesFieldHintValues
 
     StorageFlagValues = &(
         anonymised-data      : 0,
@@ -1579,22 +1582,22 @@ total-malformed-messages     = 4
 ; Tables of common data referenced from records in a block.
 ;
 BlockTables = {
-    ? ip-address     => [+ IPAddress],
-    ? classtype      => [+ ClassType],
-    ? name-rdata     => [+ bstr],            ; Holds both Name RDATA and RDATA
-    ? qr-sig         => [+ QueryResponseSignature],
+    ? ip-address             => [+ IPAddress],
+    ? classtype              => [+ ClassType],
+    ? name-rdata             => [+ bstr],    ; Holds both Name RDATA and RDATA
+    ? qr-sig                 => [+ QueryResponseSignature],
     ? QuestionTables,
     ? RRTables,
     ? malformed-message-data => [+ MalformedMessageData],
 }
-ip-address     = 0
-classtype      = 1
-name-rdata     = 2
-qr-sig         = 3
-qlist          = 4
-qrr            = 5
-rrlist         = 6
-rr             = 7
+ip-address             = 0
+classtype              = 1
+name-rdata             = 2
+qr-sig                 = 3
+qlist                  = 4
+qrr                    = 5
+rrlist                 = 6
+rr                     = 7
 malformed-message-data = 8
 
 IPv4Address = bstr .size 4

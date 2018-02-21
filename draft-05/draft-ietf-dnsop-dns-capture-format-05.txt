@@ -33,7 +33,7 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at http://datatracker.ietf.org/drafts/current/.
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
@@ -49,7 +49,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
+   (https://trustee.ietf.org/license-info) in effect on the date of
 
 
 
@@ -127,7 +127,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
    14. Security considerations . . . . . . . . . . . . . . . . . . .  39
    15. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  39
    16. Changelog . . . . . . . . . . . . . . . . . . . . . . . . . .  40
-   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  41
+   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  42
      17.1.  Normative References . . . . . . . . . . . . . . . . . .  42
      17.2.  Informative References . . . . . . . . . . . . . . . . .  42
      17.3.  URIs . . . . . . . . . . . . . . . . . . . . . . . . . .  43
@@ -360,7 +360,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
           requirements due to commonality in the data of the two
           messages.
 
-   2.  All fields in each Q/R data item will be optional.
+   2.  All top level fields in each Q/R data item will be optional.
 
        *  Rationale: Different users will have different requirements
           for data to be available for analysis.  Users with minimal
@@ -368,13 +368,13 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
           data, however this will limit the ability to perform certain
           kinds of data analysis and also reconstruct packet captures.
           For example, omitting the resource records from a Response
-          will reduce C-DNS file size, and in principle responses can be
-          synthesized if there is enough context.
+          will reduce the C-DNS file size, and in principle responses
+          can be synthesized if there is enough context.
 
-   3.  Multiple data items will be collected into blocks in the format.
-       Common data in a block will be abstracted and referenced from
-       individual data items by indexing.  The maximum number of data
-       items in a block will be configurable.
+   3.  Multiple Q/R data items will be collected into blocks in the
+       format.  Common data in a block will be abstracted and referenced
+       from individual Q/R data items by indexing.  The maximum number
+       of Q/R data items in a block will be configurable.
 
        *  Rationale: This blocking and indexing provides a significant
           reduction in the volume of file data generated.  Although this
@@ -678,10 +678,10 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
    significant bit, i.e. flag "n" in quantity "q" is on if "(q & (1 <<
    n)) != 0".
 
-   For the sake of readability all types defined in the CDDL definition
-   are shown in double quotes; Type names are by convention Camel case
-   (e.g.  BlockTable), field names are lower-case with hyphens (e.g.
-   block-tables).
+   For the sake of readability, all type and field names defined in the
+   CDDL definition are shown in double quotes.  Type names are by
+   convention camel case (e.g.  "BlockTable"), field names are lower-
+   case with hyphens (e.g. "block-tables").
 
    For the sake of brevity, the following conventions are used in the
    tables:
@@ -900,8 +900,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 7.4.1.1.1.  "FieldHints"
 
-   An indicating of which fields the collecting application stores in
-   the arrays with optional fields.  A map containing the following:
+   An indicator of which fields the collecting application stores in the
+   arrays with optional fields.  A map containing the following:
 
    +--------------------+---+---+--------------------------------------+
    | Field              | O | T | Description                          |
@@ -1134,8 +1134,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
    |                  |   |   | the start of the second. This          |
    |                  |   |   | timestamp can only be omitted if all   |
    |                  |   |   | block items containing a time offset   |
-   |                  |   |   | from the start of the block are also   |
-   |                  |   |   | omit the timestamp.                    |
+   |                  |   |   | from the start of the block also omit  |
+   |                  |   |   | the timestamp.                         |
    |                  |   |   |                                        |
    | block-parameters | O | U | The index of the item in the "block-   |
    | -index           |   |   | parameters" array (in the "file-       |
@@ -2055,8 +2055,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 11.  Implementation guidance
 
-   TODO: Topics in this section need further expansion.
-
    Whilst this document makes no specific recommendations with respect
    to Canonical CBOR (see Section 3.9 of [RFC7049]) the following
    guidance may be of use to implementors.
@@ -2066,6 +2064,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
    Adherence to the second two rules given in Section 3.9 of [RFC7049]
    for all maps and arrays would unacceptably constrain implementations,
+   for example, in the use case of real-time data collection in
+   constrained environments.
 
 
 
@@ -2074,28 +2074,26 @@ Dickinson, et al.        Expires August 25, 2018               [Page 37]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
-   for example, in the use case of real-time data collection in
-   constrained environments.
-
    NOTE: With this clarification to the use of Canonical CBOR, we could
    consider re-ordering fields in maps to improve readability.
 
 11.1.  Optional data
 
-   When reading data where items required for reader function are
-   missing, readers may wish to provide configurable default values to
-   be used in their output.
+   When decoding data some items required for a particular function the
+   consumer wishes to perform may be missing.  Consumers should consider
+   providing configurable default values to be used in place of the
+   missing values in their output.
 
 11.2.  Trailing data in TCP
 
-   Clarify the impact of processing wire captures which includes
-   trailing data in TCP.  What will appear trailing data, what will
+   TODO: Clarify the impact of processing wire captures which includes
+   trailing data in TCP.  What will appear as trailing data, what will
    appear as malformed messages?
 
 11.3.  Limiting collection of RDATA
 
    Implementations should consider providing a configurable maximum
-   RDATA size for capture.  For example, to avoid memory issues when
+   RDATA size for capture , for example, to avoid memory issues when
    confronted with large XFR records.
 
 12.  Implementation status
@@ -2122,6 +2120,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
    and feedback that have made the implemented protocols more mature.
    It is up to the individual working groups to use this information as
    they see fit".
+
+
 
 
 
@@ -2195,16 +2195,26 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
    draft-ietf-dnsop-dns-capture-format-05
 
-   o  Make all data items in Q/R, Querysig and Malformed message arrays
-      optional
+   o  Make all data items in Q/R, QuerySignature and Malformed Message
+      arrays optional
 
-   o  Switch to variable sub-second timing granularity
+   o  Re-structure the FilePreamble and ConfigurationParameters into
+      BlockParameters
 
-   o  Record malformed messages
+   o  BlockParameters has separate Storage and Collection Parameters
+
+   o  Storage Parameters includes information on what optional fields
+      are present, and flags specifying anonymisation or sampling
+
+   o  Addresses can now be stored as prefixes.
+
+   o  Switch to using a variable sub-second timing granularity
+
+   o  Add response bailiwick and query response type
+
+   o  Add specifics of how to record malformed messages
 
    o  Add implementation guidance
-
-   o  Add response bailiwick and query response type (dnstap)
 
    o  Improve terminology and naming consistency
 
@@ -2224,6 +2234,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
    draft-ietf-dnsop-dns-capture-format-02
 
+
+
+
+Dickinson, et al.        Expires August 25, 2018               [Page 40]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
+
+
    o  Update qr_data_format.png to match CDDL
 
    o  Editorial clarifications and improvements
@@ -2233,14 +2251,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
    o  Many editorial improvements by Paul Hoffman
 
    o  Included discussion of malformed message handling
-
-
-
-
-Dickinson, et al.        Expires August 25, 2018               [Page 40]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
-
 
    o  Improved Appendix C on Comparison of Binary Formats
 
@@ -2281,22 +2291,18 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
    o  Added a TODO: Can Class be optimised?  Should a class of IN be
       inferred if not present?
 
-   draft-dickinson-dnsop-dns-capture-format-00
-
-   o  Initial commit
-
-17.  References
-
-
-
-
-
 
 
 Dickinson, et al.        Expires August 25, 2018               [Page 41]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
+
+   draft-dickinson-dnsop-dns-capture-format-00
+
+   o  Initial commit
+
+17.  References
 
 17.1.  Normative References
 
@@ -2306,8 +2312,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
-              editor.org/info/rfc2119>.
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
    [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
@@ -2315,11 +2321,11 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 17.2.  Informative References
 
-   [ditl]     DNS-OARC, "DITL", 2016, <https://www.dns-
-              oarc.net/oarc/data/ditl>.
+   [ditl]     DNS-OARC, "DITL", 2016,
+              <https://www.dns-oarc.net/oarc/data/ditl>.
 
-   [dnscap]   DNS-OARC, "DNSCAP", 2016, <https://www.dns-oarc.net/tools/
-              dnscap>.
+   [dnscap]   DNS-OARC, "DNSCAP", 2016,
+              <https://www.dns-oarc.net/tools/dnscap>.
 
    [dnstap]   dnstap.info, "dnstap", 2016, <http://dnstap.info/>.
 
@@ -2341,12 +2347,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
               express CBOR data structures", draft-ietf-cbor-cddl-01
               (work in progress), January 2018.
 
-   [packetq]  .SE - The Internet Infrastructure Foundation, "PacketQ",
-              2014, <https://github.com/dotse/PacketQ>.
-
-   [pcap]     tcpdump.org, "PCAP", 2016, <http://www.tcpdump.org/>.
-
-
 
 
 Dickinson, et al.        Expires August 25, 2018               [Page 42]
@@ -2354,9 +2354,14 @@ Dickinson, et al.        Expires August 25, 2018               [Page 42]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+   [packetq]  .SE - The Internet Infrastructure Foundation, "PacketQ",
+              2014, <https://github.com/dotse/PacketQ>.
+
+   [pcap]     tcpdump.org, "PCAP", 2016, <http://www.tcpdump.org/>.
+
    [pcapng]   Tuexen, M., Risso, F., Bongertz, J., Combs, G., and G.
-              Harris, "pcap-ng", 2016, <https://github.com/pcapng/
-              pcapng>.
+              Harris, "pcap-ng", 2016,
+              <https://github.com/pcapng/pcapng>.
 
    [RFC7159]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
               Interchange Format", RFC 7159, DOI 10.17487/RFC7159, March
@@ -2398,17 +2403,16 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
    [11] https://github.com/miekg/mmark
 
-   [12] https://www.nlnetlabs.nl/projects/nsd/
-
-   [13] https://www.knot-dns.cz/
-
-
 
 
 Dickinson, et al.        Expires August 25, 2018               [Page 43]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
+
+   [12] https://www.nlnetlabs.nl/projects/nsd/
+
+   [13] https://www.knot-dns.cz/
 
    [14] https://avro.apache.org/
 
@@ -2454,10 +2458,6 @@ File = [
 ;
 FilePreamble = {
     major-format-version => uint .eq 1,
-    minor-format-version => uint .eq 0,
-    ? private-version    => uint,
-    block-parameters     => [+ BlockParameters],
-}
 
 
 
@@ -2466,6 +2466,10 @@ Dickinson, et al.        Expires August 25, 2018               [Page 44]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+    minor-format-version => uint .eq 0,
+    ? private-version    => uint,
+    block-parameters     => [+ BlockParameters],
+}
 major-format-version = 0
 minor-format-version = 1
 private-version      = 2
@@ -2492,7 +2496,7 @@ collection-parameters = 1
   }
   ticks-per-second           = 0
   max-block-items            = 1
-  field-hints          = 2
+  field-hints                = 2
   opcodes                    = 3
   rr-types                   = 4
   storage-flags              = 5
@@ -2506,14 +2510,10 @@ collection-parameters = 1
     FieldHints = {
         query-response-hints           => QueryResponseFieldHints,
         query-response-signature-hints => QueryResponseSignatureFieldHints,
-        other-tables-hints             => OtherFieldHints,
+        other-tables-hints             => OtherTablesFieldHints,
     }
     query-response-hints           = 0
     query-response-signature-hints = 1
-    other-tables-hints             = 2
-
-      QueryResponseFieldHintValues = &(
-          time-offset                  : 0,
 
 
 
@@ -2522,6 +2522,10 @@ Dickinson, et al.        Expires August 25, 2018               [Page 45]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+    other-tables-hints             = 2
+
+      QueryResponseFieldHintValues = &(
+          time-offset                  : 0,
           client-address-index         : 1,
           client-port                  : 2,
           transaction-id               : 3,
@@ -2563,13 +2567,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
       )
       QueryResponseSignatureFieldHints = uint .bits QueryResponseSignatureFieldHintValues
 
-      OtherTableFieldHintValues = &(
+      OtherTablesFieldHintValues = &(
           malformed-messages-table   : 0,
           address-event-counts-table : 1,
-      )
-      OtherFieldHints = uint .bits OtherTableFieldHintValues
-
-    StorageFlagValues = &(
 
 
 
@@ -2578,6 +2578,10 @@ Dickinson, et al.        Expires August 25, 2018               [Page 46]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+      )
+      OtherTablesFieldHints = uint .bits OtherTablesFieldHintValues
+
+    StorageFlagValues = &(
         anonymised-data      : 0,
         sampled-data         : 1,
     )
@@ -2622,10 +2626,6 @@ block-statistics      = 1
 block-tables          = 2
 query-responses       = 3
 address-event-counts  = 4
-malformed-messages    = 5
-
-;
-; The (mandatory) preamble to a block.
 
 
 
@@ -2634,6 +2634,10 @@ Dickinson, et al.        Expires August 25, 2018               [Page 47]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+malformed-messages    = 5
+
+;
+; The (mandatory) preamble to a block.
 ;
 BlockPreamble = {
     ? earliest-time          => Timestamp,
@@ -2672,16 +2676,12 @@ total-malformed-messages     = 4
 ; Tables of common data referenced from records in a block.
 ;
 BlockTables = {
-    ? ip-address     => [+ IPAddress],
-    ? classtype      => [+ ClassType],
-    ? name-rdata     => [+ bstr],            ; Holds both Name RDATA and RDATA
-    ? qr-sig         => [+ QueryResponseSignature],
+    ? ip-address             => [+ IPAddress],
+    ? classtype              => [+ ClassType],
+    ? name-rdata             => [+ bstr],    ; Holds both Name RDATA and RDATA
+    ? qr-sig                 => [+ QueryResponseSignature],
     ? QuestionTables,
     ? RRTables,
-    ? malformed-message-data => [+ MalformedMessageData],
-}
-ip-address     = 0
-classtype      = 1
 
 
 
@@ -2690,12 +2690,16 @@ Dickinson, et al.        Expires August 25, 2018               [Page 48]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
-name-rdata     = 2
-qr-sig         = 3
-qlist          = 4
-qrr            = 5
-rrlist         = 6
-rr             = 7
+    ? malformed-message-data => [+ MalformedMessageData],
+}
+ip-address             = 0
+classtype              = 1
+name-rdata             = 2
+qr-sig                 = 3
+qlist                  = 4
+qrr                    = 5
+rrlist                 = 6
+rr                     = 7
 malformed-message-data = 8
 
 IPv4Address = bstr .size 4
@@ -2734,10 +2738,6 @@ transport-flags       = 2
 qr-type               = 3
 qr-sig-flags          = 4
 query-opcode          = 5
-qr-dns-flags          = 6
-query-rcode           = 7
-query-classtype-index = 8
-query-qd-count        = 9
 
 
 
@@ -2746,6 +2746,10 @@ Dickinson, et al.        Expires August 25, 2018               [Page 49]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+qr-dns-flags          = 6
+query-rcode           = 7
+query-classtype-index = 8
+query-qd-count        = 9
 query-an-count        = 10
 query-ns-count        = 12
 query-ar-count        = 12
@@ -2790,10 +2794,6 @@ response-rcode        = 16
   DNSFlagValues = &(
       query-cd   : 0,
       query-ad   : 1,
-      query-z    : 2,
-      query-ra   : 3,
-      query-rd   : 4,
-      query-tc   : 5,
 
 
 
@@ -2802,6 +2802,10 @@ Dickinson, et al.        Expires August 25, 2018               [Page 50]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+      query-z    : 2,
+      query-ra   : 3,
+      query-rd   : 4,
+      query-tc   : 5,
       query-aa   : 6,
       query-do   : 7,
       response-cd: 8,
@@ -2846,10 +2850,6 @@ RRTables = (
   rdata-index = 3
 
 MalformedMessageData = {
-    ? server-address-index   => uint,
-    ? server-port            => uint,
-    ? mm-transport-flags     => MalformedTransportFlags,
-    ? mm-payload             => bstr,
 
 
 
@@ -2858,6 +2858,10 @@ Dickinson, et al.        Expires August 25, 2018               [Page 51]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+    ? server-address-index   => uint,
+    ? server-port            => uint,
+    ? mm-transport-flags     => MalformedTransportFlags,
+    ? mm-payload             => bstr,
 }
 ; Other map key values already defined above.
 mm-transport-flags      = 2
@@ -2902,10 +2906,6 @@ query-extended           = 11
 response-extended        = 12
 
 ResponseProcessingData = {
-    ? bailiwick-index  => uint,
-    ? processing-flags => ResponseProcessingFlags,
-}
-bailiwick-index = 0
 
 
 
@@ -2914,6 +2914,10 @@ Dickinson, et al.        Expires August 25, 2018               [Page 52]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+    ? bailiwick-index  => uint,
+    ? processing-flags => ResponseProcessingFlags,
+}
+bailiwick-index = 0
 processing-flags = 1
 
   ResponseProcessingFlagValues = &(
@@ -2958,10 +2962,6 @@ AddressEventType = (
 ;
 ; Malformed messages.
 ;
-MalformedMessage = {
-    ? time-offset           => uticks,   ; Time offset from start of block
-    ? client-address-index  => uint,
-    ? client-port           => uint,
 
 
 
@@ -2970,6 +2970,10 @@ Dickinson, et al.        Expires August 25, 2018               [Page 53]
 Internet-Draft     C-DNS: A DNS Packet Capture Format      February 2018
 
 
+MalformedMessage = {
+    ? time-offset           => uticks,   ; Time offset from start of block
+    ? client-address-index  => uint,
+    ? client-port           => uint,
     ? message-data-index    => uint,
 }
 ; Other map key values already defined above.
@@ -3013,10 +3017,6 @@ Appendix B.  DNS Name compression example
    is then matched against the second name, which again can be a
    compression target.  Because the remaining uncompressed part of the
    name is www, this is an improved compression, and so it is adopted.
-
-
-
-
 
 
 

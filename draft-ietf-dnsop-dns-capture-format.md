@@ -215,16 +215,16 @@ the Question section from the response, if present, as an identifying QNAME).
       Also, combining the Query and Response into one item often reduces storage requirements due to
       commonality in the data of the two messages.
 
-2. All fields in each Q/R data item will be optional.
+2. All top level fields in each Q/R data item will be optional.
 
     * Rationale: Different users will have different requirements for data to be available for analysis.
       Users with minimal requirements should not have to pay the cost of recording full data, however this will
       limit the ability to perform certain kinds of data analysis and also reconstruct packet captures.
       For example, omitting the resource records from a Response will
-      reduce C-DNS file size, and in principle responses can be synthesized if there is enough context.
+      reduce the C-DNS file size, and in principle responses can be synthesized if there is enough context.
 
-3. Multiple data items will be collected into blocks in the format. Common data in a block will be abstracted and
-referenced from individual data items by indexing. The maximum number of data items in a block will be configurable.
+3. Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and
+referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
 
     * Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.
       Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
@@ -1109,8 +1109,6 @@ When ending capture, all remaining entries in the Q/R data item FIFO should be t
 
 # Implementation guidance
 
-TODO: Topics in this section need further expansion.
-
 Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of [RFC7049]) the following guidance may be of use to implementors.
 
 Adherence to the first two rules given in Section 3.9 of [RFC7049] will minimise file sizes. 
@@ -1121,20 +1119,20 @@ NOTE: With this clarification to the use of Canonical CBOR, we could consider re
 
 ## Optional data
 
-When reading data where items required for reader function are
-missing, readers may wish to provide configurable default values to be
-used in their output.
+When decoding data some items required for a particular function the consumer 
+wishes to perform may be missing. Consumers should consider providing configurable 
+default values to be used in place of the missing values in their output.
 
 ## Trailing data in TCP
 
-Clarify the impact of processing wire captures which includes
-trailing data in TCP. What will appear trailing data, what will appear
+TODO: Clarify the impact of processing wire captures which includes
+trailing data in TCP. What will appear as trailing data, what will appear
 as malformed messages?
 
 ## Limiting collection of RDATA
 
-Implementations should consider providing a configurable maximum RDATA size for capture.
-For example, to avoid memory issues when confronted with large XFR records.
+Implementations should consider providing a configurable maximum RDATA size for capture
+, for example, to avoid memory issues when confronted with large XFR records.
 
 # Implementation status
 
@@ -1211,11 +1209,15 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 draft-ietf-dnsop-dns-capture-format-05
 
-* Make all data items in Q/R, Querysig and Malformed message arrays optional
-* Switch to variable sub-second timing granularity
-* Record malformed messages
+* Make all data items in Q/R, QuerySignature and Malformed Message arrays optional
+* Re-structure the FilePreamble and ConfigurationParameters into BlockParameters
+* BlockParameters has separate Storage and Collection Parameters
+* Storage Parameters includes information on what optional fields are present, and flags specifying anonymisation or sampling
+* Addresses can now be stored as prefixes.
+* Switch to using a variable sub-second timing granularity
+* Add response bailiwick and query response type
+* Add specifics of how to record malformed messages
 * Add implementation guidance
-* Add response bailiwick and query response type (dnstap)
 * Improve terminology and naming consistency
 
 draft-ietf-dnsop-dns-capture-format-04

@@ -1426,7 +1426,7 @@ collection-parameters = 1
   }
   ticks-per-second           = 0
   max-block-items            = 1
-  field-hints          = 2
+  field-hints                = 2
   opcodes                    = 3
   rr-types                   = 4
   storage-flags              = 5
@@ -1440,7 +1440,7 @@ collection-parameters = 1
     FieldHints = {
         query-response-hints           => QueryResponseFieldHints,
         query-response-signature-hints => QueryResponseSignatureFieldHints,
-        other-tables-hints             => OtherFieldHints,
+        other-tables-hints             => OtherTablesFieldHints,
     }
     query-response-hints           = 0
     query-response-signature-hints = 1
@@ -1489,11 +1489,11 @@ collection-parameters = 1
       )
       QueryResponseSignatureFieldHints = uint .bits QueryResponseSignatureFieldHintValues
 
-      OtherTableFieldHintValues = &(
+      OtherTablesFieldHintValues = &(
           malformed-messages-table   : 0,
           address-event-counts-table : 1,
       )
-      OtherFieldHints = uint .bits OtherTableFieldHintValues
+      OtherTablesFieldHints = uint .bits OtherTablesFieldHintValues
 
     StorageFlagValues = &(
         anonymised-data      : 0,
@@ -1582,22 +1582,22 @@ total-malformed-messages     = 4
 ; Tables of common data referenced from records in a block.
 ;
 BlockTables = {
-    ? ip-address     => [+ IPAddress],
-    ? classtype      => [+ ClassType],
-    ? name-rdata     => [+ bstr],            ; Holds both Name RDATA and RDATA
-    ? qr-sig         => [+ QueryResponseSignature],
+    ? ip-address             => [+ IPAddress],
+    ? classtype              => [+ ClassType],
+    ? name-rdata             => [+ bstr],    ; Holds both Name RDATA and RDATA
+    ? qr-sig                 => [+ QueryResponseSignature],
     ? QuestionTables,
     ? RRTables,
     ? malformed-message-data => [+ MalformedMessageData],
 }
-ip-address     = 0
-classtype      = 1
-name-rdata     = 2
-qr-sig         = 3
-qlist          = 4
-qrr            = 5
-rrlist         = 6
-rr             = 7
+ip-address             = 0
+classtype              = 1
+name-rdata             = 2
+qr-sig                 = 3
+qlist                  = 4
+qrr                    = 5
+rrlist                 = 6
+rr                     = 7
 malformed-message-data = 8
 
 IPv4Address = bstr .size 4

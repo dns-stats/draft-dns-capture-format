@@ -282,7 +282,7 @@ a File Preamble. The File Preamble contains information on the file Format Versi
 
 The file header is followed by a series of data Blocks.
 
-A Block consists of a Block Preamble item, some Block Statistics 
+A Block consists of a Block Preamble item, some Block Statistics
 for the traffic stored within the Block and then various arrays of common data collectively called the Block Tables. This is then
 followed by an array of the Query/Response data items detailing the queries and responses
 stored within the Block. The array of Query/Response data items is in turn followed
@@ -296,10 +296,10 @@ however sample data for a root server indicated that block sizes up to
 ## Block Parameters
 
 The details of the Block Parameters items are not shown in the diagrams but are discussed
-here for context. 
+here for context.
 
 An array of Block Parameters items is stored in the File Preamble (with
-a minimum of one item at index 0); a Block Parameters item consists of a collection 
+a minimum of one item at index 0); a Block Parameters item consists of a collection
 of Storage and Collection Parameters that applies to any given Block.
 An array is used in order to support use cases such as wanting
 to merge C-DNS files from different sources. The Block Preamble item then
@@ -350,8 +350,8 @@ implementation is unlikely to be able to record the Client Hoplimit. Or, if
 there is no query ARCount recorded and no query OPT RDATA recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
 
-The Storage Parameters therefore also contains a Fields Hints item which specifies
-whether the encoder of the file recorded each data item if it was present. 
+The Storage Parameters therefore also contains a Storage Hints item which specifies
+whether the encoder of the file recorded each data item if it was present.
 An application decoding that file can then use
 these to quickly determine whether the input data is rich enough for its needs.
 
@@ -368,7 +368,7 @@ or whether it was specifically configured not to record it.
 
 For the case of unrecognised OPCODES the message may be parsable (for example,
 if it has a format similar enough to the one described in [@!RFC1035]) or it
-may not. See (#malformed-messages) for further discussion of storing partially parsed messages. 
+may not. See (#malformed-messages) for further discussion of storing partially parsed messages.
 
 ### Sampling and anonymisation
 
@@ -383,7 +383,7 @@ been normalised (e.g. converted to uniform case)?
 
 ### IP Address storage
 
-The format contains fields to indicate if only IP prefixes were stored. 
+The format contains fields to indicate if only IP prefixes were stored.
 If IP address prefixes are given, only the prefix bits of addresses
 are stored. For example, if a client IPv4 prefix of 16 is specified, a
 client address of 192.0.2.1 will be stored as 0xc000 (192.0), reducing
@@ -451,7 +451,7 @@ file-type-id | M | T | String "C-DNS" identifying the file type.
 ||
 file-preamble | M | M | Version and parameter information for the whole file. Map of type `FilePreamble`, see (#filepreamble).
 ||
-file-blocks | M | A | Array of items of type `Block`, see (#block). The array may be empty if the file contains no data. 
+file-blocks | M | A | Array of items of type `Block`, see (#block). The array may be empty if the file contains no data.
 
 ## "FilePreamble"
 
@@ -465,7 +465,7 @@ minor-format-version | M | U | Unsigned integer '0'. The minor version of format
 ||
 private-version | O | U | Version indicator available for private use by applications.
 ||
-block-parameters | M | A | Array of items of type `BlockParameters`, see (#blockparameters). The array must contain at least one entry. (The `block-parameters-index` item in each `BlockPreamble` indicates which array entry applies to that `Block`.) 
+block-parameters | M | A | Array of items of type `BlockParameters`, see (#blockparameters). The array must contain at least one entry. (The `block-parameters-index` item in each `BlockPreamble` indicates which array entry applies to that `Block`.)
 
 ### "BlockParameters"
 
@@ -487,7 +487,7 @@ ticks-per-second | M | U | Sub-second timing is recorded in ticks. This specifie
 ||
 max-block-items | M | U | The maximum number of items stored in any of the arrays in a `Block` item (Q/R items, address event counts or malformed messages). An indication to a decoder of the resources needed to process the file.
 ||
-field-hints | M | M | Collection of hints as to which fields are present in the arrays that have optional fields. Map of type `FieldHints`, see (#fieldhints).
+storage-hints | M | M | Collection of hints as to which fields are present in the arrays that have optional fields. Map of type `StorageHints`, see (#storagehints).
 ||
 opcodes | M | A | Array of OPCODES (unsigned integers) recorded by the collection application.
 ||
@@ -505,7 +505,7 @@ server-address -prefix-ipv4 | O | U | IPv4 server address prefix length. If spec
 ||
 server-address -prefix-ipv6 | O | U | IPv6 server address prefix length. If specified, only the address prefix bits are stored.
 
-##### "FieldHints"
+##### "StorageHints"
 
 An indicator of which fields the collecting application stores in the arrays with optional fields. A map containing the following:
 
@@ -550,13 +550,15 @@ query-response -signature-hints | M | U | Hints indicating which `QueryResponseS
  | | | Bit 15. query-opt-rdata
  | | | Bit 16. response-rcode
  | | |
-other-tables-hints | M | U | Hints indicating which other data types are stored. If the data type is stored the bit is set.
+other-data-hints | M | U | Hints indicating which other data types are stored. If the data type is stored the bit is set.
  | | | Bit 0. malformed-messages
- | | | Bit 1. address-event-countss
+ | | | Bit 1. address-event-counts
+
+TODO: Revise non-QueryResponse hints to cover optional fields in malformed message data maps.
 
 ### "CollectionParameters"
 
-Parameters relating to how data in the file was collected. 
+Parameters relating to how data in the file was collected.
 
 These parameters have no default. If they do not appear, nothing can be inferred about their value.
 
@@ -740,15 +742,15 @@ opt-rdata-index | O | U | The index in the `name-rdata` array  of the OPT RDATA.
 ||
 response-rcode | O | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 
-QUESTION: Currently we collect OPT RDATA as a blob as this is consistent with 
-and re-uses the generic mechanism for RDATA storage. Should we break individual 
-EDNS(0) options into Option code and data and store the data separately in a new 
-array within the Block type? This would potentially allow exploitation of option 
+QUESTION: Currently we collect OPT RDATA as a blob as this is consistent with
+and re-uses the generic mechanism for RDATA storage. Should we break individual
+EDNS(0) options into Option code and data and store the data separately in a new
+array within the Block type? This would potentially allow exploitation of option
 data commonality.
 
-QUESTION: No EDNS(0) option currently includes a name, however if one were to 
-include a name and permit name compression then both these mechanisms would 
-fail. 
+QUESTION: No EDNS(0) option currently includes a name, however if one were to
+include a name and permit name compression then both these mechanisms would
+fail.
 
 #### "Question"
 
@@ -792,7 +794,7 @@ mm-payload | O | B | The payload (raw bytes) of the DNS message.
 
 ## "QueryResponse"
 
-Details on individual Q/R data items. 
+Details on individual Q/R data items.
 
 Note that there is no requirement that the elements of the `query-responses` array are presented in strict chronological order.
 
@@ -821,7 +823,7 @@ query-size | O | U | DNS query message size (see below).
 response-size | O | U | DNS query message size (see below).
 ||
 response-processing -data | O | M | Data on response processing. Map of type `ResponseProcessingData`, see (#responseprocessingdata).
-|| 
+||
 query-extended | O | M | Extended Query data. Map of type `QueryResponseExtended`, see (#queryresponseextended).
 ||
 response-extended | O | M | Extended Response data. Map of type `QueryResponseExtended`, see (#queryresponseextended).
@@ -843,7 +845,7 @@ QUESTION: Should this be an item in the `QueryResponseSignature`?
 
 ### "QueryResponseExtended"
 
-Extended data on the Q/R data item.  
+Extended data on the Q/R data item.
 
 Each item in the map is present only if collection of the relevant details is configured.
 
@@ -941,10 +943,10 @@ matches and some additional statistics would be required (e.g. counts
 for matched-partially-malformed, unmatched-partially-malformed,
 completely-malformed).
 
-NOTE: Note that within these definitions a message that contained an 
-unrecognised OPCODE or RR code would be treated as malformed. It may be the case 
-that the OPCODE/RR is not recognised just because the implementation does not 
-support it yet, rather than it not being standardized. For the case of 
+NOTE: Note that within these definitions a message that contained an
+unrecognised OPCODE or RR code would be treated as malformed. It may be the case
+that the OPCODE/RR is not recognised just because the implementation does not
+support it yet, rather than it not being standardized. For the case of
 unrecognised OPCODES the message may be parsable (for example,
 if it has a format similar enough to the one described in [@!RFC1035]) or it
 may not. Similarly for unrecognised RR types the RDATA can still be stored, but
@@ -1111,7 +1113,7 @@ When ending capture, all remaining entries in the Q/R data item FIFO should be t
 
 Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of [RFC7049]) the following guidance may be of use to implementors.
 
-Adherence to the first two rules given in Section 3.9 of [RFC7049] will minimise file sizes. 
+Adherence to the first two rules given in Section 3.9 of [RFC7049] will minimise file sizes.
 
 Adherence to the second two rules given in Section 3.9 of [RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
 
@@ -1119,8 +1121,8 @@ NOTE: With this clarification to the use of Canonical CBOR, we could consider re
 
 ## Optional data
 
-When decoding data some items required for a particular function the consumer 
-wishes to perform may be missing. Consumers should consider providing configurable 
+When decoding data some items required for a particular function the consumer
+wishes to perform may be missing. Consumers should consider providing configurable
 default values to be used in place of the missing values in their output.
 
 ## Trailing data in TCP
@@ -1417,7 +1419,7 @@ collection-parameters = 1
   StorageParameters = {
       ticks-per-second             => uint,
       max-block-items              => uint,
-      field-hints                  => FieldHints,
+      storage-hints                => StorageHints,
       opcodes                      => [+ uint],
       rr-types                     => [+ uint],
       ? storage-flags              => StorageFlags,
@@ -1428,7 +1430,7 @@ collection-parameters = 1
   }
   ticks-per-second           = 0
   max-block-items            = 1
-  field-hints                = 2
+  storage-hints              = 2
   opcodes                    = 3
   rr-types                   = 4
   storage-flags              = 5
@@ -1438,17 +1440,17 @@ collection-parameters = 1
   server-address-prefix-ipv6 = 9
 
     ; A hint indicates if the collection method will output the
-    ; field or will ignore the field if present.
-    FieldHints = {
-        query-response-hints           => QueryResponseFieldHints,
-        query-response-signature-hints => QueryResponseSignatureFieldHints,
-        other-tables-hints             => OtherTablesFieldHints,
+    ; item or will ignore the item if present.
+    StorageHints = {
+        query-response-hints           => QueryResponseHints,
+        query-response-signature-hints => QueryResponseSignatureHints,
+        other-data-hints               => OtherDataHints,
     }
     query-response-hints           = 0
     query-response-signature-hints = 1
-    other-tables-hints             = 2
+    other-data-hints               = 2
 
-      QueryResponseFieldHintValues = &(
+      QueryResponseHintValues = &(
           time-offset                  : 0,
           client-address-index         : 1,
           client-port                  : 2,
@@ -1468,9 +1470,9 @@ collection-parameters = 1
           response-authority-sections  : 16,
           response-additional-sections : 17,
       )
-      QueryResponseFieldHints = uint .bits QueryResponseFieldHintValues
+      QueryResponseHints = uint .bits QueryResponseHintValues
 
-      QueryResponseSignatureFieldHintValues =&(
+      QueryResponseSignatureHintValues =&(
           server-address     : 0,
           server-port        : 1,
           transport-flags    : 2,
@@ -1489,13 +1491,13 @@ collection-parameters = 1
           query-opt-rdata    : 15,
           response-rcode     : 16,
       )
-      QueryResponseSignatureFieldHints = uint .bits QueryResponseSignatureFieldHintValues
+      QueryResponseSignatureHints = uint .bits QueryResponseSignatureHintValues
 
-      OtherTablesFieldHintValues = &(
-          malformed-messages-table   : 0,
-          address-event-counts-table : 1,
+      OtherDataHintValues = &(
+          malformed-messages   : 0,
+          address-event-counts : 1,
       )
-      OtherTablesFieldHints = uint .bits OtherTablesFieldHintValues
+      OtherDataHints = uint .bits OtherDataHintValues
 
     StorageFlagValues = &(
         anonymised-data      : 0,

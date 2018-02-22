@@ -534,7 +534,7 @@ query-response -hints | M | U | Hints indicating which `QueryResponse` fields ar
 query-response -signature-hints | M | U | Hints indicating which `QueryResponseSignature` fields are stored, see section (#queryresponsesignature). If the field is stored the bit is set.
  | | | Bit 0. server-address
  | | | Bit 1. server-port
- | | | Bit 2. transport-flags
+ | | | Bit 2. qr-transport-flags
  | | | Bit 3. qr-type
  | | | Bit 4. qr-sig-flags
  | | | Bit 5. query-opcode
@@ -682,7 +682,7 @@ server-address -index | O | U | The index in the item in the `ip-address` array 
 ||
 server-port | O | U | The server port.
 ||
-transport-flags | O | U | Bit flags describing the transport used to service the query.
+qr-transport-flags | O | U | Bit flags describing the transport used to service the query.
  | | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
  | | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
  | | | Bit 5. Trailing bytes in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.
@@ -1475,7 +1475,7 @@ collection-parameters = 1
       QueryResponseSignatureHintValues =&(
           server-address     : 0,
           server-port        : 1,
-          transport-flags    : 2,
+          qr-transport-flags : 2,
           qr-type            : 3,
           qr-sig-flags       : 4,
           query-opcode       : 5,
@@ -1618,7 +1618,7 @@ class = 1
 QueryResponseSignature = {
     ? server-address-index  => uint,
     ? server-port           => uint,
-    ? transport-flags       => TransportFlags,
+    ? qr-transport-flags    => QueryResponseTransportFlags,
     ? qr-type               => QueryResponseType,
     ? qr-sig-flags          => QueryResponseFlags,
     ? query-opcode          => uint,
@@ -1636,7 +1636,7 @@ QueryResponseSignature = {
 }
 server-address-index  = 0
 server-port           = 1
-transport-flags       = 2
+qr-transport-flags    = 2
 qr-type               = 3
 qr-sig-flags          = 4
 query-opcode          = 5
@@ -1662,9 +1662,13 @@ response-rcode        = 16
   TransportFlagValues = &(
       ip-version         : 0,     ; 0=IPv4, 1=IPv6
       ; Transport value bits 1-4
-      query-trailingdata : 5,
   ) / (1..4)
   TransportFlags = uint .bits TransportFlagValues
+
+  QueryResponseTransportFlagValues = &(
+      query-trailingdata : 5,
+  ) / TransportFlagValues
+  QueryResponseTransportFlags = uint .bits QueryResponseTransportFlagValues
 
   QueryResponseType = &(
       stub      : 0,
@@ -1738,18 +1742,12 @@ RRTables = (
 MalformedMessageData = {
     ? server-address-index   => uint,
     ? server-port            => uint,
-    ? mm-transport-flags     => MalformedTransportFlags,
+    ? mm-transport-flags     => TransportFlags,
     ? mm-payload             => bstr,
 }
 ; Other map key values already defined above.
 mm-transport-flags      = 2
 mm-payload              = 3
-
-  MalformedTransportFlagValues = &(
-      ip-version         : 0,     ; 0=IPv4, 1=IPv6
-      ; Transport value bits 1-4
-  ) / (1..4)
-  MalformedTransportFlags = uint .bits MalformedTransportFlagValues
 
 ;
 ; A single query/response pair.

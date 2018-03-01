@@ -469,7 +469,7 @@ block-parameters | M | A | Array of items of type `BlockParameters`, see (#block
 
 ### "BlockParameters"
 
-Parameters relating to data storage and collection which apply to one or more items of type `Block`. An array containing the following:
+Parameters relating to data storage and collection which apply to one or more items of type `Block`. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -1211,6 +1211,7 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 draft-ietf-dnsop-dns-capture-format-06
 
+* Correct BlockParameters type to map
 * Editorial clarifications and improvements
 
 draft-ietf-dnsop-dns-capture-format-05

@@ -1115,7 +1115,7 @@ Whilst this document makes no specific recommendations with respect to Canonical
 
 Adherence to the first two rules given in Section 3.9 of [RFC7049] will minimise file sizes.
 
-Adherence to the second two rules given in Section 3.9 of [RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
+Adherence to the last two rules given in Section 3.9 of [RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
 
 NOTE: With this clarification to the use of Canonical CBOR, we could consider re-ordering fields in maps to improve readability.
 

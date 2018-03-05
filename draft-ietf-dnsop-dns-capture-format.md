@@ -399,8 +399,9 @@ The CDDL definition for the C-DNS format is given in (#cddl).
 All map keys are integers with values specified in the CDDL. String keys
 would significantly bloat the file size.
 
-All key values specified are positive integers under 24,
-so their CBOR representation is a single byte.
+All key values specified are positive integers under 24, so their CBOR
+representation is a single byte. Positive integer values not currently
+used as keys in a map are reserved for use in future standard extensions.
 
 Implementations may choose to add additional implementation-specific
 entries to any map. Negative integer map keys are reserved for these

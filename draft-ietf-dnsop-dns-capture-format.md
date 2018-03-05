@@ -2,12 +2,12 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-ietf-dnsop-dns-capture-format-05"
+    docName= "draft-ietf-dnsop-dns-capture-format-06"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2018-02-21T00:00:00Z
+    date = 2018-03-05T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -268,13 +268,13 @@ The following figures show purely schematic representations of the C-DNS format 
 structure of the C-DNS format. (#cdns-format-detailed-description) provides a detailed discussion of the CBOR representation
 and individual elements.
 
-![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/cdns_format.png)
+![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/cdns_format.png)
 
-![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/cdns_format.svg)
+![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/cdns_format.svg)
 
-![Figure showing the Query/Response data item and Block Tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.png)
+![Figure showing the Query/Response data item and Block Tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/qr_data_format.png)
 
-![Figure showing the Query/Response item and Block Tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/qr_data_format.svg)
+![Figure showing the Query/Response item and Block Tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/qr_data_format.svg)
 
 A C-DNS file begins with a file header containing a File Type Identifier and
 a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items
@@ -318,7 +318,8 @@ These parameters include:
 * The sub-second timing resolution used by the data.
 * Information (hints) on which optional data items can be expected to appear in the data. See (#optional-data-items).
 * Recorded OPCODES and RR types. See (#optional-rrs-and-opcodes).
-* Flags indicating whether the data is sampled or anonymised. See (#sampling-and-anonymisation).
+* Flags indicating, for example, whether the data is sampled or anonymised.
+  See (#storage-flags).
 * Client and server IPv4 and IPv6 address prefixes. See (#ip-address-storage)
 
 ### Optional data items
@@ -366,20 +367,27 @@ OPCODES that were recorded. Using an explicit array removes any ambiguity about
 whether the OPCODE/RR type was not recognised by the collecting implementation
 or whether it was specifically configured not to record it.
 
+In the case of RR records, each record must be parsable, including
+parsing the record RDATA, to determine whether it is correctly
+formed. Otherwise it has to be regarded as at least potentially
+partially malformed. See (#malformed-messages) for further discussion of storing
+partially parsed messages.
+
 For the case of unrecognised OPCODES the message may be parsable (for example,
 if it has a format similar enough to the one described in [@!RFC1035]) or it
 may not. See (#malformed-messages) for further discussion of storing partially parsed messages.
 
-### Sampling and anonymisation
+### Storage flags
 
-The format contains flags that can be used to indicate if the data is either
-anonymised or produced from sample data.
+The Storage Parameters contains flags that can be used to indicate if:
+* the data is anonymised,
+* the data is produced from sample data, or
+* names in the data have been normalised (converted to uniform case).
 
-QUESTION: Should fields be added to indicate the sampling/anonymisation method
-used? If so, it is proposed to use a text string and RECOMMEND it contain a URI pointing to a resource describing the method used.
-
-QUESTION: Should there be another flag to indicate that names have
-been normalised (e.g. converted to uniform case)?
+The Storage Parameters also contains optional fields holding details
+of the sampling method used and the anonymisation method used. It is
+RECOMMENDED these fields contain URIs pointing to resources
+describing the methods used.
 
 ### IP Address storage
 
@@ -398,8 +406,9 @@ The CDDL definition for the C-DNS format is given in (#cddl).
 All map keys are integers with values specified in the CDDL. String keys
 would significantly bloat the file size.
 
-All key values specified are positive integers under 24,
-so their CBOR representation is a single byte.
+All key values specified are positive integers under 24, so their CBOR
+representation is a single byte. Positive integer values not currently
+used as keys in a map are reserved for use in future standard extensions.
 
 Implementations may choose to add additional implementation-specific
 entries to any map. Negative integer map keys are reserved for these
@@ -469,7 +478,7 @@ block-parameters | M | A | Array of items of type `BlockParameters`, see (#block
 
 ### "BlockParameters"
 
-Parameters relating to data storage and collection which apply to one or more items of type `Block`. An array containing the following:
+Parameters relating to data storage and collection which apply to one or more items of type `Block`. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -489,13 +498,14 @@ max-block-items | M | U | The maximum number of items stored in any of the array
 ||
 storage-hints | M | M | Collection of hints as to which fields are present in the arrays that have optional fields. Map of type `StorageHints`, see (#storagehints).
 ||
-opcodes | M | A | Array of OPCODES (unsigned integers) recorded by the collection application.
+opcodes | M | A | Array of OPCODES (unsigned integers) recorded by the collection application. See (#optional-rrs-and-opcodes).
 ||
-rr-types | M | A | Array of RR types (unsigned integers) recorded by the collection application.
+rr-types | M | A | Array of RR types (unsigned integers) recorded by the collection application. See (#optional-rrs-and-opcodes).
 ||
 storage-flags | O | U | Bit flags indicating attributes of stored data.
  | | | Bit 0. The data has been anonymised.
  | | | Bit 1. The data is sampled data.
+ | | | Bit 2. Names have been normalised (converted to uniform case).
 ||
 client-address -prefix-ipv4 | O | U | IPv4 client address prefix length. If specified, only the address prefix bits are stored.
 ||
@@ -504,6 +514,10 @@ client-address -prefix-ipv6 | O | U | IPv6 client address prefix length. If spec
 server-address -prefix-ipv4 | O | U | IPv4 server address prefix length. If specified, only the address prefix bits are stored.
 ||
 server-address -prefix-ipv6 | O | U | IPv6 server address prefix length. If specified, only the address prefix bits are stored.
+||
+sampling-method | O | T | Information on the sampling method used. See (#storage-flags).
+||
+anonymisation -method | O | T | Information on the anonymisation method used. See (#storage-flags).
 
 ##### "StorageHints"
 
@@ -550,6 +564,8 @@ query-response -signature-hints | M | U | Hints indicating which `QueryResponseS
  | | | Bit 15. query-opt-rdata
  | | | Bit 16. response-rcode
  | | |
+rr-hints | M | U | Hints indicating which optional `RR` fields are stored, see (#rr). If the data type is stored the bit is set.
+ | | | Bit 0. ttl
 other-data-hints | M | U | Hints indicating which other data types are stored. If the data type is stored the bit is set.
  | | | Bit 0. malformed-messages
  | | | Bit 1. address-event-counts
@@ -748,10 +764,6 @@ EDNS(0) options into Option code and data and store the data separately in a new
 array within the Block type? This would potentially allow exploitation of option
 data commonality.
 
-QUESTION: No EDNS(0) option currently includes a name, however if one were to
-include a name and permit name compression then both these mechanisms would
-fail.
-
 #### "Question"
 
 Details on individual Questions in a Question section. A map containing the following:
@@ -772,7 +784,7 @@ name-index | M | U | The index in the `name-rdata` array of the NAME. See (#bloc
 ||
 classtype-index | M | U | The index in the `classtype` array of the CLASS and TYPE of the RR. See (#blocktables).
 ||
-ttl | M | U | The RR Time to Live.
+ttl | O | U | The RR Time to Live.
 ||
 rdata-index | M | U | The index in the `name-rdata` array of the RR RDATA. See (#blocktables).
 
@@ -1045,9 +1057,9 @@ TODO: Discuss the corner cases resulting from this in more detail.
 
 A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
-![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/packet_matching.png)
+![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/packet_matching.png)
 
-![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-05/packet_matching.svg)
+![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/packet_matching.svg)
 
 Further details of the algorithm are given in the following sections.
 
@@ -1115,7 +1127,7 @@ Whilst this document makes no specific recommendations with respect to Canonical
 
 Adherence to the first two rules given in Section 3.9 of [RFC7049] will minimise file sizes.
 
-Adherence to the second two rules given in Section 3.9 of [RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
+Adherence to the last two rules given in Section 3.9 of [RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
 
 NOTE: With this clarification to the use of Canonical CBOR, we could consider re-ordering fields in maps to improve readability.
 
@@ -1208,6 +1220,14 @@ Thanks also to Robert Edmonds, Jerry Lundström, Richard Gibson, Stephane Bortzm
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+
+draft-ietf-dnsop-dns-capture-format-06
+
+* Correct BlockParameters type to map
+* Make RR ttl optional
+* Add storage flag indicating name normalisation
+* Add storage parameter fields for sampling and anonymisation methods
+* Editorial clarifications and improvements
 
 draft-ietf-dnsop-dns-capture-format-05
 
@@ -1427,6 +1447,8 @@ collection-parameters = 1
       ? client-address-prefix-ipv6 => uint,
       ? server-address-prefix-ipv4 => uint,
       ? server-address-prefix-ipv6 => uint,
+      ? sampling-method            => tstr,
+      ? anonymisation-method       => tstr,
   }
   ticks-per-second           = 0
   max-block-items            = 1
@@ -1438,17 +1460,21 @@ collection-parameters = 1
   client-address-prefix-ipv6 = 7
   server-address-prefix-ipv4 = 8
   server-address-prefix-ipv6 = 9
+  sampling-method            = 10
+  anonymisation-method       = 11
 
     ; A hint indicates if the collection method will output the
     ; item or will ignore the item if present.
     StorageHints = {
         query-response-hints           => QueryResponseHints,
         query-response-signature-hints => QueryResponseSignatureHints,
+        rr-hints                       => RRHints,
         other-data-hints               => OtherDataHints,
     }
     query-response-hints           = 0
     query-response-signature-hints = 1
-    other-data-hints               = 2
+    rr-hints                       = 2
+    other-data-hints               = 3
 
       QueryResponseHintValues = &(
           time-offset                  : 0,
@@ -1493,6 +1519,11 @@ collection-parameters = 1
       )
       QueryResponseSignatureHints = uint .bits QueryResponseSignatureHintValues
 
+      RRHintValues = &(
+          ttl   : 0,
+      )
+      RRHints = uint .bits RRHintValues
+
       OtherDataHintValues = &(
           malformed-messages   : 0,
           address-event-counts : 1,
@@ -1502,6 +1533,7 @@ collection-parameters = 1
     StorageFlagValues = &(
         anonymised-data      : 0,
         sampled-data         : 1,
+        normalised-names     : 2,
     )
     StorageFlags = uint .bits StorageFlagValues
 
@@ -1732,7 +1764,7 @@ RRTables = (
   RR = {
       name-index      => uint,          ; Index to a name in the name-rdata table
       classtype-index => uint,
-      ttl             => uint,
+      ? ttl           => uint,
       rdata-index     => uint,          ; Index to RDATA in the name-rdata table
   }
   ; Other map key values already defined above.

@@ -550,6 +550,8 @@ query-response -signature-hints | M | U | Hints indicating which `QueryResponseS
  | | | Bit 15. query-opt-rdata
  | | | Bit 16. response-rcode
  | | |
+rr-hints | M | U | Hints indicating which optional `RR` fields are stored, see section (#rr). If the data type is stored the bit is set.
+ | | | Bit 0. ttl
 other-data-hints | M | U | Hints indicating which other data types are stored. If the data type is stored the bit is set.
  | | | Bit 0. malformed-messages
  | | | Bit 1. address-event-counts
@@ -772,7 +774,7 @@ name-index | M | U | The index in the `name-rdata` array of the NAME. See (#bloc
 ||
 classtype-index | M | U | The index in the `classtype` array of the CLASS and TYPE of the RR. See (#blocktables).
 ||
-ttl | M | U | The RR Time to Live.
+ttl | O | U | The RR Time to Live.
 ||
 rdata-index | M | U | The index in the `name-rdata` array of the RR RDATA. See (#blocktables).
 
@@ -1449,11 +1451,13 @@ collection-parameters = 1
     StorageHints = {
         query-response-hints           => QueryResponseHints,
         query-response-signature-hints => QueryResponseSignatureHints,
+        rr-hints                       => RRHints,
         other-data-hints               => OtherDataHints,
     }
     query-response-hints           = 0
     query-response-signature-hints = 1
-    other-data-hints               = 2
+    rr-hints                       = 2
+    other-data-hints               = 3
 
       QueryResponseHintValues = &(
           time-offset                  : 0,
@@ -1497,6 +1501,11 @@ collection-parameters = 1
           response-rcode     : 16,
       )
       QueryResponseSignatureHints = uint .bits QueryResponseSignatureHintValues
+
+      RRHintValues = &(
+          ttl   : 0,
+      )
+      RRHints = uint .bits RRHintValues
 
       OtherDataHintValues = &(
           malformed-messages   : 0,
@@ -1737,7 +1746,7 @@ RRTables = (
   RR = {
       name-index      => uint,          ; Index to a name in the name-rdata table
       classtype-index => uint,
-      ttl             => uint,
+      ? ttl           => uint,
       rdata-index     => uint,          ; Index to RDATA in the name-rdata table
   }
   ; Other map key values already defined above.

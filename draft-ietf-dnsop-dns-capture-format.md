@@ -318,7 +318,8 @@ These parameters include:
 * The sub-second timing resolution used by the data.
 * Information (hints) on which optional data items can be expected to appear in the data. See (#optional-data-items).
 * Recorded OPCODES and RR types. See (#optional-rrs-and-opcodes).
-* Flags indicating whether the data is sampled or anonymised. See (#sampling-and-anonymisation).
+* Flags indicating whether the data is sampled or anonymised or whether names are normalised.
+  See (#sampling-anonymisation-and-normalisation).
 * Client and server IPv4 and IPv6 address prefixes. See (#ip-address-storage)
 
 ### Optional data items
@@ -370,16 +371,14 @@ For the case of unrecognised OPCODES the message may be parsable (for example,
 if it has a format similar enough to the one described in [@!RFC1035]) or it
 may not. See (#malformed-messages) for further discussion of storing partially parsed messages.
 
-### Sampling and anonymisation
+### Sampling, anonymisation and normalisation
 
 The format contains flags that can be used to indicate if the data is either
-anonymised or produced from sample data.
+anonymised or produced from sample data, or whether names in the data have
+been normalised (converted to uniform case).
 
 QUESTION: Should fields be added to indicate the sampling/anonymisation method
 used? If so, it is proposed to use a text string and RECOMMEND it contain a URI pointing to a resource describing the method used.
-
-QUESTION: Should there be another flag to indicate that names have
-been normalised (e.g. converted to uniform case)?
 
 ### IP Address storage
 
@@ -496,6 +495,7 @@ rr-types | M | A | Array of RR types (unsigned integers) recorded by the collect
 storage-flags | O | U | Bit flags indicating attributes of stored data.
  | | | Bit 0. The data has been anonymised.
  | | | Bit 1. The data is sampled data.
+ | | | Bit 2. Names have been normalised (converted to uniform case).
 ||
 client-address -prefix-ipv4 | O | U | IPv4 client address prefix length. If specified, only the address prefix bits are stored.
 ||
@@ -1516,6 +1516,7 @@ collection-parameters = 1
     StorageFlagValues = &(
         anonymised-data      : 0,
         sampled-data         : 1,
+        normalised-names     : 2,
     )
     StorageFlags = uint .bits StorageFlagValues
 

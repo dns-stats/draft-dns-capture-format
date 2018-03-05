@@ -373,12 +373,14 @@ may not. See (#malformed-messages) for further discussion of storing partially p
 
 ### Sampling, anonymisation and normalisation
 
-The format contains flags that can be used to indicate if the data is either
+The Storage Parameters contains flags that can be used to indicate if the data is either
 anonymised or produced from sample data, or whether names in the data have
 been normalised (converted to uniform case).
 
-QUESTION: Should fields be added to indicate the sampling/anonymisation method
-used? If so, it is proposed to use a text string and RECOMMEND it contain a URI pointing to a resource describing the method used.
+The Storage Parameters also contains optional fields holding details
+of the sampling method used and the anonymisation method used. It is
+RECOMMENDED these fields contain URIs pointing to resources
+describing the methods used.
 
 ### IP Address storage
 
@@ -504,6 +506,10 @@ client-address -prefix-ipv6 | O | U | IPv6 client address prefix length. If spec
 server-address -prefix-ipv4 | O | U | IPv4 server address prefix length. If specified, only the address prefix bits are stored.
 ||
 server-address -prefix-ipv6 | O | U | IPv6 server address prefix length. If specified, only the address prefix bits are stored.
+||
+sampling-method | O | T | Information on the sampling method used. See (#sampling-anonymisation-and-normalisation).
+||
+anonymisation-method | O | T | Information on the anonymisation method used. See (#sampling-anonymisation-and-normalisation).
 
 ##### "StorageHints"
 
@@ -1434,6 +1440,8 @@ collection-parameters = 1
       ? client-address-prefix-ipv6 => uint,
       ? server-address-prefix-ipv4 => uint,
       ? server-address-prefix-ipv6 => uint,
+      ? sampling-method            => tstr,
+      ? anonymisation-method       => tstr,
   }
   ticks-per-second           = 0
   max-block-items            = 1
@@ -1445,6 +1453,8 @@ collection-parameters = 1
   client-address-prefix-ipv6 = 7
   server-address-prefix-ipv4 = 8
   server-address-prefix-ipv6 = 9
+  sampling-method            = 10
+  anonymisation-method       = 11
 
     ; A hint indicates if the collection method will output the
     ; item or will ignore the item if present.

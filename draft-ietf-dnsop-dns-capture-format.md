@@ -318,8 +318,8 @@ These parameters include:
 * The sub-second timing resolution used by the data.
 * Information (hints) on which optional data items can be expected to appear in the data. See (#optional-data-items).
 * Recorded OPCODES and RR types. See (#optional-rrs-and-opcodes).
-* Flags indicating whether the data is sampled or anonymised or whether names are normalised.
-  See (#sampling-anonymisation-and-normalisation).
+* Flags indicating, for example, whether the data is sampled or anonymised.
+  See (#storage-flags).
 * Client and server IPv4 and IPv6 address prefixes. See (#ip-address-storage)
 
 ### Optional data items
@@ -377,11 +377,12 @@ For the case of unrecognised OPCODES the message may be parsable (for example,
 if it has a format similar enough to the one described in [@!RFC1035]) or it
 may not. See (#malformed-messages) for further discussion of storing partially parsed messages.
 
-### Sampling, anonymisation and normalisation
+### Storage flags
 
-The Storage Parameters contains flags that can be used to indicate if the data is either
-anonymised or produced from sample data, or whether names in the data have
-been normalised (converted to uniform case).
+The Storage Parameters contains flags that can be used to indicate if:
+* the data is anonymised,
+* the data is produced from sample data, or
+* names in the data have been normalised (converted to uniform case).
 
 The Storage Parameters also contains optional fields holding details
 of the sampling method used and the anonymisation method used. It is
@@ -514,9 +515,9 @@ server-address -prefix-ipv4 | O | U | IPv4 server address prefix length. If spec
 ||
 server-address -prefix-ipv6 | O | U | IPv6 server address prefix length. If specified, only the address prefix bits are stored.
 ||
-sampling-method | O | T | Information on the sampling method used. See (#sampling-anonymisation-and-normalisation).
+sampling-method | O | T | Information on the sampling method used. See (#storage-flags).
 ||
-anonymisation-method | O | T | Information on the anonymisation method used. See (#sampling-anonymisation-and-normalisation).
+anonymisation-method | O | T | Information on the anonymisation method used. See (#storage-flags).
 
 ##### "StorageHints"
 
@@ -762,10 +763,6 @@ and re-uses the generic mechanism for RDATA storage. Should we break individual
 EDNS(0) options into Option code and data and store the data separately in a new
 array within the Block type? This would potentially allow exploitation of option
 data commonality.
-
-QUESTION: No EDNS(0) option currently includes a name, however if one were to
-include a name and permit name compression then both these mechanisms would
-fail.
 
 #### "Question"
 

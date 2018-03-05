@@ -367,6 +367,12 @@ OPCODES that were recorded. Using an explicit array removes any ambiguity about
 whether the OPCODE/RR type was not recognised by the collecting implementation
 or whether it was specifically configured not to record it.
 
+In the case of RR records, each record must be parsable, including
+parsing the record RDATA, to determine whether it is correctly
+formed. Otherwise it has to be regarded as at least potentially
+partially malformed. See (#malformed-messages) for further discussion of storing
+partially parsed messages.
+
 For the case of unrecognised OPCODES the message may be parsable (for example,
 if it has a format similar enough to the one described in [@!RFC1035]) or it
 may not. See (#malformed-messages) for further discussion of storing partially parsed messages.
@@ -491,9 +497,9 @@ max-block-items | M | U | The maximum number of items stored in any of the array
 ||
 storage-hints | M | M | Collection of hints as to which fields are present in the arrays that have optional fields. Map of type `StorageHints`, see (#storagehints).
 ||
-opcodes | M | A | Array of OPCODES (unsigned integers) recorded by the collection application.
+opcodes | M | A | Array of OPCODES (unsigned integers) recorded by the collection application. See (#optional-rrs-and-opcodes).
 ||
-rr-types | M | A | Array of RR types (unsigned integers) recorded by the collection application.
+rr-types | M | A | Array of RR types (unsigned integers) recorded by the collection application. See (#optional-rrs-and-opcodes).
 ||
 storage-flags | O | U | Bit flags indicating attributes of stored data.
  | | | Bit 0. The data has been anonymised.

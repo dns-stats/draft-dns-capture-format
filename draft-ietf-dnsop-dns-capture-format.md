@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2018-02-21T00:00:00Z
+    date = 2018-03-05T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -517,7 +517,7 @@ server-address -prefix-ipv6 | O | U | IPv6 server address prefix length. If spec
 ||
 sampling-method | O | T | Information on the sampling method used. See (#storage-flags).
 ||
-anonymisation-method | O | T | Information on the anonymisation method used. See (#storage-flags).
+anonymisation -method | O | T | Information on the anonymisation method used. See (#storage-flags).
 
 ##### "StorageHints"
 
@@ -564,7 +564,7 @@ query-response -signature-hints | M | U | Hints indicating which `QueryResponseS
  | | | Bit 15. query-opt-rdata
  | | | Bit 16. response-rcode
  | | |
-rr-hints | M | U | Hints indicating which optional `RR` fields are stored, see section (#rr). If the data type is stored the bit is set.
+rr-hints | M | U | Hints indicating which optional `RR` fields are stored, see (#rr). If the data type is stored the bit is set.
  | | | Bit 0. ttl
 other-data-hints | M | U | Hints indicating which other data types are stored. If the data type is stored the bit is set.
  | | | Bit 0. malformed-messages

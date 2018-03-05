@@ -1227,6 +1227,9 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 draft-ietf-dnsop-dns-capture-format-06
 
 * Correct BlockParameters type to map
+* Make RR ttl optional
+* Add storage flag indicating name normalisation
+* Add storage parameter fields for sampling and anonymisation methods
 * Editorial clarifications and improvements
 
 draft-ietf-dnsop-dns-capture-format-05

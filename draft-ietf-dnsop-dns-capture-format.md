@@ -2,7 +2,7 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-ietf-dnsop-dns-capture-format-06"
+    docName= "draft-ietf-dnsop-dns-capture-format-07"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"
@@ -268,13 +268,13 @@ The following figures show purely schematic representations of the C-DNS format 
 structure of the C-DNS format. (#cdns-format-detailed-description) provides a detailed discussion of the CBOR representation
 and individual elements.
 
-![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/cdns_format.png)
+![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-07/cdns_format.png)
 
-![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/cdns_format.svg)
+![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-07/cdns_format.svg)
 
-![Figure showing the Query/Response data item and Block Tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/qr_data_format.png)
+![Figure showing the Query/Response data item and Block Tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-07/qr_data_format.png)
 
-![Figure showing the Query/Response item and Block Tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/qr_data_format.svg)
+![Figure showing the Query/Response item and Block Tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-07/qr_data_format.svg)
 
 A C-DNS file begins with a file header containing a File Type Identifier and
 a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items
@@ -1220,6 +1220,8 @@ Thanks also to Robert Edmonds, Jerry Lundström, Richard Gibson, Stephane Bortzm
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+
+draft-ietf-dnsop-dns-capture-format-07
 
 draft-ietf-dnsop-dns-capture-format-06
 

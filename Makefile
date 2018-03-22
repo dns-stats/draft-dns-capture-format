@@ -4,7 +4,7 @@
 # - unoconv (https://github.com/dagwieers/unoconv)
 
 DRAFT=draft-ietf-dnsop-dns-capture-format
-VERSION=06
+VERSION=07
 
 OUTDIR=draft-$(VERSION)
 

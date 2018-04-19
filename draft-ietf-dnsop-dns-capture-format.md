@@ -1040,26 +1040,37 @@ algorithms used by well-known name server software.
 # Data collection
 
 This section describes a non-normative proposed algorithm for the processing of a captured stream of DNS queries and
-responses and matching queries/responses where possible.
+responses and production of a stream of query/response items, matching queries/responses where possible.
 
 For the purposes of this discussion, it is assumed that the input has been pre-processed such that:
 
 1. All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed
 1. Each message is associated with transport metadata required to generate the Primary ID (see (#primary-id))
-1. Each message has a well-formed DNS header of 12 bytes and (if present) the first Question in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
+1. Each message has a well-formed DNS header of 12 bytes and (if present) the first Question in the Question section can be
+parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being
+removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
 
 DNS messages are processed in the order they are delivered to the application.
-It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
 
-TODO: Discuss the corner cases resulting from this in more detail.
+It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
+This can, for example, arise on multi-core platforms where packets arriving at a network device
+are processed by different cores. On systems where this behaviour has been observed, the timestamps associated
+with each packet are consistent; queries always have a timestamp prior to the response timestamp.
+However, the order in which these packets are collected by the packet capture is not necessarily
+strictly choronological; a response can appear in the capture stream before the query that provoked
+the response. For this discussion, this non-chronological delivery is termed "skew".
+
+In the presence of skew, a response packets can arrive for matching before the corresponding query. To avoid
+generating false instances of responses without a matching query, and queries without a matching response,
+the matching algorithm must take account of the possibility of skew.
 
 ## Matching algorithm
 
 A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
-![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/packet_matching.png)
+![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-07/packet_matching.png)
 
-![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/packet_matching.svg)
+![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-07/packet_matching.svg)
 
 Further details of the algorithm are given in the following sections.
 
@@ -1085,8 +1096,10 @@ with RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used in matc
 
 ## Algorithm parameters
 
-1. Query timeout
-2. Skew timeout
+1. Query timeout. If no response matching a query has arrived before input arrives timestamped later than the query timestamp
+plus the query timeout, a query-only query/response item is generated. Typically a small number of seconds.
+2. Skew timeout. If a response has not been matched by a query before input arrives timestamped later than the response
+timestamp plus the skew timeout, a response-only query/response item is generated. Typically a small number of microseconds.
 
 ## Algorithm requirements
 

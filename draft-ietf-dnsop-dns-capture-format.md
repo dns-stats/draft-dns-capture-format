@@ -230,8 +230,6 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
       Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
     * It is anticipated that the files produced can be subject to further compression using general purpose compression tools.
       Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
-    * [TODO: Further discussion of commonality between DNS messages e.g. common query signatures, a finite set of
-      valid responses from authoritatives]
 
 4. Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.

@@ -564,6 +564,7 @@ query-response -signature-hints | M | U | Hints indicating which `QueryResponseS
  | | |
 rr-hints | M | U | Hints indicating which optional `RR` fields are stored, see (#rr). If the data type is stored the bit is set.
  | | | Bit 0. ttl
+ | | | Bit 1. rdata-index
 other-data-hints | M | U | Hints indicating which other data types are stored. If the data type is stored the bit is set.
  | | | Bit 0. malformed-messages
  | | | Bit 1. address-event-counts
@@ -784,7 +785,7 @@ classtype-index | M | U | The index in the `classtype` array of the CLASS and TY
 ||
 ttl | O | U | The RR Time to Live.
 ||
-rdata-index | M | U | The index in the `name-rdata` array of the RR RDATA. See (#blocktables).
+rdata-index | O | U | The index in the `name-rdata` array of the RR RDATA. See (#blocktables).
 
 #### "MalformedMessageData"
 
@@ -1533,7 +1534,8 @@ collection-parameters = 1
       QueryResponseSignatureHints = uint .bits QueryResponseSignatureHintValues
 
       RRHintValues = &(
-          ttl   : 0,
+          ttl         : 0,
+          rdata-index : 1,
       )
       RRHints = uint .bits RRHintValues
 
@@ -1778,7 +1780,7 @@ RRTables = (
       name-index      => uint,          ; Index to a name in the name-rdata table
       classtype-index => uint,
       ? ttl           => uint,
-      rdata-index     => uint,          ; Index to RDATA in the name-rdata table
+      ? rdata-index   => uint,          ; Index to RDATA in the name-rdata table
   }
   ; Other map key values already defined above.
   ttl         = 2

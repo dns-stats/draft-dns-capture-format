@@ -703,7 +703,7 @@ server-port | O | U | The server port.
 qr-transport-flags | O | U | Bit flags describing the transport used to service the query.
  | | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
  | | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
- | | | Bit 5. Trailing bytes in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.
+ | | | Bit 5. Trailing data in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.
 ||
 qr-type | O | U | Type of Query/Response transaction.
  | | | 0 = Stub. A query from a stub resolver.
@@ -1155,19 +1155,19 @@ When decoding data some items required for a particular function the consumer
 wishes to perform may be missing. Consumers should consider providing configurable
 default values to be used in place of the missing values in their output.
 
-## Trailing bytes in TCP
+## Trailing data in TCP
 
 When DNS traffic is sent over TCP, each message is prefixed with a two byte length field, which
 gives the message length, excluding the two byte length field. In this context, trailing bytes
 can be considered to occur in two circumstances.
 
 1. The number of bytes consumed by fully parsing the message is less than the number of
-   bytes given in the length field. In this case, the surplus bytes are considered trailing bytes
+   bytes given in the length field. In this case, the surplus bytes are considered trailing data
    and recorded as such.
 2. There are surplus bytes between the end of the message and the start of the next length field.
    In this case the first of the surplus bytes will be considered as the first byte of the
    next length field, and parsing will proceed from there, most probably leading to a malformed
-   message. This will not generate any trailing bytes record.
+   message. This will not generate any trailing data record.
 
 ## Limiting collection of RDATA
 

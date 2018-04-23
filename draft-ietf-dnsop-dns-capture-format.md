@@ -639,11 +639,14 @@ total-messages | O | U | Total number of DNS messages processed from the input t
 | | |
 total-pairs | O | U | Total number of Q/R data items in this `Block` item.
 | | |
-unmatched-queries | O | U | Number of unmatched queries in this `Block` item.
+total-unmatched-queries | O | U | Number of unmatched queries in this `Block` item.
 | | |
-unmatched-responses | O | U | Number of unmatched responses in this `Block` item.
+total-unmatched-responses | O | U | Number of unmatched responses in this `Block` item.
 | | |
-malformed-messages | O | U | Number of malformed messages found in input for this `Block` item.
+total-discared-messages | O | U | Number of messages found in input for this `Block` item but not recorded
+because their OPCODE is not one of those to be collected.
+| | |
+total-malformed-messages | O | U | Number of malformed messages found in input for this `Block` item.
 
 ### "BlockTables"
 
@@ -1632,13 +1635,15 @@ BlockStatistics = {
     ? total-pairs               => uint,
     ? total-unmatched-queries   => uint,
     ? total-unmatched-responses => uint,
+    ? total-discarded-messages  => uint,
     ? total-malformed-messages  => uint,
 }
 total-messages               = 0
 total-pairs                  = 1
 total-unmatched-queries      = 2
 total-unmatched-responses    = 3
-total-malformed-messages     = 4
+total-discarded-messages     = 4
+total-malformed-messages     = 5
 
 ;
 ; Tables of common data referenced from records in a block.

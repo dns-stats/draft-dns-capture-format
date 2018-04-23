@@ -1149,11 +1149,19 @@ When decoding data some items required for a particular function the consumer
 wishes to perform may be missing. Consumers should consider providing configurable
 default values to be used in place of the missing values in their output.
 
-## Trailing data in TCP
+## Trailing bytes in TCP
 
-TODO: Clarify the impact of processing wire captures which includes
-trailing data in TCP. What will appear as trailing data, what will appear
-as malformed messages?
+When DNS traffic is sent over TCP, each message is prefixed with a two byte length field, which
+gives the message length, excluding the two byte length field. In this context, trailing bytes
+can be considered to occur in two circumstances.
+
+1. The number of bytes consumed by fully parsing the message is less than the number of
+   bytes given in the length field. In this case, the surplus bytes are considered trailing bytes
+   and recorded as such.
+2. There are surplus bytes between the end of the message and the start of the next length field.
+   In this case the first of the surplus bytes will be considered as the first byte of the
+   next length field, and parsing will proceed from there, most probably leading to a malformed
+   message. This will not generate any trailing bytes record.
 
 ## Limiting collection of RDATA
 

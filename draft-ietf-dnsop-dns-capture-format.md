@@ -215,6 +215,17 @@ the Question section from the response, if present, as an identifying QNAME).
       Also, combining the Query and Response into one item often reduces storage requirements due to
       commonality in the data of the two messages.
 
+    In the context of generating a C-DNS file it is assumed that only
+    those DNS messages which can be parsed to produce a well-formed DNS
+    message are stored in the C-DNS format and that all other messages will be (optionally) recorded
+    as malformed messages.
+
+    Parsing a well-formed message means as a minimum:
+
+    * The packet has a well-formed 12 byte DNS Header with a recognised OPCODE.
+    * The section counts are consistent with the section contents.
+    * All of the resource records can be fully parsed.
+
 2. All top level fields in each Q/R data item will be optional.
 
     * Rationale: Different users will have different requirements for data to be available for analysis.
@@ -234,15 +245,16 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
 4. Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.
 
-5. The wire format content of malformed DNS messages can optionally be recorded.
+5. The wire format content of malformed DNS messages may optionally be recorded.
 
-    * Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
-      that it cannot represent "malformed" DNS messages (see (#malformed-messages)). Only those messages that can be fully parsed and transformed into the
-      structured format can be fully represented. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages
-      available directly in the C-DNS file.
+    * Rationale: Any structured capture format that does not capture the DNS payload byte for
+      byte will be limited to some extent in that it cannot represent "malformed" DNS messages.
+      Only those messages that can be fully parsed and transformed into the
+      structured format can be fully represented. Therefore it can greatly aid downstream analysis
+      to have the wire format of the malformed DNS messages available directly in the C-DNS file.
       Note, however, this can result in rather misleading statistics. For example, a
-      malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code
-      FORMERR appearing as 'unmatched'.
+      malformed query which cannot be represented in the C-DNS format will lead to the (well formed)
+      DNS responses with error code FORMERR appearing as 'unmatched'.
 
 # Choice of CBOR
 
@@ -354,26 +366,24 @@ whether the encoder of the file recorded each data item if it was present.
 An application decoding that file can then use
 these to quickly determine whether the input data is rich enough for its needs.
 
-QUESTION: Should the items within certain tables also be optional
-e.g. within the RR table should all of Name index, ClassType, TTL and
-RDATA be optional?
+### Optional RRs and OPCODEs
 
-### Optional RRs and OPCODES
+Also included in the Storage Parameters are explicit arrays listing the RR types and
+the OPCODEs to be recorded.
 
-Also included in the Storage Parameters is an explicit array of the RR types and
-OPCODES that were recorded. Using an explicit array removes any ambiguity about
-whether the OPCODE/RR type was not recognised by the collecting implementation
-or whether it was specifically configured not to record it.
+In the case of RR records, each record must be fully parsable, including
+parsing the record RDATA, as otherwise the message cannot be validated
+as correctly formed. Any RR record with an RR type not known to the collecting implementation
+cannot be validated as correctly formed, and so must be treated as malformed.
 
-In the case of RR records, each record must be parsable, including
-parsing the record RDATA, to determine whether it is correctly
-formed. Otherwise it has to be regarded as at least potentially
-partially malformed. See (#malformed-messages) for further discussion of storing
-partially parsed messages.
+Similarly, for a message to be fully parsable, the OPCODE must be known to the
+collecting implementation. Any message with an OPCODE unknown to the collecting implementation
+cannot be validated as correctly formed, and so must be treated as malformed.
 
-For the case of unrecognised OPCODES the message may be parsable (for example,
-if it has a format similar enough to the one described in [@!RFC1035]) or it
-may not. See (#malformed-messages) for further discussion of storing partially parsed messages.
+Once a message is correctly parsed, an implementation is free to record only a subset of
+the messages received. The Storage Parameter arrays exist to remove any ambiguity over whether
+messages containing particular OPCODEs or RR types are not present because they did not occur,
+or because the implementation is not configured to record them.
 
 ### Storage flags
 
@@ -903,7 +913,7 @@ ae-count | M | U | The number of occurrences of this event during the block coll
 
 ## "MalformedMessage"
 
-Details of malformed messages. See (#malformed-messages). A map containing the following:
+Details of malformed messages. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -914,68 +924,6 @@ client-address-index | O | U | The index in the `ip-address` array of the client
 client-port | O | U | The client port.
 ||
 message-data-index | O | U | The index in the `malformed-message-data` array of the message data for this message. See (#blocktables).
-
-# Malformed messages
-
-In the context of generating a C-DNS file it is assumed that only
-those DNS messages which can be parsed to produce a well-formed DNS
-message are stored in the C-DNS format and that all other messages will be recorded (if at all) as malformed messages.
-
-Parsing a well-formed message means as a minimum:
-
-* The packet has a well-formed 12 byte DNS Header
-* The section counts are consistent with the section contents
-* All of the resource records can be parsed
-
-In principle, packets that do not meet these criteria could be classified into two categories:
-
-* Partially malformed: those packets which can be decoded sufficiently
-to extract
-
-    * a well-formed 12 byte DNS header (and therefore a DNS transaction ID)
-    * the first Question in the Question section if QDCOUNT is greater than 0
-
-but suffer other issues while parsing. This is the minimum information required to attempt Query/Response matching as described in (#matching-algorithm).
-
-* Completely malformed: those packets that cannot be decoded to this extent.
-
-An open question is whether there is value in attempting to process
-partially malformed messages in an analogous manner to well formed
-messages in terms of attempting to match them with the corresponding
-query or response. This could be done by creating 'placeholder'
-records during Query/Response matching with just the information
-extracted as above. If the packet were then matched the resulting
-C-DNS Q/R data item would include flags to indicate a malformed query
-or response or both record (in addition to capturing the wire format
-of the packet).
-
-An advantage of this would be that it would result in more meaningful
-statistics about matched packets because, for example, some partially
-malformed queries could be matched to responses. However it would only
-apply to those queries where the first Question is well formed. It
-could also simplify the downstream analysis of C-DNS files and the
-reconstruction of packet streams from C-DNS.
-
-A disadvantage is that this adds complexity to the Query/Response
-matching and data representation, could potentially lead to false
-matches and some additional statistics would be required (e.g. counts
-for matched-partially-malformed, unmatched-partially-malformed,
-completely-malformed).
-
-NOTE: Note that within these definitions a message that contained an
-unrecognised OPCODE or RR code would be treated as malformed. It may be the case
-that the OPCODE/RR is not recognised just because the implementation does not
-support it yet, rather than it not being standardized. For the case of
-unrecognised OPCODES the message may be parsable (for example,
-if it has a format similar enough to the one described in [@!RFC1035]) or it
-may not. Similarly for unrecognised RR types the RDATA can still be stored, but
-the collector will not be able to process it to remove, for example, name
-compression pointers.
-
-QUESTION: There has been no feedback to date requesting further work
-on the processing partially malformed messages. The editors are
-inclined not to include it in this version. It could be the subject
-of a future extension.
 
 # C-DNS to PCAP
 
@@ -1212,7 +1160,7 @@ This implementation:
 not yet classified as production ready.
 
 * covers the whole of the specification described in the -03 draft with the
-exception of support for malformed messages ((#malformed-messages)) and pico second time resolution.
+exception of support for malformed messages and pico second time resolution.
 (Note: this implementation does allow malformed messages to be dumped to a PCAP file).
 
 * is released under the Mozilla Public License Version 2.0.
@@ -1526,7 +1474,7 @@ collection-parameters = 1
       )
       QueryResponseHints = uint .bits QueryResponseHintValues
 
-      QueryResponseSignatureHintValues =&(
+      QueryResponseSignatureHintValues = &(
           server-address     : 0,
           server-port        : 1,
           qr-transport-flags : 2,

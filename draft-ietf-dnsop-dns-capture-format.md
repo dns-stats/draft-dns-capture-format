@@ -770,12 +770,6 @@ opt-rdata-index | O | U | The index in the `name-rdata` array  of the OPT RDATA.
 ||
 response-rcode | O | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 
-QUESTION: Currently we collect OPT RDATA as a blob as this is consistent with
-and re-uses the generic mechanism for RDATA storage. Should we break individual
-EDNS(0) options into Option code and data and store the data separately in a new
-array within the Block type? This would potentially allow exploitation of option
-data commonality.
-
 #### "Question"
 
 Details on individual Questions in a Question section. A map containing the following:

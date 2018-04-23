@@ -839,7 +839,12 @@ query-extended | O | M | Extended Query data. Map of type `QueryResponseExtended
 ||
 response-extended | O | M | Extended Response data. Map of type `QueryResponseExtended`, see (#queryresponseextended).
 
-The `query-size` and `response-size` fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.
+The `query-size` and `response-size` fields hold the DNS message
+size. For UDP this is the size of the UDP payload that contained the
+DNS message. For TCP it is the size of the DNS message as specified in
+the two-byte message length header. Trailing bytes with queries are
+routinely observed in traffic to authoritative servers and this value
+allows a calculation of how many trailing bytes were present.
 
 ### "ResponseProcessingData"
 
@@ -1163,8 +1168,8 @@ can be considered to occur in two circumstances.
 
 ## Limiting collection of RDATA
 
-Implementations should consider providing a configurable maximum RDATA size for capture
-, for example, to avoid memory issues when confronted with large XFR records.
+Implementations should consider providing a configurable maximum RDATA size for capture,
+for example, to avoid memory issues when confronted with large XFR records.
 
 # Implementation status
 

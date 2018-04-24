@@ -653,7 +653,7 @@ total-unmatched-queries | O | U | Number of unmatched queries in this `Block` it
 | | |
 total-unmatched-responses | O | U | Number of unmatched responses in this `Block` item.
 | | |
-total-discared-messages | O | U | Number of messages found in input for this `Block` item but not recorded
+total-discarded-messages | O | U | Number of messages found in input for this `Block` item but not recorded
 because their OPCODE is not one of those to be collected.
 | | |
 total-malformed-messages | O | U | Number of malformed messages found in input for this `Block` item.

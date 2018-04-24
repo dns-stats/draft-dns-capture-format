@@ -724,12 +724,12 @@ qr-type | O | U | Type of Query/Response transaction.
  | | | 5 = Tool. A query sent to a server by a server tool.
 ||
 qr-sig-flags | O | U | Bit flags indicating information present in this Q/R data item.
- | | | Bit 0. 1 if a Query is present.
- | | | Bit 1. 1 if a Response is present.
- | | | Bit 2. 1 if one or more Question is present.
- | | | Bit 3. 1 if a Query is present and it has an OPT Resource Record.
- | | | Bit 4. 1 if a Response is present and it has an OPT Resource Record.
- | | | Bit 5. 1 if a Response is present but has no Question.
+ | | | Bit 0. 1 if a Query is present. Indicates existance of a Query without requiring Query data be recorded.
+ | | | Bit 1. 1 if a Response is present. Indicates existance of a Response without requiring Response data be recorded.
+ | | | Bit 2. 1 if a Query is present and it has an OPT Resource Record. Indicates OPT was present in the Query without requiring OPT data be recorded.
+ | | | Bit 3. 1 if a Response is present and it has an OPT Resource Record. Indicates OPT was present in the Response without requiring OPT data be recorded.
+ | | | Bit 4. 1 if a Query is present but has no Question. Indicates if Question data present in the Query. Common case of Question present is 0 to reduce storage size required for bit flags field.
+ | | | Bit 5. 1 if a Response is present but has no Question. Indicates if Question data present in the Response. Common case of Question present is 0 to reduce storage size required for bit flags field.
 ||
 query-opcode | O | U | Query OPCODE.
 ||
@@ -880,7 +880,7 @@ answer-index | O | U | The index in the `rrlist` array of the entry listing the 
 ||
 authority-index | O | U | The index in the `rrlist` array of the entry listing the Authority Resource Record sections for the Query or Response. See (#blocktables).
 ||
-additional-index | O | U | The index in the `rrlist` array of the entry listing the Additional Resource Record sections for the Query or Response. See (#blocktables).
+additional-index | O | U | The index in the `rrlist` array of the entry listing the Additional Resource Record sections for the Query or Response. See (#blocktables). An OPT item in a Query should NOT be recorded in the list as the data is available in other fields.
 
 ## "AddressEventCount"
 

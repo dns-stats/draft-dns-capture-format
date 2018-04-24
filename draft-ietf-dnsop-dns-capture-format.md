@@ -343,7 +343,7 @@ as space-efficient manner as possible, all fields in the following arrays are op
 
 In other words, an
 application can choose to omit any data item that is not required for
-its use case. In addition, implementations may be configured to not record all
+its use case. In addition, applications may be configured to not record all
 RRs, or only record messages with certain OPCODES.
 
 This does, however, mean that a consumer of a C-DNS file faces two problems:
@@ -357,7 +357,7 @@ This does, however, mean that a consumer of a C-DNS file faces two problems:
        available to the collecting application?
 
 For example, an application capturing C-DNS data from within a nameserver
-implementation is unlikely to be able to record the Client Hoplimit. Or, if
+is unlikely to be able to record the Client Hoplimit. Or, if
 there is no query ARCount recorded and no query OPT RDATA recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
 
@@ -373,17 +373,18 @@ the OPCODEs to be recorded.
 
 In the case of RR records, each record must be fully parsable, including
 parsing the record RDATA, as otherwise the message cannot be validated
-as correctly formed. Any RR record with an RR type not known to the collecting implementation
+as correctly formed. Any RR record with an RR type not known to the collecting application
 cannot be validated as correctly formed, and so must be treated as malformed.
 
 Similarly, for a message to be fully parsable, the OPCODE must be known to the
-collecting implementation. Any message with an OPCODE unknown to the collecting implementation
+collecting application. Any message with an OPCODE unknown to the collecting application
 cannot be validated as correctly formed, and so must be treated as malformed.
 
-Once a message is correctly parsed, an implementation is free to record only a subset of
-the messages received. The Storage Parameter arrays exist to remove any ambiguity over whether
+Once a message is correctly parsed, an application is free to record only a subset of
+the messages received. Arrays in Storage Parameters list the RR types and the OPCODEs
+that the application is configured to record. They exist to remove any ambiguity over whether
 messages containing particular OPCODEs or RR types are not present because they did not occur,
-or because the implementation is not configured to record them.
+or because the application is not configured to record them.
 
 ### Storage flags
 

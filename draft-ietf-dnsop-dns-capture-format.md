@@ -864,8 +864,6 @@ bailiwick-index | O | U | The index in the `name-rdata` array of the owner name 
 processing-flags | O | U | Flags relating to response processing.
  | | | Bit 0. 1 if the response came from cache.
 
-QUESTION: Should this be an item in the `QueryResponseSignature`?
-
 ### "QueryResponseExtended"
 
 Extended data on the Q/R data item.

@@ -1187,6 +1187,13 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 draft-ietf-dnsop-dns-capture-format-07
 
+* Resolve outstanding questions and TODOs
+* Make RR rdata optional
+* Update matching diagram and explain skew
+* Query OPT should not be captured in QueryResponseExtended
+* Add count of discarded messages to block statistics
+* Editorial clarifications and improvements
+
 draft-ietf-dnsop-dns-capture-format-06
 
 * Correct BlockParameters type to map

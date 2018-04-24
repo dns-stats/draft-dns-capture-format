@@ -248,7 +248,7 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
 5. The wire format content of malformed DNS messages may optionally be recorded.
 
     * Rationale: Any structured capture format that does not capture the DNS payload byte for
-      byte will be limited to some extent in that it cannot represent "malformed" DNS messages.
+      byte will be limited to some extent in that it cannot represent malformed DNS messages.
       Only those messages that can be fully parsed and transformed into the
       structured format can be fully represented. Therefore it can greatly aid downstream analysis
       to have the wire format of the malformed DNS messages available directly in the C-DNS file.
@@ -653,8 +653,7 @@ total-unmatched-queries | O | U | Number of unmatched queries in this `Block` it
 | | |
 total-unmatched-responses | O | U | Number of unmatched responses in this `Block` item.
 | | |
-total-discarded-messages | O | U | Number of messages found in input for this `Block` item but not recorded
-because their OPCODE is not one of those to be collected.
+total-discarded-messages | O | U | Number of messages found in input for this `Block` item but not recorded because their OPCODE is not one of those to be collected.
 | | |
 total-malformed-messages | O | U | Number of malformed messages found in input for this `Block` item.
 
@@ -1097,7 +1096,7 @@ default values to be used in place of the missing values in their output.
 
 ## Trailing data in TCP
 
-When DNS traffic is sent over TCP, each message is prefixed with a two byte length field, which
+When DNS traffic is sent over TCP, each message is prefixed with a two byte length field which
 gives the message length, excluding the two byte length field. In this context, trailing bytes
 can be considered to occur in two circumstances.
 

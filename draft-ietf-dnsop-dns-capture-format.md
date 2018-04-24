@@ -580,8 +580,6 @@ other-data-hints | M | U | Hints indicating which other data types are stored. I
  | | | Bit 0. malformed-messages
  | | | Bit 1. address-event-counts
 
-TODO: Revise non-QueryResponse hints to cover optional fields in malformed message data maps.
-
 ### "CollectionParameters"
 
 Parameters relating to how data in the file was collected.

@@ -132,9 +132,9 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in [@!RFC2119].
 
-"Packet" refers to individual IPv4 or IPv6 packets. Typically these are
-UDP, but may be constructed from a TCP packet. "Message", unless otherwise
-qualified, refers to a DNS payload extracted from a UDP or TCP data
+"Packet" refers to an individual IPv4 or IPv6 packet. Typically packets are
+UDP datagrams, but may also be part of a TCP data stream. "Message", unless otherwise
+qualified, refers to a DNS payload extracted from a UDP datagram or TCP data
 stream.
 
 The parts of DNS messages are named as they are in [@!RFC1035]. In specific,
@@ -215,6 +215,17 @@ the Question section from the response, if present, as an identifying QNAME).
       Also, combining the Query and Response into one item often reduces storage requirements due to
       commonality in the data of the two messages.
 
+    In the context of generating a C-DNS file it is assumed that only
+    those DNS messages which can be parsed to produce a well-formed DNS
+    message are stored in the C-DNS format and that all other messages will be (optionally) recorded
+    as malformed messages.
+
+    Parsing a well-formed message means as a minimum:
+
+    * The packet has a well-formed 12 byte DNS Header with a recognised OPCODE.
+    * The section counts are consistent with the section contents.
+    * All of the resource records can be fully parsed.
+
 2. All top level fields in each Q/R data item will be optional.
 
     * Rationale: Different users will have different requirements for data to be available for analysis.
@@ -230,21 +241,20 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
       Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
     * It is anticipated that the files produced can be subject to further compression using general purpose compression tools.
       Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
-    * [TODO: Further discussion of commonality between DNS messages e.g. common query signatures, a finite set of
-      valid responses from authoritatives]
 
 4. Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.
 
-5. The wire format content of malformed DNS messages can optionally be recorded.
+5. The wire format content of malformed DNS messages may optionally be recorded.
 
-    * Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in
-      that it cannot represent "malformed" DNS messages (see (#malformed-messages)). Only those messages that can be fully parsed and transformed into the
-      structured format can be fully represented. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages
-      available directly in the C-DNS file.
+    * Rationale: Any structured capture format that does not capture the DNS payload byte for
+      byte will be limited to some extent in that it cannot represent malformed DNS messages.
+      Only those messages that can be fully parsed and transformed into the
+      structured format can be fully represented. Therefore it can greatly aid downstream analysis
+      to have the wire format of the malformed DNS messages available directly in the C-DNS file.
       Note, however, this can result in rather misleading statistics. For example, a
-      malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code
-      FORMERR appearing as 'unmatched'.
+      malformed query which cannot be represented in the C-DNS format will lead to the (well formed)
+      DNS responses with error code FORMERR appearing as 'unmatched'.
 
 # Choice of CBOR
 
@@ -333,7 +343,7 @@ as space-efficient manner as possible, all fields in the following arrays are op
 
 In other words, an
 application can choose to omit any data item that is not required for
-its use case. In addition, implementations may be configured to not record all
+its use case. In addition, applications may be configured to not record all
 RRs, or only record messages with certain OPCODES.
 
 This does, however, mean that a consumer of a C-DNS file faces two problems:
@@ -347,7 +357,7 @@ This does, however, mean that a consumer of a C-DNS file faces two problems:
        available to the collecting application?
 
 For example, an application capturing C-DNS data from within a nameserver
-implementation is unlikely to be able to record the Client Hoplimit. Or, if
+is unlikely to be able to record the Client Hoplimit. Or, if
 there is no query ARCount recorded and no query OPT RDATA recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
 
@@ -356,26 +366,25 @@ whether the encoder of the file recorded each data item if it was present.
 An application decoding that file can then use
 these to quickly determine whether the input data is rich enough for its needs.
 
-QUESTION: Should the items within certain tables also be optional
-e.g. within the RR table should all of Name index, ClassType, TTL and
-RDATA be optional?
+### Optional RRs and OPCODEs
 
-### Optional RRs and OPCODES
+Also included in the Storage Parameters are explicit arrays listing the RR types and
+the OPCODEs to be recorded.
 
-Also included in the Storage Parameters is an explicit array of the RR types and
-OPCODES that were recorded. Using an explicit array removes any ambiguity about
-whether the OPCODE/RR type was not recognised by the collecting implementation
-or whether it was specifically configured not to record it.
+In the case of RR records, each record must be fully parsable, including
+parsing the record RDATA, as otherwise the message cannot be validated
+as correctly formed. Any RR record with an RR type not known to the collecting application
+cannot be validated as correctly formed, and so must be treated as malformed.
 
-In the case of RR records, each record must be parsable, including
-parsing the record RDATA, to determine whether it is correctly
-formed. Otherwise it has to be regarded as at least potentially
-partially malformed. See (#malformed-messages) for further discussion of storing
-partially parsed messages.
+Similarly, for a message to be fully parsable, the OPCODE must be known to the
+collecting application. Any message with an OPCODE unknown to the collecting application
+cannot be validated as correctly formed, and so must be treated as malformed.
 
-For the case of unrecognised OPCODES the message may be parsable (for example,
-if it has a format similar enough to the one described in [@!RFC1035]) or it
-may not. See (#malformed-messages) for further discussion of storing partially parsed messages.
+Once a message is correctly parsed, an application is free to record only a subset of
+the messages received. Arrays in Storage Parameters list the RR types and the OPCODEs
+that the application is configured to record. They exist to remove any ambiguity over whether
+messages containing particular OPCODEs or RR types are not present because they did not occur,
+or because the application is not configured to record them.
 
 ### Storage flags
 
@@ -566,11 +575,10 @@ query-response -signature-hints | M | U | Hints indicating which `QueryResponseS
  | | |
 rr-hints | M | U | Hints indicating which optional `RR` fields are stored, see (#rr). If the data type is stored the bit is set.
  | | | Bit 0. ttl
+ | | | Bit 1. rdata-index
 other-data-hints | M | U | Hints indicating which other data types are stored. If the data type is stored the bit is set.
  | | | Bit 0. malformed-messages
  | | | Bit 1. address-event-counts
-
-TODO: Revise non-QueryResponse hints to cover optional fields in malformed message data maps.
 
 ### "CollectionParameters"
 
@@ -640,11 +648,13 @@ total-messages | O | U | Total number of DNS messages processed from the input t
 | | |
 total-pairs | O | U | Total number of Q/R data items in this `Block` item.
 | | |
-unmatched-queries | O | U | Number of unmatched queries in this `Block` item.
+total-unmatched-queries | O | U | Number of unmatched queries in this `Block` item.
 | | |
-unmatched-responses | O | U | Number of unmatched responses in this `Block` item.
+total-unmatched-responses | O | U | Number of unmatched responses in this `Block` item.
 | | |
-malformed-messages | O | U | Number of malformed messages found in input for this `Block` item.
+total-discarded-messages | O | U | Number of messages found in input for this `Block` item but not recorded because their OPCODE is not one of those to be collected.
+| | |
+total-malformed-messages | O | U | Number of malformed messages found in input for this `Block` item.
 
 ### "BlockTables"
 
@@ -701,7 +711,7 @@ server-port | O | U | The server port.
 qr-transport-flags | O | U | Bit flags describing the transport used to service the query.
  | | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
  | | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
- | | | Bit 5. Trailing bytes in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.
+ | | | Bit 5. Trailing data in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.
 ||
 qr-type | O | U | Type of Query/Response transaction.
  | | | 0 = Stub. A query from a stub resolver.
@@ -712,12 +722,12 @@ qr-type | O | U | Type of Query/Response transaction.
  | | | 5 = Tool. A query sent to a server by a server tool.
 ||
 qr-sig-flags | O | U | Bit flags indicating information present in this Q/R data item.
- | | | Bit 0. 1 if a Query is present.
- | | | Bit 1. 1 if a Response is present.
- | | | Bit 2. 1 if one or more Question is present.
- | | | Bit 3. 1 if a Query is present and it has an OPT Resource Record.
- | | | Bit 4. 1 if a Response is present and it has an OPT Resource Record.
- | | | Bit 5. 1 if a Response is present but has no Question.
+ | | | Bit 0. 1 if a Query is present. Indicates existance of a Query without requiring Query data be recorded.
+ | | | Bit 1. 1 if a Response is present. Indicates existance of a Response without requiring Response data be recorded.
+ | | | Bit 2. 1 if a Query is present and it has an OPT Resource Record. Indicates OPT was present in the Query without requiring OPT data be recorded.
+ | | | Bit 3. 1 if a Response is present and it has an OPT Resource Record. Indicates OPT was present in the Response without requiring OPT data be recorded.
+ | | | Bit 4. 1 if a Query is present but has no Question. Indicates if Question data present in the Query. Common case of Question present is 0 to reduce storage size required for bit flags field.
+ | | | Bit 5. 1 if a Response is present but has no Question. Indicates if Question data present in the Response. Common case of Question present is 0 to reduce storage size required for bit flags field.
 ||
 query-opcode | O | U | Query OPCODE.
 ||
@@ -758,12 +768,6 @@ opt-rdata-index | O | U | The index in the `name-rdata` array  of the OPT RDATA.
 ||
 response-rcode | O | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
 
-QUESTION: Currently we collect OPT RDATA as a blob as this is consistent with
-and re-uses the generic mechanism for RDATA storage. Should we break individual
-EDNS(0) options into Option code and data and store the data separately in a new
-array within the Block type? This would potentially allow exploitation of option
-data commonality.
-
 #### "Question"
 
 Details on individual Questions in a Question section. A map containing the following:
@@ -786,7 +790,7 @@ classtype-index | M | U | The index in the `classtype` array of the CLASS and TY
 ||
 ttl | O | U | The RR Time to Live.
 ||
-rdata-index | M | U | The index in the `name-rdata` array of the RR RDATA. See (#blocktables).
+rdata-index | O | U | The index in the `name-rdata` array of the RR RDATA. See (#blocktables).
 
 #### "MalformedMessageData"
 
@@ -840,7 +844,12 @@ query-extended | O | M | Extended Query data. Map of type `QueryResponseExtended
 ||
 response-extended | O | M | Extended Response data. Map of type `QueryResponseExtended`, see (#queryresponseextended).
 
-The `query-size` and `response-size` fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.
+The `query-size` and `response-size` fields hold the DNS message
+size. For UDP this is the size of the UDP payload that contained the
+DNS message. For TCP it is the size of the DNS message as specified in
+the two-byte message length header. Trailing bytes with queries are
+routinely observed in traffic to authoritative servers and this value
+allows a calculation of how many trailing bytes were present.
 
 ### "ResponseProcessingData"
 
@@ -852,8 +861,6 @@ bailiwick-index | O | U | The index in the `name-rdata` array of the owner name 
 ||
 processing-flags | O | U | Flags relating to response processing.
  | | | Bit 0. 1 if the response came from cache.
-
-QUESTION: Should this be an item in the `QueryResponseSignature`?
 
 ### "QueryResponseExtended"
 
@@ -871,7 +878,7 @@ answer-index | O | U | The index in the `rrlist` array of the entry listing the 
 ||
 authority-index | O | U | The index in the `rrlist` array of the entry listing the Authority Resource Record sections for the Query or Response. See (#blocktables).
 ||
-additional-index | O | U | The index in the `rrlist` array of the entry listing the Additional Resource Record sections for the Query or Response. See (#blocktables).
+additional-index | O | U | The index in the `rrlist` array of the entry listing the Additional Resource Record sections for the Query or Response. See (#blocktables). An OPT item in a Query should NOT be recorded in the list as the data is available in other fields.
 
 ## "AddressEventCount"
 
@@ -896,7 +903,7 @@ ae-count | M | U | The number of occurrences of this event during the block coll
 
 ## "MalformedMessage"
 
-Details of malformed messages. See (#malformed-messages). A map containing the following:
+Details of malformed messages. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -907,68 +914,6 @@ client-address-index | O | U | The index in the `ip-address` array of the client
 client-port | O | U | The client port.
 ||
 message-data-index | O | U | The index in the `malformed-message-data` array of the message data for this message. See (#blocktables).
-
-# Malformed messages
-
-In the context of generating a C-DNS file it is assumed that only
-those DNS messages which can be parsed to produce a well-formed DNS
-message are stored in the C-DNS format and that all other messages will be recorded (if at all) as malformed messages.
-
-Parsing a well-formed message means as a minimum:
-
-* The packet has a well-formed 12 byte DNS Header
-* The section counts are consistent with the section contents
-* All of the resource records can be parsed
-
-In principle, packets that do not meet these criteria could be classified into two categories:
-
-* Partially malformed: those packets which can be decoded sufficiently
-to extract
-
-    * a well-formed 12 byte DNS header (and therefore a DNS transaction ID)
-    * the first Question in the Question section if QDCOUNT is greater than 0
-
-but suffer other issues while parsing. This is the minimum information required to attempt Query/Response matching as described in (#matching-algorithm).
-
-* Completely malformed: those packets that cannot be decoded to this extent.
-
-An open question is whether there is value in attempting to process
-partially malformed messages in an analogous manner to well formed
-messages in terms of attempting to match them with the corresponding
-query or response. This could be done by creating 'placeholder'
-records during Query/Response matching with just the information
-extracted as above. If the packet were then matched the resulting
-C-DNS Q/R data item would include flags to indicate a malformed query
-or response or both record (in addition to capturing the wire format
-of the packet).
-
-An advantage of this would be that it would result in more meaningful
-statistics about matched packets because, for example, some partially
-malformed queries could be matched to responses. However it would only
-apply to those queries where the first Question is well formed. It
-could also simplify the downstream analysis of C-DNS files and the
-reconstruction of packet streams from C-DNS.
-
-A disadvantage is that this adds complexity to the Query/Response
-matching and data representation, could potentially lead to false
-matches and some additional statistics would be required (e.g. counts
-for matched-partially-malformed, unmatched-partially-malformed,
-completely-malformed).
-
-NOTE: Note that within these definitions a message that contained an
-unrecognised OPCODE or RR code would be treated as malformed. It may be the case
-that the OPCODE/RR is not recognised just because the implementation does not
-support it yet, rather than it not being standardized. For the case of
-unrecognised OPCODES the message may be parsable (for example,
-if it has a format similar enough to the one described in [@!RFC1035]) or it
-may not. Similarly for unrecognised RR types the RDATA can still be stored, but
-the collector will not be able to process it to remove, for example, name
-compression pointers.
-
-QUESTION: There has been no feedback to date requesting further work
-on the processing partially malformed messages. The editors are
-inclined not to include it in this version. It could be the subject
-of a future extension.
 
 # C-DNS to PCAP
 
@@ -1040,26 +985,37 @@ algorithms used by well-known name server software.
 # Data collection
 
 This section describes a non-normative proposed algorithm for the processing of a captured stream of DNS queries and
-responses and matching queries/responses where possible.
+responses and production of a stream of query/response items, matching queries/responses where possible.
 
 For the purposes of this discussion, it is assumed that the input has been pre-processed such that:
 
 1. All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed
 1. Each message is associated with transport metadata required to generate the Primary ID (see (#primary-id))
-1. Each message has a well-formed DNS header of 12 bytes and (if present) the first Question in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
+1. Each message has a well-formed DNS header of 12 bytes and (if present) the first Question in the Question section can be
+parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being
+removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.
 
 DNS messages are processed in the order they are delivered to the application.
-It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
 
-TODO: Discuss the corner cases resulting from this in more detail.
+It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
+This can, for example, arise on multi-core platforms where packets arriving at a network device
+are processed by different cores. On systems where this behaviour has been observed, the timestamps associated
+with each packet are consistent; queries always have a timestamp prior to the response timestamp.
+However, the order in which these packets are collected by the packet capture is not necessarily
+strictly choronological; a response can appear in the capture stream before the query that provoked
+the response. For this discussion, this non-chronological delivery is termed "skew".
+
+In the presence of skew, a response packets can arrive for matching before the corresponding query. To avoid
+generating false instances of responses without a matching query, and queries without a matching response,
+the matching algorithm must take account of the possibility of skew.
 
 ## Matching algorithm
 
 A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
 
-![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/packet_matching.png)
+![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-07/packet_matching.png)
 
-![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-06/packet_matching.svg)
+![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-07/packet_matching.svg)
 
 Further details of the algorithm are given in the following sections.
 
@@ -1085,8 +1041,10 @@ with RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used in matc
 
 ## Algorithm parameters
 
-1. Query timeout
-2. Skew timeout
+1. Query timeout. If no response matching a query has arrived before input arrives timestamped later than the query timestamp
+plus the query timeout, a query-only query/response item is generated. Typically a small number of seconds.
+2. Skew timeout. If a response has not been matched by a query before input arrives timestamped later than the response
+timestamp plus the skew timeout, a response-only query/response item is generated. Typically a small number of microseconds.
 
 ## Algorithm requirements
 
@@ -1129,8 +1087,6 @@ Adherence to the first two rules given in Section 3.9 of [RFC7049] will minimise
 
 Adherence to the last two rules given in Section 3.9 of [RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
 
-NOTE: With this clarification to the use of Canonical CBOR, we could consider re-ordering fields in maps to improve readability.
-
 ## Optional data
 
 When decoding data some items required for a particular function the consumer
@@ -1139,14 +1095,22 @@ default values to be used in place of the missing values in their output.
 
 ## Trailing data in TCP
 
-TODO: Clarify the impact of processing wire captures which includes
-trailing data in TCP. What will appear as trailing data, what will appear
-as malformed messages?
+When DNS traffic is sent over TCP, each message is prefixed with a two byte length field which
+gives the message length, excluding the two byte length field. In this context, trailing bytes
+can be considered to occur in two circumstances.
+
+1. The number of bytes consumed by fully parsing the message is less than the number of
+   bytes given in the length field. In this case, the surplus bytes are considered trailing data
+   and recorded as such.
+2. There are surplus bytes between the end of the message and the start of the next length field.
+   In this case the first of the surplus bytes will be considered as the first byte of the
+   next length field, and parsing will proceed from there, most probably leading to a malformed
+   message. This will not generate any trailing data record.
 
 ## Limiting collection of RDATA
 
-Implementations should consider providing a configurable maximum RDATA size for capture
-, for example, to avoid memory issues when confronted with large XFR records.
+Implementations should consider providing a configurable maximum RDATA size for capture,
+for example, to avoid memory issues when confronted with large XFR records.
 
 # Implementation status
 
@@ -1186,7 +1150,7 @@ This implementation:
 not yet classified as production ready.
 
 * covers the whole of the specification described in the -03 draft with the
-exception of support for malformed messages ((#malformed-messages)) and pico second time resolution.
+exception of support for malformed messages and pico second time resolution.
 (Note: this implementation does allow malformed messages to be dumped to a PCAP file).
 
 * is released under the Mozilla Public License Version 2.0.
@@ -1222,6 +1186,13 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 # Changelog
 
 draft-ietf-dnsop-dns-capture-format-07
+
+* Resolve outstanding questions and TODOs
+* Make RR rdata optional
+* Update matching diagram and explain skew
+* Query OPT should not be captured in QueryResponseExtended
+* Add count of discarded messages to block statistics
+* Editorial clarifications and improvements
 
 draft-ietf-dnsop-dns-capture-format-06
 
@@ -1500,7 +1471,7 @@ collection-parameters = 1
       )
       QueryResponseHints = uint .bits QueryResponseHintValues
 
-      QueryResponseSignatureHintValues =&(
+      QueryResponseSignatureHintValues = &(
           server-address     : 0,
           server-port        : 1,
           qr-transport-flags : 2,
@@ -1522,7 +1493,8 @@ collection-parameters = 1
       QueryResponseSignatureHints = uint .bits QueryResponseSignatureHintValues
 
       RRHintValues = &(
-          ttl   : 0,
+          ttl         : 0,
+          rdata-index : 1,
       )
       RRHints = uint .bits RRHintValues
 
@@ -1608,13 +1580,15 @@ BlockStatistics = {
     ? total-pairs               => uint,
     ? total-unmatched-queries   => uint,
     ? total-unmatched-responses => uint,
+    ? total-discarded-messages  => uint,
     ? total-malformed-messages  => uint,
 }
 total-messages               = 0
 total-pairs                  = 1
 total-unmatched-queries      = 2
 total-unmatched-responses    = 3
-total-malformed-messages     = 4
+total-discarded-messages     = 4
+total-malformed-messages     = 5
 
 ;
 ; Tables of common data referenced from records in a block.
@@ -1767,7 +1741,7 @@ RRTables = (
       name-index      => uint,          ; Index to a name in the name-rdata table
       classtype-index => uint,
       ? ttl           => uint,
-      rdata-index     => uint,          ; Index to RDATA in the name-rdata table
+      ? rdata-index   => uint,          ; Index to RDATA in the name-rdata table
   }
   ; Other map key values already defined above.
   ttl         = 2

@@ -417,7 +417,7 @@
 <link href="#rfc.section.9.8" rel="Chapter" title="9.8 Post processing"/>
 <link href="#rfc.section.10" rel="Chapter" title="10 Implementation guidance"/>
 <link href="#rfc.section.10.1" rel="Chapter" title="10.1 Optional data"/>
-<link href="#rfc.section.10.2" rel="Chapter" title="10.2 Trailing data in TCP"/>
+<link href="#rfc.section.10.2" rel="Chapter" title="10.2 Trailing bytes"/>
 <link href="#rfc.section.10.3" rel="Chapter" title="10.3 Limiting collection of RDATA"/>
 <link href="#rfc.section.11" rel="Chapter" title="11 Implementation status"/>
 <link href="#rfc.section.11.1" rel="Chapter" title="11.1 DNS-STATS Compactor"/>
@@ -448,7 +448,7 @@
 
   <meta name="dct.creator" content="Dickinson, J., Hague, J., Dickinson, S., Manderson, T., and J. Bond" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-ietf-dnsop-dns-capture-format-07" />
-  <meta name="dct.issued" scheme="ISO8601" content="2018-3-5" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-4-25" />
   <meta name="dct.abstract" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
   <meta name="description" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
 
@@ -472,7 +472,7 @@
   <td class="right">S. Dickinson</td>
 </tr>
 <tr>
-  <td class="left">Expires: September 6, 2018</td>
+  <td class="left">Expires: October 27, 2018</td>
   <td class="right">Sinodun IT</td>
 </tr>
 <tr>
@@ -489,7 +489,7 @@
 </tr>
 <tr>
   <td class="left"></td>
-  <td class="right">March 5, 2018</td>
+  <td class="right">April 25, 2018</td>
 </tr>
 
     	
@@ -509,7 +509,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on September 6, 2018.</p>
+<p>This Internet-Draft will expire on October 27, 2018.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -564,7 +564,7 @@
 <li>9.8.   <a href="#rfc.section.9.8">Post processing</a></li>
 </ul><li>10.   <a href="#rfc.section.10">Implementation guidance</a></li>
 <ul><li>10.1.   <a href="#rfc.section.10.1">Optional data</a></li>
-<li>10.2.   <a href="#rfc.section.10.2">Trailing data in TCP</a></li>
+<li>10.2.   <a href="#rfc.section.10.2">Trailing bytes</a></li>
 <li>10.3.   <a href="#rfc.section.10.3">Limiting collection of RDATA</a></li>
 </ul><li>11.   <a href="#rfc.section.11">Implementation status</a></li>
 <ul><li>11.1.   <a href="#rfc.section.11.1">DNS-STATS Compactor</a></li>
@@ -657,9 +657,9 @@
 <p/>
 
 <ol>
-  <li>The basic unit of data is a combined DNS Query and the associated Response (a "Q/R data item"). The same structure will be used for unmatched Queries and Responses. Queries without Responses will be captured omitting the response data. Responses without queries will be captured omitting the Query data (but using the Question section from the response, if present, as an identifying QNAME).  <ul><li>Rationale: A Query and Response represents the basic level of a clients interaction with the server.  Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data of the two messages.</li></ul><p> In the context of generating a C-DNS file it is assumed that only those DNS messages which can be parsed to produce a well-formed DNS message are stored in the C-DNS format and that all other messages will be (optionally) recorded as malformed messages.  Parsing a well-formed message means as a minimum: </p><ul><li>The packet has a well-formed 12 byte DNS Header with a recognised OPCODE.</li><li>The section counts are consistent with the section contents.</li><li>All of the resource records can be fully parsed.</li></ul></li>
+  <li>The basic unit of data is a combined DNS Query and the associated Response (a "Q/R data item"). The same structure will be used for unmatched Queries and Responses. Queries without Responses will be captured omitting the response data. Responses without queries will be captured omitting the Query data (but using the Question section from the response, if present, as an identifying QNAME).  <ul><li>Rationale: A Query and Response represents the basic level of a clients interaction with the server.  Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data of the two messages.</li></ul><p> In the context of generating a C-DNS file it is assumed that only those DNS payloads which can be parsed to produce a well-formed DNS message are stored in the C-DNS format and that all other messages will be (optionally) recorded as malformed messages.  Parsing a well-formed message means as a minimum: </p><ul><li>The packet has a well-formed 12 byte DNS Header with a recognised OPCODE.</li><li>The section counts are consistent with the section contents.</li><li>All of the resource records can be fully parsed.</li></ul></li>
   <li>All top level fields in each Q/R data item will be optional.  <ul><li>Rationale: Different users will have different requirements for data to be available for analysis.  Users with minimal requirements should not have to pay the cost of recording full data, however this will limit the ability to perform certain kinds of data analysis and also reconstruct packet captures.  For example, omitting the resource records from a Response will reduce the C-DNS file size, and in principle responses can be synthesized if there is enough context.</li></ul></li>
-  <li>Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.  <ul><li>Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.  Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.</li><li>It is anticipated that the files produced can be subject to further compression using general purpose compression tools.  Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See <a href="#simple-versus-block-coding">Appendix C.2</a>.</li></ul></li>
+  <li>Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.  <ul><li>Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.  Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.</li><li>It is anticipated that the files produced can be subject to further compression using general purpose compression tools.  Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See <a href="#simple-versus-block-coding">Appendix C.2</a>.</li><li>Some examples of commonality between DNS messages is that in most cases the QUESTION RR is the same in the query and response and that there is a finite set of query signatures (based on a subset of attributes). For many authoritative servers there is very likely to be a finite set of responses that are generated, of which a large number are NXDOMAIN.</li></ul></li>
   <li>Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets (e.g. ICMP, TCP resets) sent to the server may be of interest.</li>
   <li>The wire format content of malformed DNS messages may optionally be recorded.  <ul><li>Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in that it cannot represent malformed DNS messages.  Only those messages that can be fully parsed and transformed into the structured format can be fully represented. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages available directly in the C-DNS file.  Note, however, this can result in rather misleading statistics. For example, a malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code FORMERR appearing as 'unmatched'.</li></ul></li>
 </ol>
@@ -708,7 +708,7 @@
 
 <p> </p>
 <h1 id="rfc.section.6.2.1"><a href="#rfc.section.6.2.1">6.2.1.</a> <a href="#optional-data-items" id="optional-data-items">Optional data items</a></h1>
-<p id="rfc.section.6.2.1.p.1">To enable applications to store data to their precise requirements in as space-efficient manner as possible, all fields in the following arrays are optional: </p>
+<p id="rfc.section.6.2.1.p.1">To enable implementations to store data to their precise requirements in as space-efficient manner as possible, all fields in the following arrays are optional: </p>
 <p/>
 
 <ul>
@@ -718,23 +718,23 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.6.2.1.p.3">In other words, an application can choose to omit any data item that is not required for its use case. In addition, applications may be configured to not record all RRs, or only record messages with certain OPCODES.  </p>
+<p id="rfc.section.6.2.1.p.3">In other words, an implementation can choose to omit any data item that is not required for its use case. In addition, implementations may be configured to not record all RRs, or only record messages with certain OPCODES.  </p>
 <p id="rfc.section.6.2.1.p.4">This does, however, mean that a consumer of a C-DNS file faces two problems: </p>
 <p/>
 
 <ol>
   <li>How can it quickly determine whether a file contains the data items it requires to complete a particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?</li>
-  <li>How can it determine if a data item is not present because it was <ul><li>explicitly not recorded, or</li><li>either was not present in the original data stream or the data item was not available to the collecting application?</li></ul></li>
+  <li>How can it determine if a data item is not present because it was <ul><li>explicitly not recorded, or</li><li>either was not present in the original data stream or the data item was not available to the collecting implementation?</li></ul></li>
 </ol>
 
 <p> </p>
-<p id="rfc.section.6.2.1.p.6">For example, an application capturing C-DNS data from within a nameserver is unlikely to be able to record the Client Hoplimit. Or, if there is no query ARCount recorded and no query OPT RDATA recorded, is that because no query contained an OPT RR, or because that data was not stored? </p>
-<p id="rfc.section.6.2.1.p.7">The Storage Parameters therefore also contains a Storage Hints item which specifies whether the encoder of the file recorded each data item if it was present.  An application decoding that file can then use these to quickly determine whether the input data is rich enough for its needs.  </p>
+<p id="rfc.section.6.2.1.p.6">For example, capturing C-DNS data from within a nameserver implementation makes it unlikely that the Client Hoplimit can be recorded. Or, if there is no query ARCount recorded and no query OPT RDATA recorded, is that because no query contained an OPT RR, or because that data was not stored? </p>
+<p id="rfc.section.6.2.1.p.7">The Storage Parameters therefore also contains a Storage Hints item which specifies whether the encoder of the file recorded each data item if it was present.  An implementation decoding that file can then use these to quickly determine whether the input data is rich enough for its needs.  </p>
 <h1 id="rfc.section.6.2.2"><a href="#rfc.section.6.2.2">6.2.2.</a> <a href="#optional-rrs-and-opcodes" id="optional-rrs-and-opcodes">Optional RRs and OPCODEs</a></h1>
-<p id="rfc.section.6.2.2.p.1">Also included in the Storage Parameters are explicit arrays listing the RR types and the OPCODEs to be recorded.  </p>
-<p id="rfc.section.6.2.2.p.2">In the case of RR records, each record must be fully parsable, including parsing the record RDATA, as otherwise the message cannot be validated as correctly formed. Any RR record with an RR type not known to the collecting application cannot be validated as correctly formed, and so must be treated as malformed.  </p>
-<p id="rfc.section.6.2.2.p.3">Similarly, for a message to be fully parsable, the OPCODE must be known to the collecting application. Any message with an OPCODE unknown to the collecting application cannot be validated as correctly formed, and so must be treated as malformed.  </p>
-<p id="rfc.section.6.2.2.p.4">Once a message is correctly parsed, an application is free to record only a subset of the messages received. Arrays in Storage Parameters list the RR types and the OPCODEs that the application is configured to record. They exist to remove any ambiguity over whether messages containing particular OPCODEs or RR types are not present because they did not occur, or because the application is not configured to record them.  </p>
+<p id="rfc.section.6.2.2.p.1">Also included in the Storage Parameters are explicit arrays listing the RR types and the OPCODEs to be recorded. These remove any ambiguity over whether messages containing particular OPCODEs or RR types are not present because they did not occur, or because the implementation is not configured to record them.  </p>
+<p id="rfc.section.6.2.2.p.2">In the case of OPCODEs, for a message to be fully parsable, the OPCODE must be known to the collecting implementation. Any message with an OPCODE unknown to the collecting implementation cannot be validated as correctly formed, and so must be treated as malformed. Messages with OPCODES known to the recording application but not listed in the Storage Parameters are discarded (regardless of whether they are malformed or not).  </p>
+<p id="rfc.section.6.2.2.p.3">In the case of RR records, each record in a message must be fully parsable, including parsing the record RDATA, as otherwise the message cannot be validated as correctly formed. Any RR record with an RR type not known to the collecting implementation cannot be validated as correctly formed, and so must be treated as malformed.  </p>
+<p id="rfc.section.6.2.2.p.4">Once a message is correctly parsed, an implementation is free to record only a subset of the RR records received.  </p>
 <h1 id="rfc.section.6.2.3"><a href="#rfc.section.6.2.3">6.2.3.</a> <a href="#storage-flags" id="storage-flags">Storage flags</a></h1>
 <p id="rfc.section.6.2.3.p.1">The Storage Parameters contains flags that can be used to indicate if: </p>
 <p/>
@@ -854,7 +854,7 @@
       <td class="left">private-version</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Version indicator available for private use by applications.</td>
+      <td class="left">Version indicator available for private use by implementations.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -954,7 +954,7 @@
       <td class="left">opcodes</td>
       <td class="center">M</td>
       <td class="center">A</td>
-      <td class="left">Array of OPCODES (unsigned integers) recorded by the collection application. See <a href="#optional-rrs-and-opcodes">Section 6.2.2</a>.</td>
+      <td class="left">Array of OPCODES (unsigned integers) recorded by the collection implementation. See <a href="#optional-rrs-and-opcodes">Section 6.2.2</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -966,7 +966,7 @@
       <td class="left">rr-types</td>
       <td class="center">M</td>
       <td class="center">A</td>
-      <td class="left">Array of RR types (unsigned integers) recorded by the collection application. See <a href="#optional-rrs-and-opcodes">Section 6.2.2</a>.</td>
+      <td class="left">Array of RR types (unsigned integers) recorded by the collection implementation. See <a href="#optional-rrs-and-opcodes">Section 6.2.2</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1073,7 +1073,7 @@
   </tbody>
 </table>
 <h1 id="rfc.section.7.4.1.1.1"><a href="#rfc.section.7.4.1.1.1">7.4.1.1.1.</a> <a href="#storagehints" id="storagehints">"StorageHints"</a></h1>
-<p id="rfc.section.7.4.1.1.1.p.1">An indicator of which fields the collecting application stores in the arrays with optional fields. A map containing the following: </p>
+<p id="rfc.section.7.4.1.1.1.p.1">An indicator of which fields the collecting implementation stores in the arrays with optional fields. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -1611,7 +1611,7 @@
   </thead>
   <tbody>
     <tr>
-      <td class="left">total-messages</td>
+      <td class="left">processed-messages</td>
       <td class="center">O</td>
       <td class="center">U</td>
       <td class="left">Total number of DNS messages processed from the input traffic stream during collection of data in this <samp>Block</samp> item.</td>
@@ -1623,7 +1623,7 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">total-pairs</td>
+      <td class="left">qr-data-items</td>
       <td class="center">O</td>
       <td class="center">U</td>
       <td class="left">Total number of Q/R data items in this <samp>Block</samp> item.</td>
@@ -1635,7 +1635,7 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">total-unmatched-queries</td>
+      <td class="left">unmatched-queries</td>
       <td class="center">O</td>
       <td class="center">U</td>
       <td class="left">Number of unmatched queries in this <samp>Block</samp> item.</td>
@@ -1647,7 +1647,7 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">total-unmatched-responses</td>
+      <td class="left">unmatched-responses</td>
       <td class="center">O</td>
       <td class="center">U</td>
       <td class="left">Number of unmatched responses in this <samp>Block</samp> item.</td>
@@ -1659,10 +1659,10 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">total-discarded-messages</td>
+      <td class="left">discarded-messages -opcode</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Number of messages found in input for this <samp>Block</samp> item but not recorded because their OPCODE is not one of those to be collected.</td>
+      <td class="left">Number of DNS messages processed from the input traffic stream during collection of data in this <samp>Block</samp> item but not recorded because their OPCODE is not in the list to be collected.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1671,7 +1671,7 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">total-malformed-messages</td>
+      <td class="left">malformed-messages</td>
       <td class="center">O</td>
       <td class="center">U</td>
       <td class="left">Number of malformed messages found in input for this <samp>Block</samp> item.</td>
@@ -1886,7 +1886,7 @@
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 5. Trailing data in query payload. The DNS query message in the UDP or TCP payload was followed by some additional bytes, which were discarded.</td>
+      <td class="left">Bit 5. Trailing bytes in query packet. See <a href="#trailing-bytes">Section 10.2</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1946,43 +1946,43 @@
       <td class="left">qr-sig-flags</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">Bit flags indicating information present in this Q/R data item.</td>
+      <td class="left">Bit flags explicitly indicating attributes of the message pair represented by this Q/R data item (not all attributes may be recorded or deducible).</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 0. 1 if a Query is present. Indicates existance of a Query without requiring Query data be recorded.</td>
+      <td class="left">Bit 0. 1 if a Query was present.</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 1. 1 if a Response is present. Indicates existance of a Response without requiring Response data be recorded.</td>
+      <td class="left">Bit 1. 1 if a Response was present.</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 2. 1 if a Query is present and it has an OPT Resource Record. Indicates OPT was present in the Query without requiring OPT data be recorded.</td>
+      <td class="left">Bit 2. 1 if a Query was present and it had an OPT Resource Record.</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 3. 1 if a Response is present and it has an OPT Resource Record. Indicates OPT was present in the Response without requiring OPT data be recorded.</td>
+      <td class="left">Bit 3. 1 if a Response was present and it had an OPT Resource Record.</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 4. 1 if a Query is present but has no Question. Indicates if Question data present in the Query. Common case of Question present is 0 to reduce storage size required for bit flags field.</td>
+      <td class="left">Bit 4. 1 if a Query was present but had no Question.</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 5. 1 if a Response is present but has no Question. Indicates if Question data present in the Response. Common case of Question present is 0 to reduce storage size required for bit flags field.</td>
+      <td class="left">Bit 5. 1 if a Response was present but had no Question (only one query-name-index is stored per Q/R item).</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2542,7 +2542,7 @@
     </tr>
   </tbody>
 </table>
-<p id="rfc.section.7.6.p.4">The <samp>query-size</samp> and <samp>response-size</samp> fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes with queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.  </p>
+<p id="rfc.section.7.6.p.4">The <samp>query-size</samp> and <samp>response-size</samp> fields hold the DNS message size. For UDP this is the size of the UDP payload that contained the DNS message. For TCP it is the size of the DNS message as specified in the two-byte message length header. Trailing bytes in UDP queries are routinely observed in traffic to authoritative servers and this value allows a calculation of how many trailing bytes were present.  </p>
 <h1 id="rfc.section.7.6.1"><a href="#rfc.section.7.6.1">7.6.1.</a> <a href="#responseprocessingdata" id="responseprocessingdata">"ResponseProcessingData"</a></h1>
 <p id="rfc.section.7.6.1.p.1">Information on the server processing that produced the response. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
@@ -2635,7 +2635,7 @@
       <td class="left">additional-index</td>
       <td class="center">O</td>
       <td class="center">U</td>
-      <td class="left">The index in the <samp>rrlist</samp> array of the entry listing the Additional Resource Record sections for the Query or Response. See <a href="#blocktables">Section 7.5.3</a>. An OPT item in a Query should NOT be recorded in the list as the data is available in other fields.</td>
+      <td class="left">The index in the <samp>rrlist</samp> array of the entry listing the Additional Resource Record sections for the Query or Response. See <a href="#blocktables">Section 7.5.3</a>. Note that Query OPT RR data can be optionally stored in the QuerySignature.</td>
     </tr>
   </tbody>
 </table>
@@ -2822,8 +2822,8 @@
 </ol>
 
 <p> </p>
-<p id="rfc.section.9.p.4">DNS messages are processed in the order they are delivered to the application.  </p>
-<p id="rfc.section.9.p.5">It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.  This can, for example, arise on multi-core platforms where packets arriving at a network device are processed by different cores. On systems where this behaviour has been observed, the timestamps associated with each packet are consistent; queries always have a timestamp prior to the response timestamp.  However, the order in which these packets are collected by the packet capture is not necessarily strictly choronological; a response can appear in the capture stream before the query that provoked the response. For this discussion, this non-chronological delivery is termed "skew".  </p>
+<p id="rfc.section.9.p.4">DNS messages are processed in the order they are delivered to the implementation.  </p>
+<p id="rfc.section.9.p.5">It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.  This can, for example, arise on multi-core platforms where packets arriving at a network device are processed by different cores. On systems where this behaviour has been observed, the timestamps associated with each packet are consistent; queries always have a timestamp prior to the response timestamp.  However, the order in which these packets appear in the packet capture stream is not necessarily strictly choronological; a response can appear in the capture stream before the query that provoked the response. For this discussion, this non-chronological delivery is termed "skew".  </p>
 <p id="rfc.section.9.p.6">In the presence of skew, a response packets can arrive for matching before the corresponding query. To avoid generating false instances of responses without a matching query, and queries without a matching response, the matching algorithm must take account of the possibility of skew.  </p>
 <h1 id="rfc.section.9.1"><a href="#rfc.section.9.1">9.1.</a> <a href="#matching-algorithm" id="matching-algorithm">Matching algorithm</a></h1>
 <p id="rfc.section.9.1.p.1">A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram: </p>
@@ -2851,8 +2851,8 @@
 <p/>
 
 <ol>
-  <li>Query timeout. If no response matching a query has arrived before input arrives timestamped later than the query timestamp plus the query timeout, a query-only query/response item is generated. Typically a small number of seconds.</li>
-  <li>Skew timeout. If a response has not been matched by a query before input arrives timestamped later than the response timestamp plus the skew timeout, a response-only query/response item is generated. Typically a small number of microseconds.</li>
+  <li>Query timeout, QT. A query arrives with timestamp t1. If no response matching that query has arrived before other input arrives timestamped later than (t1 + QT), a query/response item containing only a query item is recorded. The query timeout value is typically of the order of 5 seconds.</li>
+  <li>Skew timeout, ST. A response arrives with timestamp t2. If a response has not been matched by a query before input arrives timestamped later than (t2 + SK), a query/response item containing only a response is recorded. The skew timeout value is typically a few microseconds.</li>
 </ol>
 
 <p> </p>
@@ -2892,13 +2892,14 @@
 <p id="rfc.section.10.p.3">Adherence to the last two rules given in Section 3.9 of [RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.  </p>
 <h1 id="rfc.section.10.1"><a href="#rfc.section.10.1">10.1.</a> <a href="#optional-data" id="optional-data">Optional data</a></h1>
 <p id="rfc.section.10.1.p.1">When decoding data some items required for a particular function the consumer wishes to perform may be missing. Consumers should consider providing configurable default values to be used in place of the missing values in their output.  </p>
-<h1 id="rfc.section.10.2"><a href="#rfc.section.10.2">10.2.</a> <a href="#trailing-data-in-tcp" id="trailing-data-in-tcp">Trailing data in TCP</a></h1>
-<p id="rfc.section.10.2.p.1">When DNS traffic is sent over TCP, each message is prefixed with a two byte length field which gives the message length, excluding the two byte length field. In this context, trailing bytes can be considered to occur in two circumstances.  </p>
+<h1 id="rfc.section.10.2"><a href="#rfc.section.10.2">10.2.</a> <a href="#trailing-bytes" id="trailing-bytes">Trailing bytes</a></h1>
+<p id="rfc.section.10.2.p.1">A DNS query message in a UDP or TCP payload can be followed by some additional (spurious) bytes, which are not stored in C-DNS.  </p>
+<p id="rfc.section.10.2.p.2">When DNS traffic is sent over TCP, each message is prefixed with a two byte length field which gives the message length, excluding the two byte length field. In this context, trailing bytes can occur in two circumstances with different results: </p>
 <p/>
 
 <ol>
-  <li>The number of bytes consumed by fully parsing the message is less than the number of bytes given in the length field. In this case, the surplus bytes are considered trailing data and recorded as such.</li>
-  <li>There are surplus bytes between the end of the message and the start of the next length field.  In this case the first of the surplus bytes will be considered as the first byte of the next length field, and parsing will proceed from there, most probably leading to a malformed message. This will not generate any trailing data record.</li>
+  <li>The number of bytes consumed by fully parsing the message is less than the number of bytes given in the length field (i.e. the length field is incorrect and too large).  In this case, the surplus bytes are considered trailing bytes in an analogous manner to UDP and recorded as such.  If only this case occurs it is possible to process a packet containing multiple DNS messages where one or more has trailing bytes.</li>
+  <li>There are surplus bytes between the end of a well-formed message and the start of the length field for the next message.  In this case the first of the surplus bytes will be processed as the first byte of the next length field, and parsing will proceed from there, almost certainly leading to the next and any subsequent messages in the packet being considered malformed.  This will not generate a trailing bytes record for the processed well-formed message.</li>
 </ol>
 
 <p> </p>
@@ -2915,7 +2916,7 @@
 
 <ul>
   <li>is mature but has only been deployed for testing in a single environment so is not yet classified as production ready.</li>
-  <li>covers the whole of the specification described in the -03 draft with the exception of support for malformed messages and pico second time resolution.  (Note: this implementation does allow malformed messages to be dumped to a PCAP file).</li>
+  <li>covers the whole of the specification described in the -03 draft with the exception of support for malformed messages and pico second time resolution.  (Note: this implementation does allow malformed messages to be recorded separately in a PCAP file).</li>
   <li>is released under the Mozilla Public License Version 2.0.</li>
   <li>has a users mailing list available, see <a href="https://mm.dns-stats.org/mailman/listinfo/dns-stats-users">dns-stats-users</a>.</li>
 </ul>
@@ -2938,9 +2939,8 @@
 
 <ul>
   <li>Resolve outstanding questions and TODOs</li>
-  <li>Make RR rdata optional</li>
+  <li>Make RR RDATA optional</li>
   <li>Update matching diagram and explain skew</li>
-  <li>Query OPT should not be captured in QueryResponseExtended</li>
   <li>Add count of discarded messages to block statistics</li>
   <li>Editorial clarifications and improvements</li>
 </ul>

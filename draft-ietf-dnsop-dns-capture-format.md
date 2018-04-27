@@ -639,7 +639,7 @@ Overall information for a `Block` item. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-earliest-time | O | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit the timestamp.
+earliest-time | O | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.
 | | |
 block-parameters -index | O | U | The index of the item in the `block-parameters` array (in the `file-premable` item) applicable to this block. If not present, index 0 is used. See (#blockparameters).
 
@@ -657,9 +657,9 @@ unmatched-queries | O | U | Number of unmatched queries in this `Block` item.
 | | |
 unmatched-responses | O | U | Number of unmatched responses in this `Block` item.
 | | |
-discarded-messages -opcode | O | U | Number of DNS messages processed from the input traffic stream during collection of data in this `Block` item but not recorded because their OPCODE is not in the list to be collected.
+discarded-opcode | O | U | Number of DNS messages processed from the input traffic stream during collection of data in this `Block` item but not recorded because their OPCODE is not in the list to be collected.
 | | |
-malformed-messages | O | U | Number of malformed messages found in input for this `Block` item.
+malformed-items | O | U | Number of malformed messages found in input for this `Block` item.
 
 ### "BlockTables"
 

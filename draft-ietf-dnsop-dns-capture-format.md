@@ -354,10 +354,10 @@ This does, however, mean that a consumer of a C-DNS file faces two problems:
 1.  How can it quickly determine whether a file contains the data items it requires to complete a
     particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?
 
-1.  How can it determine if a data item is not present because it was
-    *  explicitly not recorded, or
-    *  either was not present in the original data stream or the data item was not
-       available to the collecting implementation?
+1.  How can it determine if a data item is not present because it was:
+    *  either explicitly not recorded, or the data item was not
+       available to the collecting implementation, or
+    *  the data item was not present in the original data stream
 
 For example, capturing C-DNS data from within a nameserver implementation 
 makes it unlikely that the Client Hoplimit can be recorded. Or, if

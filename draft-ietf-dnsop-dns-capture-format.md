@@ -1067,7 +1067,7 @@ This algorithm chooses to match to the earliest query with the correct Primary a
 
 ## Workspace
 
-A FIFO structure is used to hold the Q/R data items during processing.
+A FIFO structure is used to hold the Q/R data items during processing. A secondary responses FIFO holds responses awaiting matching queries.
 
 ## Output
 
@@ -1082,7 +1082,10 @@ The timestamp of a list item is that of the query for cases 1 and 2 and that of 
 
 ## Post processing
 
-When ending capture, all remaining entries in the Q/R data item FIFO should be treated as timed out queries.
+When ending capture, all items in the responses FIFO are timed out
+immediately, generating response-only entries to the Q/R data item
+FIFO. These and all other remaining entries in the Q/R data item FIFO
+should be treated as timed out queries.
 
 # Implementation guidance
 

@@ -1587,19 +1587,19 @@ Timestamp = [
 ; Statistics about the block contents.
 ;
 BlockStatistics = {
-    ? total-messages            => uint,
-    ? total-pairs               => uint,
-    ? total-unmatched-queries   => uint,
-    ? total-unmatched-responses => uint,
-    ? total-discarded-messages  => uint,
-    ? total-malformed-messages  => uint,
+    ? processed-messages  => uint,
+    ? qr-data-items       => uint,
+    ? unmatched-queries   => uint,
+    ? unmatched-responses => uint,
+    ? discarded-opcode    => uint,
+    ? malformed-items     => uint,
 }
-total-messages               = 0
-total-pairs                  = 1
-total-unmatched-queries      = 2
-total-unmatched-responses    = 3
-total-discarded-messages     = 4
-total-malformed-messages     = 5
+processed-messages  = 0
+qr-data-items       = 1
+unmatched-queries   = 2
+unmatched-responses = 3
+discarded-opcode    = 4
+malformed-items     = 5
 
 ;
 ; Tables of common data referenced from records in a block.
@@ -1701,9 +1701,9 @@ response-rcode        = 16
   QueryResponseFlagValues = &(
       has-query               : 0,
       has-reponse             : 1,
-      query-has-question      : 2,
-      query-has-opt           : 3,
-      response-has-opt        : 4,
+      query-has-opt           : 2,
+      response-has-opt        : 3,
+      query-has-no-question   : 4,
       response-has-no-question: 5,
   )
   QueryResponseFlags = uint .bits QueryResponseFlagValues

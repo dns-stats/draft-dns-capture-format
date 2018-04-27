@@ -1048,7 +1048,7 @@ with RCODE=FORMERR or NOTIMP). In this case the secondary ID is not used in matc
 
 1. Query timeout, QT. A query arrives with timestamp t1. If no response matching that query has arrived before other input arrives timestamped later than (t1 + QT),
 a query/response item containing only a query item is recorded. The query timeout value is typically of the order of 5 seconds.
-2. Skew timeout, ST. A response arrives with timestamp t2. If a response has not been matched by a query before input arrives timestamped later than (t2 + SK),
+2. Skew timeout, ST. A response arrives with timestamp t2. If a response has not been matched by a query before input arrives timestamped later than (t2 + ST),
 a query/response item containing only a response is recorded. The skew timeout value is typically a few microseconds.
 
 ## Algorithm requirements

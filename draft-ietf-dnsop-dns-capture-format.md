@@ -109,22 +109,22 @@ a mechanism to minimize the storage size (and therefore upload overhead) of the
 data collected is highly desirable.
 
 The format described in this document, C-DNS (Compacted-DNS), focusses on the problem of capturing and storing large packet capture
-files of DNS traffic. with the following goals in mind:
+files of DNS traffic with the following goals in mind:
 
 * Minimize the file size for storage and transmission
-* Minimizing the overhead of producing the packet capture file and the cost of any further (general purpose) compression of the file
+* Minimize the overhead of producing the packet capture file and the cost of any further (general purpose) compression of the file
 
 This document contains:
 
-* A discussion of the some common use cases in which such DNS data is collected (#data-collection-use-cases)
+* A discussion of some common use cases in which DNS data is collected - (#data-collection-use-cases)
 * A discussion of the major design considerations in developing an efficient
-  data representation for collections of DNS messages (#design-considerations)
-* A description of why CBOR [@!RFC7049] was chosen for this format (#choice-of-cbor)
-* A conceptual overview of the C-DNS format (#cdns-format-conceptual-overview)
-* The definition of the C-DNS format for the collection of DNS messages (#cdns-format-detailed-description).
-* Notes on converting C-DNS data to PCAP format (#cdns-to-pcap)
+  data representation for collections of DNS messages - (#design-considerations)
+* A description of why CBOR [@!RFC7049] was chosen for this format - (#choice-of-cbor)
+* A conceptual overview of the C-DNS format - (#cdns-format-conceptual-overview)
+* The definition of the C-DNS format for the collection of DNS messages - (#cdns-format-detailed-description).
+* Notes on converting C-DNS data to PCAP format - (#cdns-to-pcap)
 * Some high level implementation considerations for applications designed to
-  produce C-DNS (#data-collection)
+  produce C-DNS - (#data-collection)
 
 # Terminology
 
@@ -134,10 +134,10 @@ document are to be interpreted as described in [@!RFC2119].
 
 "Packet" refers to an individual IPv4 or IPv6 packet. Typically packets are
 UDP datagrams, but may also be part of a TCP data stream. "Message", unless otherwise
-qualified, refers to a DNS payload extracted from a UDP datagram or TCP data
+qualified, refers to a DNS payload extracted from a UDP datagram or a TCP data
 stream.
 
-The parts of DNS messages are named as they are in [@!RFC1035]. In specific,
+The parts of DNS messages are named as they are in [@!RFC1035]. Specifically,
 the DNS message has five sections: Header, Question, Answer, Authority,
 and Additional.
 
@@ -149,21 +149,21 @@ In an ideal world, it would be optimal to collect full packet captures of all
 packets going in or out of a name server. However, there are several
 design choices or other limitations that are common to many DNS installations and operators.
 
-* DNS servers are hosted in a variety of situations
+* DNS servers are hosted in a variety of situations:
     * Self-hosted servers
     * Third party hosting (including multiple third parties)
     * Third party hardware (including multiple third parties)
-* Data is collected under different conditions
+* Data is collected under different conditions:
     * On well-provisioned servers running in a steady state
     * On heavily loaded servers
     * On virtualized servers
     * On servers that are under DoS attack
     * On servers that are unwitting intermediaries in DoS attacks
-* Traffic can be collected via a variety of mechanisms
+* Traffic can be collected via a variety of mechanisms:
     * On the same hardware as the name server itself
     * Using a network tap on an adjacent host to listen to DNS traffic
     * Using port mirroring to listen from another host
-* The capabilities of data collection (and upload) networks vary
+* The capabilities of data collection (and upload) networks vary:
     * Out-of-band networks with the same capacity as the in-band network
     * Out-of-band networks with less capacity than the in-band network
     * Everything being on the in-band network
@@ -176,7 +176,7 @@ mirroring with an out-of-band networks with the same capacity as the in-band net
 In the former, it is infeasible to reliably collect full packet captures, especially if the server
 is under attack. In the latter case, collection of full packet captures may be reasonable.
 
-As a result of these restrictions, the C-DNS data format was designed
+As a result of these restrictions, the C-DNS data format is designed
 with the most limited use case in mind such that:
 
 * data collection will occur on the same hardware as the name server itself
@@ -196,8 +196,8 @@ utilization. This leads to designing a format that requires a relatively low
 overhead to produce and minimizes the requirement for further potentially costly
 compression.
 
-However, it was also essential that interoperability with less restricted
-infrastructure was maintained. In particular, it is highly desirable that the
+However, it is also essential that interoperability with less restricted
+infrastructure is maintained. In particular, it is highly desirable that the
 collection format should facilitate the re-creation of common formats (such as PCAP) that are as
 close to the original as is realistic given the restrictions above.
 
@@ -211,7 +211,7 @@ will be used for unmatched Queries and Responses. Queries without Responses will
 captured omitting the response data. Responses without queries will be captured omitting the Query data (but using
 the Question section from the response, if present, as an identifying QNAME).
 
-    * Rationale: A Query and Response represents the basic level of a clients interaction with the server.
+    * Rationale: A Query and Response represents the basic level of a client's interaction with the server.
       Also, combining the Query and Response into one item often reduces storage requirements due to
       commonality in the data of the two messages.
 
@@ -229,10 +229,10 @@ the Question section from the response, if present, as an identifying QNAME).
 2. All top level fields in each Q/R data item will be optional.
 
     * Rationale: Different users will have different requirements for data to be available for analysis.
-      Users with minimal requirements should not have to pay the cost of recording full data, however this will
-      limit the ability to perform certain kinds of data analysis and also reconstruct packet captures.
+      Users with minimal requirements should not have to pay the cost of recording full data, though this will
+      limit the ability to perform certain kinds of data analysis and also to reconstruct packet captures.
       For example, omitting the resource records from a Response will
-      reduce the C-DNS file size, and in principle responses can be synthesized if there is enough context.
+      reduce the C-DNS file size; in principle responses can be synthesized if there is enough context.
 
 3. Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and
 referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
@@ -241,7 +241,7 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
       Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
     * It is anticipated that the files produced can be subject to further compression using general purpose compression tools.
       Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
-    * Some examples of commonality between DNS messages is that in most cases the QUESTION RR is the same in the query and response and that
+    * Some examples of commonality between DNS messages are that in most cases the QUESTION RR is the same in the query and response, and that
       there is a finite set of query signatures (based on a subset of attributes). For many authoritative servers there is very likely
       to be a finite set of responses that are generated, of which a large number are NXDOMAIN.
 
@@ -994,8 +994,8 @@ responses and production of a stream of query/response items, matching queries/r
 
 For the purposes of this discussion, it is assumed that the input has been pre-processed such that:
 
-1. All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed
-1. Each message is associated with transport metadata required to generate the Primary ID (see (#primary-id))
+1. All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed.
+1. Each message is associated with transport metadata required to generate the Primary ID (see (#primary-id)).
 1. Each message has a well-formed DNS header of 12 bytes and (if present) the first Question in the Question section can be
 parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being
 removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.

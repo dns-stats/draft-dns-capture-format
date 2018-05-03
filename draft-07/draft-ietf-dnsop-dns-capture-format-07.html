@@ -448,7 +448,7 @@
 
   <meta name="dct.creator" content="Dickinson, J., Hague, J., Dickinson, S., Manderson, T., and J. Bond" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-ietf-dnsop-dns-capture-format-07" />
-  <meta name="dct.issued" scheme="ISO8601" content="2018-4-25" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-5-3" />
   <meta name="dct.abstract" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
   <meta name="description" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
 
@@ -472,7 +472,7 @@
   <td class="right">S. Dickinson</td>
 </tr>
 <tr>
-  <td class="left">Expires: October 27, 2018</td>
+  <td class="left">Expires: November 4, 2018</td>
   <td class="right">Sinodun IT</td>
 </tr>
 <tr>
@@ -489,7 +489,7 @@
 </tr>
 <tr>
   <td class="left"></td>
-  <td class="right">April 25, 2018</td>
+  <td class="right">May 3, 2018</td>
 </tr>
 
     	
@@ -509,7 +509,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on October 27, 2018.</p>
+<p>This Internet-Draft will expire on November 4, 2018.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -597,12 +597,12 @@
 <p id="rfc.section.1.p.2">A wide variety of tools already exist that facilitate the collection of DNS traffic data, such as DSC <a href="#dsc">[dsc]</a>, packetq <a href="#packetq">[packetq]</a>, dnscap <a href="#dnscap">[dnscap]</a> and dnstap <a href="#dnstap">[dnstap]</a>.  However, there is no standard exchange format for large DNS packet captures.  The PCAP <a href="#pcap">[pcap]</a> or PCAP-NG <a href="#pcapng">[pcapng]</a> formats are typically used in practice for packet captures, but these file formats can contain a great deal of additional information that is not directly pertinent to DNS traffic analysis and thus unnecessarily increases the capture file size.  </p>
 <p id="rfc.section.1.p.3">There has also been work on using text based formats to describe DNS packets such as <a href="#I-D.daley-dnsxml">[I-D.daley-dnsxml]</a>, <a href="#I-D.hoffman-dns-in-json">[I-D.hoffman-dns-in-json]</a>, but these are largely aimed at producing convenient representations of single messages.  </p>
 <p id="rfc.section.1.p.4">Many DNS operators may receive hundreds of thousands of queries per second on a single name server instance so a mechanism to minimize the storage size (and therefore upload overhead) of the data collected is highly desirable.  </p>
-<p id="rfc.section.1.p.5">The format described in this document, C-DNS (Compacted-DNS), focusses on the problem of capturing and storing large packet capture files of DNS traffic. with the following goals in mind: </p>
+<p id="rfc.section.1.p.5">The format described in this document, C-DNS (Compacted-DNS), focusses on the problem of capturing and storing large packet capture files of DNS traffic with the following goals in mind: </p>
 <p/>
 
 <ul>
-  <li>Minimize the file size for storage and transmission</li>
-  <li>Minimizing the overhead of producing the packet capture file and the cost of any further (general purpose) compression of the file</li>
+  <li>Minimize the file size for storage and transmission.</li>
+  <li>Minimize the overhead of producing the packet capture file and the cost of any further (general purpose) compression of the file.</li>
 </ul>
 
 <p> </p>
@@ -610,35 +610,35 @@
 <p/>
 
 <ul>
-  <li>A discussion of the some common use cases in which such DNS data is collected <a href="#data-collection-use-cases">Section 3</a></li>
-  <li>A discussion of the major design considerations in developing an efficient data representation for collections of DNS messages <a href="#design-considerations">Section 4</a></li>
-  <li>A description of why CBOR <a href="#RFC7049">[RFC7049]</a> was chosen for this format <a href="#choice-of-cbor">Section 5</a></li>
-  <li>A conceptual overview of the C-DNS format <a href="#cdns-format-conceptual-overview">Section 6</a></li>
-  <li>The definition of the C-DNS format for the collection of DNS messages <a href="#cdns-format-detailed-description">Section 7</a>.</li>
-  <li>Notes on converting C-DNS data to PCAP format <a href="#cdns-to-pcap">Section 8</a></li>
-  <li>Some high level implementation considerations for applications designed to produce C-DNS <a href="#data-collection">Section 9</a></li>
+  <li>A discussion of some common use cases in which DNS data is collected, see <a href="#data-collection-use-cases">Section 3</a>.</li>
+  <li>A discussion of the major design considerations in developing an efficient data representation for collections of DNS messages, see <a href="#design-considerations">Section 4</a>.</li>
+  <li>A description of why CBOR <a href="#RFC7049">[RFC7049]</a> was chosen for this format, see <a href="#choice-of-cbor">Section 5</a>.</li>
+  <li>A conceptual overview of the C-DNS format, see <a href="#cdns-format-conceptual-overview">Section 6</a>.</li>
+  <li>The definition of the C-DNS format for the collection of DNS messages, see <a href="#cdns-format-detailed-description">Section 7</a>.</li>
+  <li>Notes on converting C-DNS data to PCAP format, see <a href="#cdns-to-pcap">Section 8</a>.</li>
+  <li>Some high level implementation considerations for applications designed to produce C-DNS, see <a href="#data-collection">Section 9</a>.</li>
 </ul>
 
 <p> </p>
 <h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#terminology" id="terminology">Terminology</a></h1>
 <p id="rfc.section.2.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC2119">[RFC2119]</a>.  </p>
-<p id="rfc.section.2.p.2">"Packet" refers to an individual IPv4 or IPv6 packet. Typically packets are UDP datagrams, but may also be part of a TCP data stream. "Message", unless otherwise qualified, refers to a DNS payload extracted from a UDP datagram or TCP data stream.  </p>
-<p id="rfc.section.2.p.3">The parts of DNS messages are named as they are in <a href="#RFC1035">[RFC1035]</a>. In specific, the DNS message has five sections: Header, Question, Answer, Authority, and Additional.  </p>
+<p id="rfc.section.2.p.2">"Packet" refers to an individual IPv4 or IPv6 packet. Typically packets are UDP datagrams, but may also be part of a TCP data stream. "Message", unless otherwise qualified, refers to a DNS payload extracted from a UDP datagram or a TCP data stream.  </p>
+<p id="rfc.section.2.p.3">The parts of DNS messages are named as they are in <a href="#RFC1035">[RFC1035]</a>. Specifically, the DNS message has five sections: Header, Question, Answer, Authority, and Additional.  </p>
 <p id="rfc.section.2.p.4">Pairs of DNS messages are called a Query and a Response.  </p>
 <h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#data-collection-use-cases" id="data-collection-use-cases">Data collection use cases</a></h1>
 <p id="rfc.section.3.p.1">In an ideal world, it would be optimal to collect full packet captures of all packets going in or out of a name server. However, there are several design choices or other limitations that are common to many DNS installations and operators.  </p>
 <p/>
 
 <ul>
-  <li>DNS servers are hosted in a variety of situations <ul><li>Self-hosted servers</li><li>Third party hosting (including multiple third parties)</li><li>Third party hardware (including multiple third parties)</li></ul></li>
-  <li>Data is collected under different conditions <ul><li>On well-provisioned servers running in a steady state</li><li>On heavily loaded servers</li><li>On virtualized servers</li><li>On servers that are under DoS attack</li><li>On servers that are unwitting intermediaries in DoS attacks</li></ul></li>
-  <li>Traffic can be collected via a variety of mechanisms <ul><li>On the same hardware as the name server itself</li><li>Using a network tap on an adjacent host to listen to DNS traffic</li><li>Using port mirroring to listen from another host</li></ul></li>
-  <li>The capabilities of data collection (and upload) networks vary <ul><li>Out-of-band networks with the same capacity as the in-band network</li><li>Out-of-band networks with less capacity than the in-band network</li><li>Everything being on the in-band network</li></ul></li>
+  <li>DNS servers are hosted in a variety of situations: <ul><li>Self-hosted servers</li><li>Third party hosting (including multiple third parties)</li><li>Third party hardware (including multiple third parties)</li></ul></li>
+  <li>Data is collected under different conditions: <ul><li>On well-provisioned servers running in a steady state</li><li>On heavily loaded servers</li><li>On virtualized servers</li><li>On servers that are under DoS attack</li><li>On servers that are unwitting intermediaries in DoS attacks</li></ul></li>
+  <li>Traffic can be collected via a variety of mechanisms: <ul><li>Within the name server implementation itself</li><li>On the same hardware as the name server itself</li><li>Using a network tap on an adjacent host to listen to DNS traffic</li><li>Using port mirroring to listen from another host</li></ul></li>
+  <li>The capabilities of data collection (and upload) networks vary: <ul><li>Out-of-band networks with the same capacity as the in-band network</li><li>Out-of-band networks with less capacity than the in-band network</li><li>Everything being on the in-band network</li></ul></li>
 </ul>
 
 <p> </p>
 <p id="rfc.section.3.p.3">Thus, there is a wide range of use cases from very limited data collection environments (third party hardware, servers that are under attack, packet capture on the name server itself and no out-of-band network) to "limitless" environments (self hosted, well provisioned servers, using a network tap or port mirroring with an out-of-band networks with the same capacity as the in-band network).  In the former, it is infeasible to reliably collect full packet captures, especially if the server is under attack. In the latter case, collection of full packet captures may be reasonable.  </p>
-<p id="rfc.section.3.p.4">As a result of these restrictions, the C-DNS data format was designed with the most limited use case in mind such that: </p>
+<p id="rfc.section.3.p.4">As a result of these restrictions, the C-DNS data format is designed with the most limited use case in mind such that: </p>
 <p/>
 
 <ul>
@@ -651,17 +651,17 @@
 <p> </p>
 <p id="rfc.section.3.p.6">Because of these considerations, a major factor in the design of the format is minimal storage size of the capture files.  </p>
 <p id="rfc.section.3.p.7">Another significant consideration for any application that records DNS traffic is that the running of the name server software and the transmission of DNS queries and responses are the most important jobs of a name server; capturing data is not.  Any data collection system co-located with the name server needs to be intelligent enough to carefully manage its CPU, disk, memory and network utilization. This leads to designing a format that requires a relatively low overhead to produce and minimizes the requirement for further potentially costly compression.  </p>
-<p id="rfc.section.3.p.8">However, it was also essential that interoperability with less restricted infrastructure was maintained. In particular, it is highly desirable that the collection format should facilitate the re-creation of common formats (such as PCAP) that are as close to the original as is realistic given the restrictions above.  </p>
+<p id="rfc.section.3.p.8">However, it is also essential that interoperability with less restricted infrastructure is maintained. In particular, it is highly desirable that the collection format should facilitate the re-creation of common formats (such as PCAP) that are as close to the original as is realistic given the restrictions above.  </p>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#design-considerations" id="design-considerations">Design considerations</a></h1>
 <p id="rfc.section.4.p.1">This section presents some of the major design considerations used in the development of the C-DNS format.  </p>
 <p/>
 
 <ol>
-  <li>The basic unit of data is a combined DNS Query and the associated Response (a "Q/R data item"). The same structure will be used for unmatched Queries and Responses. Queries without Responses will be captured omitting the response data. Responses without queries will be captured omitting the Query data (but using the Question section from the response, if present, as an identifying QNAME).  <ul><li>Rationale: A Query and Response represents the basic level of a clients interaction with the server.  Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data of the two messages.</li></ul><p> In the context of generating a C-DNS file it is assumed that only those DNS payloads which can be parsed to produce a well-formed DNS message are stored in the C-DNS format and that all other messages will be (optionally) recorded as malformed messages.  Parsing a well-formed message means as a minimum: </p><ul><li>The packet has a well-formed 12 byte DNS Header with a recognised OPCODE.</li><li>The section counts are consistent with the section contents.</li><li>All of the resource records can be fully parsed.</li></ul></li>
-  <li>All top level fields in each Q/R data item will be optional.  <ul><li>Rationale: Different users will have different requirements for data to be available for analysis.  Users with minimal requirements should not have to pay the cost of recording full data, however this will limit the ability to perform certain kinds of data analysis and also reconstruct packet captures.  For example, omitting the resource records from a Response will reduce the C-DNS file size, and in principle responses can be synthesized if there is enough context.</li></ul></li>
-  <li>Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.  <ul><li>Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.  Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.</li><li>It is anticipated that the files produced can be subject to further compression using general purpose compression tools.  Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See <a href="#simple-versus-block-coding">Appendix C.2</a>.</li><li>Some examples of commonality between DNS messages is that in most cases the QUESTION RR is the same in the query and response and that there is a finite set of query signatures (based on a subset of attributes). For many authoritative servers there is very likely to be a finite set of responses that are generated, of which a large number are NXDOMAIN.</li></ul></li>
+  <li>The basic unit of data is a combined DNS Query and the associated Response (a "Q/R data item"). The same structure will be used for unmatched Queries and Responses. Queries without Responses will be captured omitting the response data. Responses without queries will be captured omitting the Query data (but using the Question section from the response, if present, as an identifying QNAME).  <ul><li>Rationale: A Query and Response represents the basic level of a client's interaction with the server.  Also, combining the Query and Response into one item often reduces storage requirements due to commonality in the data of the two messages.</li></ul><p> In the context of generating a C-DNS file it is assumed that only those DNS payloads which can be parsed to produce a well-formed DNS message are stored in the C-DNS format and that all other messages will be (optionally) recorded as malformed messages.  Parsing a well-formed message means as a minimum: </p><ul><li>The packet has a well-formed 12 byte DNS Header with a recognised OPCODE.</li><li>The section counts are consistent with the section contents.</li><li>All of the resource records can be fully parsed.</li></ul></li>
+  <li>All top level fields in each Q/R data item will be optional.  <ul><li>Rationale: Different users will have different requirements for data to be available for analysis.  Users with minimal requirements should not have to pay the cost of recording full data, though this will limit the ability to perform certain kinds of data analysis and also to reconstruct packet captures.  For example, omitting the resource records from a Response will reduce the C-DNS file size; in principle responses can be synthesized if there is enough context.</li></ul></li>
+  <li>Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.  <ul><li>Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.  Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.</li><li>It is anticipated that the files produced can be subject to further compression using general purpose compression tools.  Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See <a href="#simple-versus-block-coding">Appendix C.2</a>.</li><li>Examples of commonality between DNS messages are that in most cases the QUESTION RR is the same in the query and response, and that there is a finite set of query signatures (based on a subset of attributes). For many authoritative servers there is very likely to be a finite set of responses that are generated, of which a large number are NXDOMAIN.</li></ul></li>
   <li>Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets (e.g. ICMP, TCP resets) sent to the server may be of interest.</li>
-  <li>The wire format content of malformed DNS messages may optionally be recorded.  <ul><li>Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in that it cannot represent malformed DNS messages.  Only those messages that can be fully parsed and transformed into the structured format can be fully represented. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages available directly in the C-DNS file.  Note, however, this can result in rather misleading statistics. For example, a malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code FORMERR appearing as 'unmatched'.</li></ul></li>
+  <li>The wire format content of malformed DNS messages may optionally be recorded.  <ul><li>Rationale: Any structured capture format that does not capture the DNS payload byte for byte will be limited to some extent in that it cannot represent malformed DNS messages.  Only those messages that can be fully parsed and transformed into the structured format can be fully represented. Note, however, this can result in rather misleading statistics. For example, a malformed query which cannot be represented in the C-DNS format will lead to the (well formed) DNS responses with error code FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis to have the wire format of the malformed DNS messages available directly in the C-DNS file.  <br/></li></ul></li>
 </ol>
 
 <p> </p>
@@ -675,7 +675,7 @@
   <li>Other binary representations were investigated, and whilst all had attractive features, none had a significant advantage over CBOR. See <a href="#comparison-of-binary-formats">Appendix C</a> for some discussion of this.</li>
   <li>CBOR is an IETF standard and familiar to IETF participants. It is based on the now-common ideas of lists and objects, and thus requires very little familiarization for those in the wider industry.</li>
   <li>CBOR is a simple format, and can easily be implemented from scratch if necessary. More complex formats require library support which may present problems on unusual platforms.</li>
-  <li>CBOR can also be easily converted to text formats such as JSON (<a href="#RFC7159">[RFC7159]</a>) for debugging and other human inspection requirements.</li>
+  <li>CBOR can also be easily converted to text formats such as JSON (<a href="#RFC8259">[RFC8259]</a>) for debugging and other human inspection requirements.</li>
   <li>CBOR data schemas can be described using CDDL <a href="#I-D.ietf-cbor-cddl">[I-D.ietf-cbor-cddl]</a>.</li>
 </ul>
 
@@ -724,7 +724,7 @@
 
 <ol>
   <li>How can it quickly determine whether a file contains the data items it requires to complete a particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?</li>
-  <li>How can it determine if a data item is not present because it was <ul><li>explicitly not recorded, or</li><li>either was not present in the original data stream or the data item was not available to the collecting implementation?</li></ul></li>
+  <li>How can it determine if a data item is not present because it was: <ul><li>either explicitly not recorded, or the data item was not available to the collecting implementation, or</li><li>the data item was not present in the original data stream</li></ul></li>
 </ol>
 
 <p> </p>
@@ -734,7 +734,7 @@
 <p id="rfc.section.6.2.2.p.1">Also included in the Storage Parameters are explicit arrays listing the RR types and the OPCODEs to be recorded. These remove any ambiguity over whether messages containing particular OPCODEs or RR types are not present because they did not occur, or because the implementation is not configured to record them.  </p>
 <p id="rfc.section.6.2.2.p.2">In the case of OPCODEs, for a message to be fully parsable, the OPCODE must be known to the collecting implementation. Any message with an OPCODE unknown to the collecting implementation cannot be validated as correctly formed, and so must be treated as malformed. Messages with OPCODES known to the recording application but not listed in the Storage Parameters are discarded (regardless of whether they are malformed or not).  </p>
 <p id="rfc.section.6.2.2.p.3">In the case of RR records, each record in a message must be fully parsable, including parsing the record RDATA, as otherwise the message cannot be validated as correctly formed. Any RR record with an RR type not known to the collecting implementation cannot be validated as correctly formed, and so must be treated as malformed.  </p>
-<p id="rfc.section.6.2.2.p.4">Once a message is correctly parsed, an implementation is free to record only a subset of the RR records received.  </p>
+<p id="rfc.section.6.2.2.p.4">Once a message is correctly parsed, an implementation is free to record only a subset of the RR records present.  </p>
 <h1 id="rfc.section.6.2.3"><a href="#rfc.section.6.2.3">6.2.3.</a> <a href="#storage-flags" id="storage-flags">Storage flags</a></h1>
 <p id="rfc.section.6.2.3.p.1">The Storage Parameters contains flags that can be used to indicate if: </p>
 <p/>
@@ -1582,7 +1582,7 @@
       <td class="left">earliest-time</td>
       <td class="center">O</td>
       <td class="center">A</td>
-      <td class="left">A timestamp (2 unsigned integers, <samp>Timestamp</samp>) for the earliest record in the <samp>Block</samp> item. The first integer is the number of seconds since the Posix epoch (<samp>time_t</samp>). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit the timestamp.</td>
+      <td class="left">A timestamp (2 unsigned integers, <samp>Timestamp</samp>) for the earliest record in the <samp>Block</samp> item. The first integer is the number of seconds since the Posix epoch (<samp>time_t</samp>). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1659,7 +1659,7 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">discarded-messages -opcode</td>
+      <td class="left">discarded-opcode</td>
       <td class="center">O</td>
       <td class="center">U</td>
       <td class="left">Number of DNS messages processed from the input traffic stream during collection of data in this <samp>Block</samp> item but not recorded because their OPCODE is not in the list to be collected.</td>
@@ -1671,7 +1671,7 @@
       <td class="left"/>
     </tr>
     <tr>
-      <td class="left">malformed-messages</td>
+      <td class="left">malformed-items</td>
       <td class="center">O</td>
       <td class="center">U</td>
       <td class="left">Number of malformed messages found in input for this <samp>Block</samp> item.</td>
@@ -2816,8 +2816,8 @@
 <p/>
 
 <ol>
-  <li>All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed</li>
-  <li>Each message is associated with transport metadata required to generate the Primary ID (see <a href="#primary-id">Section 9.2.1</a>)</li>
+  <li>All IP fragmentation reassembly, TCP stream reassembly, and so on, has already been performed.</li>
+  <li>Each message is associated with transport metadata required to generate the Primary ID (see <a href="#primary-id">Section 9.2.1</a>).</li>
   <li>Each message has a well-formed DNS header of 12 bytes and (if present) the first Question in the Question section can be parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being removed in the pre-processing stage, but the correctly formed response with RCODE of FORMERR being present.</li>
 </ol>
 
@@ -2852,7 +2852,7 @@
 
 <ol>
   <li>Query timeout, QT. A query arrives with timestamp t1. If no response matching that query has arrived before other input arrives timestamped later than (t1 + QT), a query/response item containing only a query item is recorded. The query timeout value is typically of the order of 5 seconds.</li>
-  <li>Skew timeout, ST. A response arrives with timestamp t2. If a response has not been matched by a query before input arrives timestamped later than (t2 + SK), a query/response item containing only a response is recorded. The skew timeout value is typically a few microseconds.</li>
+  <li>Skew timeout, ST. A response arrives with timestamp t2. If a response has not been matched by a query before input arrives timestamped later than (t2 + ST), a query/response item containing only a response is recorded. The skew timeout value is typically a few microseconds.</li>
 </ol>
 
 <p> </p>
@@ -2871,7 +2871,7 @@
 <h1 id="rfc.section.9.5"><a href="#rfc.section.9.5">9.5.</a> <a href="#algorithm-limitations" id="algorithm-limitations">Algorithm limitations</a></h1>
 <p id="rfc.section.9.5.p.1">For cases 1 and 2 listed in the above requirements, it is not possible to unambiguously match queries with responses.  This algorithm chooses to match to the earliest query with the correct Primary and Secondary ID.  </p>
 <h1 id="rfc.section.9.6"><a href="#rfc.section.9.6">9.6.</a> <a href="#workspace" id="workspace">Workspace</a></h1>
-<p id="rfc.section.9.6.p.1">A FIFO structure is used to hold the Q/R data items during processing.  </p>
+<p id="rfc.section.9.6.p.1">A FIFO structure is used to hold the Q/R data items during processing. A secondary responses FIFO holds responses awaiting matching queries.  </p>
 <h1 id="rfc.section.9.7"><a href="#rfc.section.9.7">9.7.</a> <a href="#output" id="output">Output</a></h1>
 <p id="rfc.section.9.7.p.1">The output is a list of Q/R data items. Both the Query and Response elements are optional in these items, therefore Q/R data items have one of three types of content: </p>
 <p/>
@@ -2885,13 +2885,13 @@
 <p> </p>
 <p id="rfc.section.9.7.p.3">The timestamp of a list item is that of the query for cases 1 and 2 and that of the response for case 3.  </p>
 <h1 id="rfc.section.9.8"><a href="#rfc.section.9.8">9.8.</a> <a href="#post-processing" id="post-processing">Post processing</a></h1>
-<p id="rfc.section.9.8.p.1">When ending capture, all remaining entries in the Q/R data item FIFO should be treated as timed out queries.  </p>
+<p id="rfc.section.9.8.p.1">When ending capture, all items in the responses FIFO are timed out immediately, generating response-only entries to the Q/R data item FIFO. These and all other remaining entries in the Q/R data item FIFO should be treated as timed out queries.  </p>
 <h1 id="rfc.section.10"><a href="#rfc.section.10">10.</a> <a href="#implementation-guidance" id="implementation-guidance">Implementation guidance</a></h1>
 <p id="rfc.section.10.p.1">Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of [RFC7049]) the following guidance may be of use to implementors.  </p>
 <p id="rfc.section.10.p.2">Adherence to the first two rules given in Section 3.9 of [RFC7049] will minimise file sizes.  </p>
 <p id="rfc.section.10.p.3">Adherence to the last two rules given in Section 3.9 of [RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.  </p>
 <h1 id="rfc.section.10.1"><a href="#rfc.section.10.1">10.1.</a> <a href="#optional-data" id="optional-data">Optional data</a></h1>
-<p id="rfc.section.10.1.p.1">When decoding data some items required for a particular function the consumer wishes to perform may be missing. Consumers should consider providing configurable default values to be used in place of the missing values in their output.  </p>
+<p id="rfc.section.10.1.p.1">When decoding C-DNS data some of the items required for a particular function that the consumer wishes to perform may be missing. Consumers should consider providing configurable default values to be used in place of the missing values in their output.  </p>
 <h1 id="rfc.section.10.2"><a href="#rfc.section.10.2">10.2.</a> <a href="#trailing-bytes" id="trailing-bytes">Trailing bytes</a></h1>
 <p id="rfc.section.10.2.p.1">A DNS query message in a UDP or TCP payload can be followed by some additional (spurious) bytes, which are not stored in C-DNS.  </p>
 <p id="rfc.section.10.2.p.2">When DNS traffic is sent over TCP, each message is prefixed with a two byte length field which gives the message length, excluding the two byte length field. In this context, trailing bytes can occur in two circumstances with different results: </p>
@@ -2915,7 +2915,6 @@
 <p/>
 
 <ul>
-  <li>is mature but has only been deployed for testing in a single environment so is not yet classified as production ready.</li>
   <li>covers the whole of the specification described in the -03 draft with the exception of support for malformed messages and pico second time resolution.  (Note: this implementation does allow malformed messages to be recorded separately in a PCAP file).</li>
   <li>is released under the Mozilla Public License Version 2.0.</li>
   <li>has a users mailing list available, see <a href="https://mm.dns-stats.org/mailman/listinfo/dns-stats-users">dns-stats-users</a>.</li>
@@ -2923,7 +2922,7 @@
 
 <p> </p>
 <p id="rfc.section.11.1.p.4">There is also some discussion of issues encountered during development available at <a href="https://www.sinodun.com/2017/06/compressing-pcap-files/">Compressing Pcap Files</a> and <a href="https://www.sinodun.com/2017/06/more-on-debian-jessieubuntu-trusty-packet-capture-woes/">Packet Capture</a>.  </p>
-<p id="rfc.section.11.1.p.5">This information was last updated on 29th of June 2017.  </p>
+<p id="rfc.section.11.1.p.5">This information was last updated on 3rd of May 2018.  </p>
 <h1 id="rfc.section.12"><a href="#rfc.section.12">12.</a> <a href="#iana-considerations" id="iana-considerations">IANA considerations</a></h1>
 <p id="rfc.section.12.p.1">None </p>
 <h1 id="rfc.section.13"><a href="#rfc.section.13">13.</a> <a href="#security-considerations" id="security-considerations">Security considerations</a></h1>
@@ -3132,15 +3131,15 @@
     </tr>
     <tr>
       <td class="reference">
-        <b id="RFC7159">[RFC7159]</b>
-      </td>
-      <td class="top"><a>Bray, T.</a>, "<a href="http://tools.ietf.org/html/rfc7159">The JavaScript Object Notation (JSON) Data Interchange Format</a>", RFC 7159, DOI 10.17487/RFC7159, March 2014.</td>
-    </tr>
-    <tr>
-      <td class="reference">
         <b id="RFC7942">[RFC7942]</b>
       </td>
       <td class="top"><a>Sheffer, Y.</a> and <a>A. Farrel</a>, "<a href="http://tools.ietf.org/html/rfc7942">Improving Awareness of Running Code: The Implementation Status Section</a>", BCP 205, RFC 7942, DOI 10.17487/RFC7942, July 2016.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC8259">[RFC8259]</b>
+      </td>
+      <td class="top"><a>Bray, T.</a>, "<a href="http://tools.ietf.org/html/rfc8259">The JavaScript Object Notation (JSON) Data Interchange Format</a>", STD 90, RFC 8259, DOI 10.17487/RFC8259, December 2017.</td>
     </tr>
   </tbody>
 </table>
@@ -3347,19 +3346,19 @@ Timestamp = [
 ; Statistics about the block contents.
 ;
 BlockStatistics = {
-    ? total-messages            =&gt; uint,
-    ? total-pairs               =&gt; uint,
-    ? total-unmatched-queries   =&gt; uint,
-    ? total-unmatched-responses =&gt; uint,
-    ? total-discarded-messages  =&gt; uint,
-    ? total-malformed-messages  =&gt; uint,
+    ? processed-messages  =&gt; uint,
+    ? qr-data-items       =&gt; uint,
+    ? unmatched-queries   =&gt; uint,
+    ? unmatched-responses =&gt; uint,
+    ? discarded-opcode    =&gt; uint,
+    ? malformed-items     =&gt; uint,
 }
-total-messages               = 0
-total-pairs                  = 1
-total-unmatched-queries      = 2
-total-unmatched-responses    = 3
-total-discarded-messages     = 4
-total-malformed-messages     = 5
+processed-messages  = 0
+qr-data-items       = 1
+unmatched-queries   = 2
+unmatched-responses = 3
+discarded-opcode    = 4
+malformed-items     = 5
 
 ;
 ; Tables of common data referenced from records in a block.
@@ -3461,9 +3460,9 @@ response-rcode        = 16
   QueryResponseFlagValues = &amp;(
       has-query               : 0,
       has-reponse             : 1,
-      query-has-question      : 2,
-      query-has-opt           : 3,
-      response-has-opt        : 4,
+      query-has-opt           : 2,
+      response-has-opt        : 3,
+      query-has-no-question   : 4,
       response-has-no-question: 5,
   )
   QueryResponseFlags = uint .bits QueryResponseFlagValues

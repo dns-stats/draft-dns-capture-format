@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2018-04-25T00:00:00Z
+    date = 2018-05-03T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -111,20 +111,20 @@ data collected is highly desirable.
 The format described in this document, C-DNS (Compacted-DNS), focusses on the problem of capturing and storing large packet capture
 files of DNS traffic with the following goals in mind:
 
-* Minimize the file size for storage and transmission
-* Minimize the overhead of producing the packet capture file and the cost of any further (general purpose) compression of the file
+* Minimize the file size for storage and transmission.
+* Minimize the overhead of producing the packet capture file and the cost of any further (general purpose) compression of the file.
 
 This document contains:
 
-* A discussion of some common use cases in which DNS data is collected - (#data-collection-use-cases)
+* A discussion of some common use cases in which DNS data is collected, see (#data-collection-use-cases).
 * A discussion of the major design considerations in developing an efficient
-  data representation for collections of DNS messages - (#design-considerations)
-* A description of why CBOR [@!RFC7049] was chosen for this format - (#choice-of-cbor)
-* A conceptual overview of the C-DNS format - (#cdns-format-conceptual-overview)
-* The definition of the C-DNS format for the collection of DNS messages - (#cdns-format-detailed-description).
-* Notes on converting C-DNS data to PCAP format - (#cdns-to-pcap)
+  data representation for collections of DNS messages, see (#design-considerations).
+* A description of why CBOR [@!RFC7049] was chosen for this format, see (#choice-of-cbor).
+* A conceptual overview of the C-DNS format, see (#cdns-format-conceptual-overview).
+* The definition of the C-DNS format for the collection of DNS messages, see (#cdns-format-detailed-description).
+* Notes on converting C-DNS data to PCAP format, see (#cdns-to-pcap).
 * Some high level implementation considerations for applications designed to
-  produce C-DNS - (#data-collection)
+  produce C-DNS, see (#data-collection).
 
 # Terminology
 
@@ -160,6 +160,7 @@ design choices or other limitations that are common to many DNS installations an
     * On servers that are under DoS attack
     * On servers that are unwitting intermediaries in DoS attacks
 * Traffic can be collected via a variety of mechanisms:
+    * Within the name server implementation itself
     * On the same hardware as the name server itself
     * Using a network tap on an adjacent host to listen to DNS traffic
     * Using port mirroring to listen from another host
@@ -241,7 +242,7 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
       Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.
     * It is anticipated that the files produced can be subject to further compression using general purpose compression tools.
       Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See (#simple-versus-block-coding).
-    * Some examples of commonality between DNS messages are that in most cases the QUESTION RR is the same in the query and response, and that
+    * Examples of commonality between DNS messages are that in most cases the QUESTION RR is the same in the query and response, and that
       there is a finite set of query signatures (based on a subset of attributes). For many authoritative servers there is very likely
       to be a finite set of responses that are generated, of which a large number are NXDOMAIN.
 
@@ -253,11 +254,11 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
     * Rationale: Any structured capture format that does not capture the DNS payload byte for
       byte will be limited to some extent in that it cannot represent malformed DNS messages.
       Only those messages that can be fully parsed and transformed into the
-      structured format can be fully represented. Therefore it can greatly aid downstream analysis
-      to have the wire format of the malformed DNS messages available directly in the C-DNS file.
-      Note, however, this can result in rather misleading statistics. For example, a
+      structured format can be fully represented. Note, however, this can result in rather misleading statistics. For example, a
       malformed query which cannot be represented in the C-DNS format will lead to the (well formed)
-      DNS responses with error code FORMERR appearing as 'unmatched'.
+      DNS responses with error code FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis
+      to have the wire format of the malformed DNS messages available directly in the C-DNS file.
+      
 
 # Choice of CBOR
 
@@ -272,7 +273,7 @@ none had a significant advantage over CBOR. See (#comparison-of-binary-formats) 
 ideas of lists and objects, and thus requires very little familiarization for those in the wider industry.
 * CBOR is a simple format, and can easily be implemented from scratch if necessary. More complex formats
 require library support which may present problems on unusual platforms.
-* CBOR can also be easily converted to text formats such as JSON ([@RFC7159]) for debugging and other human inspection requirements.
+* CBOR can also be easily converted to text formats such as JSON ([@RFC8259]) for debugging and other human inspection requirements.
 * CBOR data schemas can be described using CDDL [@?I-D.ietf-cbor-cddl].
 
 # C-DNS format conceptual overview
@@ -388,7 +389,7 @@ as correctly formed. Any RR record with an RR type not known to the collecting i
 cannot be validated as correctly formed, and so must be treated as malformed.
 
 Once a message is correctly parsed, an implementation is free to record only a subset of
-the RR records received.
+the RR records present.
 
 ### Storage flags
 
@@ -1097,7 +1098,7 @@ Adherence to the last two rules given in Section 3.9 of [RFC7049] for all maps a
 
 ## Optional data
 
-When decoding data some items required for a particular function the consumer
+When decoding C-DNS data some of the items required for a particular function that the consumer
 wishes to perform may be missing. Consumers should consider providing configurable
 default values to be used in place of the missing values in their output.
 
@@ -1158,9 +1159,6 @@ format. PCAP files for the captured traffic can also be reconstructed. See
 
 This implementation:
 
-* is mature but has only been deployed for testing in a single environment so is
-not yet classified as production ready.
-
 * covers the whole of the specification described in the -03 draft with the
 exception of support for malformed messages and pico second time resolution.
 (Note: this implementation does allow malformed messages to be recorded separately in a PCAP file).
@@ -1173,7 +1171,7 @@ There is also some discussion of issues encountered during development available
 [Compressing Pcap Files](https://www.sinodun.com/2017/06/compressing-pcap-files/) and
 [Packet Capture](https://www.sinodun.com/2017/06/more-on-debian-jessieubuntu-trusty-packet-capture-woes/).
 
-This information was last updated on 29th of June 2017.
+This information was last updated on 3rd of May 2018.
 
 # IANA considerations
 

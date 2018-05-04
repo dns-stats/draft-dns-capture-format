@@ -448,7 +448,7 @@
 
   <meta name="dct.creator" content="Dickinson, J., Hague, J., Dickinson, S., Manderson, T., and J. Bond" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-ietf-dnsop-dns-capture-format-07" />
-  <meta name="dct.issued" scheme="ISO8601" content="2018-5-3" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-5-4" />
   <meta name="dct.abstract" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
   <meta name="description" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
 
@@ -472,7 +472,7 @@
   <td class="right">S. Dickinson</td>
 </tr>
 <tr>
-  <td class="left">Expires: November 4, 2018</td>
+  <td class="left">Expires: November 5, 2018</td>
   <td class="right">Sinodun IT</td>
 </tr>
 <tr>
@@ -489,7 +489,7 @@
 </tr>
 <tr>
   <td class="left"></td>
-  <td class="right">May 3, 2018</td>
+  <td class="right">May 4, 2018</td>
 </tr>
 
     	
@@ -509,7 +509,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on November 4, 2018.</p>
+<p>This Internet-Draft will expire on November 5, 2018.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -723,8 +723,8 @@
 <p/>
 
 <ol>
-  <li>How can it quickly determine whether if a file definitely does not contains the data items it requires to complete a particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?</li>
-  <li>How can it determine if a data item is not present because it was: <ul><li>explicitly not recorded</li><li>or the data item was not available/present.</li></ul></li>
+  <li>How can it quickly determine if a file definitely does not contain the data items it requires to complete a particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?</li>
+  <li>How can it determine if a data item is not present because it was: <ul><li>explicitly not recorded or</li><li>the data item was not available/present.</li></ul></li>
 </ol>
 
 <p> </p>
@@ -1880,7 +1880,7 @@
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 1-4. Transport. Bit field values are 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.</td>
+      <td class="left">Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2360,7 +2360,7 @@
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 1-4. Transport. Bit field values are 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.</td>
+      <td class="left">Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.</td>
     </tr>
     <tr>
       <td class="left"/>

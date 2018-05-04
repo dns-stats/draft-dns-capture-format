@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2018-05-03T00:00:00Z
+    date = 2018-05-04T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -352,12 +352,12 @@ RRs, or only record messages with certain OPCODES.
 
 This does, however, mean that a consumer of a C-DNS file faces two problems:
 
-1.  How can it quickly determine whether if a file definitely does not contains the data items it requires to complete a
+1.  How can it quickly determine if a file definitely does not contain the data items it requires to complete a
     particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?
 
 1.  How can it determine if a data item is not present because it was:
-    *  explicitly not recorded 
-    *  or the data item was not available/present.
+    *  explicitly not recorded or
+    *  the data item was not available/present.
 
 For example, capturing C-DNS data from within a nameserver implementation 
 makes it unlikely that the Client Hoplimit can be recorded. Or, if
@@ -715,7 +715,7 @@ server-port | O | U | The server port.
 ||
 qr-transport-flags | O | U | Bit flags describing the transport used to service the query.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
- | | | Bit 1-4. Transport. Bit field values are 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.
+ | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.
  | | | Bit 5. 1 if trailing bytes in query packet. See (#trailing-bytes).
 ||
 qr-type | O | U | Type of Query/Response transaction.
@@ -809,7 +809,7 @@ server-port | O | U | The server port.
 ||
 mm-transport-flags | O | U | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
- | | | Bit 1-4. Transport. Bit field values are 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.
+ | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.
 ||
 mm-payload | O | B | The payload (raw bytes) of the DNS message.
 

@@ -700,7 +700,7 @@
 
 <ul>
   <li>The sub-second timing resolution used by the data.</li>
-  <li>Information (hints) on which optional data items can be expected to appear in the data. See <a href="#optional-data-items">Section 6.2.1</a>.</li>
+  <li>Information (hints) on which optional data are omitted. See <a href="#optional-data-items">Section 6.2.1</a>.</li>
   <li>Recorded OPCODES and RR types. See <a href="#optional-rrs-and-opcodes">Section 6.2.2</a>.</li>
   <li>Flags indicating, for example, whether the data is sampled or anonymised.  See <a href="#storage-flags">Section 6.2.3</a>.</li>
   <li>Client and server IPv4 and IPv6 address prefixes. See <a href="#ip-address-storage">Section 6.2.4</a></li>
@@ -723,13 +723,13 @@
 <p/>
 
 <ol>
-  <li>How can it quickly determine whether a file contains the data items it requires to complete a particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?</li>
-  <li>How can it determine if a data item is not present because it was: <ul><li>either explicitly not recorded, or the data item was not available to the collecting implementation, or</li><li>the data item was not present in the original data stream</li></ul></li>
+  <li>How can it quickly determine whether if a file definitely does not contains the data items it requires to complete a particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?</li>
+  <li>How can it determine if a data item is not present because it was: <ul><li>explicitly not recorded</li><li>or the data item was not available/present.</li></ul></li>
 </ol>
 
 <p> </p>
 <p id="rfc.section.6.2.1.p.6">For example, capturing C-DNS data from within a nameserver implementation makes it unlikely that the Client Hoplimit can be recorded. Or, if there is no query ARCount recorded and no query OPT RDATA recorded, is that because no query contained an OPT RR, or because that data was not stored? </p>
-<p id="rfc.section.6.2.1.p.7">The Storage Parameters therefore also contains a Storage Hints item which specifies whether the encoder of the file recorded each data item if it was present.  An implementation decoding that file can then use these to quickly determine whether the input data is rich enough for its needs.  </p>
+<p id="rfc.section.6.2.1.p.7">The Storage Parameters therefore also contains a Storage Hints item which specifies which items the encoder of the file omits from the stored data.  An implementation decoding that file can then use these to quickly determine whether the input data is rich enough for its needs.  </p>
 <h1 id="rfc.section.6.2.2"><a href="#rfc.section.6.2.2">6.2.2.</a> <a href="#optional-rrs-and-opcodes" id="optional-rrs-and-opcodes">Optional RRs and OPCODEs</a></h1>
 <p id="rfc.section.6.2.2.p.1">Also included in the Storage Parameters are explicit arrays listing the RR types and the OPCODEs to be recorded. These remove any ambiguity over whether messages containing particular OPCODEs or RR types are not present because they did not occur, or because the implementation is not configured to record them.  </p>
 <p id="rfc.section.6.2.2.p.2">In the case of OPCODEs, for a message to be fully parsable, the OPCODE must be known to the collecting implementation. Any message with an OPCODE unknown to the collecting implementation cannot be validated as correctly formed, and so must be treated as malformed. Messages with OPCODES known to the recording application but not listed in the Storage Parameters are discarded (regardless of whether they are malformed or not).  </p>
@@ -942,7 +942,7 @@
       <td class="left">storage-hints</td>
       <td class="center">M</td>
       <td class="center">M</td>
-      <td class="left">Collection of hints as to which fields are present in the arrays that have optional fields. Map of type <samp>StorageHints</samp>, see <a href="#storagehints">Section 7.4.1.1.1</a>.</td>
+      <td class="left">Collection of hints as to which fields are omitted in the arrays that have optional fields. Map of type <samp>StorageHints</samp>, see <a href="#storagehints">Section 7.4.1.1.1</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -984,19 +984,19 @@
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 0. The data has been anonymised.</td>
+      <td class="left">Bit 0. 1 if the data has been anonymised.</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 1. The data is sampled data.</td>
+      <td class="left">Bit 1. 1 if the data is sampled data.</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 2. Names have been normalised (converted to uniform case).</td>
+      <td class="left">Bit 2. 1 if the names have been normalised (converted to uniform case).</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1073,7 +1073,7 @@
   </tbody>
 </table>
 <h1 id="rfc.section.7.4.1.1.1"><a href="#rfc.section.7.4.1.1.1">7.4.1.1.1.</a> <a href="#storagehints" id="storagehints">"StorageHints"</a></h1>
-<p id="rfc.section.7.4.1.1.1.p.1">An indicator of which fields the collecting implementation stores in the arrays with optional fields. A map containing the following: </p>
+<p id="rfc.section.7.4.1.1.1.p.1">An indicator of which fields the collecting implementation omits in the arrays with optional fields. A map containing the following: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
   <thead>
     <tr>
@@ -1088,7 +1088,7 @@
       <td class="left">query-response -hints</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">Hints indicating which <samp>QueryResponse</samp> fields are stored, see section <a href="#queryresponse">Section 7.6</a>. If the field is stored the bit is set.</td>
+      <td class="left">Hints indicating which <samp>QueryResponse</samp> fields are omitted, see section <a href="#queryresponse">Section 7.6</a>. If the field is omitted the bit is unset.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1208,7 +1208,7 @@
       <td class="left">query-response -signature-hints</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">Hints indicating which <samp>QueryResponseSignature</samp> fields are stored, see section <a href="#queryresponsesignature">Section 7.5.3.2</a>. If the field is stored the bit is set.</td>
+      <td class="left">Hints indicating which <samp>QueryResponseSignature</samp> fields are omitted, see section <a href="#queryresponsesignature">Section 7.5.3.2</a>. If the field is omitted the bit is unset.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1322,7 +1322,7 @@
       <td class="left">rr-hints</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">Hints indicating which optional <samp>RR</samp> fields are stored, see <a href="#rr">Section 7.5.3.4</a>. If the data type is stored the bit is set.</td>
+      <td class="left">Hints indicating which optional <samp>RR</samp> fields are omitted, see <a href="#rr">Section 7.5.3.4</a>. If the field is omitted the bit is unset.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1340,7 +1340,7 @@
       <td class="left">other-data-hints</td>
       <td class="center">M</td>
       <td class="center">U</td>
-      <td class="left">Hints indicating which other data types are stored. If the data type is stored the bit is set.</td>
+      <td class="left">Hints indicating which other data types are are omitted. If the data type is are omitted the bit is unset.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1874,19 +1874,19 @@
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 0. IP version. 0 = IPv4, 1 = IPv6</td>
+      <td class="left">Bit 0. IP version. 0 if IPv4, 1 if IPv6</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.</td>
+      <td class="left">Bit 1-4. Transport. Bit field values are 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 5. Trailing bytes in query packet. See <a href="#trailing-bytes">Section 10.2</a>.</td>
+      <td class="left">Bit 5. 1 if trailing bytes in query packet. See <a href="#trailing-bytes">Section 10.2</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2354,13 +2354,13 @@
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 0. IP version. 0 = IPv4, 1 = IPv6</td>
+      <td class="left">Bit 0. IP version. 0 if IPv4, 1 if IPv6</td>
     </tr>
     <tr>
       <td class="left"/>
       <td class="center"/>
       <td class="center"/>
-      <td class="left">Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.</td>
+      <td class="left">Bit 1-4. Transport. Bit field values are 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.</td>
     </tr>
     <tr>
       <td class="left"/>

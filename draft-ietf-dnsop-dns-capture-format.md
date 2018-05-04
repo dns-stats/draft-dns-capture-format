@@ -330,7 +330,7 @@ fields stored in the C-DNS file.
 These parameters include:
 
 * The sub-second timing resolution used by the data.
-* Information (hints) on which optional data items can be expected to appear in the data. See (#optional-data-items).
+* Information (hints) on which optional data are omitted. See (#optional-data-items).
 * Recorded OPCODES and RR types. See (#optional-rrs-and-opcodes).
 * Flags indicating, for example, whether the data is sampled or anonymised.
   See (#storage-flags).
@@ -352,13 +352,12 @@ RRs, or only record messages with certain OPCODES.
 
 This does, however, mean that a consumer of a C-DNS file faces two problems:
 
-1.  How can it quickly determine whether a file contains the data items it requires to complete a
+1.  How can it quickly determine whether if a file definitely does not contains the data items it requires to complete a
     particular task (e.g. reconstructing query traffic or performing a specific piece of data analysis)?
 
 1.  How can it determine if a data item is not present because it was:
-    *  either explicitly not recorded, or the data item was not
-       available to the collecting implementation, or
-    *  the data item was not present in the original data stream
+    *  explicitly not recorded 
+    *  or the data item was not available/present.
 
 For example, capturing C-DNS data from within a nameserver implementation 
 makes it unlikely that the Client Hoplimit can be recorded. Or, if
@@ -366,7 +365,7 @@ there is no query ARCount recorded and no query OPT RDATA recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
 
 The Storage Parameters therefore also contains a Storage Hints item which specifies
-whether the encoder of the file recorded each data item if it was present.
+which items the encoder of the file omits from the stored data.
 An implementation decoding that file can then use
 these to quickly determine whether the input data is rich enough for its needs.
 
@@ -511,16 +510,16 @@ ticks-per-second | M | U | Sub-second timing is recorded in ticks. This specifie
 ||
 max-block-items | M | U | The maximum number of items stored in any of the arrays in a `Block` item (Q/R items, address event counts or malformed messages). An indication to a decoder of the resources needed to process the file.
 ||
-storage-hints | M | M | Collection of hints as to which fields are present in the arrays that have optional fields. Map of type `StorageHints`, see (#storagehints).
+storage-hints | M | M | Collection of hints as to which fields are omitted in the arrays that have optional fields. Map of type `StorageHints`, see (#storagehints).
 ||
 opcodes | M | A | Array of OPCODES (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
 ||
 rr-types | M | A | Array of RR types (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
 ||
 storage-flags | O | U | Bit flags indicating attributes of stored data.
- | | | Bit 0. The data has been anonymised.
- | | | Bit 1. The data is sampled data.
- | | | Bit 2. Names have been normalised (converted to uniform case).
+ | | | Bit 0. 1 if the data has been anonymised.
+ | | | Bit 1. 1 if the data is sampled data.
+ | | | Bit 2. 1 if the names have been normalised (converted to uniform case).
 ||
 client-address -prefix-ipv4 | O | U | IPv4 client address prefix length. If specified, only the address prefix bits are stored.
 ||
@@ -536,11 +535,11 @@ anonymisation -method | O | T | Information on the anonymisation method used. Se
 
 ##### "StorageHints"
 
-An indicator of which fields the collecting implementation stores in the arrays with optional fields. A map containing the following:
+An indicator of which fields the collecting implementation omits in the arrays with optional fields. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-query-response -hints | M | U | Hints indicating which `QueryResponse` fields are stored, see section (#queryresponse). If the field is stored the bit is set.
+query-response -hints | M | U | Hints indicating which `QueryResponse` fields are omitted, see section (#queryresponse). If the field is omitted the bit is unset.
  | | | Bit 0. time-offset
  | | | Bit 1. client-address-index
  | | | Bit 2. client-port
@@ -560,7 +559,7 @@ query-response -hints | M | U | Hints indicating which `QueryResponse` fields ar
  | | | Bit 16. response-authority-sections
  | | | Bit 17. response-additional-sections
  | | |
-query-response -signature-hints | M | U | Hints indicating which `QueryResponseSignature` fields are stored, see section (#queryresponsesignature). If the field is stored the bit is set.
+query-response -signature-hints | M | U | Hints indicating which `QueryResponseSignature` fields are omitted, see section (#queryresponsesignature). If the field is omitted the bit is unset.
  | | | Bit 0. server-address
  | | | Bit 1. server-port
  | | | Bit 2. qr-transport-flags
@@ -579,10 +578,10 @@ query-response -signature-hints | M | U | Hints indicating which `QueryResponseS
  | | | Bit 15. query-opt-rdata
  | | | Bit 16. response-rcode
  | | |
-rr-hints | M | U | Hints indicating which optional `RR` fields are stored, see (#rr). If the data type is stored the bit is set.
+rr-hints | M | U | Hints indicating which optional `RR` fields are omitted, see (#rr). If the field is omitted the bit is unset.
  | | | Bit 0. ttl
  | | | Bit 1. rdata-index
-other-data-hints | M | U | Hints indicating which other data types are stored. If the data type is stored the bit is set.
+other-data-hints | M | U | Hints indicating which other data types are are omitted. If the data type is are omitted the bit is unset.
  | | | Bit 0. malformed-messages
  | | | Bit 1. address-event-counts
 
@@ -715,9 +714,9 @@ server-address -index | O | U | The index in the item in the `ip-address` array 
 server-port | O | U | The server port.
 ||
 qr-transport-flags | O | U | Bit flags describing the transport used to service the query.
- | | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
- | | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
- | | | Bit 5. Trailing bytes in query packet. See (#trailing-bytes).
+ | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
+ | | | Bit 1-4. Transport. Bit field values are 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.
+ | | | Bit 5. 1 if trailing bytes in query packet. See (#trailing-bytes).
 ||
 qr-type | O | U | Type of Query/Response transaction.
  | | | 0 = Stub. A query from a stub resolver.
@@ -809,8 +808,8 @@ server-address -index | O | U | The index in the `ip-address` array of the serve
 server-port | O | U | The server port.
 ||
 mm-transport-flags | O | U | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
- | | | Bit 0. IP version. 0 = IPv4, 1 = IPv6
- | | | Bit 1-4. Transport. 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS.
+ | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
+ | | | Bit 1-4. Transport. Bit field values are 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.
 ||
 mm-payload | O | B | The payload (raw bytes) of the DNS message.
 

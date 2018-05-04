@@ -546,8 +546,8 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    o  The sub-second timing resolution used by the data.
 
-   o  Information (hints) on which optional data items can be expected
-      to appear in the data.  See Section 6.2.1.
+   o  Information (hints) on which optional data are omitted.  See
+      Section 6.2.1.
 
    o  Recorded OPCODES and RR types.  See Section 6.2.2.
 
@@ -585,18 +585,17 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    This does, however, mean that a consumer of a C-DNS file faces two
    problems:
 
-   1.  How can it quickly determine whether a file contains the data
-       items it requires to complete a particular task (e.g.
-       reconstructing query traffic or performing a specific piece of
-       data analysis)?
+   1.  How can it quickly determine whether if a file definitely does
+       not contains the data items it requires to complete a particular
+       task (e.g. reconstructing query traffic or performing a specific
+       piece of data analysis)?
 
    2.  How can it determine if a data item is not present because it
        was:
 
-       *  either explicitly not recorded, or the data item was not
-          available to the collecting implementation, or
+       *  explicitly not recorded
 
-       *  the data item was not present in the original data stream
+       *  or the data item was not available/present.
 
    For example, capturing C-DNS data from within a nameserver
    implementation makes it unlikely that the Client Hoplimit can be
@@ -605,10 +604,11 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    because that data was not stored?
 
    The Storage Parameters therefore also contains a Storage Hints item
-   which specifies whether the encoder of the file recorded each data
-   item if it was present.  An implementation decoding that file can
-   then use these to quickly determine whether the input data is rich
-   enough for its needs.
+   which specifies which items the encoder of the file omits from the
+   stored data.  An implementation decoding that file can then use these
+   to quickly determine whether the input data is rich enough for its
+   needs.
+
 
 
 
@@ -856,7 +856,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    |                  |   |   | process the file.                      |
    |                  |   |   |                                        |
    | storage-hints    | M | M | Collection of hints as to which fields |
-   |                  |   |   | are present in the arrays that have    |
+   |                  |   |   | are omitted in the arrays that have    |
    |                  |   |   | optional fields. Map of type           |
    |                  |   |   | "StorageHints", see Section 7.4.1.1.1. |
    |                  |   |   |                                        |
@@ -870,10 +870,12 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    |                  |   |   |                                        |
    | storage-flags    | O | U | Bit flags indicating attributes of     |
    |                  |   |   | stored data.                           |
-   |                  |   |   | Bit 0. The data has been anonymised.   |
-   |                  |   |   | Bit 1. The data is sampled data.       |
-   |                  |   |   | Bit 2. Names have been normalised      |
-   |                  |   |   | (converted to uniform case).           |
+   |                  |   |   | Bit 0. 1 if the data has been          |
+   |                  |   |   | anonymised.                            |
+   |                  |   |   | Bit 1. 1 if the data is sampled data.  |
+   |                  |   |   | Bit 2. 1 if the names have been        |
+   |                  |   |   | normalised (converted to uniform       |
+   |                  |   |   | case).                                 |
    |                  |   |   |                                        |
    | client-address   | O | U | IPv4 client address prefix length. If  |
    | -prefix-ipv4     |   |   | specified, only the address prefix     |
@@ -888,8 +890,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    |                  |   |   | bits are stored.                       |
    |                  |   |   |                                        |
    | server-address   | O | U | IPv6 server address prefix length. If  |
-   | -prefix-ipv6     |   |   | specified, only the address prefix     |
-   |                  |   |   | bits are stored.                       |
 
 
 
@@ -898,6 +898,8 @@ Dickinson, et al.       Expires November 4, 2018               [Page 16]
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
+   | -prefix-ipv6     |   |   | specified, only the address prefix     |
+   |                  |   |   | bits are stored.                       |
    |                  |   |   |                                        |
    | sampling-method  | O | T | Information on the sampling method     |
    |                  |   |   | used. See Section 6.2.3.               |
@@ -908,16 +910,16 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 7.4.1.1.1.  "StorageHints"
 
-   An indicator of which fields the collecting implementation stores in
+   An indicator of which fields the collecting implementation omits in
    the arrays with optional fields.  A map containing the following:
 
    +------------------+---+---+----------------------------------------+
    | Field            | O | T | Description                            |
    +------------------+---+---+----------------------------------------+
    | query-response   | M | U | Hints indicating which "QueryResponse" |
-   | -hints           |   |   | fields are stored, see section Section |
-   |                  |   |   | 7.6. If the field is stored the bit is |
-   |                  |   |   | set.                                   |
+   | -hints           |   |   | fields are omitted, see section        |
+   |                  |   |   | Section 7.6. If the field is omitted   |
+   |                  |   |   | the bit is unset.                      |
    |                  |   |   | Bit 0. time-offset                     |
    |                  |   |   | Bit 1. client-address-index            |
    |                  |   |   | Bit 2. client-port                     |
@@ -939,13 +941,11 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    |                  |   |   |                                        |
    | query-response   | M | U | Hints indicating which                 |
    | -signature-hints |   |   | "QueryResponseSignature" fields are    |
-   |                  |   |   | stored, see section Section 7.5.3.2.   |
-   |                  |   |   | If the field is stored the bit is set. |
+   |                  |   |   | omitted, see section Section 7.5.3.2.  |
+   |                  |   |   | If the field is omitted the bit is     |
+   |                  |   |   | unset.                                 |
    |                  |   |   | Bit 0. server-address                  |
    |                  |   |   | Bit 1. server-port                     |
-   |                  |   |   | Bit 2. qr-transport-flags              |
-   |                  |   |   | Bit 3. qr-type                         |
-   |                  |   |   | Bit 4. qr-sig-flags                    |
 
 
 
@@ -954,6 +954,9 @@ Dickinson, et al.       Expires November 4, 2018               [Page 17]
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
+   |                  |   |   | Bit 2. qr-transport-flags              |
+   |                  |   |   | Bit 3. qr-type                         |
+   |                  |   |   | Bit 4. qr-sig-flags                    |
    |                  |   |   | Bit 5. query-opcode                    |
    |                  |   |   | Bit 6. dns-flags                       |
    |                  |   |   | Bit 7. query-rcode                     |
@@ -968,14 +971,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    |                  |   |   | Bit 16. response-rcode                 |
    |                  |   |   |                                        |
    | rr-hints         | M | U | Hints indicating which optional "RR"   |
-   |                  |   |   | fields are stored, see Section         |
-   |                  |   |   | 7.5.3.4. If the data type is stored    |
-   |                  |   |   | the bit is set.                        |
+   |                  |   |   | fields are omitted, see Section        |
+   |                  |   |   | 7.5.3.4. If the field is omitted the   |
+   |                  |   |   | bit is unset.                          |
    |                  |   |   | Bit 0. ttl                             |
    |                  |   |   | Bit 1. rdata-index                     |
    | other-data-hints | M | U | Hints indicating which other data      |
-   |                  |   |   | types are stored. If the data type is  |
-   |                  |   |   | stored the bit is set.                 |
+   |                  |   |   | types are are omitted. If the data     |
+   |                  |   |   | type is are omitted the bit is unset.  |
    |                  |   |   | Bit 0. malformed-messages              |
    |                  |   |   | Bit 1. address-event-counts            |
    +------------------+---+---+----------------------------------------+
@@ -988,9 +991,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    be inferred about their value.
 
    A map containing the following items:
-
-
-
 
 
 
@@ -1318,11 +1318,13 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    |                    |   |   |                                      |
    | qr-transport-flags | O | U | Bit flags describing the transport   |
    |                    |   |   | used to service the query.           |
-   |                    |   |   | Bit 0. IP version. 0 = IPv4, 1 =     |
+   |                    |   |   | Bit 0. IP version. 0 if IPv4, 1 if   |
    |                    |   |   | IPv6                                 |
-   |                    |   |   | Bit 1-4. Transport. 0 = UDP, 1 =     |
-   |                    |   |   | TCP, 2 = TLS, 3 = DTLS.              |
-   |                    |   |   | Bit 5. Trailing bytes in query       |
+   |                    |   |   | Bit 1-4. Transport. Bit field values |
+   |                    |   |   | are 0 = UDP, 1 = TCP, 2 = TLS, 3 =   |
+   |                    |   |   | DTLS. Values 4-15 are reserved for   |
+   |                    |   |   | future use.                          |
+   |                    |   |   | Bit 5. 1 if trailing bytes in query  |
    |                    |   |   | packet. See Section 10.2.            |
    |                    |   |   |                                      |
    | qr-type            | O | U | Type of Query/Response transaction.  |
@@ -1336,8 +1338,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    |                    |   |   | 3 = Authorative. A query to an       |
    |                    |   |   | authorative resolver.                |
    |                    |   |   | 4 = Forwarder. A query sent from a   |
-   |                    |   |   | recursive resolver to an upstream    |
-   |                    |   |   | recursive resolver.                  |
 
 
 
@@ -1346,6 +1346,8 @@ Dickinson, et al.       Expires November 4, 2018               [Page 24]
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
+   |                    |   |   | recursive resolver to an upstream    |
+   |                    |   |   | recursive resolver.                  |
    |                    |   |   | 5 = Tool. A query sent to a server   |
    |                    |   |   | by a server tool.                    |
    |                    |   |   |                                      |
@@ -1392,8 +1394,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    |                    |   |   | (RA).                                |
    |                    |   |   | Bit 12. Response Recursion Desired   |
    |                    |   |   | (RD).                                |
-   |                    |   |   | Bit 13. Response TrunCation (TC).    |
-   |                    |   |   | Bit 14. Response Authoritative       |
 
 
 
@@ -1402,6 +1402,8 @@ Dickinson, et al.       Expires November 4, 2018               [Page 25]
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
+   |                    |   |   | Bit 13. Response TrunCation (TC).    |
+   |                    |   |   | Bit 14. Response Authoritative       |
    |                    |   |   | Answer (AA).                         |
    |                    |   |   |                                      |
    | query-rcode        | O | U | Query RCODE. If the Query contains   |
@@ -1440,8 +1442,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    Details on individual Questions in a Question section.  A map
    containing the following:
-
-
 
 
 
@@ -1526,10 +1526,12 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    | mm-transport-flags | O | U | Bit flags describing the transport   |
    |                    |   |   | used to service the query. Bit 0 is  |
    |                    |   |   | the least significant bit.           |
-   |                    |   |   | Bit 0. IP version. 0 = IPv4, 1 =     |
+   |                    |   |   | Bit 0. IP version. 0 if IPv4, 1 if   |
    |                    |   |   | IPv6                                 |
-   |                    |   |   | Bit 1-4. Transport. 0 = UDP, 1 =     |
-   |                    |   |   | TCP, 2 = TLS, 3 = DTLS.              |
+   |                    |   |   | Bit 1-4. Transport. Bit field values |
+   |                    |   |   | are 0 = UDP, 1 = TCP, 2 = TLS, 3 =   |
+   |                    |   |   | DTLS. Values 4-15 are reserved for   |
+   |                    |   |   | future use.                          |
    |                    |   |   |                                      |
    | mm-payload         | O | B | The payload (raw bytes) of the DNS   |
    |                    |   |   | message.                             |
@@ -1560,8 +1562,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    | client-port          | O | U | The client port.                   |
    |                      |   |   |                                    |
    | transaction-id       | O | U | DNS transaction identifier.        |
-   |                      |   |   |                                    |
-   | qr-signature-index   | O | U | The index in the "qr-sig" array of |
 
 
 
@@ -1570,6 +1570,8 @@ Dickinson, et al.       Expires November 4, 2018               [Page 28]
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
+   |                      |   |   |                                    |
+   | qr-signature-index   | O | U | The index in the "qr-sig" array of |
    |                      |   |   | the "QueryResponseSignature" item. |
    |                      |   |   | See Section 7.5.3.                 |
    |                      |   |   |                                    |
@@ -1614,8 +1616,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    in the two-byte message length header.  Trailing bytes in UDP queries
    are routinely observed in traffic to authoritative servers and this
    value allows a calculation of how many trailing bytes were present.
-
-
 
 
 

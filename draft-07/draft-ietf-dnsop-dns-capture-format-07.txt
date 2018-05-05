@@ -1922,7 +1922,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    DNS messages are processed in the order they are delivered to the
    implementation.
 
-   It should be noted that packet capture libraries do not necessary
+   It should be noted that packet capture libraries do not necessarily
    provide packets in strict chronological order.  This can, for
    example, arise on multi-core platforms where packets arriving at a
    network device are processed by different cores.  On systems where

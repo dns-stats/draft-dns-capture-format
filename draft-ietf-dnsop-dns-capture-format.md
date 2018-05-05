@@ -1002,7 +1002,7 @@ removed in the pre-processing stage, but the correctly formed response with RCOD
 
 DNS messages are processed in the order they are delivered to the implementation.
 
-It should be noted that packet capture libraries do not necessary provide packets in strict chronological order.
+It should be noted that packet capture libraries do not necessarily provide packets in strict chronological order.
 This can, for example, arise on multi-core platforms where packets arriving at a network device
 are processed by different cores. On systems where this behaviour has been observed, the timestamps associated
 with each packet are consistent; queries always have a timestamp prior to the response timestamp.

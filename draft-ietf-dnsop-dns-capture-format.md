@@ -282,9 +282,54 @@ The following figures show purely schematic representations of the C-DNS format 
 structure of the C-DNS format. (#cdns-format-detailed-description) provides a detailed discussion of the CBOR representation
 and individual elements.
 
-![Figure showing the C-DNS format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/cdns_format.png)
+~~~~
++-------+
++ C-DNS |
++-------+--------------------------+
+| File type identifier             |
++----------------------------------+
+| File preamble                    |
+| +--------------------------------+
+| | Format version info            |
+| +--------------------------------+
+| | Block parameters               |
++-+--------------------------------+
+| Block                            |
+| +--------------------------------+
+| | Block preamble                 |
+| +--------------------------------+
+| | Block statistics               |
+| +--------------------------------+
+| | Block tables                   |
+| +--------------------------------+
+| | Query/Response data items      |
+| +--------------------------------+
+| | Address/Event Count data items |
+| +--------------------------------+
+| | Malformed Message data items   |
++-+--------------------------------+
+| Block                            |
+| +--------------------------------+
+| | Block preamble                 |
+| +--------------------------------+
+| | Block statistics               |
+| +--------------------------------+
+| | Block tables                   |
+| +--------------------------------+
+| | Query/Response data items      |
+| +--------------------------------+
+| | Address/Event Count data items |
+| +--------------------------------+
+| | Malformed Message data items   |
++-+--------------------------------+
+| Further Blocks...                |
++----------------------------------+
+~~~~
+Figure: The C-DNS format
 
-![Figure showing the C-DNS format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/cdns_format.svg)
+~~~~
+~~~~
+Figure: The Query/Response data item
 
 ![Figure showing the Query/Response data item and Block Tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/qr_data_format.png)
 

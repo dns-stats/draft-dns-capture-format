@@ -278,12 +278,17 @@ require library support which may present problems on unusual platforms.
 
 # C-DNS format conceptual overview
 
-The following figures show purely schematic representations of the C-DNS format to convey the high-level
-structure of the C-DNS format. (#cdns-format-detailed-description) provides a detailed discussion of the CBOR representation
-and individual elements.
+The following figures show purely schematic representations of the C-DNS format
+to convey the high-level structure of the C-DNS format.
+(#cdns-format-detailed-description) provides a detailed discussion of the CBOR
+representation and individual elements.
 
-Data items annotated (q) are only present when a query/response has a query,
-and those annotated (r) are only present when a query/response response is present.
+Figure 1. shows the C-DNS format at the top level including the file header and
+data blocks. The Query/Response data items, Address/Event Count data items and
+Malformed Message data items link to various Block tables.
+
+
+
 
 
 ~~~~
@@ -331,10 +336,7 @@ and those annotated (r) are only present when a query/response response is prese
 ~~~~
 Figure: Figure 1: The C-DNS format.
 
-The Query/Response data item links to various block tables. The links
-are shown in the following figure. [A] to [D] are links between
-tables.
-
+Figure 2. shows the more detailed relationships specifically betweenthe Query/Response data item and the Block tables within each block. [C], [N], [Q] and [R] are shorthand labels for selected tables.
 ~~~~
 +----------------+
 | Query/Response |
@@ -344,9 +346,9 @@ tables.
 | Client address          |-------------->| IP address array |
 +-------------------------+               +------------------+
 | Client port             |
-+-------------------------+               +------------------+
-| Transaction ID          |     +-------->| Name/RDATA array |<--[D]
-+-------------------------+     |         +------------------+
++-------------------------+               +----------------------+
+| Transaction ID          |     +-------->| Name/RDATA array [N] |
++-------------------------+     |         +----------------------+
 | Query signature         |--+  |
 +-------------------------+  |  |         +-----------------+
 | Client hoplimit (q)     |  +--)-------->| Query Signature |
@@ -367,7 +369,7 @@ tables.
 +-+-----------------------+               +------------------------+
 | Extra query info (q)    |               | Query RCODE (q)        |
 | +-----------------------+               +------------------------+
-| | Question              |-->[A]   [B]<--| Query Class/Type (q)   |
+| | Question              |-->[Q]   [C]<--| Query Class/Type (q)   |
 | +-----------------------+               +------------------------+
 | | Answer                |--+            | Query QD count (q)     |
 | +-----------------------+  |            +------------------------+
@@ -375,7 +377,7 @@ tables.
 | +-----------------------+  |            +------------------------+
 | | Additional            |--+            | Query NS count (q)     |
 +-+-----------------------+  |            +------------------------+
-| Extra response info (r) |  |-->[C]      | Query EDNS version (q) |
+| Extra response info (r) |  |-->[R]      | Query EDNS version (q) |
 | +-----------------------+  |            +------------------------+
 | | Answer                |--+            | EDNS UDP size (q)      |
 | +-----------------------+  |            +------------------------+
@@ -383,36 +385,34 @@ tables.
 | +-----------------------+  |            +------------------------+
 | | Additional            |--+            | Response RCODE (r)     |
 +-+-----------------------+               +------------------------+
+
++---------------+       +----------+             
+| Question list |------>| Question |             
+| array [Q]     |       | array    |             
++---------------+       +----------+--+          
+                        | Name        |--+-->[N] 
+                        +-------------+  |         +------------+
+                        | Class/type  |--)---+---->| Class/Type |
+                        +-------------+  |   |     | array  [C] |
+                                         |   |     +------------+--+
+                                         |   |     | Class         |
++---------------+       +----------+     |   |     +---------------+
+| RR list array |------>| RR array |     |   |     | Type          |
+| [R]           |       +----------+--+  |   |     +---------------+
++---------+-----+       | Name        |--+   |      
+                        +-------------+      |
+                        | Class/type  |------+
+                        +-------------+
+                       
 ~~~~
 
-~~~~
-      +---------------------+
-[A]-->| Question list array |
-      +---------+-----------+
-                |
-                v
-         +----------------+
-         | Question array |
-         +----------------+--+
-         | Name              |--+-->[D]
-         +-------------------+  |
-         | Class/type        |--)----+
-         +-------------------+  |    |
-                                |    |
-      +---------------+         |    |   +------------------+
-[C]-->| RR list array |         |    +-->| Class/Type array |<--[B]
-      +---------+-----+         |    |   +------------------+--+
-                |               |    |   | Class               |
-                v               |    |   +---------------------+
-         +----------+           |    |   | Type                |
-         | RR array |           |    |   +---------------------+
-         +----------+--------+  |    |
-         | Name              |--+    |
-         +-------------------+       |
-         | Class/type        |-------+
-         +-------------------+
-~~~~
 Figure: Figure 2: The Query/Response data item and subsidiary tables.
+
+
+In Figure 2. data items annotated (q) are only present when a query/response has
+a query, and those annotated (r) are only present when a query/response response
+is present. 
+
 
 A C-DNS file begins with a file header containing a File Type Identifier and
 a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items

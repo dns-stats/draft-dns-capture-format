@@ -258,7 +258,7 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
       malformed query which cannot be represented in the C-DNS format will lead to the (well formed)
       DNS responses with error code FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis
       to have the wire format of the malformed DNS messages available directly in the C-DNS file.
-      
+
 
 # Choice of CBOR
 
@@ -281,6 +281,10 @@ require library support which may present problems on unusual platforms.
 The following figures show purely schematic representations of the C-DNS format to convey the high-level
 structure of the C-DNS format. (#cdns-format-detailed-description) provides a detailed discussion of the CBOR representation
 and individual elements.
+
+Data items annotated (q) are only present when a query/response has a query,
+and those annotated (r) are only present when a query/response response is present.
+
 
 ~~~~
 +-------+
@@ -325,15 +329,90 @@ and individual elements.
 | Further Blocks...                |
 +----------------------------------+
 ~~~~
-Figure: The C-DNS format
+Figure: Figure 1: The C-DNS format.
+
+The Query/Response data item links to various block tables. The links
+are shown in the following figure. [A] to [D] are links between
+tables.
 
 ~~~~
++----------------+
+| Query/Response |
++-------------------------+
+| Time offset             |
++-------------------------+               +------------------+
+| Client address          |-------------->| IP address array |
++-------------------------+               +------------------+
+| Client port             |
++-------------------------+               +------------------+
+| Transaction ID          |     +-------->| Name/RDATA array |<--[D]
++-------------------------+     |         +------------------+
+| Query signature         |--+  |
++-------------------------+  |  |         +-----------------+
+| Client hoplimit (q)     |  +--)-------->| Query Signature |
++-------------------------+     |         +-----------------+------+
+| Response delay (r)      |     |         | Server address         |
++-------------------------+     |         +------------------------+
+| Query name (q)          |--+--+         | Server port            |
++-------------------------+  |            +------------------------+
+| Query size (q)          |  |            | Transport flags        |
++-------------------------+  |            +------------------------+
+| Response size (r)       |  |            | QR type                |
++-------------------------+  |            +------------------------+
+| Response processing (r) |  |            | QR signature flags     |
+| +-----------------------+  |            +------------------------+
+| | Bailiwick index       |--+            | Query OPCODE (q)       |
+| +-----------------------+               +------------------------+
+| | Flags                 |               | QR DNS flags           |
++-+-----------------------+               +------------------------+
+| Extra query info (q)    |               | Query RCODE (q)        |
+| +-----------------------+               +------------------------+
+| | Question              |-->[A]   [B]<--| Query Class/Type (q)   |
+| +-----------------------+               +------------------------+
+| | Answer                |--+            | Query QD count (q)     |
+| +-----------------------+  |            +------------------------+
+| | Authority             |--+            | Query AN count (q)     |
+| +-----------------------+  |            +------------------------+
+| | Additional            |--+            | Query NS count (q)     |
++-+-----------------------+  |            +------------------------+
+| Extra response info (r) |  |-->[C]      | Query EDNS version (q) |
+| +-----------------------+  |            +------------------------+
+| | Answer                |--+            | EDNS UDP size (q)      |
+| +-----------------------+  |            +------------------------+
+| | Authority             |--+            | Query Opt RDATA (q)    |
+| +-----------------------+  |            +------------------------+
+| | Additional            |--+            | Response RCODE (r)     |
++-+-----------------------+               +------------------------+
 ~~~~
-Figure: The Query/Response data item
 
-![Figure showing the Query/Response data item and Block Tables format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/qr_data_format.png)
-
-![Figure showing the Query/Response item and Block Tables format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/qr_data_format.svg)
+~~~~
+      +---------------------+
+[A]-->| Question list array |
+      +---------+-----------+
+                |
+                v
+         +----------------+
+         | Question array |
+         +----------------+--+
+         | Name              |--+-->[D]
+         +-------------------+  |
+         | Class/type        |--)----+
+         +-------------------+  |    |
+                                |    |
+      +---------------+         |    |   +------------------+
+[C]-->| RR list array |         |    +-->| Class/Type array |<--[B]
+      +---------+-----+         |    |   +------------------+--+
+                |               |    |   | Class               |
+                v               |    |   +---------------------+
+         +----------+           |    |   | Type                |
+         | RR array |           |    |   +---------------------+
+         +----------+--------+  |    |
+         | Name              |--+    |
+         +-------------------+       |
+         | Class/type        |-------+
+         +-------------------+
+~~~~
+Figure: Figure 2: The Query/Response data item and subsidiary tables.
 
 A C-DNS file begins with a file header containing a File Type Identifier and
 a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items
@@ -404,7 +483,7 @@ This does, however, mean that a consumer of a C-DNS file faces two problems:
     *  explicitly not recorded or
     *  the data item was not available/present.
 
-For example, capturing C-DNS data from within a nameserver implementation 
+For example, capturing C-DNS data from within a nameserver implementation
 makes it unlikely that the Client Hoplimit can be recorded. Or, if
 there is no query ARCount recorded and no query OPT RDATA recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
@@ -773,7 +852,7 @@ qr-type | O | U | Type of Query/Response transaction.
 ||
 qr-sig-flags | O | U | Bit flags explicitly indicating attributes of the message pair represented by this Q/R data item (not all attributes may be recorded or deducible).
  | | | Bit 0. 1 if a Query was present.
- | | | Bit 1. 1 if a Response was present. 
+ | | | Bit 1. 1 if a Response was present.
  | | | Bit 2. 1 if a Query was present and it had an OPT Resource Record.
  | | | Bit 3. 1 if a Response was present and it had an OPT Resource Record.
  | | | Bit 4. 1 if a Query was present but had no Question.

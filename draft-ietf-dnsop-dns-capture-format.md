@@ -1140,11 +1140,78 @@ the matching algorithm must take account of the possibility of skew.
 
 ## Matching algorithm
 
-A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
+A schematic representation of the algorithm for matching Q/R data
+items is shown in Figure 3. It takes individual DNS query or response
+messages as input, and outputs matched Q/R items.
 
-![Figure showing the Query/Response matching algorithm format (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/packet_matching.png)
+The algorithm employs two FIFO queues:
 
-![Figure showing the Query/Response matching algorithm format (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/packet_matching.svg)
+* OFIFO, an output FIFO containing Q/R items in chronological order,
+* RFIFO, a FIFO holding responses without a matching query in order of arrival.
+
+The algorithm also employs two timeouts:
+
+* Query Timeout (QT)
+* Skew Timeout (ST)
+
+All queries and responses have a Primary ID. They may have a
+Secondary ID. For a response to match a query:
+
+* Query Primary ID must equal response Primary ID
+* If both response and query have a Secondary ID, query
+Secondary ID must also equal response Secondary ID
+
+If query or response or both do not have a Secondary ID,
+only the Primary IDs are used.
+
+~~~~
+                   .----------------------.
+                   | Incoming DNS message |
+                   `----------------------'
+                               |
+                         Query | Response
+               +--------------< >---------------+
+               |                                |
+  +-----------------------+         +------------------------+
+  | Create incomplete Q/R |         | Find earliest matching |
+  | item, append to OFIFO |         | incomplete OFIFO item  |
+  +-----------------------+         +------------------------+
+               |                                |
+    +---------------------+               Match | No match
+    | Find earliest       |           +--------< >---------+
+    | matching R in RFIFO |           |                    |
+    +---------------------+  +------------------+  +-----------------+
+               |             | Update Q/R with  |  | Append to RFIFO |
+         Match | No match    | R, mark complete |  +-----------------+
+      +-------< >---------+  +------------------+          |
+      |                   |           |                    |
++-----------------------+ |           |                    |
+| Update Q/R with R,    | |           +---------+----------+
+| mark complete, remove | |                     |
+| R from RFIFO          | |                     |
++-----------------------+ |                     |
+      |                   |                     |
+      +--------+----------+                     |
+               |                                |
+               +---------------+----------------+
+                               |
+                    +----------------------+
+                    | Mark timed out OFIFO |
+                    | items complete (QT)  |
+                    +----------------------+
+                               |
+            +------------------------------------+
+            | For all timed out in RFIFO, create |
+            | R only Q/R, mark complete, append  |
+            | to OFIFO, remove R from RFIFO (ST) |
+            +------------------------------------+
+           ____________________|_______________________
+          /                                            /
+         /  Output all consecutive complete Q/R from  /
+        /   front of OFIFO and remove from OFIFO     /
+       /____________________________________________/
+~~~~
+Figure: Figure 3: Query/Response matching algorithm
 
 Further details of the algorithm are given in the following sections.
 

@@ -1144,74 +1144,82 @@ A schematic representation of the algorithm for matching Q/R data
 items is shown in Figure 3. It takes individual DNS query or response
 messages as input, and outputs matched Q/R items.
 
-The algorithm employs two FIFO queues:
-
-* OFIFO, an output FIFO containing Q/R items in chronological order,
-* RFIFO, a FIFO holding responses without a matching query in order of arrival.
-
-The algorithm also employs two timeouts:
-
-* Query Timeout (QT)
-* Skew Timeout (ST)
-
-All queries and responses have a Primary ID. They may have a
-Secondary ID. For a response to match a query:
-
-* Query Primary ID must equal response Primary ID
-* If both response and query have a Secondary ID, query
-Secondary ID must also equal response Secondary ID
-
-If query or response or both do not have a Secondary ID,
-only the Primary IDs are used.
+Specific details of the algorithm, for example queues, timers and
+identifiers, are given after the diagram.
 
 ~~~~
                    .----------------------.
-                   | Incoming DNS message |
-                   `----------------------'
-                               |
-                         Query | Response
-               +--------------< >---------------+
-               |                                |
-  +-----------------------+         +------------------------+
-  | Create incomplete Q/R |         | Find earliest matching |
-  | item, append to OFIFO |         | incomplete OFIFO item  |
-  +-----------------------+         +------------------------+
-               |                                |
-    +---------------------+               Match | No match
-    | Find earliest       |           +--------< >---------+
-    | matching R in RFIFO |           |                    |
-    +---------------------+  +------------------+  +-----------------+
-               |             | Update Q/R with  |  | Append to RFIFO |
-         Match | No match    | R, mark complete |  +-----------------+
-      +-------< >---------+  +------------------+          |
-      |                   |           |                    |
-+-----------------------+ |           |                    |
-| Update Q/R with R,    | |           +---------+----------+
-| mark complete, remove | |                     |
-| R from RFIFO          | |                     |
-+-----------------------+ |                     |
-      |                   |                     |
-      +--------+----------+                     |
-               |                                |
-               +---------------+----------------+
-                               |
-                    +----------------------+
-                    | Mark timed out OFIFO |
-                    | items complete (QT)  |
-                    +----------------------+
-                               |
-            +------------------------------------+
-            | For all timed out in RFIFO, create |
-            | R only Q/R, mark complete, append  |
-            | to OFIFO, remove R from RFIFO (ST) |
-            +------------------------------------+
-           ____________________|_______________________
-          /                                            /
-         /  Output all consecutive complete Q/R from  /
-        /   front of OFIFO and remove from OFIFO     /
+                   | Process next message |<------------------+
+                   `----------------------'                   |
+                               |                              |
+               +------------------------------+               |
+               | Generate message identifiers |               |
+               +------------------------------+               |
+                               |                              |
+                      Response | Query                        |
+               +--------------< >---------------+             |
+               |                                |             |
+     +--------------------+           +--------------------+  |
+     | Find earliest QR   |           | Create QR item [2] |  |
+     | item in OFIFO [1]  |           +--------------------+  |
+     +--------------------+                     |             |
+                |                        +---------------+    |
+          Match | No match               | Append new QR |    |
+      +--------< >------+                | item to OFIFO |    |
+      |                 |                +---------------+    |
++------------+     +--------+                   |             |
+| Update Q/R |     | Add to |          +-------------------+  |
+| item [3]   |     | RFIFO  |          | Find earliest QR  |  |
++------------+     +--------+          | item in RFIFO [1] |  |
+      |                 |              +-------------------+  |
+      +-----------------+                       |             |
+                |                               |             |
+                |     +----------------+  Match | No match    |
+                |     | Remove R       |-------< >-----+      |
+                |     | from RFIFO [4] |               |      |
+                |     +----------------+               |      |
+                |              |                       |      |
+                +--------------+-----------------------+      |
+                               |                              |
+        +----------------------------------------------+      |
+        | Update all timed out (QT) OFIFO QR items [5] |      |
+        +----------------------------------------------+      |
+                               |                              |
+               +--------------------------------+             |
+               | Remove all timed out (ST) R    |             |
+               | from RFIFO, create QR item [6] |             |
+               +--------------------------------+             |
+           ____________________|_______________________       |
+          /                                            /      |
+         /  Remove all consecutive done entries from  /-------+
+        /   front of OFIFO for further processing    /
        /____________________________________________/
 ~~~~
 Figure: Figure 3: Query/Response matching algorithm
+
+Ref | Operation
+----|:----
+[1] | Find earliest QR item in FIFO where:
+    | * QR.done = false
+    | * QR.Q.PrimaryID == R.PrimaryID
+    | and, if both QR.Q and R have SecondaryID:
+    | * QR.Q.SecondaryID == R.SecondaryID
+    |
+[2] | QR.Q := Q
+    | QR.R := nil
+    | QR.done := false
+    |
+[3] | QR.R := R
+    | QR.done := true
+    |
+[4] | QR.R := R
+    | QR.done := true
+    |
+[5] | QR.done := true
+    |
+[6] | QR.Q := nil
+    | QR.R := R
+    | QR.done := true
 
 Further details of the algorithm are given in the following sections.
 
@@ -1258,7 +1266,10 @@ This algorithm chooses to match to the earliest query with the correct Primary a
 
 ## Workspace
 
-A FIFO structure is used to hold the Q/R data items during processing. A secondary responses FIFO holds responses awaiting matching queries.
+The algorithm employs two FIFO queues:
+
+* OFIFO, an output FIFO containing Q/R items in chronological order,
+* RFIFO, a FIFO holding responses without a matching query in order of arrival.
 
 ## Output
 

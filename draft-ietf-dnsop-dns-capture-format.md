@@ -386,11 +386,11 @@ Figure 2. shows the more detailed relationships specifically betweenthe Query/Re
 | | Additional            |--+            | Response RCODE (r)     |
 +-+-----------------------+               +------------------------+
 
-+---------------+       +----------+             
-| Question list |------>| Question |             
-| array [Q]     |       | array    |             
-+---------------+       +----------+--+          
-                        | Name        |--+-->[N] 
++---------------+       +----------+
+| Question list |------>| Question |
+| array [Q]     |       | array    |
++---------------+       +----------+--+
+                        | Name        |--+-->[N]
                         +-------------+  |         +------------+
                         | Class/type  |--)---+---->| Class/Type |
                         +-------------+  |   |     | array  [C] |
@@ -399,11 +399,11 @@ Figure 2. shows the more detailed relationships specifically betweenthe Query/Re
 +---------------+       +----------+     |   |     +---------------+
 | RR list array |------>| RR array |     |   |     | Type          |
 | [R]           |       +----------+--+  |   |     +---------------+
-+---------+-----+       | Name        |--+   |      
++---------+-----+       | Name        |--+   |
                         +-------------+      |
                         | Class/type  |------+
                         +-------------+
-                       
+
 ~~~~
 
 Figure: Figure 2: The Query/Response data item and subsidiary tables.
@@ -411,7 +411,7 @@ Figure: Figure 2: The Query/Response data item and subsidiary tables.
 
 In Figure 2. data items annotated (q) are only present when a query/response has
 a query, and those annotated (r) are only present when a query/response response
-is present. 
+is present.
 
 
 A C-DNS file begins with a file header containing a File Type Identifier and

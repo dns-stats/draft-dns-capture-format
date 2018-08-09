@@ -336,7 +336,7 @@ Malformed Message data items link to various Block tables.
 ~~~~
 Figure: Figure 1: The C-DNS format.
 
-Figure 2. shows the more detailed relationships specifically betweenthe Query/Response data item and the Block tables within each block. [C], [N], [Q] and [R] are shorthand labels for selected tables.
+Figure 2. shows the more detailed relationships specifically between the Query/Response data item and the Block tables within each block. [C], [N], [Q] and [R] are shorthand labels for selected tables.
 ~~~~
 +----------------+
 | Query/Response |
@@ -1140,12 +1140,11 @@ the matching algorithm must take account of the possibility of skew.
 
 ## Matching algorithm
 
-A schematic representation of the algorithm for matching Q/R data
-items is shown in Figure 3. It takes individual DNS query or response
-messages as input, and outputs matched Q/R items.
-
-Specific details of the algorithm, for example queues, timers and
-identifiers, are given after the diagram.
+A schematic representation of the algorithm for matching Q/R data items is shown
+in Figure 3. It takes individual DNS query or response messages as input, and
+outputs matched Q/R items. The numbers in the figure identify matching
+operations listed in Table 1. Specific details of the algorithm, for example
+queues, timers and identifiers, are given in the following sections.
 
 ~~~~
                    .----------------------.
@@ -1176,18 +1175,18 @@ identifiers, are given after the diagram.
                 |                               |             |
                 |     +----------------+  Match | No match    |
                 |     | Remove R       |-------< >-----+      |
-                |     | from RFIFO [4] |               |      |
+                |     | from RFIFO [3] |               |      |
                 |     +----------------+               |      |
                 |              |                       |      |
                 +--------------+-----------------------+      |
                                |                              |
         +----------------------------------------------+      |
-        | Update all timed out (QT) OFIFO QR items [5] |      |
+        | Update all timed out (QT) OFIFO QR items [4] |      |
         +----------------------------------------------+      |
                                |                              |
                +--------------------------------+             |
                | Remove all timed out (ST) R    |             |
-               | from RFIFO, create QR item [6] |             |
+               | from RFIFO, create QR item [5] |             |
                +--------------------------------+             |
            ____________________|_______________________       |
           /                                            /      |
@@ -1205,23 +1204,23 @@ Ref | Operation
     | and, if both QR.Q and R have SecondaryID:
     | * QR.Q.SecondaryID == R.SecondaryID
     |
-[2] | QR.Q := Q
+[2] | Set:
+    | QR.Q := Q
     | QR.R := nil
     | QR.done := false
     |
-[3] | QR.R := R
-    | QR.done := true
-    |
-[4] | QR.R := R
-    | QR.done := true
-    |
-[5] | QR.done := true
-    |
-[6] | QR.Q := nil
+[3] | Set:
     | QR.R := R
     | QR.done := true
-
-Further details of the algorithm are given in the following sections.
+    |
+[4] | Set:
+    | QR.done := true
+    |
+[5] | Set:
+    | QR.Q := nil
+    | QR.R := R
+    | QR.done := true
+Table: Table 1. Operations used in the matching algorithm
 
 ## Message identifiers
 

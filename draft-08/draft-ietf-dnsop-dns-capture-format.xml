@@ -446,11 +446,11 @@ Malformed Message data items link to various Block tables.
 | | Additional            |--+            | Response RCODE (r)     |
 +-+-----------------------+               +------------------------+
 
-+---------------+       +----------+             
-| Question list |------&gt;| Question |             
-| array [Q]     |       | array    |             
-+---------------+       +----------+--+          
-                        | Name        |--+--&gt;[N] 
++---------------+       +----------+
+| Question list |------&gt;| Question |
+| array [Q]     |       | array    |
++---------------+       +----------+--+
+                        | Name        |--+--&gt;[N]
                         +-------------+  |         +------------+
                         | Class/type  |--)---+----&gt;| Class/Type |
                         +-------------+  |   |     | array  [C] |
@@ -459,11 +459,11 @@ Malformed Message data items link to various Block tables.
 +---------------+       +----------+     |   |     +---------------+
 | RR list array |------&gt;| RR array |     |   |     | Type          |
 | [R]           |       +----------+--+  |   |     +---------------+
-+---------+-----+       | Name        |--+   |      
++---------+-----+       | Name        |--+   |
                         +-------------+      |
                         | Class/type  |------+
                         +-------------+
-                       
+
 </artwork></figure>
 <t>Figure: Figure 2: The Query/Response data item and subsidiary tables.
 </t>
@@ -1337,14 +1337,90 @@ the matching algorithm must take account of the possibility of skew.
 </t>
 
 <section anchor="matching-algorithm" title="Matching algorithm">
-<t>A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram:
+<t>A schematic representation of the algorithm for matching Q/R data items is shown
+in Figure 3. It takes individual DNS query or response messages as input, and
+outputs matched Q/R items. The numbers in the figure identify matching
+operations listed in Table 1. Specific details of the algorithm, for example
+queues, timers and identifiers, are given in the following sections.
 </t>
-<t><eref target="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/packet_matching.png">Figure showing the Query/Response matching algorithm format (PNG)</eref>
-</t>
-<t><eref target="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/packet_matching.svg">Figure showing the Query/Response matching algorithm format (SVG)</eref>
-</t>
-<t>Further details of the algorithm are given in the following sections.
-</t>
+
+<figure align="center" title="Figure 3: Query/Response matching algorithm
+"><artwork align="center">
+                   .----------------------.
+                   | Process next message |&lt;------------------+
+                   `----------------------'                   |
+                               |                              |
+               +------------------------------+               |
+               | Generate message identifiers |               |
+               +------------------------------+               |
+                               |                              |
+                      Response | Query                        |
+               +--------------&lt; &gt;---------------+             |
+               |                                |             |
+     +--------------------+           +--------------------+  |
+     | Find earliest QR   |           | Create QR item [2] |  |
+     | item in OFIFO [1]  |           +--------------------+  |
+     +--------------------+                     |             |
+                |                        +---------------+    |
+          Match | No match               | Append new QR |    |
+      +--------&lt; &gt;------+                | item to OFIFO |    |
+      |                 |                +---------------+    |
++------------+     +--------+                   |             |
+| Update Q/R |     | Add to |          +-------------------+  |
+| item [3]   |     | RFIFO  |          | Find earliest QR  |  |
++------------+     +--------+          | item in RFIFO [1] |  |
+      |                 |              +-------------------+  |
+      +-----------------+                       |             |
+                |                               |             |
+                |     +----------------+  Match | No match    |
+                |     | Remove R       |-------&lt; &gt;-----+      |
+                |     | from RFIFO [3] |               |      |
+                |     +----------------+               |      |
+                |              |                       |      |
+                +--------------+-----------------------+      |
+                               |                              |
+        +----------------------------------------------+      |
+        | Update all timed out (QT) OFIFO QR items [4] |      |
+        +----------------------------------------------+      |
+                               |                              |
+               +--------------------------------+             |
+               | Remove all timed out (ST) R    |             |
+               | from RFIFO, create QR item [5] |             |
+               +--------------------------------+             |
+           ____________________|_______________________       |
+          /                                            /      |
+         /  Remove all consecutive done entries from  /-------+
+        /   front of OFIFO for further processing    /
+       /____________________________________________/
+</artwork></figure>
+<texttable title="Table 1. Operations used in the matching algorithm
+">
+<ttcol align="center">Ref</ttcol>
+<ttcol align="left">Operation</ttcol>
+
+<c>[1]</c><c>Find earliest QR item in FIFO where:</c>
+<c></c><c>* QR.done = false</c>
+<c></c><c>* QR.Q.PrimaryID == R.PrimaryID</c>
+<c></c><c>and, if both QR.Q and R have SecondaryID:</c>
+<c></c><c>* QR.Q.SecondaryID == R.SecondaryID</c>
+<c></c><c></c>
+<c>[2]</c><c>Set:</c>
+<c></c><c>QR.Q := Q</c>
+<c></c><c>QR.R := nil</c>
+<c></c><c>QR.done := false</c>
+<c></c><c></c>
+<c>[3]</c><c>Set:</c>
+<c></c><c>QR.R := R</c>
+<c></c><c>QR.done := true</c>
+<c></c><c></c>
+<c>[4]</c><c>Set:</c>
+<c></c><c>QR.done := true</c>
+<c></c><c></c>
+<c>[5]</c><c>Set:</c>
+<c></c><c>QR.Q := nil</c>
+<c></c><c>QR.R := R</c>
+<c></c><c>QR.done := true</c>
+</texttable>
 </section>
 
 <section anchor="message-identifiers" title="Message identifiers">
@@ -1404,7 +1480,13 @@ This algorithm chooses to match to the earliest query with the correct Primary a
 </section>
 
 <section anchor="workspace" title="Workspace">
-<t>A FIFO structure is used to hold the Q/R data items during processing. A secondary responses FIFO holds responses awaiting matching queries.
+<t>The algorithm employs two FIFO queues:
+</t>
+<t>
+<list style="symbols">
+<t>OFIFO, an output FIFO containing Q/R items in chronological order,</t>
+<t>RFIFO, a FIFO holding responses without a matching query in order of arrival.</t>
+</list>
 </t>
 </section>
 
@@ -1764,7 +1846,13 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 </references>
 
 <section anchor="cddl" title="CDDL">
-
+<t>This appendix gives a CDDL <xref target="I-D.ietf-cbor-cddl"/> specification for C-DNS.
+</t>
+<t>CDDL does not permit a range of allowed values to be specified for a bitfield. Where
+necessary, those values are given as a CDDL group, but the group definition is
+commented out to prevent CDDL tooling from warning that the group is unused.
+</t>
+<t>
 <figure align="center"><artwork align="center">
 ; CDDL specification of the file format for C-DNS,
 ; which describes a collection of DNS messages and
@@ -2051,16 +2139,20 @@ udp-buf-size          = 14
 opt-rdata-index       = 15
 response-rcode        = 16
 
-  Transport = &amp;(
-      udp               : 0,
-      tcp               : 1,
-      tls               : 2,
-      dtls              : 3,
-  )
+  ; Transport gives the values that may appear in bits 1..4 of
+  ; TransportFlags. There is currently no way to express this in
+  ; CDDL, so Transport is unused. To avoid confusion when used
+  ; with CDDL tools, it is commented out.
+  ;
+  ; Transport = &amp;(
+  ;     udp               : 0,
+  ;     tcp               : 1,
+  ;     tls               : 2,
+  ;     dtls              : 3,
+  ; )
 
   TransportFlagValues = &amp;(
       ip-version         : 0,     ; 0=IPv4, 1=IPv6
-      ; Transport value bits 1-4
   ) / (1..4)
   TransportFlags = uint .bits TransportFlagValues
 
@@ -2238,6 +2330,8 @@ MalformedMessage = {
 ; Other map key values already defined above.
 message-data-index = 3
 </artwork></figure>
+
+</t>
 </section>
 
 <section anchor="dns-name-compression-example" title="DNS Name compression example">

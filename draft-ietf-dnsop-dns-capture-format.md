@@ -1166,10 +1166,10 @@ queues, timers and identifiers, are given in the following sections.
           Match | No match               | Append new QR |    |
       +--------< >------+                | item to OFIFO |    |
       |                 |                +---------------+    |
-+------------+     +--------+                   |             |
-| Update Q/R |     | Add to |          +-------------------+  |
-| item [3]   |     | RFIFO  |          | Find earliest QR  |  |
-+------------+     +--------+          | item in RFIFO [1] |  |
++-----------+      +--------+                   |             |
+| Update QR |      | Add to |          +-------------------+  |
+| item [3]  |      | RFIFO  |          | Find earliest QR  |  |
++-----------+      +--------+          | item in RFIFO [1] |  |
       |                 |              +-------------------+  |
       +-----------------+                       |             |
                 |                               |             |

@@ -1586,6 +1586,12 @@ draft-dickinson-dnsop-dns-capture-format-00
 
 # CDDL
 
+This appendix gives a CDDL [@?I-D.ietf-cbor-cddl] specification for C-DNS.
+
+CDDL does not permit a range of allowed values to be specified for a bitfield. Where
+necessary, those values are given as a CDDL group, but the group definition is
+commented out to prevent CDDL tooling from warning that the group is unused.
+
 <{{c-dns.cddl}}
 
 # DNS Name compression example

@@ -283,16 +283,20 @@ udp-buf-size          = 14
 opt-rdata-index       = 15
 response-rcode        = 16
 
-  Transport = &(
-      udp               : 0,
-      tcp               : 1,
-      tls               : 2,
-      dtls              : 3,
-  )
+  ; Transport gives the values that may appear in bits 1..4 of
+  ; TransportFlags. There is currently no way to express this in
+  ; CDDL, so Transport is unused. To avoid confusion when used
+  ; with CDDL tools, it is commented out.
+  ;
+  ; Transport = &(
+  ;     udp               : 0,
+  ;     tcp               : 1,
+  ;     tls               : 2,
+  ;     dtls              : 3,
+  ; )
 
   TransportFlagValues = &(
       ip-version         : 0,     ; 0=IPv4, 1=IPv6
-      ; Transport value bits 1-4
   ) / (1..4)
   TransportFlags = uint .bits TransportFlagValues
 

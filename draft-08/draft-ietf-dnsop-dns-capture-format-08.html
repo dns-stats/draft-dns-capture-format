@@ -777,11 +777,11 @@
 | | Additional            |--+            | Response RCODE (r)     |
 +-+-----------------------+               +------------------------+
 
-+---------------+       +----------+             
-| Question list |------&gt;| Question |             
-| array [Q]     |       | array    |             
-+---------------+       +----------+--+          
-                        | Name        |--+--&gt;[N] 
++---------------+       +----------+
+| Question list |------&gt;| Question |
+| array [Q]     |       | array    |
++---------------+       +----------+--+
+                        | Name        |--+--&gt;[N]
                         +-------------+  |         +------------+
                         | Class/type  |--)---+----&gt;| Class/Type |
                         +-------------+  |   |     | array  [C] |
@@ -790,11 +790,11 @@
 +---------------+       +----------+     |   |     +---------------+
 | RR list array |------&gt;| RR array |     |   |     | Type          |
 | [R]           |       +----------+--+  |   |     +---------------+
-+---------+-----+       | Name        |--+   |      
++---------+-----+       | Name        |--+   |
                         +-------------+      |
                         | Class/type  |------+
                         +-------------+
-                       
+
 </pre>
 <p id="rfc.section.6.p.4">Figure: Figure 2: The Query/Response data item and subsidiary tables.  </p>
 <p id="rfc.section.6.p.5">In Figure 2. data items annotated (q) are only present when a query/response has a query, and those annotated (r) are only present when a query/response response is present.  </p>
@@ -2938,10 +2938,155 @@
 <p id="rfc.section.9.p.5">It should be noted that packet capture libraries do not necessarily provide packets in strict chronological order.  This can, for example, arise on multi-core platforms where packets arriving at a network device are processed by different cores. On systems where this behaviour has been observed, the timestamps associated with each packet are consistent; queries always have a timestamp prior to the response timestamp.  However, the order in which these packets appear in the packet capture stream is not necessarily strictly choronological; a response can appear in the capture stream before the query that provoked the response. For this discussion, this non-chronological delivery is termed "skew".  </p>
 <p id="rfc.section.9.p.6">In the presence of skew, a response packets can arrive for matching before the corresponding query. To avoid generating false instances of responses without a matching query, and queries without a matching response, the matching algorithm must take account of the possibility of skew.  </p>
 <h1 id="rfc.section.9.1"><a href="#rfc.section.9.1">9.1.</a> <a href="#matching-algorithm" id="matching-algorithm">Matching algorithm</a></h1>
-<p id="rfc.section.9.1.p.1">A schematic representation of the algorithm for matching Q/R data items is shown in the following diagram: </p>
-<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/packet_matching.png">Figure showing the Query/Response matching algorithm format (PNG)</a> </p>
-<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/draft-08/packet_matching.svg">Figure showing the Query/Response matching algorithm format (SVG)</a> </p>
-<p id="rfc.section.9.1.p.4">Further details of the algorithm are given in the following sections.  </p>
+<p id="rfc.section.9.1.p.1">A schematic representation of the algorithm for matching Q/R data items is shown in Figure 3. It takes individual DNS query or response messages as input, and outputs matched Q/R items. The numbers in the figure identify matching operations listed in Table 1. Specific details of the algorithm, for example queues, timers and identifiers, are given in the following sections.  </p>
+<pre>
+                   .----------------------.
+                   | Process next message |&lt;------------------+
+                   `----------------------'                   |
+                               |                              |
+               +------------------------------+               |
+               | Generate message identifiers |               |
+               +------------------------------+               |
+                               |                              |
+                      Response | Query                        |
+               +--------------&lt; &gt;---------------+             |
+               |                                |             |
+     +--------------------+           +--------------------+  |
+     | Find earliest QR   |           | Create QR item [2] |  |
+     | item in OFIFO [1]  |           +--------------------+  |
+     +--------------------+                     |             |
+                |                        +---------------+    |
+          Match | No match               | Append new QR |    |
+      +--------&lt; &gt;------+                | item to OFIFO |    |
+      |                 |                +---------------+    |
++------------+     +--------+                   |             |
+| Update Q/R |     | Add to |          +-------------------+  |
+| item [3]   |     | RFIFO  |          | Find earliest QR  |  |
++------------+     +--------+          | item in RFIFO [1] |  |
+      |                 |              +-------------------+  |
+      +-----------------+                       |             |
+                |                               |             |
+                |     +----------------+  Match | No match    |
+                |     | Remove R       |-------&lt; &gt;-----+      |
+                |     | from RFIFO [3] |               |      |
+                |     +----------------+               |      |
+                |              |                       |      |
+                +--------------+-----------------------+      |
+                               |                              |
+        +----------------------------------------------+      |
+        | Update all timed out (QT) OFIFO QR items [4] |      |
+        +----------------------------------------------+      |
+                               |                              |
+               +--------------------------------+             |
+               | Remove all timed out (ST) R    |             |
+               | from RFIFO, create QR item [5] |             |
+               +--------------------------------+             |
+           ____________________|_______________________       |
+          /                                            /      |
+         /  Remove all consecutive done entries from  /-------+
+        /   front of OFIFO for further processing    /
+       /____________________________________________/
+</pre>
+<p class="figure">Figure 3: Query/Response matching algorithm </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <caption>Table 1. Operations used in the matching algorithm </caption>
+  <thead>
+    <tr>
+      <th class="center">Ref</th>
+      <th class="left">Operation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="center">[1]</td>
+      <td class="left">Find earliest QR item in FIFO where:</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">* QR.done = false</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">* QR.Q.PrimaryID == R.PrimaryID</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">and, if both QR.Q and R have SecondaryID:</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">* QR.Q.SecondaryID == R.SecondaryID</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="center">[2]</td>
+      <td class="left">Set:</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">QR.Q := Q</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">QR.R := nil</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">QR.done := false</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="center">[3]</td>
+      <td class="left">Set:</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">QR.R := R</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">QR.done := true</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="center">[4]</td>
+      <td class="left">Set:</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">QR.done := true</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left"/>
+    </tr>
+    <tr>
+      <td class="center">[5]</td>
+      <td class="left">Set:</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">QR.Q := nil</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">QR.R := R</td>
+    </tr>
+    <tr>
+      <td class="center"/>
+      <td class="left">QR.done := true</td>
+    </tr>
+  </tbody>
+</table>
 <h1 id="rfc.section.9.2"><a href="#rfc.section.9.2">9.2.</a> <a href="#message-identifiers" id="message-identifiers">Message identifiers</a></h1>
 <h1 id="rfc.section.9.2.1"><a href="#rfc.section.9.2.1">9.2.1.</a> <a href="#primary-id" id="primary-id">Primary ID (required)</a></h1>
 <p id="rfc.section.9.2.1.p.1">A Primary ID is constructed for each message. It is composed of the following data: </p>
@@ -2983,7 +3128,15 @@
 <h1 id="rfc.section.9.5"><a href="#rfc.section.9.5">9.5.</a> <a href="#algorithm-limitations" id="algorithm-limitations">Algorithm limitations</a></h1>
 <p id="rfc.section.9.5.p.1">For cases 1 and 2 listed in the above requirements, it is not possible to unambiguously match queries with responses.  This algorithm chooses to match to the earliest query with the correct Primary and Secondary ID.  </p>
 <h1 id="rfc.section.9.6"><a href="#rfc.section.9.6">9.6.</a> <a href="#workspace" id="workspace">Workspace</a></h1>
-<p id="rfc.section.9.6.p.1">A FIFO structure is used to hold the Q/R data items during processing. A secondary responses FIFO holds responses awaiting matching queries.  </p>
+<p id="rfc.section.9.6.p.1">The algorithm employs two FIFO queues: </p>
+<p/>
+
+<ul>
+  <li>OFIFO, an output FIFO containing Q/R items in chronological order,</li>
+  <li>RFIFO, a FIFO holding responses without a matching query in order of arrival.</li>
+</ul>
+
+<p> </p>
 <h1 id="rfc.section.9.7"><a href="#rfc.section.9.7">9.7.</a> <a href="#output" id="output">Output</a></h1>
 <p id="rfc.section.9.7.p.1">The output is a list of Q/R data items. Both the Query and Response elements are optional in these items, therefore Q/R data items have one of three types of content: </p>
 <p/>
@@ -3257,6 +3410,8 @@
   </tbody>
 </table>
 <h1 id="rfc.appendix.A"><a href="#rfc.appendix.A">Appendix A.</a> <a href="#cddl" id="cddl">CDDL</a></h1>
+<p id="rfc.section.A.p.1">This appendix gives a CDDL <a href="#I-D.ietf-cbor-cddl">[I-D.ietf-cbor-cddl]</a> specification for C-DNS.  </p>
+<p id="rfc.section.A.p.2">CDDL does not permit a range of allowed values to be specified for a bitfield. Where necessary, those values are given as a CDDL group, but the group definition is commented out to prevent CDDL tooling from warning that the group is unused.  </p>
 <pre>
 ; CDDL specification of the file format for C-DNS,
 ; which describes a collection of DNS messages and
@@ -3543,16 +3698,20 @@ udp-buf-size          = 14
 opt-rdata-index       = 15
 response-rcode        = 16
 
-  Transport = &amp;(
-      udp               : 0,
-      tcp               : 1,
-      tls               : 2,
-      dtls              : 3,
-  )
+  ; Transport gives the values that may appear in bits 1..4 of
+  ; TransportFlags. There is currently no way to express this in
+  ; CDDL, so Transport is unused. To avoid confusion when used
+  ; with CDDL tools, it is commented out.
+  ;
+  ; Transport = &amp;(
+  ;     udp               : 0,
+  ;     tcp               : 1,
+  ;     tls               : 2,
+  ;     dtls              : 3,
+  ; )
 
   TransportFlagValues = &amp;(
       ip-version         : 0,     ; 0=IPv4, 1=IPv6
-      ; Transport value bits 1-4
   ) / (1..4)
   TransportFlags = uint .bits TransportFlagValues
 
@@ -3730,6 +3889,7 @@ MalformedMessage = {
 ; Other map key values already defined above.
 message-data-index = 3
 </pre>
+<p/>
 <h1 id="rfc.appendix.B"><a href="#rfc.appendix.B">Appendix B.</a> <a href="#dns-name-compression-example" id="dns-name-compression-example">DNS Name compression example</a></h1>
 <p id="rfc.section.B.p.1">The basic algorithm, which follows the guidance in <a href="#RFC1035">[RFC1035]</a>, is simply to collect each name, and the offset in the packet at which it starts, during packet construction. As each name is added, it is offered to each of the collected names in order of collection, starting from the first name. If labels at the end of the name can be replaced with a reference back to part (or all) of the earlier name, and if the uncompressed part of the name is shorter than any compression already found, the earlier name is noted as the compression target for the name.  </p>
 <p id="rfc.section.B.p.2">The following tables illustrate the process. In an example packet, the first name is example.com.  </p>

@@ -684,7 +684,7 @@
 <p> </p>
 <h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#cdns-format-conceptual-overview" id="cdns-format-conceptual-overview">C-DNS format conceptual overview</a></h1>
 <p id="rfc.section.6.p.1">The following figures show purely schematic representations of the C-DNS format to convey the high-level structure of the C-DNS format.  <a href="#cdns-format-detailed-description">Section 7</a> provides a detailed discussion of the CBOR representation and individual elements.  </p>
-<p id="rfc.section.6.p.2">Figure 1. shows the C-DNS format at the top level including the file header and data blocks. The Query/Response data items, Address/Event Count data items and Malformed Message data items link to various Block tables.  </p>
+<p id="rfc.section.6.p.2">Figure 1 shows the C-DNS format at the top level including the file header and data blocks. The Query/Response data items, Address/Event Count data items and Malformed Message data items link to various Block tables.  </p>
 <pre>
 +-------+
 + C-DNS |
@@ -729,7 +729,7 @@
 +----------------------------------+
 </pre>
 <p class="figure">Figure 1: The C-DNS format. </p>
-<p id="rfc.section.6.p.3">Figure 2. shows some more detailed relationships within each block, specifically those between the Query/Response data item and the relevant Block tables.  </p>
+<p id="rfc.section.6.p.3">Figure 2 shows some more detailed relationships within each block, specifically those between the Query/Response data item and the relevant Block tables.  </p>
 <pre>
 +----------------+
 | Query/Response |
@@ -802,7 +802,7 @@
                         +-------------+
 </pre>
 <p class="figure">Figure 2: The Query/Response data item and subsidiary tables. </p>
-<p id="rfc.section.6.p.4">In Figure 2. data items annotated (q) are only present when a query/response has a query, and those annotated (r) are only present when a query/response response is present.  </p>
+<p id="rfc.section.6.p.4">In Figure 2 data items annotated (q) are only present when a query/response has a query, and those annotated (r) are only present when a query/response response is present.  </p>
 <p id="rfc.section.6.p.5">A C-DNS file begins with a file header containing a File Type Identifier and a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items (the contents of which include Collection and Storage Parameters used for one or more blocks).  </p>
 <p id="rfc.section.6.p.6">The file header is followed by a series of data Blocks.  </p>
 <p id="rfc.section.6.p.7">A Block consists of a Block Preamble item, some Block Statistics for the traffic stored within the Block and then various arrays of common data collectively called the Block Tables. This is then followed by an array of the Query/Response data items detailing the queries and responses stored within the Block. The array of Query/Response data items is in turn followed by the Address/Event Counts data items (an array of per-client counts of particular IP events) and then Malformed Message data items (an array of malformed messages that stored in the Block).  </p>
@@ -2907,7 +2907,7 @@
 <h1 id="rfc.section.8"><a href="#rfc.section.8">8.</a> <a href="#versioning" id="versioning">Versioning</a></h1>
 <p id="rfc.section.8.p.1">The C-DNS file preamble includes a file format version; a major and minor version number are required fields. The document defines version 1.0 of the C-DNS specification. This section describes the intended use of these version numbers in future specifications.  </p>
 <p id="rfc.section.8.p.2">It is noted that version 1.0 includes many optional fields and therefore consumers of version 1.0 should be inherently robust to parsing files with variable data content.  </p>
-<p id="rfc.section.8.p.3">Within a major version, a new minor version must be a strict superset of the previous minor version, with no semantic changes to existing fields. New keys MAY be added to existing maps, and new maps MAY be added. A consumer capable of reading a particular major.minor version MUST also be capable of reading all previous minor versions of the same major version. It SHOULD also be capable of parsing all subsequent minor versions ignoring any keys or maps that it does not recognise.  </p>
+<p id="rfc.section.8.p.3">Within a major version, a new minor version MUST be a strict superset of the previous minor version, with no semantic changes to existing fields. New keys MAY be added to existing maps, and new maps MAY be added. A consumer capable of reading a particular major.minor version MUST also be capable of reading all previous minor versions of the same major version. It SHOULD also be capable of parsing all subsequent minor versions ignoring any keys or maps that it does not recognise.  </p>
 <p id="rfc.section.8.p.4">A new major version indicates changes to the format that are not backwards compatible with previous major versions. A consumer capable of only reading a particular major version (greater than 1) is not required to and has no expectation to be capable of reading a previous major version.  </p>
 <h1 id="rfc.section.9"><a href="#rfc.section.9">9.</a> <a href="#cdns-to-pcap" id="cdns-to-pcap">C-DNS to PCAP</a></h1>
 <p id="rfc.section.9.p.1">It is possible to re-construct PCAP files from the C-DNS format in a lossy fashion.  Some of the issues with reconstructing both the DNS payload and the full packet stream are outlined here.  </p>
@@ -2999,7 +2999,7 @@
 </pre>
 <p class="figure">Figure 3: Query/Response matching algorithm </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
-  <caption>Table 1. Operations used in the matching algorithm </caption>
+  <caption>Table 1: Operations used in the matching algorithm </caption>
   <thead>
     <tr>
       <th class="center">Ref</th>

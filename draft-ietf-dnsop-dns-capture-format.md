@@ -1044,6 +1044,25 @@ client-port | O | U | The client port.
 ||
 message-data-index | O | U | The index in the `malformed-message-data` array of the message data for this message. See (#blocktables).
 
+# Versioning
+
+The C-DNS file preamble includes a file format version. The version is
+made up of three components; a major version, a minor version and an optional
+private version.
+
+A new major version indicates changes to the format that are not backwards
+compatible with previous major versions. A reader capable of reading a particular
+major version is nto expected to support reading a previous major version.
+
+Within a major version, a new minor version must be a strict superset
+of the previous minor version, with no semantic changes to existing
+fields. New keys MAY be added to existing maps, and new maps MAY be
+added. A reader capable of reading a particular minor version MUST also
+be capable of reading all previous minor versions. It SHOULD also read subsequent
+minor versions and ignore any keys or maps that it does not recognise.
+
+The private version is reserved for internal use by implementations.
+
 # C-DNS to PCAP
 
 It is possible to re-construct PCAP files from the C-DNS format in a lossy fashion.

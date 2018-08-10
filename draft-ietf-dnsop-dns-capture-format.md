@@ -347,9 +347,9 @@ those between the Query/Response data item and the relevant Block tables.
 | Client address          |------------>| IP address array |
 +-------------------------+             + -----------------+
 | Client port             |
-+-------------------------+             +----------------------+
-| Transaction ID          |     +------>| Name/RDATA array     |<--+
-+-------------------------+     |       +----------------------+   |
++-------------------------+             +------------------+
+| Transaction ID          |     +------>| Name/RDATA array |<------+
++-------------------------+     |       +------------------+       |
 | Query signature         |--+  |                                  |
 +-------------------------+  |  |       +-----------------+        |
 | Client hoplimit (q)     |  +--)------>| Query Signature |        |
@@ -392,7 +392,7 @@ those between the Query/Response data item and the relevant Block tables.
 |                                |              |                  |
 | + -----------------------------+              |                  |
 | |  +---------------+  +----------+            |                  |
-| +->| Question list-|->| Question |            |                  |
+| +->| Question list |->| Question |            |                  |
 |    | array         |  | array    |            |                  |
 |    +---------------+  +----------+--+         |                  |
 |                       | Name        |--+------)------------------+

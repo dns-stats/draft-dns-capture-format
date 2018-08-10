@@ -1052,7 +1052,7 @@ private version.
 
 A new major version indicates changes to the format that are not backwards
 compatible with previous major versions. A reader capable of reading a particular
-major version is nto expected to support reading a previous major version.
+major version is not expected to support reading a previous major version.
 
 Within a major version, a new minor version must be a strict superset
 of the previous minor version, with no semantic changes to existing

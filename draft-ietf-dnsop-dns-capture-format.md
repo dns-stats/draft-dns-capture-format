@@ -283,7 +283,7 @@ to convey the high-level structure of the C-DNS format.
 (#cdns-format-detailed-description) provides a detailed discussion of the CBOR
 representation and individual elements.
 
-Figure 1. shows the C-DNS format at the top level including the file header and
+Figure 1 shows the C-DNS format at the top level including the file header and
 data blocks. The Query/Response data items, Address/Event Count data items and
 Malformed Message data items link to various Block tables.
 
@@ -336,7 +336,7 @@ Malformed Message data items link to various Block tables.
 ~~~~
 Figure: Figure 1: The C-DNS format.
 
-Figure 2. shows some more detailed relationships within each block, specifically
+Figure 2 shows some more detailed relationships within each block, specifically
 those between the Query/Response data item and the relevant Block tables.
 ~~~~
 +----------------+
@@ -412,7 +412,7 @@ those between the Query/Response data item and the relevant Block tables.
 Figure: Figure 2: The Query/Response data item and subsidiary tables.
 
 
-In Figure 2. data items annotated (q) are only present when a query/response has
+In Figure 2 data items annotated (q) are only present when a query/response has
 a query, and those annotated (r) are only present when a query/response response
 is present.
 
@@ -1058,7 +1058,7 @@ It is noted that version 1.0 includes many optional fields and therefore
 consumers of version 1.0 should be inherently robust to parsing files with
 variable data content.
 
-Within a major version, a new minor version must be a strict superset of the
+Within a major version, a new minor version MUST be a strict superset of the
 previous minor version, with no semantic changes to existing fields. New keys
 MAY be added to existing maps, and new maps MAY be added. A consumer capable of
 reading a particular major.minor version MUST also be capable of reading all
@@ -1247,7 +1247,7 @@ Ref | Operation
     | QR.Q := nil
     | QR.R := R
     | QR.done := true
-Table: Table 1. Operations used in the matching algorithm
+Table: Table 1: Operations used in the matching algorithm
 
 ## Message identifiers
 

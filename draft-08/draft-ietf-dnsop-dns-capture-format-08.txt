@@ -479,7 +479,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
    Section 7 provides a detailed discussion of the CBOR representation
    and individual elements.
 
-   Figure 1. shows the C-DNS format at the top level including the file
+   Figure 1 shows the C-DNS format at the top level including the file
    header and data blocks.  The Query/Response data items, Address/Event
    Count data items and Malformed Message data items link to various
    Block tables.
@@ -550,7 +550,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
                         Figure 1: The C-DNS format.
 
-   Figure 2. shows some more detailed relationships within each block,
+   Figure 2 shows some more detailed relationships within each block,
    specifically those between the Query/Response data item and the
    relevant Block tables.
 
@@ -642,7 +642,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
        Figure 2: The Query/Response data item and subsidiary tables.
 
-   In Figure 2. data items annotated (q) are only present when a query/
+   In Figure 2 data items annotated (q) are only present when a query/
    response has a query, and those annotated (r) are only present when a
    query/response response is present.
 
@@ -1973,7 +1973,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
    therefore consumers of version 1.0 should be inherently robust to
    parsing files with variable data content.
 
-   Within a major version, a new minor version must be a strict superset
+   Within a major version, a new minor version MUST be a strict superset
    of the previous minor version, with no semantic changes to existing
    fields.  New keys MAY be added to existing maps, and new maps MAY be
    added.  A consumer capable of reading a particular major.minor
@@ -2269,7 +2269,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
             |     | QR.done := true                           |
             +-----+-------------------------------------------+
 
-            Table 1.  Operations used in the matching algorithm
+            Table 1: Operations used in the matching algorithm
 
 10.2.  Message identifiers
 

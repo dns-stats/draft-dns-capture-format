@@ -345,7 +345,7 @@ to convey the high-level structure of the C-DNS format.
 <xref target="cdns-format-detailed-description"/> provides a detailed discussion of the CBOR
 representation and individual elements.
 </t>
-<t>Figure 1. shows the C-DNS format at the top level including the file header and
+<t>Figure 1 shows the C-DNS format at the top level including the file header and
 data blocks. The Query/Response data items, Address/Event Count data items and
 Malformed Message data items link to various Block tables.
 </t>
@@ -394,7 +394,7 @@ Malformed Message data items link to various Block tables.
 | Further Blocks...                |
 +----------------------------------+
 </artwork></figure>
-<t>Figure 2. shows some more detailed relationships within each block, specifically
+<t>Figure 2 shows some more detailed relationships within each block, specifically
 those between the Query/Response data item and the relevant Block tables.
 </t>
 
@@ -470,7 +470,7 @@ those between the Query/Response data item and the relevant Block tables.
                         | Class/type  |------+
                         +-------------+
 </artwork></figure>
-<t>In Figure 2. data items annotated (q) are only present when a query/response has
+<t>In Figure 2 data items annotated (q) are only present when a query/response has
 a query, and those annotated (r) are only present when a query/response response
 is present.
 </t>
@@ -1245,7 +1245,7 @@ numbers in future specifications.
 consumers of version 1.0 should be inherently robust to parsing files with
 variable data content.
 </t>
-<t>Within a major version, a new minor version must be a strict superset of the
+<t>Within a major version, a new minor version MUST be a strict superset of the
 previous minor version, with no semantic changes to existing fields. New keys
 MAY be added to existing maps, and new maps MAY be added. A consumer capable of
 reading a particular major.minor version MUST also be capable of reading all
@@ -1421,7 +1421,7 @@ queues, timers and identifiers, are given in the following sections.
         /   front of OFIFO for further processing    /
        /____________________________________________/
 </artwork></figure>
-<texttable title="Table 1. Operations used in the matching algorithm
+<texttable title="Table 1: Operations used in the matching algorithm
 ">
 <ttcol align="center">Ref</ttcol>
 <ttcol align="left">Operation</ttcol>

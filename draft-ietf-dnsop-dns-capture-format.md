@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2018-05-08T00:00:00Z
+    date = 2018-08-10T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -345,7 +345,7 @@ those between the Query/Response data item and the relevant Block tables.
 | Time offset             |
 +-------------------------+             +------------------+
 | Client address          |------------>| IP address array |
-+-------------------------+             + -----------------+
++-------------------------+             +------------------+
 | Client port             |
 +-------------------------+             +------------------+
 | Transaction ID          |     +------>| Name/RDATA array |<------+
@@ -1423,6 +1423,10 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 # Changelog
 
 draft-ietf-dnsop-dns-capture-format-08
+
+* Convert diagrams to ASCII
+* Describe versioning
+* Fix unused group warning in CDDL
 
 draft-ietf-dnsop-dns-capture-format-07
 

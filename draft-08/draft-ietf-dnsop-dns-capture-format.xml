@@ -394,7 +394,7 @@ Malformed Message data items link to various Block tables.
 | Further Blocks...                |
 +----------------------------------+
 </artwork></figure>
-<t>Figure 2. shows the more detailed relationships specifically betweenthe Query/Response data item and the Block tables within each block. [C], [N], [Q] and [R] are shorthand labels for selected tables.
+<t>Figure 2. shows the more detailed relationships specifically between the Query/Response data item and the Block tables within each block. [C], [N], [Q] and [R] are shorthand labels for selected tables.
 </t>
 
 <figure align="center"><artwork align="center">
@@ -1232,6 +1232,31 @@ individual client addresses. A map containing the following:
 </section>
 </section>
 
+<section anchor="versioning" title="Versioning">
+<t>The C-DNS file preamble includes a file format version; a major and minor
+version number are required fields. The document defines version 1.0 of the
+C-DNS specification. This section describes the intended use of these version
+numbers in future specifications.
+</t>
+<t>It is noted that version 1.0 includes many optional fields and therefore
+consumers of version 1.0 should be inherently robust to parsing files with
+variable data content.
+</t>
+<t>Within a major version, a new minor version must be a strict superset of the
+previous minor version, with no semantic changes to existing fields. New keys
+MAY be added to existing maps, and new maps MAY be added. A consumer capable of
+reading a particular major.minor version MUST also be capable of reading all
+previous minor versions of the same major version. It SHOULD also be capable of
+parsing all subsequent minor versions ignoring any keys or maps that it does
+not recognise.
+</t>
+<t>A new major version indicates changes to the format that are not backwards
+compatible with previous major versions. A consumer capable of only reading a
+particular major version (greater than 1) is not required to and has no
+expectation to be capable of reading a previous major version.
+</t>
+</section>
+
 <section anchor="cdns-to-pcap" title="C-DNS to PCAP">
 <t>It is possible to re-construct PCAP files from the C-DNS format in a lossy fashion.
 Some of the issues with reconstructing both the DNS payload and the
@@ -1365,10 +1390,10 @@ queues, timers and identifiers, are given in the following sections.
           Match | No match               | Append new QR |    |
       +--------&lt; &gt;------+                | item to OFIFO |    |
       |                 |                +---------------+    |
-+------------+     +--------+                   |             |
-| Update Q/R |     | Add to |          +-------------------+  |
-| item [3]   |     | RFIFO  |          | Find earliest QR  |  |
-+------------+     +--------+          | item in RFIFO [1] |  |
++-----------+      +--------+                   |             |
+| Update QR |      | Add to |          +-------------------+  |
+| item [3]  |      | RFIFO  |          | Find earliest QR  |  |
++-----------+      +--------+          | item in RFIFO [1] |  |
       |                 |              +-------------------+  |
       +-----------------+                       |             |
                 |                               |             |

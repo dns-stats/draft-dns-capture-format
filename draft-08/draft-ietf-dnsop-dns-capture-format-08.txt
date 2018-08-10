@@ -550,10 +550,10 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
                         Figure 1: The C-DNS format.
 
-   Figure 2. shows the more detailed relationships specifically
-   betweenthe Query/Response data item and the Block tables within each
-   block.  [C], [N], [Q] and [R] are shorthand labels for selected
-   tables.
+   Figure 2. shows some more detailed relationships within each block,
+   specifically those between the Query/Response data item and the
+   relevant Block tables.
+
 
 
 
@@ -566,50 +566,50 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    | Query/Response |
    +-------------------------+
    | Time offset             |
-   +-------------------------+               +------------------+
-   | Client address          |-------------->| IP address array |
-   +-------------------------+               +------------------+
+   +-------------------------+             +------------------+
+   | Client address          |------------>| IP address array |
+   +-------------------------+             + -----------------+
    | Client port             |
-   +-------------------------+               +----------------------+
-   | Transaction ID          |     +-------->| Name/RDATA array [N] |
-   +-------------------------+     |         +----------------------+
-   | Query signature         |--+  |
-   +-------------------------+  |  |         +-----------------+
-   | Client hoplimit (q)     |  +--)-------->| Query Signature |
-   +-------------------------+     |         +-----------------+------+
-   | Response delay (r)      |     |         | Server address         |
-   +-------------------------+     |         +------------------------+
-   | Query name (q)          |--+--+         | Server port            |
-   +-------------------------+  |            +------------------------+
-   | Query size (q)          |  |            | Transport flags        |
-   +-------------------------+  |            +------------------------+
-   | Response size (r)       |  |            | QR type                |
-   +-------------------------+  |            +------------------------+
-   | Response processing (r) |  |            | QR signature flags     |
-   | +-----------------------+  |            +------------------------+
-   | | Bailiwick index       |--+            | Query OPCODE (q)       |
-   | +-----------------------+               +------------------------+
-   | | Flags                 |               | QR DNS flags           |
-   +-+-----------------------+               +------------------------+
-   | Extra query info (q)    |               | Query RCODE (q)        |
-   | +-----------------------+               +------------------------+
-   | | Question              |-->[Q]   [C]<--| Query Class/Type (q)   |
-   | +-----------------------+               +------------------------+
-   | | Answer                |--+            | Query QD count (q)     |
-   | +-----------------------+  |            +------------------------+
-   | | Authority             |--+            | Query AN count (q)     |
-   | +-----------------------+  |            +------------------------+
-   | | Additional            |--+            | Query NS count (q)     |
-   +-+-----------------------+  |            +------------------------+
-   | Extra response info (r) |  |-->[R]      | Query EDNS version (q) |
-   | +-----------------------+  |            +------------------------+
-   | | Answer                |--+            | EDNS UDP size (q)      |
-   | +-----------------------+  |            +------------------------+
-   | | Authority             |--+            | Query Opt RDATA (q)    |
-   | +-----------------------+  |            +------------------------+
-   | | Additional            |--+            | Response RCODE (r)     |
-   +-+-----------------------+               +------------------------+
-
+   +-------------------------+             +----------------------+
+   | Transaction ID          |     +------>| Name/RDATA array     |<--+
+   +-------------------------+     |       +----------------------+   |
+   | Query signature         |--+  |                                  |
+   +-------------------------+  |  |       +-----------------+        |
+   | Client hoplimit (q)     |  +--)------>| Query Signature |        |
+   +-------------------------+     |       +-----------------+------+ |
+   | Response delay (r)      |     |       | Server address         | |
+   +-------------------------+     |       +------------------------+ |
+   | Query name (q)          |--+--+       | Server port            | |
+   +-------------------------+  |          +------------------------+ |
+   | Query size (q)          |  |          | Transport flags        | |
+   +-------------------------+  |          +------------------------+ |
+   | Response size (r)       |  |          | QR type                | |
+   +-------------------------+  |          +------------------------+ |
+   | Response processing (r) |  |          | QR signature flags     | |
+   | +-----------------------+  |          +------------------------+ |
+   | | Bailiwick index       |--+          | Query OPCODE (q)       | |
+   | +-----------------------+             +------------------------+ |
+   | | Flags                 |             | QR DNS flags           | |
+   +-+-----------------------+             +------------------------+ |
+   | Extra query info (q)    |             | Query RCODE (q)        | |
+   | +-----------------------+             +------------------------+ |
+   | | Question              |--+---+   +--+-Query Class/Type (q)   | |
+   | +-----------------------+      |   |  +------------------------+ |
+   | | Answer                |--+   |   |  | Query QD count (q)     | |
+   | +-----------------------+  |   |   |  +------------------------+ |
+   | | Authority             |--+   |   |  | Query AN count (q)     | |
+   | +-----------------------+  |   |   |  +------------------------+ |
+   | | Additional            |--+   |   |  | Query NS count (q)     | |
+   +-+-----------------------+  |   |   |  +------------------------+ |
+   | Extra response info (r) |  |-+ |   |  | Query EDNS version (q) | |
+   | +-----------------------+  | | |   |  +------------------------+ |
+   | | Answer                |--+ | |   |  | EDNS UDP size (q)      | |
+   | +-----------------------+  | | |   |  +------------------------+ |
+   | | Authority             |--+ | |   |  | Query Opt RDATA (q)    | |
+   | +-----------------------+  | | |   |  +------------------------+ |
+   | | Additional            |--+ | |   |  | Response RCODE (r)     | |
+   +-+-----------------------+    | |   |  +------------------------+ |
+                                  | |   |                             |
 
 
 
@@ -618,26 +618,29 @@ Dickinson, et al.       Expires November 9, 2018               [Page 11]
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
-   +---------------+       +----------+
-   | Question list |------>| Question |
-   | array [Q]     |       | array    |
-   +---------------+       +----------+--+
-                           | Name        |--+-->[N]
-                           +-------------+  |         +------------+
-                           | Class/type  |--)---+---->| Class/Type |
-                           +-------------+  |   |     | array  [C] |
-                                            |   |     +------------+--+
-                                            |   |     | Class         |
-   +---------------+       +----------+     |   |     +---------------+
-   | RR list array |------>| RR array |     |   |     | Type          |
-   | [R]           |       +----------+--+  |   |     +---------------+
-   +---------+-----+       | Name        |--+   |
+                                  | |   |                             |
+   + -----------------------------+ |   +----------+                  |
+   |                                |              |                  |
+   | + -----------------------------+              |                  |
+   | |  +---------------+  +----------+            |                  |
+   | +->| Question list-|->| Question |            |                  |
+   |    | array         |  | array    |            |                  |
+   |    +---------------+  +----------+--+         |                  |
+   |                       | Name        |--+------)------------------+
+   |                       +-------------+  |      |  +------------+
+   |                       | Class/type  |--)---+--+->| Class/Type |
+   |                       +-------------+  |   |     | array      |
+   |                                        |   |     +------------+--+
+   |                                        |   |     | Class         |
+   |    +---------------+  +----------+     |   |     +---------------+
+   +--->| RR list array |->| RR array |     |   |     | Type          |
+        +---------+-----+  +----------+--+  |   |     +---------------+
+                           | Name        |--+   |
                            +-------------+      |
                            | Class/type  |------+
                            +-------------+
 
-
-   Figure: Figure 2: The Query/Response data item and subsidiary tables.
+       Figure 2: The Query/Response data item and subsidiary tables.
 
    In Figure 2. data items annotated (q) are only present when a query/
    response has a query, and those annotated (r) are only present when a
@@ -663,9 +666,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    The exact nature of the DNS data will affect what block size is the
    best fit, however sample data for a root server indicated that block
-   sizes up to 10,000 Q/R data items give good results.  See
-   Appendix C.6 for more details.
-
 
 
 
@@ -673,6 +673,9 @@ Dickinson, et al.       Expires November 9, 2018               [Page 12]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
+
+   sizes up to 10,000 Q/R data items give good results.  See
+   Appendix C.6 for more details.
 
 6.1.  Block Parameters
 
@@ -720,15 +723,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    o  Query Signature
 
-   o  Malformed messages
-
-
 
 
 Dickinson, et al.       Expires November 9, 2018               [Page 13]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
+
+   o  Malformed messages
 
    In other words, an implementation can choose to omit any data item
    that is not required for its use case.  In addition, implementations
@@ -775,8 +777,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    with an OPCODE unknown to the collecting implementation cannot be
    validated as correctly formed, and so must be treated as malformed.
    Messages with OPCODES known to the recording application but not
-   listed in the Storage Parameters are discarded (regardless of whether
-   they are malformed or not).
 
 
 
@@ -785,6 +785,9 @@ Dickinson, et al.       Expires November 9, 2018               [Page 14]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
+
+   listed in the Storage Parameters are discarded (regardless of whether
+   they are malformed or not).
 
    In the case of RR records, each record in a message must be fully
    parsable, including parsing the record RDATA, as otherwise the
@@ -831,9 +834,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    All key values specified are positive integers under 24, so their
    CBOR representation is a single byte.  Positive integer values not
-   currently used as keys in a map are reserved for use in future
-   standard extensions.
-
 
 
 
@@ -841,6 +841,9 @@ Dickinson, et al.       Expires November 9, 2018               [Page 15]
 
 Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
+
+   currently used as keys in a map are reserved for use in future
+   standard extensions.
 
    Implementations may choose to add additional implementation-specific
    entries to any map.  Negative integer map keys are reserved for these
@@ -887,9 +890,6 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
       *  M - Map
 
       *  A - Array
-
-
-
 
 
 
@@ -2149,10 +2149,10 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
                 Match | No match               | Append new QR |    |
             +--------< >------+                | item to OFIFO |    |
             |                 |                +---------------+    |
-      +------------+     +--------+                   |             |
-      | Update Q/R |     | Add to |          +-------------------+  |
-      | item [3]   |     | RFIFO  |          | Find earliest QR  |  |
-      +------------+     +--------+          | item in RFIFO [1] |  |
+      +-----------+      +--------+                   |             |
+      | Update QR |      | Add to |          +-------------------+  |
+      | item [3]  |      | RFIFO  |          | Find earliest QR  |  |
+      +-----------+      +--------+          | item in RFIFO [1] |  |
             |                 |              +-------------------+  |
             +-----------------+                       |             |
                       |                               |             |

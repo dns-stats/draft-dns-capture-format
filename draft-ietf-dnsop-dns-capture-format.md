@@ -345,7 +345,7 @@ those between the Query/Response data item and the relevant Block tables.
 | Time offset             |
 +-------------------------+             +------------------+
 | Client address          |------------>| IP address array |
-+-------------------------+             + -----------------+
++-------------------------+             +------------------+
 | Client port             |
 +-------------------------+             +------------------+
 | Transaction ID          |     +------>| Name/RDATA array |<------+

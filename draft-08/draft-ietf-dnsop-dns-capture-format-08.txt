@@ -568,7 +568,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
    | Time offset             |
    +-------------------------+             +------------------+
    | Client address          |------------>| IP address array |
-   +-------------------------+             + -----------------+
+   +-------------------------+             +------------------+
    | Client port             |
    +-------------------------+             +------------------+
    | Transaction ID          |     +------>| Name/RDATA array |<------+

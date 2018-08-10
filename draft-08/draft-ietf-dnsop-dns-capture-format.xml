@@ -97,7 +97,7 @@
 <uri></uri>
 </address>
 </author>
-<date year="2018" month="May" day="8"/>
+<date year="2018" month="August" day="10"/>
 
 <area>Operations Area</area>
 <workgroup>dnsop</workgroup>
@@ -394,79 +394,82 @@ Malformed Message data items link to various Block tables.
 | Further Blocks...                |
 +----------------------------------+
 </artwork></figure>
-<t>Figure 2. shows the more detailed relationships specifically between the Query/Response data item and the Block tables within each block. [C], [N], [Q] and [R] are shorthand labels for selected tables.
+<t>Figure 2. shows some more detailed relationships within each block, specifically
+those between the Query/Response data item and the relevant Block tables.
 </t>
 
-<figure align="center"><artwork align="center">
+<figure align="center" title="Figure 2: The Query/Response data item and subsidiary tables.
+"><artwork align="center">
 +----------------+
 | Query/Response |
 +-------------------------+
 | Time offset             |
-+-------------------------+               +------------------+
-| Client address          |--------------&gt;| IP address array |
-+-------------------------+               +------------------+
++-------------------------+             +------------------+
+| Client address          |------------&gt;| IP address array |
++-------------------------+             + -----------------+
 | Client port             |
-+-------------------------+               +----------------------+
-| Transaction ID          |     +--------&gt;| Name/RDATA array [N] |
-+-------------------------+     |         +----------------------+
-| Query signature         |--+  |
-+-------------------------+  |  |         +-----------------+
-| Client hoplimit (q)     |  +--)--------&gt;| Query Signature |
-+-------------------------+     |         +-----------------+------+
-| Response delay (r)      |     |         | Server address         |
-+-------------------------+     |         +------------------------+
-| Query name (q)          |--+--+         | Server port            |
-+-------------------------+  |            +------------------------+
-| Query size (q)          |  |            | Transport flags        |
-+-------------------------+  |            +------------------------+
-| Response size (r)       |  |            | QR type                |
-+-------------------------+  |            +------------------------+
-| Response processing (r) |  |            | QR signature flags     |
-| +-----------------------+  |            +------------------------+
-| | Bailiwick index       |--+            | Query OPCODE (q)       |
-| +-----------------------+               +------------------------+
-| | Flags                 |               | QR DNS flags           |
-+-+-----------------------+               +------------------------+
-| Extra query info (q)    |               | Query RCODE (q)        |
-| +-----------------------+               +------------------------+
-| | Question              |--&gt;[Q]   [C]&lt;--| Query Class/Type (q)   |
-| +-----------------------+               +------------------------+
-| | Answer                |--+            | Query QD count (q)     |
-| +-----------------------+  |            +------------------------+
-| | Authority             |--+            | Query AN count (q)     |
-| +-----------------------+  |            +------------------------+
-| | Additional            |--+            | Query NS count (q)     |
-+-+-----------------------+  |            +------------------------+
-| Extra response info (r) |  |--&gt;[R]      | Query EDNS version (q) |
-| +-----------------------+  |            +------------------------+
-| | Answer                |--+            | EDNS UDP size (q)      |
-| +-----------------------+  |            +------------------------+
-| | Authority             |--+            | Query Opt RDATA (q)    |
-| +-----------------------+  |            +------------------------+
-| | Additional            |--+            | Response RCODE (r)     |
-+-+-----------------------+               +------------------------+
-
-+---------------+       +----------+
-| Question list |------&gt;| Question |
-| array [Q]     |       | array    |
-+---------------+       +----------+--+
-                        | Name        |--+--&gt;[N]
-                        +-------------+  |         +------------+
-                        | Class/type  |--)---+----&gt;| Class/Type |
-                        +-------------+  |   |     | array  [C] |
-                                         |   |     +------------+--+
-                                         |   |     | Class         |
-+---------------+       +----------+     |   |     +---------------+
-| RR list array |------&gt;| RR array |     |   |     | Type          |
-| [R]           |       +----------+--+  |   |     +---------------+
-+---------+-----+       | Name        |--+   |
++-------------------------+             +------------------+
+| Transaction ID          |     +------&gt;| Name/RDATA array |&lt;------+
++-------------------------+     |       +------------------+       |
+| Query signature         |--+  |                                  |
++-------------------------+  |  |       +-----------------+        |
+| Client hoplimit (q)     |  +--)------&gt;| Query Signature |        |
++-------------------------+     |       +-----------------+------+ |
+| Response delay (r)      |     |       | Server address         | |
++-------------------------+     |       +------------------------+ |
+| Query name (q)          |--+--+       | Server port            | |
++-------------------------+  |          +------------------------+ |
+| Query size (q)          |  |          | Transport flags        | |
++-------------------------+  |          +------------------------+ |
+| Response size (r)       |  |          | QR type                | |
++-------------------------+  |          +------------------------+ |
+| Response processing (r) |  |          | QR signature flags     | |
+| +-----------------------+  |          +------------------------+ |
+| | Bailiwick index       |--+          | Query OPCODE (q)       | |
+| +-----------------------+             +------------------------+ |
+| | Flags                 |             | QR DNS flags           | |
++-+-----------------------+             +------------------------+ |
+| Extra query info (q)    |             | Query RCODE (q)        | |
+| +-----------------------+             +------------------------+ |
+| | Question              |--+---+   +--+-Query Class/Type (q)   | |
+| +-----------------------+      |   |  +------------------------+ |
+| | Answer                |--+   |   |  | Query QD count (q)     | |
+| +-----------------------+  |   |   |  +------------------------+ |
+| | Authority             |--+   |   |  | Query AN count (q)     | |
+| +-----------------------+  |   |   |  +------------------------+ |
+| | Additional            |--+   |   |  | Query NS count (q)     | |
++-+-----------------------+  |   |   |  +------------------------+ |
+| Extra response info (r) |  |-+ |   |  | Query EDNS version (q) | |
+| +-----------------------+  | | |   |  +------------------------+ |
+| | Answer                |--+ | |   |  | EDNS UDP size (q)      | |
+| +-----------------------+  | | |   |  +------------------------+ |
+| | Authority             |--+ | |   |  | Query Opt RDATA (q)    | |
+| +-----------------------+  | | |   |  +------------------------+ |
+| | Additional            |--+ | |   |  | Response RCODE (r)     | |
++-+-----------------------+    | |   |  +------------------------+ |
+                               | |   |                             |
+                               | |   |                             |
++ -----------------------------+ |   +----------+                  |
+|                                |              |                  |
+| + -----------------------------+              |                  |
+| |  +---------------+  +----------+            |                  |
+| +-&gt;| Question list |-&gt;| Question |            |                  |
+|    | array         |  | array    |            |                  |
+|    +---------------+  +----------+--+         |                  |
+|                       | Name        |--+------)------------------+
+|                       +-------------+  |      |  +------------+
+|                       | Class/type  |--)---+--+-&gt;| Class/Type |
+|                       +-------------+  |   |     | array      |
+|                                        |   |     +------------+--+
+|                                        |   |     | Class         |
+|    +---------------+  +----------+     |   |     +---------------+
++---&gt;| RR list array |-&gt;| RR array |     |   |     | Type          |
+     +---------+-----+  +----------+--+  |   |     +---------------+
+                        | Name        |--+   |
                         +-------------+      |
                         | Class/type  |------+
                         +-------------+
-
 </artwork></figure>
-<t>Figure: Figure 2: The Query/Response data item and subsidiary tables.
-</t>
 <t>In Figure 2. data items annotated (q) are only present when a query/response has
 a query, and those annotated (r) are only present when a query/response response
 is present.
@@ -1659,6 +1662,13 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 
 <section anchor="changelog" title="Changelog">
 <t>draft-ietf-dnsop-dns-capture-format-08
+</t>
+<t>
+<list style="symbols">
+<t>Convert diagrams to ASCII</t>
+<t>Describe versioning</t>
+<t>Fix unused group warning in CDDL</t>
+</list>
 </t>
 <t>draft-ietf-dnsop-dns-capture-format-07
 </t>

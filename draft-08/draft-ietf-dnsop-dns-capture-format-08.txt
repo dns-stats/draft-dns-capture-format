@@ -5,11 +5,11 @@
 dnsop                                                       J. Dickinson
 Internet-Draft                                                  J. Hague
 Intended status: Standards Track                            S. Dickinson
-Expires: November 9, 2018                                     Sinodun IT
+Expires: February 11, 2019                                    Sinodun IT
                                                             T. Manderson
                                                                  J. Bond
                                                                    ICANN
-                                                             May 8, 2018
+                                                         August 10, 2018
 
 
                    C-DNS: A DNS Packet Capture Format
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on November 9, 2018.
+   This Internet-Draft will expire on February 11, 2019.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Dickinson, et al.       Expires November 9, 2018                [Page 1]
+Dickinson, et al.       Expires February 11, 2019               [Page 1]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    publication of this document.  Please review these documents
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Dickinson, et al.       Expires November 9, 2018                [Page 2]
+Dickinson, et al.       Expires February 11, 2019               [Page 2]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
      10.6.  Workspace  . . . . . . . . . . . . . . . . . . . . . . .  43
@@ -139,10 +139,10 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    Appendix C.  Comparison of Binary Formats . . . . . . . . . . . .  63
      C.1.  Comparison with full PCAP files . . . . . . . . . . . . .  66
      C.2.  Simple versus block coding  . . . . . . . . . . . . . . .  66
-     C.3.  Binary versus text formats  . . . . . . . . . . . . . . .  66
+     C.3.  Binary versus text formats  . . . . . . . . . . . . . . .  67
      C.4.  Performance . . . . . . . . . . . . . . . . . . . . . . .  67
      C.5.  Conclusions . . . . . . . . . . . . . . . . . . . . . . .  67
-     C.6.  Block size choice . . . . . . . . . . . . . . . . . . . .  67
+     C.6.  Block size choice . . . . . . . . . . . . . . . . . . . .  68
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  68
 
 1.  Introduction
@@ -165,9 +165,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018                [Page 3]
+Dickinson, et al.       Expires February 11, 2019               [Page 3]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    There has also been work on using text based formats to describe DNS
@@ -221,9 +221,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018                [Page 4]
+Dickinson, et al.       Expires February 11, 2019               [Page 4]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    "Packet" refers to an individual IPv4 or IPv6 packet.  Typically
@@ -277,9 +277,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018                [Page 5]
+Dickinson, et al.       Expires February 11, 2019               [Page 5]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    o  The capabilities of data collection (and upload) networks vary:
@@ -333,9 +333,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018                [Page 6]
+Dickinson, et al.       Expires February 11, 2019               [Page 6]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    However, it is also essential that interoperability with less
@@ -389,9 +389,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018                [Page 7]
+Dickinson, et al.       Expires February 11, 2019               [Page 7]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    3.  Multiple Q/R data items will be collected into blocks in the
@@ -445,9 +445,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018                [Page 8]
+Dickinson, et al.       Expires February 11, 2019               [Page 8]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    o  CBOR is a binary representation, and thus is economical in storage
@@ -501,9 +501,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018                [Page 9]
+Dickinson, et al.       Expires February 11, 2019               [Page 9]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
                    +-------+
@@ -550,94 +550,97 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
                         Figure 1: The C-DNS format.
 
-   Figure 2. shows the more detailed relationships specifically between
-   the Query/Response data item and the Block tables within each block.
-   [C], [N], [Q] and [R] are shorthand labels for selected tables.
+   Figure 2. shows some more detailed relationships within each block,
+   specifically those between the Query/Response data item and the
+   relevant Block tables.
 
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 10]
+Dickinson, et al.       Expires February 11, 2019              [Page 10]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    +----------------+
    | Query/Response |
    +-------------------------+
    | Time offset             |
-   +-------------------------+               +------------------+
-   | Client address          |-------------->| IP address array |
-   +-------------------------+               +------------------+
+   +-------------------------+             +------------------+
+   | Client address          |------------>| IP address array |
+   +-------------------------+             + -----------------+
    | Client port             |
-   +-------------------------+               +----------------------+
-   | Transaction ID          |     +-------->| Name/RDATA array [N] |
-   +-------------------------+     |         +----------------------+
-   | Query signature         |--+  |
-   +-------------------------+  |  |         +-----------------+
-   | Client hoplimit (q)     |  +--)-------->| Query Signature |
-   +-------------------------+     |         +-----------------+------+
-   | Response delay (r)      |     |         | Server address         |
-   +-------------------------+     |         +------------------------+
-   | Query name (q)          |--+--+         | Server port            |
-   +-------------------------+  |            +------------------------+
-   | Query size (q)          |  |            | Transport flags        |
-   +-------------------------+  |            +------------------------+
-   | Response size (r)       |  |            | QR type                |
-   +-------------------------+  |            +------------------------+
-   | Response processing (r) |  |            | QR signature flags     |
-   | +-----------------------+  |            +------------------------+
-   | | Bailiwick index       |--+            | Query OPCODE (q)       |
-   | +-----------------------+               +------------------------+
-   | | Flags                 |               | QR DNS flags           |
-   +-+-----------------------+               +------------------------+
-   | Extra query info (q)    |               | Query RCODE (q)        |
-   | +-----------------------+               +------------------------+
-   | | Question              |-->[Q]   [C]<--| Query Class/Type (q)   |
-   | +-----------------------+               +------------------------+
-   | | Answer                |--+            | Query QD count (q)     |
-   | +-----------------------+  |            +------------------------+
-   | | Authority             |--+            | Query AN count (q)     |
-   | +-----------------------+  |            +------------------------+
-   | | Additional            |--+            | Query NS count (q)     |
-   +-+-----------------------+  |            +------------------------+
-   | Extra response info (r) |  |-->[R]      | Query EDNS version (q) |
-   | +-----------------------+  |            +------------------------+
-   | | Answer                |--+            | EDNS UDP size (q)      |
-   | +-----------------------+  |            +------------------------+
-   | | Authority             |--+            | Query Opt RDATA (q)    |
-   | +-----------------------+  |            +------------------------+
-   | | Additional            |--+            | Response RCODE (r)     |
-   +-+-----------------------+               +------------------------+
+   +-------------------------+             +------------------+
+   | Transaction ID          |     +------>| Name/RDATA array |<------+
+   +-------------------------+     |       +------------------+       |
+   | Query signature         |--+  |                                  |
+   +-------------------------+  |  |       +-----------------+        |
+   | Client hoplimit (q)     |  +--)------>| Query Signature |        |
+   +-------------------------+     |       +-----------------+------+ |
+   | Response delay (r)      |     |       | Server address         | |
+   +-------------------------+     |       +------------------------+ |
+   | Query name (q)          |--+--+       | Server port            | |
+   +-------------------------+  |          +------------------------+ |
+   | Query size (q)          |  |          | Transport flags        | |
+   +-------------------------+  |          +------------------------+ |
+   | Response size (r)       |  |          | QR type                | |
+   +-------------------------+  |          +------------------------+ |
+   | Response processing (r) |  |          | QR signature flags     | |
+   | +-----------------------+  |          +------------------------+ |
+   | | Bailiwick index       |--+          | Query OPCODE (q)       | |
+   | +-----------------------+             +------------------------+ |
+   | | Flags                 |             | QR DNS flags           | |
+   +-+-----------------------+             +------------------------+ |
+   | Extra query info (q)    |             | Query RCODE (q)        | |
+   | +-----------------------+             +------------------------+ |
+   | | Question              |--+---+   +--+-Query Class/Type (q)   | |
+   | +-----------------------+      |   |  +------------------------+ |
+   | | Answer                |--+   |   |  | Query QD count (q)     | |
+   | +-----------------------+  |   |   |  +------------------------+ |
+   | | Authority             |--+   |   |  | Query AN count (q)     | |
+   | +-----------------------+  |   |   |  +------------------------+ |
+   | | Additional            |--+   |   |  | Query NS count (q)     | |
+   +-+-----------------------+  |   |   |  +------------------------+ |
+   | Extra response info (r) |  |-+ |   |  | Query EDNS version (q) | |
+   | +-----------------------+  | | |   |  +------------------------+ |
+   | | Answer                |--+ | |   |  | EDNS UDP size (q)      | |
+   | +-----------------------+  | | |   |  +------------------------+ |
+   | | Authority             |--+ | |   |  | Query Opt RDATA (q)    | |
+   | +-----------------------+  | | |   |  +------------------------+ |
+   | | Additional            |--+ | |   |  | Response RCODE (r)     | |
+   +-+-----------------------+    | |   |  +------------------------+ |
+                                  | |   |                             |
 
 
 
-
-Dickinson, et al.       Expires November 9, 2018               [Page 11]
+Dickinson, et al.       Expires February 11, 2019              [Page 11]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
-   +---------------+       +----------+
-   | Question list |------>| Question |
-   | array [Q]     |       | array    |
-   +---------------+       +----------+--+
-                           | Name        |--+-->[N]
-                           +-------------+  |         +------------+
-                           | Class/type  |--)---+---->| Class/Type |
-                           +-------------+  |   |     | array  [C] |
-                                            |   |     +------------+--+
-                                            |   |     | Class         |
-   +---------------+       +----------+     |   |     +---------------+
-   | RR list array |------>| RR array |     |   |     | Type          |
-   | [R]           |       +----------+--+  |   |     +---------------+
-   +---------+-----+       | Name        |--+   |
+                                  | |   |                             |
+   + -----------------------------+ |   +----------+                  |
+   |                                |              |                  |
+   | + -----------------------------+              |                  |
+   | |  +---------------+  +----------+            |                  |
+   | +->| Question list |->| Question |            |                  |
+   |    | array         |  | array    |            |                  |
+   |    +---------------+  +----------+--+         |                  |
+   |                       | Name        |--+------)------------------+
+   |                       +-------------+  |      |  +------------+
+   |                       | Class/type  |--)---+--+->| Class/Type |
+   |                       +-------------+  |   |     | array      |
+   |                                        |   |     +------------+--+
+   |                                        |   |     | Class         |
+   |    +---------------+  +----------+     |   |     +---------------+
+   +--->| RR list array |->| RR array |     |   |     | Type          |
+        +---------+-----+  +----------+--+  |   |     +---------------+
+                           | Name        |--+   |
                            +-------------+      |
                            | Class/type  |------+
                            +-------------+
 
-
-   Figure: Figure 2: The Query/Response data item and subsidiary tables.
+       Figure 2: The Query/Response data item and subsidiary tables.
 
    In Figure 2. data items annotated (q) are only present when a query/
    response has a query, and those annotated (r) are only present when a
@@ -663,16 +666,16 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    The exact nature of the DNS data will affect what block size is the
    best fit, however sample data for a root server indicated that block
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 12]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    sizes up to 10,000 Q/R data items give good results.  See
    Appendix C.6 for more details.
-
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 12]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
 6.1.  Block Parameters
 
@@ -720,15 +723,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    o  Query Signature
 
-   o  Malformed messages
 
 
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 13]
+Dickinson, et al.       Expires February 11, 2019              [Page 13]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
+
+   o  Malformed messages
 
    In other words, an implementation can choose to omit any data item
    that is not required for its use case.  In addition, implementations
@@ -775,16 +777,17 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    with an OPCODE unknown to the collecting implementation cannot be
    validated as correctly formed, and so must be treated as malformed.
    Messages with OPCODES known to the recording application but not
+
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 14]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    listed in the Storage Parameters are discarded (regardless of whether
    they are malformed or not).
-
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 14]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
    In the case of RR records, each record in a message must be fully
    parsable, including parsing the record RDATA, as otherwise the
@@ -831,16 +834,16 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    All key values specified are positive integers under 24, so their
    CBOR representation is a single byte.  Positive integer values not
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 15]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    currently used as keys in a map are reserved for use in future
    standard extensions.
-
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 15]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
    Implementations may choose to add additional implementation-specific
    entries to any map.  Negative integer map keys are reserved for these
@@ -890,12 +893,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 16]
+Dickinson, et al.       Expires February 11, 2019              [Page 16]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    In the case of maps and arrays, more information on the type of each
@@ -949,9 +949,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 17]
+Dickinson, et al.       Expires February 11, 2019              [Page 17]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
 7.4.1.  "BlockParameters"
@@ -1005,9 +1005,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 18]
+Dickinson, et al.       Expires February 11, 2019              [Page 18]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    | rr-types         | M | A | Array of RR types (unsigned integers)  |
@@ -1061,9 +1061,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 19]
+Dickinson, et al.       Expires February 11, 2019              [Page 19]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    |                  |   |   | Bit 0. time-offset                     |
@@ -1117,9 +1117,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 20]
+Dickinson, et al.       Expires February 11, 2019              [Page 20]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    | other-data-hints | M | U | Hints indicating which other data      |
@@ -1173,9 +1173,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 21]
+Dickinson, et al.       Expires February 11, 2019              [Page 21]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    +------------------+---+---+----------------------------------------+
@@ -1229,9 +1229,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 22]
+Dickinson, et al.       Expires February 11, 2019              [Page 22]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    +--------------------+---+---+--------------------------------------+
@@ -1285,9 +1285,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 23]
+Dickinson, et al.       Expires February 11, 2019              [Page 23]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    +------------------+---+---+----------------------------------------+
@@ -1341,9 +1341,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 24]
+Dickinson, et al.       Expires February 11, 2019              [Page 24]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    +---------------------+---+---+-------------------------------------+
@@ -1397,9 +1397,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 25]
+Dickinson, et al.       Expires February 11, 2019              [Page 25]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    |                   |   |   | to 4 bytes long for an IPv4 address,  |
@@ -1453,9 +1453,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 26]
+Dickinson, et al.       Expires February 11, 2019              [Page 26]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
 7.5.3.1.  "ClassType"
@@ -1509,9 +1509,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 27]
+Dickinson, et al.       Expires February 11, 2019              [Page 27]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    |                    |   |   | recursive resolver to an upstream    |
@@ -1565,9 +1565,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 28]
+Dickinson, et al.       Expires February 11, 2019              [Page 28]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    |                    |   |   | Bit 13. Response TrunCation (TC).    |
@@ -1621,9 +1621,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 29]
+Dickinson, et al.       Expires February 11, 2019              [Page 29]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    +-----------------+---+---+-----------------------------------------+
@@ -1677,9 +1677,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 30]
+Dickinson, et al.       Expires February 11, 2019              [Page 30]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    +--------------------+---+---+--------------------------------------+
@@ -1733,9 +1733,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 31]
+Dickinson, et al.       Expires February 11, 2019              [Page 31]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    |                      |   |   |                                    |
@@ -1789,9 +1789,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 32]
+Dickinson, et al.       Expires February 11, 2019              [Page 32]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
 7.6.1.  "ResponseProcessingData"
@@ -1845,9 +1845,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 33]
+Dickinson, et al.       Expires February 11, 2019              [Page 33]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    +------------------+---+---+----------------------------------------+
@@ -1901,9 +1901,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 34]
+Dickinson, et al.       Expires February 11, 2019              [Page 34]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    +------------------+---+---+----------------------------------------+
@@ -1957,9 +1957,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 35]
+Dickinson, et al.       Expires February 11, 2019              [Page 35]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
 8.  Versioning
@@ -2013,9 +2013,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 36]
+Dickinson, et al.       Expires February 11, 2019              [Page 36]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    o  TCP stream information:
@@ -2069,9 +2069,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 37]
+Dickinson, et al.       Expires February 11, 2019              [Page 37]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    algorithms.  For example, a simplistic approach would be to try each
@@ -2125,9 +2125,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 38]
+Dickinson, et al.       Expires February 11, 2019              [Page 38]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    In the presence of skew, a response packets can arrive for matching
@@ -2181,9 +2181,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 39]
+Dickinson, et al.       Expires February 11, 2019              [Page 39]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
                          .----------------------.
@@ -2237,9 +2237,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 40]
+Dickinson, et al.       Expires February 11, 2019              [Page 40]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
             +-----+-------------------------------------------+
@@ -2293,9 +2293,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 41]
+Dickinson, et al.       Expires February 11, 2019              [Page 41]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
 10.2.2.  Secondary ID (optional)
@@ -2349,9 +2349,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 42]
+Dickinson, et al.       Expires February 11, 2019              [Page 42]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
 10.6.  Workspace
@@ -2405,9 +2405,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 43]
+Dickinson, et al.       Expires February 11, 2019              [Page 43]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
 11.1.  Optional data
@@ -2461,9 +2461,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 44]
+Dickinson, et al.       Expires February 11, 2019              [Page 44]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
    The description of implementations in this section is intended to
@@ -2517,9 +2517,9 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-Dickinson, et al.       Expires November 9, 2018               [Page 45]
+Dickinson, et al.       Expires February 11, 2019              [Page 45]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
 14.  Security considerations
@@ -2545,6 +2545,12 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    draft-ietf-dnsop-dns-capture-format-08
 
+   o  Convert diagrams to ASCII
+
+   o  Describe versioning
+
+   o  Fix unused group warning in CDDL
+
    draft-ietf-dnsop-dns-capture-format-07
 
    o  Resolve outstanding questions and TODOs
@@ -2565,18 +2571,17 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    o  Add storage flag indicating name normalisation
 
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 46]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    o  Add storage parameter fields for sampling and anonymisation
       methods
 
    o  Editorial clarifications and improvements
-
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 46]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
    draft-ietf-dnsop-dns-capture-format-05
 
@@ -2621,18 +2626,19 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    o  Update qr_data_format.png to match CDDL
 
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 47]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    o  Editorial clarifications and improvements
 
    draft-ietf-dnsop-dns-capture-format-01
 
    o  Many editorial improvements by Paul Hoffman
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 47]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
    o  Included discussion of malformed message handling
 
@@ -2677,18 +2683,14 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    draft-dickinson-dnsop-dns-capture-format-00
 
-   o  Initial commit
 
 
-
-
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 48]
+Dickinson, et al.       Expires February 11, 2019              [Page 48]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
+
+   o  Initial commit
 
 17.  References
 
@@ -2735,16 +2737,17 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
               express CBOR data structures", draft-ietf-cbor-cddl-03
               (work in progress), July 2018.
 
+
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 49]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    [packetq]  .SE - The Internet Infrastructure Foundation, "PacketQ",
               2014, <https://github.com/dotse/PacketQ>.
-
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 49]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
    [pcap]     tcpdump.org, "PCAP", 2016, <http://www.tcpdump.org/>.
 
@@ -2791,16 +2794,17 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
    [13] http://lz4.github.io/lz4/
 
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 50]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    [14] http://www.gzip.org/
 
    [15] http://facebook.github.io/zstd/
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 50]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
    [16] http://tukaani.org/xz/
 
@@ -2847,17 +2851,16 @@ minor-format-version = 1
 private-version      = 2
 block-parameters     = 3
 
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 51]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
 BlockParameters = {
     storage-parameters      => StorageParameters,
     ? collection-parameters => CollectionParameters,
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 51]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
 }
 storage-parameters    = 0
 collection-parameters = 1
@@ -2903,17 +2906,17 @@ collection-parameters = 1
     other-data-hints               = 3
 
       QueryResponseHintValues = &(
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 52]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
           time-offset                  : 0,
           client-address-index         : 1,
           client-port                  : 2,
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 52]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
           transaction-id               : 3,
           qr-signature-index           : 4,
           client-hoplimit              : 5,
@@ -2959,17 +2962,17 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
       )
       RRHints = uint .bits RRHintValues
 
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 53]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
       OtherDataHintValues = &(
           malformed-messages   : 0,
           address-event-counts : 1,
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 53]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
       )
       OtherDataHints = uint .bits OtherDataHintValues
 
@@ -3015,17 +3018,17 @@ Block = {
     ? malformed-messages    => [+ MalformedMessage],
 }
 block-preamble        = 0
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 54]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
 block-statistics      = 1
 block-tables          = 2
 query-responses       = 3
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 54]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
 address-event-counts  = 4
 malformed-messages    = 5
 
@@ -3071,17 +3074,17 @@ malformed-items     = 5
 ; Tables of common data referenced from records in a block.
 ;
 BlockTables = {
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 55]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
     ? ip-address             => [+ IPAddress],
     ? classtype              => [+ ClassType],
     ? name-rdata             => [+ bstr],    ; Holds both Name RDATA and RDATA
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 55]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
     ? qr-sig                 => [+ QueryResponseSignature],
     ? QuestionTables,
     ? RRTables,
@@ -3127,17 +3130,17 @@ QueryResponseSignature = {
     ? opt-rdata-index       => uint,
     ? response-rcode        => uint,
 }
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 56]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
 server-address-index  = 0
 server-port           = 1
 qr-transport-flags    = 2
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 56]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
 qr-type               = 3
 qr-sig-flags          = 4
 query-opcode          = 5
@@ -3184,16 +3187,15 @@ response-rcode        = 16
       tool      : 5,
   )
 
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 57]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
   QueryResponseFlagValues = &(
       has-query               : 0,
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 57]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
       has-reponse             : 1,
       query-has-opt           : 2,
       response-has-opt        : 3,
@@ -3240,15 +3242,15 @@ RRTables = (
     rr     => [+ RR]
 )
 
-  RRList = [+ uint]                     ; Index of RR
 
 
 
-
-Dickinson, et al.       Expires November 9, 2018               [Page 58]
+Dickinson, et al.       Expires February 11, 2019              [Page 58]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
+
+  RRList = [+ uint]                     ; Index of RR
 
   RR = {
       name-index      => uint,          ; Index to a name in the name-rdata table
@@ -3296,16 +3298,16 @@ qr-signature-index       = 4
 client-hoplimit          = 5
 response-delay           = 6
 query-name-index         = 7
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 59]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
 query-size               = 8
 response-size            = 9
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 59]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
 response-processing-data = 10
 query-extended           = 11
 response-extended        = 12
@@ -3352,16 +3354,16 @@ AddressEventType = (
     icmp-time-exceeded     : 1,
     icmp-dest-unreachable  : 2,
     icmpv6-time-exceeded   : 3,
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 60]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
     icmpv6-dest-unreachable: 4,
     icmpv6-packet-too-big  : 5,
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 60]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
 )
 
 ;
@@ -3408,16 +3410,16 @@ Appendix B.  DNS Name compression example
           | 2 | bar.com     | bar          | 1 + offset to com  |
           +---+-------------+--------------+--------------------+
 
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 61]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    The third name added is www.bar.com.  This is first matched against
    example.com, and as before this is recorded as a compression target,
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 61]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
    with the remaining uncompressed part of the name being www.bar.  It
    is then matched against the second name, which again can be a
    compression target.  Because the remaining uncompressed part of the
@@ -3465,14 +3467,14 @@ B.2.  Knot Authoritative compression algorithm
           first RR in an RRSET can use that name as a compression
           target.
 
-       *  The compression target name MUST be in RDATA.
 
 
-
-Dickinson, et al.       Expires November 9, 2018               [Page 62]
+Dickinson, et al.       Expires February 11, 2019              [Page 62]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
+
+       *  The compression target name MUST be in RDATA.
 
        *  The name section TYPE must match the compression target name
           section TYPE.
@@ -3520,16 +3522,15 @@ Appendix C.  Comparison of Binary Formats
    o  CBOR [10].  Defined in [RFC7049], this serialisation format is
       comparable to JSON but with a binary representation.  It does not
       use a pre-defined schema, so data is always stored tagged.
-      However, CBOR data schemas can be described using CDDL
 
 
 
-
-Dickinson, et al.       Expires November 9, 2018               [Page 63]
+Dickinson, et al.       Expires February 11, 2019              [Page 63]
 
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
 
 
+      However, CBOR data schemas can be described using CDDL
       [I-D.ietf-cbor-cddl] and tools exist to verify data files conform
       to the schema.
 
@@ -3576,15 +3577,17 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    used for the comparison.  The following table shows the formatted
    size and size after compression (abbreviated to Comp. in the table
    headers), together with the task resident set size (RSS) and the user
+
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 64]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    time taken by the compression.  File sizes are in Mb, RSS in kb and
    user time in seconds.
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 64]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
    +-------------+-----------+-------+------------+-------+-----------+
    | Format      | File size | Comp. | Comp. size |   RSS | User time |
@@ -3631,17 +3634,17 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
    |             |           | zstd  |      29.63 |  3612 |      1.25 |
    |             |           | xz    |      18.28 | 97564 |     25.81 |
    |             |           |       |            |       |           |
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 65]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    | CBOR block  |     75.25 | snzip |      53.27 |  2684 |      0.24 |
    |             |           | lz4   |      51.88 |  8008 |      0.28 |
    |             |           | gzip  |      41.17 |  1548 |      4.36 |
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 65]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
-
    |             |           | zstd  |      30.61 |  3476 |      1.48 |
    |             |           | xz    |      18.15 | 97556 |     38.78 |
    |             |           |       |            |       |           |
@@ -3684,19 +3687,23 @@ C.2.  Simple versus block coding
    75% of the size of the simple format and its compression requires
    roughly a third of the CPU time.
 
+
+
+
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 66]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
 C.3.  Binary versus text formats
 
    Text data formats offer many advantages over binary formats,
    particularly in the areas of ad-hoc data inspection and extraction.
    It was therefore felt worthwhile to carry out a direct comparison,
    implementing JSON versions of the simple and block formats.
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 66]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
    Concentrating on JSON block format, the format files produced are a
    significant fraction of an order of magnitude larger than binary
@@ -3736,6 +3743,17 @@ C.5.  Conclusions
    based on other factors.  CBOR was therefore chosen as the binary
    serialisation format for the reasons listed in Section 5.
 
+
+
+
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 67]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
 C.6.  Block size choice
 
    Given the choice of a CBOR format using blocking, the question arises
@@ -3744,15 +3762,6 @@ C.6.  Block size choice
    is the impact on performance of using different block sizes in the
    format file, and what is the impact on the size of the format file
    before and after compression.
-
-
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 67]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
-
 
    The following table addresses the performance question, showing the
    impact on the performance of a C++ program converting "test.pcap" to
@@ -3790,6 +3799,17 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 Authors' Addresses
 
+
+
+
+
+
+
+Dickinson, et al.       Expires February 11, 2019              [Page 68]
+
+Internet-Draft     C-DNS: A DNS Packet Capture Format        August 2018
+
+
    John Dickinson
    Sinodun IT
    Magdalen Centre
@@ -3798,16 +3818,6 @@ Authors' Addresses
    United Kingdom
 
    Email: jad@sinodun.com
-
-
-
-
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 68]
-
-Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
    Jim Hague
@@ -3851,14 +3861,4 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format           May 2018
 
 
 
-
-
-
-
-
-
-
-
-
-
-Dickinson, et al.       Expires November 9, 2018               [Page 69]
+Dickinson, et al.       Expires February 11, 2019              [Page 69]

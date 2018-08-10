@@ -444,12 +444,12 @@
 <link href="#rfc.authors" rel="Chapter"/>
 
 
-  <meta name="generator" content="xml2rfc version 2.5.1 - http://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.5.2 - http://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="Dickinson, J., Hague, J., Dickinson, S., Manderson, T., and J. Bond" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-ietf-dnsop-dns-capture-format-08" />
-  <meta name="dct.issued" scheme="ISO8601" content="2018-5-8" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-8-10" />
   <meta name="dct.abstract" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
   <meta name="description" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
 
@@ -473,7 +473,7 @@
   <td class="right">S. Dickinson</td>
 </tr>
 <tr>
-  <td class="left">Expires: November 9, 2018</td>
+  <td class="left">Expires: February 11, 2019</td>
   <td class="right">Sinodun IT</td>
 </tr>
 <tr>
@@ -490,7 +490,7 @@
 </tr>
 <tr>
   <td class="left"></td>
-  <td class="right">May 8, 2018</td>
+  <td class="right">August 10, 2018</td>
 </tr>
 
     	
@@ -510,7 +510,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on November 9, 2018.</p>
+<p>This Internet-Draft will expire on February 11, 2019.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -729,81 +729,84 @@
 +----------------------------------+
 </pre>
 <p class="figure">Figure 1: The C-DNS format. </p>
-<p id="rfc.section.6.p.3">Figure 2. shows the more detailed relationships specifically between the Query/Response data item and the Block tables within each block. [C], [N], [Q] and [R] are shorthand labels for selected tables.  </p>
+<p id="rfc.section.6.p.3">Figure 2. shows some more detailed relationships within each block, specifically those between the Query/Response data item and the relevant Block tables.  </p>
 <pre>
 +----------------+
 | Query/Response |
 +-------------------------+
 | Time offset             |
-+-------------------------+               +------------------+
-| Client address          |--------------&gt;| IP address array |
-+-------------------------+               +------------------+
++-------------------------+             +------------------+
+| Client address          |------------&gt;| IP address array |
++-------------------------+             + -----------------+
 | Client port             |
-+-------------------------+               +----------------------+
-| Transaction ID          |     +--------&gt;| Name/RDATA array [N] |
-+-------------------------+     |         +----------------------+
-| Query signature         |--+  |
-+-------------------------+  |  |         +-----------------+
-| Client hoplimit (q)     |  +--)--------&gt;| Query Signature |
-+-------------------------+     |         +-----------------+------+
-| Response delay (r)      |     |         | Server address         |
-+-------------------------+     |         +------------------------+
-| Query name (q)          |--+--+         | Server port            |
-+-------------------------+  |            +------------------------+
-| Query size (q)          |  |            | Transport flags        |
-+-------------------------+  |            +------------------------+
-| Response size (r)       |  |            | QR type                |
-+-------------------------+  |            +------------------------+
-| Response processing (r) |  |            | QR signature flags     |
-| +-----------------------+  |            +------------------------+
-| | Bailiwick index       |--+            | Query OPCODE (q)       |
-| +-----------------------+               +------------------------+
-| | Flags                 |               | QR DNS flags           |
-+-+-----------------------+               +------------------------+
-| Extra query info (q)    |               | Query RCODE (q)        |
-| +-----------------------+               +------------------------+
-| | Question              |--&gt;[Q]   [C]&lt;--| Query Class/Type (q)   |
-| +-----------------------+               +------------------------+
-| | Answer                |--+            | Query QD count (q)     |
-| +-----------------------+  |            +------------------------+
-| | Authority             |--+            | Query AN count (q)     |
-| +-----------------------+  |            +------------------------+
-| | Additional            |--+            | Query NS count (q)     |
-+-+-----------------------+  |            +------------------------+
-| Extra response info (r) |  |--&gt;[R]      | Query EDNS version (q) |
-| +-----------------------+  |            +------------------------+
-| | Answer                |--+            | EDNS UDP size (q)      |
-| +-----------------------+  |            +------------------------+
-| | Authority             |--+            | Query Opt RDATA (q)    |
-| +-----------------------+  |            +------------------------+
-| | Additional            |--+            | Response RCODE (r)     |
-+-+-----------------------+               +------------------------+
-
-+---------------+       +----------+
-| Question list |------&gt;| Question |
-| array [Q]     |       | array    |
-+---------------+       +----------+--+
-                        | Name        |--+--&gt;[N]
-                        +-------------+  |         +------------+
-                        | Class/type  |--)---+----&gt;| Class/Type |
-                        +-------------+  |   |     | array  [C] |
-                                         |   |     +------------+--+
-                                         |   |     | Class         |
-+---------------+       +----------+     |   |     +---------------+
-| RR list array |------&gt;| RR array |     |   |     | Type          |
-| [R]           |       +----------+--+  |   |     +---------------+
-+---------+-----+       | Name        |--+   |
++-------------------------+             +------------------+
+| Transaction ID          |     +------&gt;| Name/RDATA array |&lt;------+
++-------------------------+     |       +------------------+       |
+| Query signature         |--+  |                                  |
++-------------------------+  |  |       +-----------------+        |
+| Client hoplimit (q)     |  +--)------&gt;| Query Signature |        |
++-------------------------+     |       +-----------------+------+ |
+| Response delay (r)      |     |       | Server address         | |
++-------------------------+     |       +------------------------+ |
+| Query name (q)          |--+--+       | Server port            | |
++-------------------------+  |          +------------------------+ |
+| Query size (q)          |  |          | Transport flags        | |
++-------------------------+  |          +------------------------+ |
+| Response size (r)       |  |          | QR type                | |
++-------------------------+  |          +------------------------+ |
+| Response processing (r) |  |          | QR signature flags     | |
+| +-----------------------+  |          +------------------------+ |
+| | Bailiwick index       |--+          | Query OPCODE (q)       | |
+| +-----------------------+             +------------------------+ |
+| | Flags                 |             | QR DNS flags           | |
++-+-----------------------+             +------------------------+ |
+| Extra query info (q)    |             | Query RCODE (q)        | |
+| +-----------------------+             +------------------------+ |
+| | Question              |--+---+   +--+-Query Class/Type (q)   | |
+| +-----------------------+      |   |  +------------------------+ |
+| | Answer                |--+   |   |  | Query QD count (q)     | |
+| +-----------------------+  |   |   |  +------------------------+ |
+| | Authority             |--+   |   |  | Query AN count (q)     | |
+| +-----------------------+  |   |   |  +------------------------+ |
+| | Additional            |--+   |   |  | Query NS count (q)     | |
++-+-----------------------+  |   |   |  +------------------------+ |
+| Extra response info (r) |  |-+ |   |  | Query EDNS version (q) | |
+| +-----------------------+  | | |   |  +------------------------+ |
+| | Answer                |--+ | |   |  | EDNS UDP size (q)      | |
+| +-----------------------+  | | |   |  +------------------------+ |
+| | Authority             |--+ | |   |  | Query Opt RDATA (q)    | |
+| +-----------------------+  | | |   |  +------------------------+ |
+| | Additional            |--+ | |   |  | Response RCODE (r)     | |
++-+-----------------------+    | |   |  +------------------------+ |
+                               | |   |                             |
+                               | |   |                             |
++ -----------------------------+ |   +----------+                  |
+|                                |              |                  |
+| + -----------------------------+              |                  |
+| |  +---------------+  +----------+            |                  |
+| +-&gt;| Question list |-&gt;| Question |            |                  |
+|    | array         |  | array    |            |                  |
+|    +---------------+  +----------+--+         |                  |
+|                       | Name        |--+------)------------------+
+|                       +-------------+  |      |  +------------+
+|                       | Class/type  |--)---+--+-&gt;| Class/Type |
+|                       +-------------+  |   |     | array      |
+|                                        |   |     +------------+--+
+|                                        |   |     | Class         |
+|    +---------------+  +----------+     |   |     +---------------+
++---&gt;| RR list array |-&gt;| RR array |     |   |     | Type          |
+     +---------+-----+  +----------+--+  |   |     +---------------+
+                        | Name        |--+   |
                         +-------------+      |
                         | Class/type  |------+
                         +-------------+
-
 </pre>
-<p id="rfc.section.6.p.4">Figure: Figure 2: The Query/Response data item and subsidiary tables.  </p>
-<p id="rfc.section.6.p.5">In Figure 2. data items annotated (q) are only present when a query/response has a query, and those annotated (r) are only present when a query/response response is present.  </p>
-<p id="rfc.section.6.p.6">A C-DNS file begins with a file header containing a File Type Identifier and a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items (the contents of which include Collection and Storage Parameters used for one or more blocks).  </p>
-<p id="rfc.section.6.p.7">The file header is followed by a series of data Blocks.  </p>
-<p id="rfc.section.6.p.8">A Block consists of a Block Preamble item, some Block Statistics for the traffic stored within the Block and then various arrays of common data collectively called the Block Tables. This is then followed by an array of the Query/Response data items detailing the queries and responses stored within the Block. The array of Query/Response data items is in turn followed by the Address/Event Counts data items (an array of per-client counts of particular IP events) and then Malformed Message data items (an array of malformed messages that stored in the Block).  </p>
-<p id="rfc.section.6.p.9">The exact nature of the DNS data will affect what block size is the best fit, however sample data for a root server indicated that block sizes up to 10,000 Q/R data items give good results. See <a href="#block-size-choice">Appendix C.6</a> for more details.  </p>
+<p class="figure">Figure 2: The Query/Response data item and subsidiary tables. </p>
+<p id="rfc.section.6.p.4">In Figure 2. data items annotated (q) are only present when a query/response has a query, and those annotated (r) are only present when a query/response response is present.  </p>
+<p id="rfc.section.6.p.5">A C-DNS file begins with a file header containing a File Type Identifier and a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items (the contents of which include Collection and Storage Parameters used for one or more blocks).  </p>
+<p id="rfc.section.6.p.6">The file header is followed by a series of data Blocks.  </p>
+<p id="rfc.section.6.p.7">A Block consists of a Block Preamble item, some Block Statistics for the traffic stored within the Block and then various arrays of common data collectively called the Block Tables. This is then followed by an array of the Query/Response data items detailing the queries and responses stored within the Block. The array of Query/Response data items is in turn followed by the Address/Event Counts data items (an array of per-client counts of particular IP events) and then Malformed Message data items (an array of malformed messages that stored in the Block).  </p>
+<p id="rfc.section.6.p.8">The exact nature of the DNS data will affect what block size is the best fit, however sample data for a root server indicated that block sizes up to 10,000 Q/R data items give good results. See <a href="#block-size-choice">Appendix C.6</a> for more details.  </p>
 <h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#block-parameters" id="block-parameters">Block Parameters</a></h1>
 <p id="rfc.section.6.1.p.1">The details of the Block Parameters items are not shown in the diagrams but are discussed here for context.  </p>
 <p id="rfc.section.6.1.p.2">An array of Block Parameters items is stored in the File Preamble (with a minimum of one item at index 0); a Block Parameters item consists of a collection of Storage and Collection Parameters that applies to any given Block.  An array is used in order to support use cases such as wanting to merge C-DNS files from different sources. The Block Preamble item then contains an optional index for the Block Parameters item that applies for that Block; if not present the index defaults to 0. Hence, in effect, a global Block Parameters item is defined which can then be overridden per Block.  </p>
@@ -3206,7 +3209,16 @@
 <p id="rfc.section.15.p.3">Also, Miek Gieben for <a href="https://github.com/miekg/mmark">mmark</a> </p>
 <h1 id="rfc.section.16"><a href="#rfc.section.16">16.</a> <a href="#changelog" id="changelog">Changelog</a></h1>
 <p id="rfc.section.16.p.1">draft-ietf-dnsop-dns-capture-format-08 </p>
-<p id="rfc.section.16.p.2">draft-ietf-dnsop-dns-capture-format-07 </p>
+<p/>
+
+<ul>
+  <li>Convert diagrams to ASCII</li>
+  <li>Describe versioning</li>
+  <li>Fix unused group warning in CDDL</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.16.p.3">draft-ietf-dnsop-dns-capture-format-07 </p>
 <p/>
 
 <ul>
@@ -3218,7 +3230,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.4">draft-ietf-dnsop-dns-capture-format-06 </p>
+<p id="rfc.section.16.p.5">draft-ietf-dnsop-dns-capture-format-06 </p>
 <p/>
 
 <ul>
@@ -3230,7 +3242,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.6">draft-ietf-dnsop-dns-capture-format-05 </p>
+<p id="rfc.section.16.p.7">draft-ietf-dnsop-dns-capture-format-05 </p>
 <p/>
 
 <ul>
@@ -3247,7 +3259,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.8">draft-ietf-dnsop-dns-capture-format-04 </p>
+<p id="rfc.section.16.p.9">draft-ietf-dnsop-dns-capture-format-04 </p>
 <p/>
 
 <ul>
@@ -3258,7 +3270,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.10">draft-ietf-dnsop-dns-capture-format-03 </p>
+<p id="rfc.section.16.p.11">draft-ietf-dnsop-dns-capture-format-03 </p>
 <p/>
 
 <ul>
@@ -3266,7 +3278,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.12">draft-ietf-dnsop-dns-capture-format-02 </p>
+<p id="rfc.section.16.p.13">draft-ietf-dnsop-dns-capture-format-02 </p>
 <p/>
 
 <ul>
@@ -3275,7 +3287,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.14">draft-ietf-dnsop-dns-capture-format-01 </p>
+<p id="rfc.section.16.p.15">draft-ietf-dnsop-dns-capture-format-01 </p>
 <p/>
 
 <ul>
@@ -3289,7 +3301,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.16">draft-ietf-dnsop-dns-capture-format-00 </p>
+<p id="rfc.section.16.p.17">draft-ietf-dnsop-dns-capture-format-00 </p>
 <p/>
 
 <ul>
@@ -3307,7 +3319,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.18">draft-dickinson-dnsop-dns-capture-format-00 </p>
+<p id="rfc.section.16.p.19">draft-dickinson-dnsop-dns-capture-format-00 </p>
 <p/>
 
 <ul>

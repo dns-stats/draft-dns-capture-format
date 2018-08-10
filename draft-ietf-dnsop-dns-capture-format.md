@@ -1049,22 +1049,27 @@ message-data-index | O | U | The index in the `malformed-message-data` array of 
 
 # Versioning
 
-The C-DNS file preamble includes a file format version. The version is
-made up of three components; a major version, a minor version and an optional
-private version.
+The C-DNS file preamble includes a file format version; a major and minor
+version number are required fields. The document defines version 1.0 of the
+C-DNS specification. This section describes the intended use of these version
+numbers in future specifications.
+
+It is noted that version 1.0 includes many optional fields and therefore
+consumers of version 1.0 should be inherently robust to parsing files with
+variable data content.
+
+Within a major version, a new minor version must be a strict superset of the
+previous minor version, with no semantic changes to existing fields. New keys
+MAY be added to existing maps, and new maps MAY be added. A consumer capable of
+reading a particular major.minor version MUST also be capable of reading all
+previous minor versions of the same major version. It SHOULD also be capable of
+parsing all subsequent minor versions ignoring any keys or maps that it does
+not recognise.
 
 A new major version indicates changes to the format that are not backwards
-compatible with previous major versions. A reader capable of reading a particular
-major version is not expected to support reading a previous major version.
-
-Within a major version, a new minor version must be a strict superset
-of the previous minor version, with no semantic changes to existing
-fields. New keys MAY be added to existing maps, and new maps MAY be
-added. A reader capable of reading a particular minor version MUST also
-be capable of reading all previous minor versions. It SHOULD also read subsequent
-minor versions and ignore any keys or maps that it does not recognise.
-
-The private version is reserved for internal use by implementations.
+compatible with previous major versions. A consumer capable of only reading a
+particular major version (greater than 1) is not required to and has no
+expectation to be capable of reading a previous major version.
 
 # C-DNS to PCAP
 

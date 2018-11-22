@@ -2,7 +2,7 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-ietf-dnsop-dns-capture-format-08"
+    docName= "draft-ietf-dnsop-dns-capture-format-09"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"
@@ -1421,6 +1421,8 @@ Thanks also to Robert Edmonds, Jerry Lundström, Richard Gibson, Stephane Bortzm
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+
+draft-ietf-dnsop-dns-capture-format-09
 
 draft-ietf-dnsop-dns-capture-format-08
 

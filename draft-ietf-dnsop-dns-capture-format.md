@@ -105,7 +105,7 @@ aimed at producing convenient representations of single messages.
 
 Many DNS operators may receive hundreds of thousands of queries per second on
 a single name server instance so
-a mechanism to minimize the storage size (and therefore upload overhead) of the
+a mechanism to minimize the storage and transmission size (and therefore upload overhead) of the
 data collected is highly desirable.
 
 The format described in this document, C-DNS (Compacted-DNS), focusses on the problem of capturing and storing large packet capture
@@ -356,7 +356,7 @@ those between the Query/Response data item and the relevant Block tables.
 +-------------------------+     |       +-----------------+------+ |
 | Response delay (r)      |     |       | Server address         | |
 +-------------------------+     |       +------------------------+ |
-| Query name (q)          |--+--+       | Server port            | |
+| Query name              |--+--+       | Server port            | |
 +-------------------------+  |          +------------------------+ |
 | Query size (q)          |  |          | Transport flags        | |
 +-------------------------+  |          +------------------------+ |
@@ -507,7 +507,7 @@ In the case of OPCODEs, for a message to be fully parsable, the OPCODE must be k
 collecting implementation. Any message with an OPCODE unknown to the collecting implementation
 cannot be validated as correctly formed, and so must be treated as malformed. Messages with
 OPCODES known to the recording application but not listed in the Storage Parameters are discarded
-(regardless of whether they are malformed or not).
+during C-DNS capture (regardless of whether they are malformed or not).
 
 In the case of RR records, each record in a message must be fully parsable, including
 parsing the record RDATA, as otherwise the message cannot be validated
@@ -581,7 +581,7 @@ For the sake of brevity, the following conventions are used in the tables:
   * M - Mandatory. The item must be present.
 * The column T gives the CBOR data type of the item.
   * U - Unsigned integer
-  * I - Signed integer
+  * I - Signed integer (i.e. CBOR unsigned or negative integer)
   * B - Byte string
   * T - Text string
   * M - Map
@@ -738,7 +738,7 @@ vlan-ids | O | A | Array of identifiers (of type unsigned integer) of VLANs sele
 ||
 filter | O | T | `tcpdump` [@pcap] style filter for input.
 ||
-generator-id | O | T | String identifying the collection method.
+generator-id | O | T | User specified human-readable string identifying the collection method.
 ||
 host-id | O | T | String identifying the collecting host. Empty if converting an existing packet capture file.
 
@@ -805,7 +805,7 @@ ip-address | O | A | Array of IP addresses, in network byte order (of type byte 
 | | |
 classtype | O | A | Array of RR class and type information. Type is `ClassType`, see (#classtype).
 | | |
-name-rdata | O | A | Array where each entry is the contents of a single NAME or RDATA (of type byte string). Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
+name-rdata | O | A | Array where each entry is the contents of a single NAME or RDATA in wire format (of type byte string). Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
 | | |
 qr-sig | O | A | Array Q/R data item signatures. Type is `QueryResponseSignature`, see (#queryresponsesignature).
 | | |
@@ -1950,5 +1950,5 @@ The following figure plots the effect of increasing block size on output file si
 
 From the above, there is obviously scope for tuning the default block
 size to the compression being employed, traffic characteristics, frequency of
-output file rollover etc. Using a strong compression, block sizes over
+output file rollover etc. Using a strong compression scheme, block sizes over
 10,000 query/response pairs would seem to offer limited improvements.

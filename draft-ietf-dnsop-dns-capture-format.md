@@ -535,9 +535,11 @@ describing the methods used.
 
 The format contains fields to indicate if only IP prefixes were stored.
 If IP address prefixes are given, only the prefix bits of addresses
-are stored. For example, if a client IPv4 prefix of 16 is specified, a
-client address of 192.0.2.1 will be stored as 0xc000 (192.0), reducing
-address storage space requirements.
+are stored. For example, if a client IPv6 prefix of 48 is specified,
+a client address of 2001:db8:85a3::8a2e:370:7334 will be stored
+as 0x20010db885a3, reducing address storage space requirements.
+Similarly, if a client IPv4 prefix of 16 is specified, a
+client address of 192.0.2.1 will be stored as 0xc000 (192.0).
 
 # C-DNS format detailed description
 

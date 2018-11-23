@@ -541,6 +541,8 @@ as 0x20010db885a3, reducing address storage space requirements.
 Similarly, if a client IPv4 prefix of 16 is specified, a
 client address of 192.0.2.1 will be stored as 0xc000 (192.0).
 
+If the IP address prefixes are absent, then full addresses are stored.
+
 # C-DNS format detailed description
 
 The CDDL definition for the C-DNS format is given in (#cddl).

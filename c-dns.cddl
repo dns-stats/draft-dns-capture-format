@@ -293,6 +293,7 @@ response-rcode        = 16
   ;     tcp               : 1,
   ;     tls               : 2,
   ;     dtls              : 3,
+  ;     doh               : 4,
   ; )
 
   TransportFlagValues = &(

@@ -842,7 +842,7 @@ server-port | O | U | The server port.
 ||
 qr-transport-flags | O | U | Bit flags describing the transport used to service the query.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
- | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.
+ | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS, 4 = DoH. Values 5-15 are reserved for future use.
  | | | Bit 5. 1 if trailing bytes in query packet. See (#trailing-bytes).
 ||
 qr-type | O | U | Type of Query/Response transaction.
@@ -936,7 +936,7 @@ server-port | O | U | The server port.
 ||
 mm-transport-flags | O | U | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
- | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS. Values 4-15 are reserved for future use.
+ | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS, 4 = DoH. Values 5-15 are reserved for future use.
 ||
 mm-payload | O | B | The payload (raw bytes) of the DNS message.
 
@@ -968,7 +968,7 @@ query-name-index | O | U | The index in the `name-rdata` array of the item conta
 ||
 query-size | O | U | DNS query message size (see below).
 ||
-response-size | O | U | DNS query message size (see below).
+response-size | O | U | DNS response message size (see below).
 ||
 response-processing -data | O | M | Data on response processing. Map of type `ResponseProcessingData`, see (#responseprocessingdata).
 ||

@@ -270,7 +270,7 @@ The choice of CBOR was made taking a number of factors into account.
 * CBOR is a binary representation, and thus is economical in storage space.
 * Other binary representations were investigated, and whilst all had attractive features,
 none had a significant advantage over CBOR. See (#comparison-of-binary-formats) for some discussion of this.
-* CBOR is an IETF standard and familiar to IETF participants. It is based on the now-common
+* CBOR is an IETF specification and familiar to IETF participants. It is based on the now-common
 ideas of lists and objects, and thus requires very little familiarization for those in the wider industry.
 * CBOR is a simple format, and can easily be implemented from scratch if necessary. More complex formats
 require library support which may present problems on unusual platforms.
@@ -806,7 +806,7 @@ ip-address | O | A | Array of IP addresses, in network byte order (of type byte 
 | | |
 classtype | O | A | Array of RR class and type information. Type is `ClassType`, see (#classtype).
 | | |
-name-rdata | O | A | Array where each entry is the contents of a single NAME or RDATA in wire format (of type byte string). Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no DNS style name compression is used on the individual names/labels within the format.
+name-rdata | O | A | Array where each entry is the contents of a single NAME or RDATA in wire format (of type byte string). Note that NAMEs, and labels within RDATA contents, are full domain names or labels; no [@!RFC1035] name compression is used on the individual names/labels within the format.
 | | |
 qr-sig | O | A | Array Q/R data item signatures. Type is `QueryResponseSignature`, see (#queryresponsesignature).
 | | |
@@ -1109,7 +1109,7 @@ packet stream.
 
 ## Name compression
 
-All the names stored in the C-DNS format are full domain names; no DNS style name compression is used
+All the names stored in the C-DNS format are full domain names; no [@!RFC1035] name compression is used
 on the individual names within the format. Therefore when reconstructing a packet,
 name compression must be used in order to reproduce the on the wire representation of the
 packet.

@@ -791,7 +791,7 @@ malformed-items | O | U | Number of malformed messages found in input for this `
 
 ### "BlockTables"
 
-Arrays containing data referenced by individual `QueryResponse` or `MalformedMessage` items in this `Block`.
+Map of arrays containing data referenced by individual `QueryResponse` or `MalformedMessage` items in this `Block`.
 Each element is an array which, if present, must not be empty.
 
 An item in the `qlist` array contains indexes to values in the `qrr`

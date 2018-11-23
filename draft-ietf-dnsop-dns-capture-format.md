@@ -87,7 +87,7 @@ the development of DNS traffic monitoring applications.
 
 # Introduction
 
-There has long been a need to collect DNS queries and responses
+There has long been a need for server operators to collect DNS queries and responses
 on authoritative and recursive name servers for monitoring and analysis.
 This data is used in a number of ways including traffic monitoring,
 analyzing network attacks and "day in the life" (DITL) [@ditl] analysis.
@@ -145,8 +145,9 @@ Pairs of DNS messages are called a Query and a Response.
 
 # Data collection use cases
 
-In an ideal world, it would be optimal to collect full packet captures of all
-packets going in or out of a name server. However, there are several
+From a purely server operator perspective, collecting full packet captures of all
+packets going in or out of a name server provides the most comprehensive
+picture of network activity. However, there are several
 design choices or other limitations that are common to many DNS installations and operators.
 
 * DNS servers are hosted in a variety of situations:
@@ -708,7 +709,7 @@ query-response -signature-hints | M | U | Hints indicating which `QueryResponseS
 rr-hints | M | U | Hints indicating which optional `RR` fields are omitted, see (#rr). If the field is omitted the bit is unset.
  | | | Bit 0. ttl
  | | | Bit 1. rdata-index
-other-data-hints | M | U | Hints indicating which other data types are are omitted. If the data type is are omitted the bit is unset.
+other-data-hints | M | U | Hints indicating which other data types are omitted. If the data type is omitted the bit is unset.
  | | | Bit 0. malformed-messages
  | | | Bit 1. address-event-counts
 
@@ -744,7 +745,7 @@ host-id | O | T | String identifying the collecting host. Empty if converting an
 
 ## "Block"
 
-Container for data with common collection and and storage parameters. A map containing the following:
+Container for data with common collection and storage parameters. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
@@ -1093,8 +1094,8 @@ of the original packet stream cannot be re-constructed from the C-DNS format:
 * IP fragmentation
 * TCP stream information:
      * Multiple DNS messages may have been sent in a single TCP segment
-     * A DNS payload may have be split across multiple TCP segments
-     * Multiple DNS messages may have be sent on a single TCP session
+     * A DNS payload may have been split across multiple TCP segments
+     * Multiple DNS messages may have been sent on a single TCP session
 * Malformed DNS messages if the wire format is not recorded
 * Any Non-DNS messages that were in the original packet stream e.g. ICMP
 
@@ -1158,7 +1159,7 @@ This can, for example, arise on multi-core platforms where packets arriving at a
 are processed by different cores. On systems where this behaviour has been observed, the timestamps associated
 with each packet are consistent; queries always have a timestamp prior to the response timestamp.
 However, the order in which these packets appear in the packet capture stream is not necessarily
-strictly choronological; a response can appear in the capture stream before the query that provoked
+strictly chronological; a response can appear in the capture stream before the query that provoked
 the response. For this discussion, this non-chronological delivery is termed "skew".
 
 In the presence of skew, a response packets can arrive for matching before the corresponding query. To avoid
@@ -1726,7 +1727,7 @@ completeness were also compared to JSON.
   read with a generic library.
 
     * Code must be generated for a particular data schema to
-      to read and write data using that schema. At the time of
+      read and write data using that schema. At the time of
       writing, the Google code generator can currently generate code
       for encoding and decoding a schema for C++, Go,
         Java, Python, Ruby, C#, Objective-C, Javascript and PHP.

@@ -616,9 +616,9 @@ Information about data in the file. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-major-format-version | M | U | Unsigned integer '1'. The major version of format used in file.
+major-format-version | M | U | Unsigned integer '1'. The major version of format used in file. See (#versioning).
 ||
-minor-format-version | M | U | Unsigned integer '0'. The minor version of format used in file.
+minor-format-version | M | U | Unsigned integer '0'. The minor version of format used in file. See (#versioning).
 ||
 private-version | O | U | Version indicator available for private use by implementations.
 ||

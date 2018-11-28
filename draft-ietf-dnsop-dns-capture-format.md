@@ -501,8 +501,8 @@ these to quickly determine whether the input data is rich enough for its needs.
 
 ### Optional RRs and OPCODEs
 
-Also included in the Storage Parameters are explicit arrays listing the RR types and
-the OPCODEs to be recorded. These remove any ambiguity over whether
+Also included in the Storage Parameters are explicit arrays listing the RR types [@rrtypes] and
+the OPCODEs [@opcodes] to be recorded. These remove any ambiguity over whether
 messages containing particular OPCODEs or RR types are not present because they did not occur,
 or because the implementation is not configured to record them.
 
@@ -832,9 +832,9 @@ RR class and type information. A map containing the following:
 
 Field | O | T | Description
 :-----|:-:|:-:|:-----------
-type | M | U | TYPE value.
+type | M | U | TYPE value, see [@rrtypes].
 ||
-class | M | U | CLASS value.
+class | M | U | CLASS value, see [@rrclasses].
 
 #### "QueryResponseSignature"
 
@@ -887,7 +887,7 @@ qr-dns-flags | O | U | Bit flags with values from the Query and Response DNS fla
  | | | Bit 13. Response TrunCation (TC).
  | | | Bit 14. Response Authoritative Answer (AA).
 ||
-query-rcode | O | U | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
+query-rcode | O | U | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE. See [@rcodes].
 ||
 query-classtype -index | O | U | The index to the item in the the `classtype` array of the CLASS and TYPE of the first Question. See (#blocktables).
 ||
@@ -905,7 +905,7 @@ udp-buf-size | O | U | The Query EDNS sender's UDP payload size.
 ||
 opt-rdata-index | O | U | The index in the `name-rdata` array  of the OPT RDATA. See (#blocktables).
 ||
-response-rcode | O | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE.
+response-rcode | O | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE. See [@rcodes].
 
 #### "Question"
 
@@ -1610,13 +1610,43 @@ draft-dickinson-dnsop-dns-capture-format-00
     </front>
 </reference>
 
-<reference anchor='rrtypes' target='http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4'>
+<reference anchor='opcodes' target='http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-5'>
     <front>
-        <title>RR types</title>
+        <title>DNS OpCodes</title>
         <author>
             <organization>IANA</organization>
         </author>
-        <date year='2016'/>
+        <date year='2018'/>
+    </front>
+</reference>
+
+<reference anchor='rcodes' target='http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-6'>
+    <front>
+        <title>DNS RCODEs</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
+    </front>
+</reference>
+
+<reference anchor='rrclasses' target='http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-2'>
+    <front>
+        <title>DNS CLASSes</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
+    </front>
+</reference>
+
+<reference anchor='rrtypes' target='http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4'>
+    <front>
+        <title>Resource Record (RR) TYPEs</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
     </front>
 </reference>
 

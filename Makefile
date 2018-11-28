@@ -6,6 +6,8 @@
 DRAFT=draft-ietf-dnsop-dns-capture-format
 VERSION=09
 
+CDDL=c-dns.cddl
+
 OUTDIR=draft-$(VERSION)
 
 XML=$(OUTDIR)/$(DRAFT).xml
@@ -20,7 +22,7 @@ all: $(HTML) $(TXT) $(GRAPHICS)
 
 $(OUTDIREXISTS): ; mkdir -p $(OUTDIR); touch $@
 
-$(XML): $(DRAFT).md $(OUTDIREXISTS); mmark -xml2 -page $< $@
+$(XML): $(DRAFT).md $(CDDL) $(OUTDIREXISTS); mmark -xml2 -page $< $@
 
 $(HTML): $(XML) ; xml2rfc --html -o $@ $<
 $(TXT): $(XML) ; xml2rfc --text -o $@ $<

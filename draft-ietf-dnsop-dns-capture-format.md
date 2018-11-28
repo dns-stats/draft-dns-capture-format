@@ -1675,23 +1675,23 @@ is shorter than any compression already found, the earlier name is noted as the
 compression target for the name.
 
 The following tables illustrate the process. In an example packet, the first
-name is example.com.
+name is foo.example.
 
 N | Name | Uncompressed | Compression Target
 ---:|:-----|:-----|:-----------
-1 | example.com | |
+1 | foo.example | |
 
-The next name added is bar.com. This is matched against example.com. The
-com part of this can be used as a compression target, with the remaining
+The next name added is bar.example. This is matched against foo.example. The
+example part of this can be used as a compression target, with the remaining
 uncompressed part of the name being bar.
 
 N | Name | Uncompressed | Compression Target
 ---:|:-----|:-----|:-----------
-1 | example.com | |
-2 | bar.com | bar | 1 + offset to com
+1 | foo.example | |
+2 | bar.example | bar | 1 + offset to example
 
-The third name added is www.bar.com. This is first matched against
-example.com, and as before this is recorded as a compression target, with the
+The third name added is www.bar.example. This is first matched against
+foo.example, and as before this is recorded as a compression target, with the
 remaining uncompressed part of the name being www.bar. It is then matched
 against the second name, which again can be a compression target. Because the
 remaining uncompressed part of the name is www, this is an improved compression,
@@ -1699,9 +1699,9 @@ and so it is adopted.
 
 N | Name | Uncompressed | Compression Target
 ---:|:-----|:-----|:-----------
-1 | example.com | |
-2 | bar.com | bar | 1 + offset to com
-3 | www.bar.com | www | 2
+1 | foo.example | |
+2 | bar.example | bar | 1 + offset to example
+3 | www.bar.example | www | 2
 
 As an optimization, if a name is already perfectly compressed (in other words,
 the uncompressed part of the name is empty), then no further names will be considered

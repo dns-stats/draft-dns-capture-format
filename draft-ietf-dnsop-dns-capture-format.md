@@ -1324,11 +1324,11 @@ should be treated as timed out queries.
 
 # Implementation guidance
 
-Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of [RFC7049]) the following guidance may be of use to implementors.
+Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of [@!RFC7049]) the following guidance may be of use to implementors.
 
-Adherence to the first two rules given in Section 3.9 of [RFC7049] will minimise file sizes.
+Adherence to the first two rules given in Section 3.9 of [@!RFC7049] will minimise file sizes.
 
-Adherence to the last two rules given in Section 3.9 of [RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
+Adherence to the last two rules given in Section 3.9 of [@!RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
 
 ## Optional data
 

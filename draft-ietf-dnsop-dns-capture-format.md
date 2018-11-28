@@ -530,7 +530,7 @@ The Storage Parameters contains flags that can be used to indicate if:
 
 The Storage Parameters also contains optional fields holding details
 of the sampling method used and the anonymisation method used. It is
-RECOMMENDED these fields contain URIs pointing to resources
+RECOMMENDED these fields contain URIs [@!RFC3986] pointing to resources
 describing the methods used.
 
 ### IP Address storage

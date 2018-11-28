@@ -277,7 +277,7 @@ ideas of lists and objects, and thus requires very little familiarization for th
 * CBOR is a simple format, and can easily be implemented from scratch if necessary. More complex formats
 require library support which may present problems on unusual platforms.
 * CBOR can also be easily converted to text formats such as JSON ([@RFC8259]) for debugging and other human inspection requirements.
-* CBOR data schemas can be described using CDDL [@?I-D.ietf-cbor-cddl].
+* CBOR data schemas can be described using CDDL [@!I-D.ietf-cbor-cddl].
 
 # C-DNS format conceptual overview
 

@@ -32,6 +32,9 @@ BlockParameters = {
 storage-parameters    = 0
 collection-parameters = 1
 
+  IPv6PrefixLength = 1..128
+  IPv4PrefixLength = 1..32
+
   StorageParameters = {
       ticks-per-second             => uint,
       max-block-items              => uint,
@@ -39,10 +42,10 @@ collection-parameters = 1
       opcodes                      => [+ uint],
       rr-types                     => [+ uint],
       ? storage-flags              => StorageFlags,
-      ? client-address-prefix-ipv4 => uint,
-      ? client-address-prefix-ipv6 => uint,
-      ? server-address-prefix-ipv4 => uint,
-      ? server-address-prefix-ipv6 => uint,
+      ? client-address-prefix-ipv4 => IPv4PrefixLength,
+      ? client-address-prefix-ipv6 => IPv6PrefixLength,
+      ? server-address-prefix-ipv4 => IPv4PrefixLength,
+      ? server-address-prefix-ipv6 => IPv6PrefixLength,
       ? sampling-method            => tstr,
       ? anonymisation-method       => tstr,
   }

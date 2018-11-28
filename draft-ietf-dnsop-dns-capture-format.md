@@ -773,7 +773,7 @@ Overall information for a `Block` item. A map containing the following:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
-earliest-time | . | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.
+earliest-time | . | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks (see (#storageparameters)) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.
 | | |
 block-parameters -index | . | U | The index of the item in the `block-parameters` array (in the `file-premable` item) applicable to this block. If not present, index 0 is used. See (#blockparameters).
 
@@ -957,7 +957,7 @@ A map containing the following items:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
-time-offset | . | U | Q/R timestamp as an offset in ticks from `earliest-time`. The timestamp is the timestamp of the Query, or the Response if there is no Query.
+time-offset | . | U | Q/R timestamp as an offset in ticks (see (#storageparameters)) from `earliest-time`. The timestamp is the timestamp of the Query, or the Response if there is no Query.
 ||
 client-address-index | . | U | The index in the `ip-address` array of the client IP address. See (#blocktables).
 ||
@@ -969,7 +969,7 @@ qr-signature-index | . | U | The index in the `qr-sig` array of the `QueryRespon
 ||
 client-hoplimit | . | U | The IPv4 TTL or IPv6 Hoplimit from the Query packet.
 ||
-response-delay | . | I | The time difference between Query and Response, in ticks. Only present if there is a query and a response. The delay can be negative if the network stack/capture library returns packets out of order.
+response-delay | . | I | The time difference between Query and Response, in ticks (see (#storageparameters)). Only present if there is a query and a response. The delay can be negative if the network stack/capture library returns packets out of order.
 ||
 query-name-index | . | U | The index in the `name-rdata` array of the item containing the QNAME for the first Question. See (#blocktables).
 ||
@@ -1046,7 +1046,7 @@ Details of malformed messages. A map containing the following:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
-time-offset | . | U | Message timestamp as an offset in ticks from `earliest-time`.
+time-offset | . | U | Message timestamp as an offset in ticks (see (#storageparameters)) from `earliest-time`.
 ||
 client-address-index | . | U | The index in the `ip-address` array of the client IP address. See (#blocktables).
 ||

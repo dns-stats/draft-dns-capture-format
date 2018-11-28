@@ -6,7 +6,7 @@
 ; The overall structure of a file.
 ;
 File = [
-    file-type-id  : tstr .regexp "C-DNS",
+    file-type-id  : "C-DNS",
     file-preamble : FilePreamble,
     file-blocks   : [* Block],
 ]
@@ -15,8 +15,8 @@ File = [
 ; The file preamble.
 ;
 FilePreamble = {
-    major-format-version => uint .eq 1,
-    minor-format-version => uint .eq 0,
+    major-format-version => 1,
+    minor-format-version => 0,
     ? private-version    => uint,
     block-parameters     => [+ BlockParameters],
 }

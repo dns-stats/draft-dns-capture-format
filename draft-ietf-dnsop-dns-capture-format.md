@@ -739,7 +739,7 @@ interfaces |   | A | Array of identifiers (of type text string) of the interface
 ||
 server-addresses |   | A | Array of server collection IP addresses (of type byte string). Hint for downstream analysers; does not affect collection.
 ||
-vlan-ids |   | A | Array of identifiers (of type unsigned integer) of VLANs selected for collection.
+vlan-ids |   | A | Array of identifiers (of type unsigned integer) of VLANs [@?IEEE802.1Q] selected for collection. VLAN IDs are unique only within an administrative domain.
 ||
 filter |   | T | `tcpdump` [@pcap] style filter for input.
 ||
@@ -1646,6 +1646,17 @@ draft-dickinson-dnsop-dns-capture-format-00
         </author>
         <date year='2018'/>
     </front>
+</reference>
+
+<reference anchor='IEEE802.1Q'>
+    <front>
+        <title>IEEE Standard for Local and metropolitan area networks -- Bridges and Bridged Networks</title>
+        <author>
+            <organization>IEEE</organization>
+        </author>
+        <date year='2014'/>
+    </front>
+    <seriesInfo name="DOI" value="10.1109/IEEESTD.2014.6991462"/>
 </reference>
 
 {backmatter}

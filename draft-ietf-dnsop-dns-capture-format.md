@@ -719,7 +719,13 @@ other-data-hints | X | U | Hints indicating which other data types are omitted. 
 
 ### "CollectionParameters"
 
-Parameters relating to how data in the file was collected.
+Parameters providing information to how data in the file was
+collected (applicable for some, but not all collection environments).
+The values are informational only and serve as hints to downstream
+analysers as to the configuration of a collecting implementation. They
+can provide context when interpreting what data is present/absent from
+the capture but cannot necessarily be validated against the data
+captured.
 
 These parameters have no default. If they do not appear, nothing can be inferred about their value.
 
@@ -741,7 +747,7 @@ server-addresses |   | A | Array of server collection IP addresses (of type byte
 ||
 vlan-ids |   | A | Array of identifiers (of type unsigned integer) of VLANs [@?IEEE802.1Q] selected for collection. VLAN IDs are unique only within an administrative domain.
 ||
-filter |   | T | `tcpdump` [@pcap] style filter for input.
+filter |   | T | `tcpdump` [@!pcap-filter] style filter for input.
 ||
 generator-id |   | T | User specified human-readable string identifying the collection method.
 ||
@@ -1657,6 +1663,16 @@ draft-dickinson-dnsop-dns-capture-format-00
         <date year='2014'/>
     </front>
     <seriesInfo name="DOI" value="10.1109/IEEESTD.2014.6991462"/>
+</reference>
+
+<reference anchor='pcap-filter' target='http://www.tcpdump.org/manpages/pcap-filter.7.html'>
+    <front>
+        <title>Manpage of PCAP-FILTER</title>
+        <author>
+            <organization>tcpdump.org</organization>
+        </author>
+        <date year='2017'/>
+    </front>
 </reference>
 
 {backmatter}

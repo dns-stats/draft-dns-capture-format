@@ -853,7 +853,7 @@ server-port |   | U | The server port.
 ||
 qr-transport-flags |   | U | Bit flags describing the transport used to service the query.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
- | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS, 4 = DoH. Values 5-15 are reserved for future use.
+ | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
  | | | Bit 5. 1 if trailing bytes in query packet. See (#trailing-bytes).
 ||
 qr-type |   | U | Type of Query/Response transaction.
@@ -947,7 +947,7 @@ server-port |   | U | The server port.
 ||
 mm-transport-flags |   | U | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
- | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS, 4 = DoH. Values 5-15 are reserved for future use.
+ | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
 ||
 mm-payload |   | B | The payload (raw bytes) of the DNS message.
 

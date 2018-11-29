@@ -750,7 +750,7 @@ skew-timeout |   | U | The network stack may report a response before the corres
 ||
 snaplen |   | U | Collect up to this many bytes per packet.
 ||
-promisc |   | U | 1 if promiscuous mode was enabled on the interface, 0 otherwise.
+promisc |   | U | 1 if promiscuous mode [@!pcap-options] was enabled on the interface, 0 otherwise.
 ||
 interfaces |   | A | Array of identifiers (of type text string) of the interfaces used for collection.
 ||
@@ -1683,6 +1683,16 @@ draft-dickinson-dnsop-dns-capture-format-00
             <organization>tcpdump.org</organization>
         </author>
         <date year='2017'/>
+    </front>
+</reference>
+
+<reference anchor='pcap-options' target='http://www.tcpdump.org/manpages/pcap.3pcap.html'>
+    <front>
+        <title>Manpage of PCAP</title>
+        <author>
+            <organization>tcpdump.org</organization>
+        </author>
+        <date year='2018'/>
     </front>
 </reference>
 

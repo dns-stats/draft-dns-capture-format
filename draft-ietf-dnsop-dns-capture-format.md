@@ -543,7 +543,12 @@ as 0x20010db885a3, reducing address storage space requirements.
 Similarly, if a client IPv4 prefix of 16 is specified, a
 client address of 192.0.2.1 will be stored as 0xc000 (192.0).
 
+If an IP address prefix is specified, field `qr-transport-flags`
+in QueryResponseSignature, which is otherwise optional, MUST be present,
+so that the IP version can be determined.
+
 If the IP address prefixes are absent, then full addresses are stored.
+The IP version can then, if necessary, be inferred from the address length.
 
 # C-DNS format detailed description
 
@@ -583,7 +588,10 @@ with hyphens (e.g. `block-tables`).
 
 For the sake of brevity, the following conventions are used in the tables:
 
-* The column M marks whether items in a map are mandatory or optional. Mandatory items are indicated with an X in this column.
+* The column M marks whether items in a map are mandatory.
+  * X - Mandatory items.
+  * C - Conditionally mandatory item. Such items are usually optional but may be mandatory in some configurations.
+  * If the column is empty, the item is optional.
 * The column T gives the CBOR data type of the item.
   * U - Unsigned integer
   * I - Signed integer (i.e. CBOR unsigned or negative integer)
@@ -851,8 +859,8 @@ server-address -index |   | U | The index in the item in the `ip-address` array 
 ||
 server-port |   | U | The server port.
 ||
-qr-transport-flags |   | U | Bit flags describing the transport used to service the query.
- | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
+qr-transport-flags | C | U | Bit flags describing the transport used to service the query.
+ | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6. See (#ip-address-storage).
  | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
  | | | Bit 5. 1 if trailing bytes in query packet. See (#trailing-bytes).
 ||

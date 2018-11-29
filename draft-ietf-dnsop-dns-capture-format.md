@@ -495,7 +495,10 @@ there is no query ARCount recorded and no query OPT RDATA recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
 
 The Storage Parameters therefore also contains a Storage Hints item which specifies
-which items the encoder of the file omits from the stored data.
+which items the encoder of the file omits from the stored data and will therefore
+never be present. (This approach is taken because a flag that indicated which items
+were included for collection would not guarantee that the item was present, only
+that it might be.)
 An implementation decoding that file can then use
 these to quickly determine whether the input data is rich enough for its needs.
 
@@ -675,11 +678,11 @@ anonymisation -method |   | T | Information on the anonymisation method used. Se
 
 ##### "StorageHints"
 
-An indicator of which fields the collecting implementation omits in the arrays with optional fields. A map containing the following:
+An indicator of which fields the collecting implementation omits in the maps with optional fields. A map containing the following:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
-query-response -hints | X | U | Hints indicating which `QueryResponse` fields are omitted, see section (#queryresponse). If the field is omitted the bit is unset.
+query-response -hints | X | U | Hints indicating which `QueryResponse` fields are candidates for capture or omitted, see section (#queryresponse). If a bit is unset, the field is omitted from the capture.
  | | | Bit 0. time-offset
  | | | Bit 1. client-address-index
  | | | Bit 2. client-port
@@ -699,7 +702,7 @@ query-response -hints | X | U | Hints indicating which `QueryResponse` fields ar
  | | | Bit 16. response-authority-sections
  | | | Bit 17. response-additional-sections
  | | |
-query-response -signature-hints | X | U | Hints indicating which `QueryResponseSignature` fields are omitted, see section (#queryresponsesignature). If the field is omitted the bit is unset.
+query-response -signature-hints | X | U | Hints indicating which `QueryResponseSignature` fields are candidates for capture or omitted, see section (#queryresponsesignature). If a bit is unset, the field is omitted from the capture.
  | | | Bit 0. server-address
  | | | Bit 1. server-port
  | | | Bit 2. qr-transport-flags
@@ -718,10 +721,10 @@ query-response -signature-hints | X | U | Hints indicating which `QueryResponseS
  | | | Bit 15. query-opt-rdata
  | | | Bit 16. response-rcode
  | | |
-rr-hints | X | U | Hints indicating which optional `RR` fields are omitted, see (#rr). If the field is omitted the bit is unset.
+rr-hints | X | U | Hints indicating which optional `RR` fields are candidates for capture or omitted, see (#rr). If a bit is unset, the field is omitted from the capture.
  | | | Bit 0. ttl
  | | | Bit 1. rdata-index
-other-data-hints | X | U | Hints indicating which other data types are omitted. If the data type is omitted the bit is unset.
+other-data-hints | X | U | Hints indicating which other data types are omitted. If a bit is unset, the the data type is omitted from the capture.
  | | | Bit 0. malformed-messages
  | | | Bit 1. address-event-counts
 

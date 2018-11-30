@@ -424,11 +424,12 @@
 <link href="#rfc.section.12.1" rel="Chapter" title="12.1 DNS-STATS Compactor">
 <link href="#rfc.section.13" rel="Chapter" title="13 IANA considerations">
 <link href="#rfc.section.14" rel="Chapter" title="14 Security considerations">
-<link href="#rfc.section.15" rel="Chapter" title="15 Acknowledgements">
-<link href="#rfc.section.16" rel="Chapter" title="16 Changelog">
-<link href="#rfc.references" rel="Chapter" title="17 References">
-<link href="#rfc.references.1" rel="Chapter" title="17.1 Normative References">
-<link href="#rfc.references.2" rel="Chapter" title="17.2 Informative References">
+<link href="#rfc.section.15" rel="Chapter" title="15 Privacy considerations">
+<link href="#rfc.section.16" rel="Chapter" title="16 Acknowledgements">
+<link href="#rfc.section.17" rel="Chapter" title="17 Changelog">
+<link href="#rfc.references" rel="Chapter" title="18 References">
+<link href="#rfc.references.1" rel="Chapter" title="18.1 Normative References">
+<link href="#rfc.references.2" rel="Chapter" title="18.2 Informative References">
 <link href="#rfc.appendix.A" rel="Chapter" title="A CDDL">
 <link href="#rfc.appendix.B" rel="Chapter" title="B DNS Name compression example">
 <link href="#rfc.appendix.B.1" rel="Chapter" title="B.1 NSD compression algorithm">
@@ -616,15 +617,17 @@
 </li>
 <li>14.   <a href="#rfc.section.14">Security considerations</a>
 </li>
-<li>15.   <a href="#rfc.section.15">Acknowledgements</a>
+<li>15.   <a href="#rfc.section.15">Privacy considerations</a>
 </li>
-<li>16.   <a href="#rfc.section.16">Changelog</a>
+<li>16.   <a href="#rfc.section.16">Acknowledgements</a>
 </li>
-<li>17.   <a href="#rfc.references">References</a>
+<li>17.   <a href="#rfc.section.17">Changelog</a>
 </li>
-<ul><li>17.1.   <a href="#rfc.references.1">Normative References</a>
+<li>18.   <a href="#rfc.references">References</a>
 </li>
-<li>17.2.   <a href="#rfc.references.2">Informative References</a>
+<ul><li>18.1.   <a href="#rfc.references.1">Normative References</a>
+</li>
+<li>18.2.   <a href="#rfc.references.2">Informative References</a>
 </li>
 </ul><li>Appendix A.   <a href="#rfc.appendix.A">CDDL</a>
 </li>
@@ -660,7 +663,7 @@
 <a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a>
 </h1>
 <p id="rfc.section.1.p.1">There has long been a need for server operators to collect DNS queries and responses on authoritative and recursive name servers for monitoring and analysis.  This data is used in a number of ways including traffic monitoring, analyzing network attacks and "day in the life" (DITL) <a href="#ditl" class="xref">[ditl]</a> analysis.  </p>
-<p id="rfc.section.1.p.2">A wide variety of tools already exist that facilitate the collection of DNS traffic data, such as DSC <a href="#dsc" class="xref">[dsc]</a>, packetq <a href="#packetq" class="xref">[packetq]</a>, dnscap <a href="#dnscap" class="xref">[dnscap]</a> and dnstap <a href="#dnstap" class="xref">[dnstap]</a>.  However, there is no standard exchange format for large DNS packet captures.  The PCAP <a href="#pcap" class="xref">[pcap]</a> or PCAP-NG <a href="#pcapng" class="xref">[pcapng]</a> formats are typically used in practice for packet captures, but these file formats can contain a great deal of additional information that is not directly pertinent to DNS traffic analysis and thus unnecessarily increases the capture file size.  </p>
+<p id="rfc.section.1.p.2">A wide variety of tools already exist that facilitate the collection of DNS traffic data, such as DSC <a href="#dsc" class="xref">[dsc]</a>, packetq <a href="#packetq" class="xref">[packetq]</a>, dnscap <a href="#dnscap" class="xref">[dnscap]</a> and dnstap <a href="#dnstap" class="xref">[dnstap]</a>. However, there is no standard exchange format for large DNS packet captures. The PCAP <a href="#pcap" class="xref">[pcap]</a> or PCAP-NG <a href="#pcapng" class="xref">[pcapng]</a> formats are typically used in practice for packet captures, but these file formats can contain a great deal of additional information that is not directly pertinent to DNS traffic analysis and thus unnecessarily increases the capture file size.  Additionally these tools and formats typically have no filter mechanism to selectively record only certain fields at capture time, requiring post-processing for anonymization or pseudonymization of data to protect user privacy.  </p>
 <p id="rfc.section.1.p.3">There has also been work on using text based formats to describe DNS packets such as <a href="#I-D.daley-dnsxml" class="xref">[I-D.daley-dnsxml]</a>, <a href="#I-D.hoffman-dns-in-json" class="xref">[I-D.hoffman-dns-in-json]</a>, but these are largely aimed at producing convenient representations of single messages.  </p>
 <p id="rfc.section.1.p.4">Many DNS operators may receive hundreds of thousands of queries per second on a single name server instance so a mechanism to minimize the storage and transmission size (and therefore upload overhead) of the data collected is highly desirable.  </p>
 <p id="rfc.section.1.p.5">The format described in this document, C-DNS (Compacted-DNS), focusses on the problem of capturing and storing large packet capture files of DNS traffic with the following goals in mind: </p>
@@ -760,7 +763,7 @@
 <li>All of the resource records can be fully parsed.</li>
 </ul>
 </li>
-<li>All top level fields in each Q/R data item will be optional.  <ul><li>Rationale: Different users will have different requirements for data to be available for analysis.  Users with minimal requirements should not have to pay the cost of recording full data, though this will limit the ability to perform certain kinds of data analysis and also to reconstruct packet captures.  For example, omitting the resource records from a Response will reduce the C-DNS file size; in principle responses can be synthesized if there is enough context.</li></ul>
+<li>All top level fields in each Q/R data item will be optional.  <ul><li>Rationale: Different operators will have different requirements for data to be available for analysis. Operators with minimal requirements should not have to pay the cost of recording full data, though this will limit the ability to perform certain kinds of data analysis and also to reconstruct packet captures. For example, omitting the resource records from a Response will reduce the C-DNS file size; in principle responses can be synthesized if there is enough context. Operators may have different policies for collecting user data and can choose to omit or anonymize certain fields at capture time e.g. client address.</li></ul>
 </li>
 <li>Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.  <ul>
 <li>Rationale: This blocking and indexing provides a significant reduction in the volume of file data generated.  Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.</li>
@@ -934,7 +937,7 @@
 <li>The sub-second timing resolution used by the data.</li>
 <li>Information (hints) on which optional data are omitted. See <a href="#optional-data-items" class="xref">Section 6.2.1</a>.</li>
 <li>Recorded OPCODES <a href="#opcodes" class="xref">[opcodes]</a> and RR types <a href="#rrtypes" class="xref">[rrtypes]</a>. See <a href="#optional-rrs-and-opcodes" class="xref">Section 6.2.2</a>.</li>
-<li>Flags indicating, for example, whether the data is sampled or anonymised.  See <a href="#storage-flags" class="xref">Section 6.2.3</a>.</li>
+<li>Flags indicating, for example, whether the data is sampled or anonymized.  See <a href="#storage-flags" class="xref">Section 6.2.3</a> and <a href="#privacy-considerations" class="xref">Section 15</a>.</li>
 <li>Client and server IPv4 and IPv6 address prefixes. See <a href="#ip-address-storage" class="xref">Section 6.2.4</a>
 </li>
 </ul>
@@ -983,13 +986,13 @@
 <p></p>
 
 <ul>
-<li>the data is anonymised,</li>
+<li>the data is anonymized,</li>
 <li>the data is produced from sample data, or</li>
-<li>names in the data have been normalised (converted to uniform case).</li>
+<li>names in the data have been normalized (converted to uniform case).</li>
 </ul>
 
 <p> </p>
-<p id="rfc.section.6.2.3.p.3">The Storage Parameters also contains optional fields holding details of the sampling method used and the anonymisation method used. It is RECOMMENDED these fields contain URIs <a href="#RFC3986" class="xref">[RFC3986]</a> pointing to resources describing the methods used.  </p>
+<p id="rfc.section.6.2.3.p.3">The Storage Parameters also contains optional fields holding details of the sampling method used and the anonymization method used. It is RECOMMENDED these fields contain URIs <a href="#RFC3986" class="xref">[RFC3986]</a> pointing to resources describing the methods used. See <a href="#privacy-considerations" class="xref">Section 15</a> for further discussion of anonymization and normalization.  </p>
 <h1 id="rfc.section.6.2.4">
 <a href="#rfc.section.6.2.4">6.2.4.</a> <a href="#ip-address-storage" id="ip-address-storage">IP Address storage</a>
 </h1>
@@ -1251,7 +1254,7 @@
 <td class="left"></td>
 <td class="center"></td>
 <td class="center"></td>
-<td class="left">Bit 0. 1 if the data has been anonymised.</td>
+<td class="left">Bit 0. 1 if the data has been anonymized.</td>
 </tr>
 <tr>
 <td class="left"></td>
@@ -1263,7 +1266,7 @@
 <td class="left"></td>
 <td class="center"></td>
 <td class="center"></td>
-<td class="left">Bit 2. 1 if the names have been normalised (converted to uniform case).</td>
+<td class="left">Bit 2. 1 if the names have been normalized (converted to uniform case).</td>
 </tr>
 <tr>
 <td class="left"></td>
@@ -1332,10 +1335,10 @@
 <td class="left"></td>
 </tr>
 <tr>
-<td class="left">anonymisation -method</td>
+<td class="left">anonymization -method</td>
 <td class="center"></td>
 <td class="center">T</td>
-<td class="left">Information on the anonymisation method used. See <a href="#storage-flags" class="xref">Section 6.2.3</a>.</td>
+<td class="left">Information on the anonymization method used. See <a href="#storage-flags" class="xref">Section 6.2.3</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -3402,16 +3405,22 @@
 <p id="rfc.section.14.p.1">Any control interface MUST perform authentication and encryption.  </p>
 <p id="rfc.section.14.p.2">Any data upload MUST be authenticated and encrypted.  </p>
 <h1 id="rfc.section.15">
-<a href="#rfc.section.15">15.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a>
+<a href="#rfc.section.15">15.</a> <a href="#privacy-considerations" id="privacy-considerations">Privacy considerations</a>
 </h1>
-<p id="rfc.section.15.p.1">The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful discussions on binary formats, compression and packet matching. Also Jan Vcelak and Wouter Wijngaards for discussions on name compression and Paul Hoffman for a detailed review of the document and the C-DNS CDDL.  </p>
-<p id="rfc.section.15.p.2">Thanks also to Robert Edmonds, Jerry Lundstr&#246;m, Richard Gibson, Stephane Bortzmeyer and many other members of DNSOP for review.  </p>
-<p id="rfc.section.15.p.3">Also, Miek Gieben for <a href="https://github.com/miekg/mmark">mmark</a> </p>
+<p id="rfc.section.15.p.1">Storage of DNS traffic by operators in PCAP and other formats is a long standing and widespread practice. Section 2.5 of <a href="#I-D.bortzmeyer-dprive-rfc7626-bis" class="xref">[I-D.bortzmeyer-dprive-rfc7626-bis]</a> is an analysis of the risks to Internet users of the storage of DNS traffic data in servers (recursive resolvers, authoritative and rogue servers).  </p>
+<p id="rfc.section.15.p.2">Section 5.2 of <a href="#I-D.dickinson-dprive-bcp-op" class="xref">[I-D.dickinson-dprive-bcp-op]</a> describes mitigations for those risks for data stored on recursive resolvers (but which could by extension apply to authoritative servers). These include data handling practices and methods for data minimization, IP address pseudonymization and anonymization.  Appendix B of that document presents an analysis of 7 published anonymization processes. In addition, RSSAC have recently published <a href="https://www.icann.org/en/system/files/files/rssac-040-07aug18-en.pdf">RSSAC04:</a> " Recommendations on Anonymization Processes for Source IP Addresses Submitted for Future Analysis&#8221;.  </p>
+<p id="rfc.section.15.p.3">The above analyses consider full data capture (e.g using PCAP) as a baseline for privacy considerations and therefore this format specification introduces no new user privacy issues beyond those of full data capture (which are quite severe). It does provides mechanisms to selectively record only certain fields at the time of data capture to improve user privacy and to explicitly indicate that data is sampled and or anonymized. It also provide flags to indicate if data normalization has been performed; data normalization increases user privacy by reducing the potential for fingerprinting individuals, however, a trade-off is potentially reducing the capacity to identify attack traffic via query name signatures. Operators should carefully consider their operational requirements and privacy policies and SHOULD capture at source the minimum user data required to meet their needs.  </p>
 <h1 id="rfc.section.16">
-<a href="#rfc.section.16">16.</a> <a href="#changelog" id="changelog">Changelog</a>
+<a href="#rfc.section.16">16.</a> <a href="#acknowledgements" id="acknowledgements">Acknowledgements</a>
 </h1>
-<p id="rfc.section.16.p.1">draft-ietf-dnsop-dns-capture-format-09 </p>
-<p id="rfc.section.16.p.2">draft-ietf-dnsop-dns-capture-format-08 </p>
+<p id="rfc.section.16.p.1">The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful discussions on binary formats, compression and packet matching. Also Jan Vcelak and Wouter Wijngaards for discussions on name compression and Paul Hoffman for a detailed review of the document and the C-DNS CDDL.  </p>
+<p id="rfc.section.16.p.2">Thanks also to Robert Edmonds, Jerry Lundstr&#246;m, Richard Gibson, Stephane Bortzmeyer and many other members of DNSOP for review.  </p>
+<p id="rfc.section.16.p.3">Also, Miek Gieben for <a href="https://github.com/miekg/mmark">mmark</a> </p>
+<h1 id="rfc.section.17">
+<a href="#rfc.section.17">17.</a> <a href="#changelog" id="changelog">Changelog</a>
+</h1>
+<p id="rfc.section.17.p.1">draft-ietf-dnsop-dns-capture-format-09 </p>
+<p id="rfc.section.17.p.2">draft-ietf-dnsop-dns-capture-format-08 </p>
 <p></p>
 
 <ul>
@@ -3421,7 +3430,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.4">draft-ietf-dnsop-dns-capture-format-07 </p>
+<p id="rfc.section.17.p.4">draft-ietf-dnsop-dns-capture-format-07 </p>
 <p></p>
 
 <ul>
@@ -3433,26 +3442,26 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.6">draft-ietf-dnsop-dns-capture-format-06 </p>
+<p id="rfc.section.17.p.6">draft-ietf-dnsop-dns-capture-format-06 </p>
 <p></p>
 
 <ul>
 <li>Correct BlockParameters type to map</li>
 <li>Make RR ttl optional</li>
-<li>Add storage flag indicating name normalisation</li>
-<li>Add storage parameter fields for sampling and anonymisation methods</li>
+<li>Add storage flag indicating name normalization</li>
+<li>Add storage parameter fields for sampling and anonymization methods</li>
 <li>Editorial clarifications and improvements</li>
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.8">draft-ietf-dnsop-dns-capture-format-05 </p>
+<p id="rfc.section.17.p.8">draft-ietf-dnsop-dns-capture-format-05 </p>
 <p></p>
 
 <ul>
 <li>Make all data items in Q/R, QuerySignature and Malformed Message arrays optional</li>
 <li>Re-structure the FilePreamble and ConfigurationParameters into BlockParameters</li>
 <li>BlockParameters has separate Storage and Collection Parameters</li>
-<li>Storage Parameters includes information on what optional fields are present, and flags specifying anonymisation or sampling</li>
+<li>Storage Parameters includes information on what optional fields are present, and flags specifying anonymization or sampling</li>
 <li>Addresses can now be stored as prefixes.</li>
 <li>Switch to using a variable sub-second timing granularity</li>
 <li>Add response bailiwick and query response type</li>
@@ -3462,7 +3471,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.10">draft-ietf-dnsop-dns-capture-format-04 </p>
+<p id="rfc.section.17.p.10">draft-ietf-dnsop-dns-capture-format-04 </p>
 <p></p>
 
 <ul>
@@ -3473,13 +3482,13 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.12">draft-ietf-dnsop-dns-capture-format-03 </p>
+<p id="rfc.section.17.p.12">draft-ietf-dnsop-dns-capture-format-03 </p>
 <p></p>
 
 <ul><li>Added an Implementation Status section</li></ul>
 
 <p> </p>
-<p id="rfc.section.16.p.14">draft-ietf-dnsop-dns-capture-format-02 </p>
+<p id="rfc.section.17.p.14">draft-ietf-dnsop-dns-capture-format-02 </p>
 <p></p>
 
 <ul>
@@ -3488,7 +3497,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.16">draft-ietf-dnsop-dns-capture-format-01 </p>
+<p id="rfc.section.17.p.16">draft-ietf-dnsop-dns-capture-format-01 </p>
 <p></p>
 
 <ul>
@@ -3502,7 +3511,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.18">draft-ietf-dnsop-dns-capture-format-00 </p>
+<p id="rfc.section.17.p.18">draft-ietf-dnsop-dns-capture-format-00 </p>
 <p></p>
 
 <ul>
@@ -3520,16 +3529,16 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.16.p.20">draft-dickinson-dnsop-dns-capture-format-00 </p>
+<p id="rfc.section.17.p.20">draft-dickinson-dnsop-dns-capture-format-00 </p>
 <p></p>
 
 <ul><li>Initial commit</li></ul>
 
 <p> </p>
 <h1 id="rfc.references">
-<a href="#rfc.references">17.</a> References</h1>
+<a href="#rfc.references">18.</a> References</h1>
 <h1 id="rfc.references.1">
-<a href="#rfc.references.1">17.1.</a> Normative References</h1>
+<a href="#rfc.references.1">18.1.</a> Normative References</h1>
 <table><tbody>
 <tr>
 <td class="reference"><b id="I-D.ietf-cbor-cddl">[I-D.ietf-cbor-cddl]</b></td>
@@ -3588,7 +3597,7 @@
 </tr>
 </tbody></table>
 <h1 id="rfc.references.2">
-<a href="#rfc.references.2">17.2.</a> Informative References</h1>
+<a href="#rfc.references.2">18.2.</a> Informative References</h1>
 <table><tbody>
 <tr>
 <td class="reference"><b id="ditl">[ditl]</b></td>
@@ -3611,9 +3620,19 @@
 <a title="Verisign">Wessels, D.</a> and <a title="DNS-OARC">J. Lundstrom</a>, "<a href="https://www.dns-oarc.net/tools/dsc">DSC</a>", 2016.</td>
 </tr>
 <tr>
+<td class="reference"><b id="I-D.bortzmeyer-dprive-rfc7626-bis">[I-D.bortzmeyer-dprive-rfc7626-bis]</b></td>
+<td class="top">
+<a>Bortzmeyer, S.</a> and <a>S. Dickinson</a>, "<a href="https://tools.ietf.org/html/draft-bortzmeyer-dprive-rfc7626-bis-01">DNS Privacy Considerations</a>", Internet-Draft draft-bortzmeyer-dprive-rfc7626-bis-01, July 2018.</td>
+</tr>
+<tr>
 <td class="reference"><b id="I-D.daley-dnsxml">[I-D.daley-dnsxml]</b></td>
 <td class="top">
 <a>Daley, J.</a>, <a>Morris, S.</a> and <a>J. Dickinson</a>, "<a href="https://tools.ietf.org/html/draft-daley-dnsxml-00">dnsxml - A standard XML representation of DNS data</a>", Internet-Draft draft-daley-dnsxml-00, July 2013.</td>
+</tr>
+<tr>
+<td class="reference"><b id="I-D.dickinson-dprive-bcp-op">[I-D.dickinson-dprive-bcp-op]</b></td>
+<td class="top">
+<a>Dickinson, S.</a>, <a>Overeinder, B.</a>, <a>Rijswijk-Deij, R.</a> and <a>A. Mankin</a>, "<a href="https://tools.ietf.org/html/draft-dickinson-dprive-bcp-op-01">Recommendations for DNS Privacy Service Operators</a>", Internet-Draft draft-dickinson-dprive-bcp-op-01, July 2018.</td>
 </tr>
 <tr>
 <td class="reference"><b id="I-D.hoffman-dns-in-json">[I-D.hoffman-dns-in-json]</b></td>

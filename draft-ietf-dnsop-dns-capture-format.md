@@ -612,7 +612,8 @@ For the sake of brevity, the following conventions are used in the tables:
 * The column T gives the CBOR data type of the item.
   * U - Unsigned integer
   * I - Signed integer (i.e. CBOR unsigned or negative integer)
-  * B - Byte string
+  * B - Boolean
+  * S - Byte string
   * T - Text string
   * M - Map
   * A - Array
@@ -669,22 +670,22 @@ max-block-items | X | U | The maximum number of items stored in any of the array
 ||
 storage-hints | X | M | Collection of hints as to which fields are omitted in the arrays that have optional fields. Map of type `StorageHints`, see (#storagehints).
 ||
-opcodes | X | A | Array of OPCODES [@opcodes] (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
+opcodes | X | A | Array of OPCODES [@opcodes] (unsigned integers, each in the range 0 to 15 inclusive) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
 ||
-rr-types | X | A | Array of RR types [@rrtypes] (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
+rr-types | X | A | Array of RR types [@rrtypes] (unsigned integers, each in the range 0 to 65535 inclusive) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
 ||
 storage-flags |   | U | Bit flags indicating attributes of stored data.
  | | | Bit 0. 1 if the data has been anonymized.
  | | | Bit 1. 1 if the data is sampled data.
  | | | Bit 2. 1 if the names have been normalized (converted to uniform case).
 ||
-client-address -prefix-ipv4 |   | U | IPv4 client address prefix length. If specified, only the address prefix bits are stored.
+client-address -prefix-ipv4 |   | U | IPv4 client address prefix length, in the range 1 to 32 inclusive. If specified, only the address prefix bits are stored.
 ||
-client-address -prefix-ipv6 |   | U | IPv6 client address prefix length. If specified, only the address prefix bits are stored.
+client-address -prefix-ipv6 |   | U | IPv6 client address prefix length, in the range 1 to 128 inclusive. If specified, only the address prefix bits are stored.
 ||
-server-address -prefix-ipv4 |   | U | IPv4 server address prefix length. If specified, only the address prefix bits are stored.
+server-address -prefix-ipv4 |   | U | IPv4 server address prefix length, in the range 1 to 32 inclusive. If specified, only the address prefix bits are stored.
 ||
-server-address -prefix-ipv6 |   | U | IPv6 server address prefix length. If specified, only the address prefix bits are stored.
+server-address -prefix-ipv6 |   | U | IPv6 server address prefix length, in the range 1 to 128 inclusive. If specified, only the address prefix bits are stored.
 ||
 sampling-method |   | T | Information on the sampling method used. See (#storage-flags).
 ||
@@ -764,13 +765,13 @@ skew-timeout |   | U | The network stack may report a response before the corres
 ||
 snaplen |   | U | Collect up to this many bytes per packet.
 ||
-promisc |   | U | 1 if promiscuous mode [@!pcap-options] was enabled on the interface, 0 otherwise.
+promisc |   | B | `true` if promiscuous mode [@!pcap-options] was enabled on the interface, `false` otherwise.
 ||
 interfaces |   | A | Array of identifiers (of type text string) of the interfaces used for collection.
 ||
 server-addresses |   | A | Array of server collection IP addresses (of type byte string). Hint for downstream analysers; does not affect collection.
 ||
-vlan-ids |   | A | Array of identifiers (of type unsigned integer) of VLANs [@?IEEE802.1Q] selected for collection. VLAN IDs are unique only within an administrative domain.
+vlan-ids |   | A | Array of identifiers (of type unsigned integer, each in the range 1 to 4094 inclusive) of VLANs [@?IEEE802.1Q] selected for collection. VLAN IDs are unique only within an administrative domain.
 ||
 filter |   | T | `tcpdump` [@!pcap-filter] style filter for input.
 ||
@@ -974,7 +975,7 @@ mm-transport-flags |   | U | Bit flags describing the transport used to service 
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
  | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
 ||
-mm-payload |   | B | The payload (raw bytes) of the DNS message.
+mm-payload |   | S | The payload (raw bytes) of the DNS message.
 
 ## "QueryResponse"
 

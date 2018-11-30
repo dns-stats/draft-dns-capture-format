@@ -34,13 +34,15 @@ collection-parameters = 1
 
   IPv6PrefixLength = 1..128
   IPv4PrefixLength = 1..32
+  OpcodeRange = 0..15
+  RRTypeRange = 0..65535
 
   StorageParameters = {
       ticks-per-second             => uint,
       max-block-items              => uint,
       storage-hints                => StorageHints,
-      opcodes                      => [+ uint],
-      rr-types                     => [+ uint],
+      opcodes                      => [+ OpcodeRange],
+      rr-types                     => [+ RRTypeRange],
       ? storage-flags              => StorageFlags,
       ? client-address-prefix-ipv4 => IPv4PrefixLength,
       ? client-address-prefix-ipv6 => IPv6PrefixLength,
@@ -141,14 +143,16 @@ collection-parameters = 1
     StorageFlags = uint .bits StorageFlagValues
 
  ; Hints for later analysis.
+ VLANIdRange = 1..4094
+
  CollectionParameters = {
       ? query-timeout      => uint,
       ? skew-timeout       => uint,
       ? snaplen            => uint,
-      ? promisc            => uint,
+      ? promisc            => bool,
       ? interfaces         => [+ tstr],
       ? server-addresses   => [+ IPAddress],
-      ? vlan-ids           => [+ uint],
+      ? vlan-ids           => [+ VLANIdRange],
       ? filter             => tstr,
       ? generator-id       => tstr,
       ? host-id            => tstr,

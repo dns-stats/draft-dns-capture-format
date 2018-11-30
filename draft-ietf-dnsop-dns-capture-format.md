@@ -877,7 +877,7 @@ server-address -index |   | U | The index in the item in the `ip-address` array 
 ||
 server-port |   | U | The server port.
 ||
-qr-transport-flags | C | U | Bit flags describing the transport used to service the query.
+qr-transport-flags | C | U | Bit flags describing the transport used to service the query. As `mm-transport-flags` in (#malformedmessagedata), with an additional indicator for trailing bytes.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6. See (#ip-address-storage).
  | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
  | | | Bit 5. 1 if trailing bytes in query packet. See (#trailing-bytes).
@@ -971,7 +971,7 @@ server-address -index |   | U | The index in the `ip-address` array of the serve
 ||
 server-port |   | U | The server port.
 ||
-mm-transport-flags |   | U | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
+mm-transport-flags |   | U | Bit flags describing the transport used to service the query. As `qr-transport-flags` in (#queryresponsesignature), without the trailing bytes indicator.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
  | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
 ||

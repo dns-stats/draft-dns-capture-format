@@ -806,7 +806,7 @@ Overall information for a `Block` item. A map containing the following:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
-earliest-time |   | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks (see (#storageparameters)) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.
+earliest-time | C | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the POSIX epoch [@!posix-time] (`time_t`), excluding leap seconds. The second integer is the number of ticks (see (#storageparameters)) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.
 | | |
 block-parameters -index |   | U | The index of the item in the `block-parameters` array (in the `file-premable` item) applicable to this block. If not present, index 0 is used. See (#blockparameters).
 
@@ -1357,13 +1357,15 @@ should be treated as timed out queries.
 
 # Implementation guidance
 
+## CBOR
+
 Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of [@!RFC7049]) the following guidance may be of use to implementors.
 
 Adherence to the first two rules given in Section 3.9 of [@!RFC7049] will minimise file sizes.
 
 Adherence to the last two rules given in Section 3.9 of [@!RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments where outputting block tables after query/response data and allowing indefinite length maps and arrays could reduce memory requirements.
 
-## Optional data
+### Optional data
 
 When decoding C-DNS data some of the items required for a particular function that the consumer
 wishes to perform may be missing. Consumers should consider providing configurable
@@ -1391,6 +1393,16 @@ can occur in two circumstances with different results:
 
 Implementations should consider providing a configurable maximum RDATA size for capture,
 for example, to avoid memory issues when confronted with large XFR records.
+
+## Timestamps
+
+The preamble to each block includes a timestamp of the earliest record in the block.
+As described in (#blockpreamble), the timestamp is an array of 2 unsigned integers.
+The first is a POSIX `time_t` [@!posix-time]. This is defined as the number of seconds
+since the POSIX epoch, excluding leap seconds; a day is exactly 86400 seconds long.
+The period of a leap second does not, therefore, have a unique POSIX representation,
+but appears as the same timestamp as the previous second. Implementations may want to
+account for this behaviour, for example when calculating throughput rates.
 
 # Implementation status
 
@@ -1743,6 +1755,18 @@ draft-dickinson-dnsop-dns-capture-format-00
         </author>
         <date year='2018'/>
     </front>
+</reference>
+
+<reference anchor='posix-time'>
+    <front>
+        <title>Section 4.16, Base Definitions, Standard for Information Technology - Portable Operating System Interface (POSIX(R)) Base Specifications, Issue 7</title>
+        <author>
+            <organization>The Open Group</organization>
+        </author>
+        <date year='2017'/>
+    </front>
+    <seriesInfo name="IEEE Standard 1003.1" value="2017 Edition"/>
+    <seriesInfo name="DOI" value="10.1109/IEEESTD.2018.8277153"/>
 </reference>
 
 {backmatter}

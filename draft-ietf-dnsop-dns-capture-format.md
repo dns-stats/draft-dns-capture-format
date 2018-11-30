@@ -807,7 +807,7 @@ Overall information for a `Block` item. A map containing the following:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
-earliest-time | C | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the POSIX epoch [@!posix-time] (`time_t`), excluding leap seconds. The second integer is the number of ticks (see (#storageparameters)) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.
+earliest-time | C | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the POSIX epoch [@!posix-time] (`time_t`), excluding leap seconds. The second integer is the number of ticks (see (#storageparameters)) since the start of the second. This field is mandatory unless all block items containing a time offset from the start of the block also omit that time offset.
 | | |
 block-parameters -index |   | U | The index of the item in the `block-parameters` array (in the `file-premable` item) applicable to this block. If not present, index 0 is used. See (#blockparameters).
 

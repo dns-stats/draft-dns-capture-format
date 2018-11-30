@@ -1508,6 +1508,12 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 draft-ietf-dnsop-dns-capture-format-09
 
+* Editorial changes arising from IESG review
+* *-transport-flags and may be mandatory in some configurations
+* Mark fields that are conditionally mandatory
+* Change `promisc' flag CDDL data type to boolean
+* Add ranges to configuration quantities where appropriate
+
 draft-ietf-dnsop-dns-capture-format-08
 
 * Convert diagrams to ASCII

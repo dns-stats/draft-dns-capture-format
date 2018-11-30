@@ -417,8 +417,7 @@
 <link href="#rfc.section.10.7" rel="Chapter" title="10.7 Output"/>
 <link href="#rfc.section.10.8" rel="Chapter" title="10.8 Post processing"/>
 <link href="#rfc.section.11" rel="Chapter" title="11 Implementation guidance"/>
-<link href="#rfc.section.11.1" rel="Chapter" title="11.1 CBOR"/>
-<link href="#rfc.section.11.1.1" rel="Chapter" title="11.1.1 Optional data"/>
+<link href="#rfc.section.11.1" rel="Chapter" title="11.1 Optional data"/>
 <link href="#rfc.section.11.2" rel="Chapter" title="11.2 Trailing bytes"/>
 <link href="#rfc.section.11.3" rel="Chapter" title="11.3 Limiting collection of RDATA"/>
 <link href="#rfc.section.11.4" rel="Chapter" title="11.4 Timestamps"/>
@@ -452,7 +451,7 @@
 
   <meta name="dct.creator" content="Dickinson, J., Hague, J., Dickinson, S., Manderson, T., and J. Bond" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-ietf-dnsop-dns-capture-format-09" />
-  <meta name="dct.issued" scheme="ISO8601" content="2018-12-30" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-11-30" />
   <meta name="dct.abstract" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
   <meta name="description" content="This document describes a data representation for collections of DNS messages.  The format is designed for efficient storage and transmission of large packet captures of DNS traffic; it attempts to minimize the size of such packet capture files but retain the full DNS message contents along with the most useful transport metadata.  It is intended to assist with the development of DNS traffic monitoring applications.  " />
 
@@ -476,7 +475,7 @@
   <td class="right">S. Dickinson</td>
 </tr>
 <tr>
-  <td class="left">Expires: July 3, 2019</td>
+  <td class="left">Expires: June 3, 2019</td>
   <td class="right">Sinodun IT</td>
 </tr>
 <tr>
@@ -493,7 +492,7 @@
 </tr>
 <tr>
   <td class="left"></td>
-  <td class="right">December 30, 2018</td>
+  <td class="right">November 30, 2018</td>
 </tr>
 
     	
@@ -513,7 +512,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on July 3, 2019.</p>
+<p>This Internet-Draft will expire on June 3, 2019.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -568,9 +567,8 @@
 <li>10.7.   <a href="#rfc.section.10.7">Output</a></li>
 <li>10.8.   <a href="#rfc.section.10.8">Post processing</a></li>
 </ul><li>11.   <a href="#rfc.section.11">Implementation guidance</a></li>
-<ul><li>11.1.   <a href="#rfc.section.11.1">CBOR</a></li>
-<ul><li>11.1.1.   <a href="#rfc.section.11.1.1">Optional data</a></li>
-</ul><li>11.2.   <a href="#rfc.section.11.2">Trailing bytes</a></li>
+<ul><li>11.1.   <a href="#rfc.section.11.1">Optional data</a></li>
+<li>11.2.   <a href="#rfc.section.11.2">Trailing bytes</a></li>
 <li>11.3.   <a href="#rfc.section.11.3">Limiting collection of RDATA</a></li>
 <li>11.4.   <a href="#rfc.section.11.4">Timestamps</a></li>
 </ul><li>12.   <a href="#rfc.section.12">Implementation status</a></li>
@@ -603,7 +601,7 @@
   <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a></h1>
 <p id="rfc.section.1.p.1">There has long been a need for server operators to collect DNS queries and responses on authoritative and recursive name servers for monitoring and analysis.  This data is used in a number of ways including traffic monitoring, analyzing network attacks and "day in the life" (DITL) <a href="#ditl">[ditl]</a> analysis.  </p>
 <p id="rfc.section.1.p.2">A wide variety of tools already exist that facilitate the collection of DNS traffic data, such as DSC <a href="#dsc">[dsc]</a>, packetq <a href="#packetq">[packetq]</a>, dnscap <a href="#dnscap">[dnscap]</a> and dnstap <a href="#dnstap">[dnstap]</a>. However, there is no standard exchange format for large DNS packet captures. The PCAP <a href="#pcap">[pcap]</a> or PCAP-NG <a href="#pcapng">[pcapng]</a> formats are typically used in practice for packet captures, but these file formats can contain a great deal of additional information that is not directly pertinent to DNS traffic analysis and thus unnecessarily increases the capture file size.  Additionally these tools and formats typically have no filter mechanism to selectively record only certain fields at capture time, requiring post-processing for anonymization or pseudonymization of data to protect user privacy.  </p>
-<p id="rfc.section.1.p.3">There has also been work on using text based formats to describe DNS packets such as <a href="#I-D.daley-dnsxml">[I-D.daley-dnsxml]</a>, <a href="#I-D.hoffman-dns-in-json">[I-D.hoffman-dns-in-json]</a>, but these are largely aimed at producing convenient representations of single messages.  </p>
+<p id="rfc.section.1.p.3">There has also been work on using text based formats to describe DNS packets such as <a href="#I-D.daley-dnsxml">[I-D.daley-dnsxml]</a>, <a href="#RFC8427">[RFC8427]</a>, but these are largely aimed at producing convenient representations of single messages.  </p>
 <p id="rfc.section.1.p.4">Many DNS operators may receive hundreds of thousands of queries per second on a single name server instance so a mechanism to minimize the storage and transmission size (and therefore upload overhead) of the data collected is highly desirable.  </p>
 <p id="rfc.section.1.p.5">The format described in this document, C-DNS (Compacted-DNS), focusses on the problem of capturing and storing large packet capture files of DNS traffic with the following goals in mind: </p>
 <p/>
@@ -813,7 +811,7 @@
 <p id="rfc.section.6.p.6">The file header is followed by a series of data Blocks.  </p>
 <p id="rfc.section.6.p.7">A Block consists of a Block Preamble item, some Block Statistics for the traffic stored within the Block and then various arrays of common data collectively called the Block Tables. This is then followed by an array of the Query/Response data items detailing the queries and responses stored within the Block. The array of Query/Response data items is in turn followed by the Address/Event Counts data items (an array of per-client counts of particular IP events) and then Malformed Message data items (an array of malformed messages that stored in the Block).  </p>
 <p id="rfc.section.6.p.8">The exact nature of the DNS data will affect what block size is the best fit, however sample data for a root server indicated that block sizes up to 10,000 Q/R data items give good results. See <a href="#block-size-choice">Appendix C.6</a> for more details.  </p>
-<p id="rfc.section.6.p.9">This design exploits data commonality to reduce storage and transmission requirements.  It does, though, mean that C-DNS cannot be streamed below the level of a block.  </p>
+<p id="rfc.section.6.p.9">This design exploits data commonality and block based storage to minimise the C-DNS file size. As a result C-DNS cannot be streamed below the level of a block.  </p>
 <h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#block-parameters" id="block-parameters">Block Parameters</a></h1>
 <p id="rfc.section.6.1.p.1">The details of the Block Parameters items are not shown in the diagrams but are discussed here for context.  </p>
 <p id="rfc.section.6.1.p.2">An array of Block Parameters items is stored in the File Preamble (with a minimum of one item at index 0); a Block Parameters item consists of a collection of Storage and Collection Parameters that applies to any given Block.  An array is used in order to support use cases such as wanting to merge C-DNS files from different sources. The Block Preamble item then contains an optional index for the Block Parameters item that applies for that Block; if not present the index defaults to 0. Hence, in effect, a global Block Parameters item is defined which can then be overridden per Block.  </p>
@@ -1709,7 +1707,7 @@
       <td class="left">earliest-time</td>
       <td class="center">C</td>
       <td class="center">A</td>
-      <td class="left">A timestamp (2 unsigned integers, <samp>Timestamp</samp>) for the earliest record in the <samp>Block</samp> item. The first integer is the number of seconds since the POSIX epoch <a href="#posix-time">[posix-time]</a> (<samp>time_t</samp>), excluding leap seconds. The second integer is the number of ticks (see <a href="#storageparameters">Section 7.4.1.1</a>) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.</td>
+      <td class="left">A timestamp (2 unsigned integers, <samp>Timestamp</samp>) for the earliest record in the <samp>Block</samp> item. The first integer is the number of seconds since the POSIX epoch <a href="#posix-time">[posix-time]</a> (<samp>time_t</samp>), excluding leap seconds. The second integer is the number of ticks (see <a href="#storageparameters">Section 7.4.1.1</a>) since the start of the second. This field is mandatory unless all block items containing a time offset from the start of the block also omit that time offset.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -1995,7 +1993,7 @@
       <td class="left">qr-transport-flags</td>
       <td class="center">C</td>
       <td class="center">U</td>
-      <td class="left">Bit flags describing the transport used to service the query. As <samp>mm-transport-flags</samp> in <a href="#malformedmessagedata">Section 7.5.3.5</a>, with an additional indicator for trailing bytes.</td>
+      <td class="left">Bit flags describing the transport used to service the query. Same definition as <samp>mm-transport-flags</samp> in <a href="#malformedmessagedata">Section 7.5.3.5</a>, with an additional indicator for trailing bytes, see <a href="#cddl">Appendix A</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -2475,7 +2473,7 @@
       <td class="left">mm-transport-flags</td>
       <td class="center">C</td>
       <td class="center">U</td>
-      <td class="left">Bit flags describing the transport used to service the query. As <samp>qr-transport-flags</samp> in <a href="#queryresponsesignature">Section 7.5.3.2</a>, without the trailing bytes indicator.</td>
+      <td class="left">Bit flags describing the transport used to service the query, see <a href="#ip-address-storage">Section 6.2.4</a>.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -3172,12 +3170,11 @@
 <h1 id="rfc.section.10.8"><a href="#rfc.section.10.8">10.8.</a> <a href="#post-processing" id="post-processing">Post processing</a></h1>
 <p id="rfc.section.10.8.p.1">When ending capture, all items in the responses FIFO are timed out immediately, generating response-only entries to the Q/R data item FIFO. These and all other remaining entries in the Q/R data item FIFO should be treated as timed out queries.  </p>
 <h1 id="rfc.section.11"><a href="#rfc.section.11">11.</a> <a href="#implementation-guidance" id="implementation-guidance">Implementation guidance</a></h1>
-<h1 id="rfc.section.11.1"><a href="#rfc.section.11.1">11.1.</a> <a href="#cbor" id="cbor">CBOR</a></h1>
-<p id="rfc.section.11.1.p.1">Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of <a href="#RFC7049">[RFC7049]</a>) the following guidance may be of use to implementors.  </p>
-<p id="rfc.section.11.1.p.2">Adherence to the first two rules given in Section 3.9 of <a href="#RFC7049">[RFC7049]</a> will minimise file sizes.  </p>
-<p id="rfc.section.11.1.p.3">Adherence to the last two rules given in Section 3.9 of <a href="#RFC7049">[RFC7049]</a> for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments where outputting block tables after query/response data and allowing indefinite length maps and arrays could reduce memory requirements.  </p>
-<h1 id="rfc.section.11.1.1"><a href="#rfc.section.11.1.1">11.1.1.</a> <a href="#optional-data" id="optional-data">Optional data</a></h1>
-<p id="rfc.section.11.1.1.p.1">When decoding C-DNS data some of the items required for a particular function that the consumer wishes to perform may be missing. Consumers should consider providing configurable default values to be used in place of the missing values in their output.  </p>
+<p id="rfc.section.11.p.1">Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of <a href="#RFC7049">[RFC7049]</a>) the following guidance may be of use to implementors.  </p>
+<p id="rfc.section.11.p.2">Adherence to the first two rules given in Section 3.9 of <a href="#RFC7049">[RFC7049]</a> will minimise file sizes.  </p>
+<p id="rfc.section.11.p.3">Adherence to the last two rules given in Section 3.9 of <a href="#RFC7049">[RFC7049]</a> for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments where outputting block tables after query/response data and allowing indefinite length maps and arrays could reduce memory requirements.  </p>
+<h1 id="rfc.section.11.1"><a href="#rfc.section.11.1">11.1.</a> <a href="#optional-data" id="optional-data">Optional data</a></h1>
+<p id="rfc.section.11.1.p.1">When decoding C-DNS data some of the items required for a particular function that the consumer wishes to perform may be missing. Consumers should consider providing configurable default values to be used in place of the missing values in their output.  </p>
 <h1 id="rfc.section.11.2"><a href="#rfc.section.11.2">11.2.</a> <a href="#trailing-bytes" id="trailing-bytes">Trailing bytes</a></h1>
 <p id="rfc.section.11.2.p.1">A DNS query message in a UDP or TCP payload can be followed by some additional (spurious) bytes, which are not stored in C-DNS.  </p>
 <p id="rfc.section.11.2.p.2">When DNS traffic is sent over TCP, each message is prefixed with a two byte length field which gives the message length, excluding the two byte length field. In this context, trailing bytes can occur in two circumstances with different results: </p>
@@ -3192,7 +3189,7 @@
 <h1 id="rfc.section.11.3"><a href="#rfc.section.11.3">11.3.</a> <a href="#limiting-collection-of-rdata" id="limiting-collection-of-rdata">Limiting collection of RDATA</a></h1>
 <p id="rfc.section.11.3.p.1">Implementations should consider providing a configurable maximum RDATA size for capture, for example, to avoid memory issues when confronted with large XFR records.  </p>
 <h1 id="rfc.section.11.4"><a href="#rfc.section.11.4">11.4.</a> <a href="#timestamps" id="timestamps">Timestamps</a></h1>
-<p id="rfc.section.11.4.p.1">The preamble to each block includes a timestamp of the earliest record in the block.  As described in <a href="#blockpreamble">Section 7.5.1</a>, the timestamp is an array of 2 unsigned integers.  The first is a POSIX <samp>time_t</samp> <a href="#posix-time">[posix-time]</a>. This is defined as the number of seconds since the POSIX epoch, excluding leap seconds; a day is exactly 86400 seconds long.  The period of a leap second does not, therefore, have a unique POSIX representation, but appears as the same timestamp as the previous second. Implementations may want to account for this behaviour, for example when calculating throughput rates.  </p>
+<p id="rfc.section.11.4.p.1">The preamble to each block includes a timestamp of the earliest record in the block. As described in <a href="#blockpreamble">Section 7.5.1</a>, the timestamp is an array of 2 unsigned integers. The first is a POSIX <samp>time_t</samp> <a href="#posix-time">[posix-time]</a>. Consumers of C-DNS should be aware of this as it excludes leap seconds and therefore may cause minor anomalies in the data e.g. when calculating query throughput.  </p>
 <h1 id="rfc.section.12"><a href="#rfc.section.12">12.</a> <a href="#implementation-status" id="implementation-status">Implementation status</a></h1>
 <p id="rfc.section.12.p.1">[Note to RFC Editor: please remove this section and reference to <a href="#RFC7942">[RFC7942]</a> prior to publication.] </p>
 <p id="rfc.section.12.p.2">This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in <a href="#RFC7942">[RFC7942]</a>.  The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs.  Please note that the listing of any individual implementation here does not imply endorsement by the IETF.  Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors.  This is not intended as, and must not be construed to be, a catalog of available implementations or their features.  Readers are advised to note that other implementations may exist.  </p>
@@ -3230,7 +3227,8 @@
 
 <ul>
   <li>Editorial changes arising from IESG review</li>
-  <li>*-transport-flags</li>
+  <li>*-transport-flags and may be mandatory in some configurations</li>
+  <li>Mark fields that are conditionally mandatory</li>
   <li>Change `promisc' flag CDDL data type to boolean</li>
   <li>Add ranges to configuration quantities where appropriate</li>
 </ul>
@@ -3492,12 +3490,6 @@
     </tr>
     <tr>
       <td class="reference">
-        <b id="I-D.hoffman-dns-in-json">[I-D.hoffman-dns-in-json]</b>
-      </td>
-      <td class="top"><a>Hoffman, P.</a>, "<a href="http://tools.ietf.org/html/draft-hoffman-dns-in-json-16">Representing DNS Messages in JSON</a>", Internet-Draft draft-hoffman-dns-in-json-16, May 2018.</td>
-    </tr>
-    <tr>
-      <td class="reference">
         <b id="IEEE802.1Q">[IEEE802.1Q]</b>
       </td>
       <td class="top"><a>IEEE</a>, "<a>IEEE Standard for Local and metropolitan area networks -- Bridges and Bridged Networks</a>", DOI 10.1109/IEEESTD.2014.6991462, 2014.</td>
@@ -3543,6 +3535,12 @@
         <b id="RFC8259">[RFC8259]</b>
       </td>
       <td class="top"><a>Bray, T.</a>, "<a href="http://tools.ietf.org/html/rfc8259">The JavaScript Object Notation (JSON) Data Interchange Format</a>", STD 90, RFC 8259, DOI 10.17487/RFC8259, December 2017.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC8427">[RFC8427]</b>
+      </td>
+      <td class="top"><a>Hoffman, P.</a>, "<a href="http://tools.ietf.org/html/rfc8427">Representing DNS Messages in JSON</a>", RFC 8427, DOI 10.17487/RFC8427, July 2018.</td>
     </tr>
     <tr>
       <td class="reference">

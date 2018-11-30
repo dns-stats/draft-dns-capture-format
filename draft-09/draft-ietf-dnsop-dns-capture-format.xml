@@ -97,7 +97,7 @@
 <uri></uri>
 </address>
 </author>
-<date year="2018" month="December" day="30"/>
+<date year="2018" month="November" day="30"/>
 
 <area>Operations Area</area>
 <workgroup>dnsop</workgroup>
@@ -114,6 +114,7 @@ It is intended to assist with
 the development of DNS traffic monitoring applications.
 </t>
 </abstract>
+
 
 </front>
 
@@ -138,7 +139,7 @@ post-processing for anonymization or pseudonymization of data to protect user
 privacy.
 </t>
 <t>There has also been work on using text based formats to describe
-DNS packets such as <xref target="I-D.daley-dnsxml"/>, <xref target="I-D.hoffman-dns-in-json"/>, but these are largely
+DNS packets such as <xref target="I-D.daley-dnsxml"/>, <xref target="RFC8427"/>, but these are largely
 aimed at producing convenient representations of single messages.
 </t>
 <t>Many DNS operators may receive hundreds of thousands of queries per second on
@@ -502,8 +503,9 @@ that stored in the Block).
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See <xref target="block-size-choice"/> for more details.
 </t>
-<t>This design exploits data commonality to reduce storage and transmission requirements.
-It does, though, mean that C-DNS cannot be streamed below the level of a block.
+<t>This design exploits data commonality and block based storage to minimise the
+C-DNS file size. As a result C-DNS cannot be streamed below the level of a
+block.
 </t>
 
 <section anchor="block-parameters" title="Block Parameters">
@@ -929,7 +931,7 @@ captured.
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>earliest-time</c><c>C</c><c>A</c><c>A timestamp (2 unsigned integers, <spanx style="verb">Timestamp</spanx>) for the earliest record in the <spanx style="verb">Block</spanx> item. The first integer is the number of seconds since the POSIX epoch <xref target="posix-time"/> (<spanx style="verb">time_t</spanx>), excluding leap seconds. The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.</c>
+<c>earliest-time</c><c>C</c><c>A</c><c>A timestamp (2 unsigned integers, <spanx style="verb">Timestamp</spanx>) for the earliest record in the <spanx style="verb">Block</spanx> item. The first integer is the number of seconds since the POSIX epoch <xref target="posix-time"/> (<spanx style="verb">time_t</spanx>), excluding leap seconds. The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. This field is mandatory unless all block items containing a time offset from the start of the block also omit that time offset.</c>
 <c></c><c></c><c></c><c></c>
 <c>block-parameters -index</c><c></c><c>U</c><c>The index of the item in the <spanx style="verb">block-parameters</spanx> array (in the <spanx style="verb">file-premable</spanx> item) applicable to this block. If not present, index 0 is used. See <xref target="blockparameters"/>.</c>
 </texttable>
@@ -1022,7 +1024,7 @@ individual Q/R data items. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
-<c>qr-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the query. As <spanx style="verb">mm-transport-flags</spanx> in <xref target="malformedmessagedata"/>, with an additional indicator for trailing bytes.</c>
+<c>qr-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the query. Same definition as <spanx style="verb">mm-transport-flags</spanx> in <xref target="malformedmessagedata"/>, with an additional indicator for trailing bytes, see <xref target="cddl"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. IP version. 0 if IPv4, 1 if IPv6. See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH <xref target="RFC8484"/>. Values 5-15 are reserved for future use.</c>
 <c></c><c></c><c></c><c>Bit 5. 1 if trailing bytes in query packet. See <xref target="trailing-bytes"/>.</c>
@@ -1131,7 +1133,7 @@ individual Q/R data items. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
-<c>mm-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the query. As <spanx style="verb">qr-transport-flags</spanx> in <xref target="queryresponsesignature"/>, without the trailing bytes indicator.</c>
+<c>mm-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the query, see <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. IP version. 0 if IPv4, 1 if IPv6</c>
 <c></c><c></c><c></c><c>Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH <xref target="RFC8484"/>. Values 5-15 are reserved for future use.</c>
 <c></c><c></c><c></c><c></c>
@@ -1582,8 +1584,6 @@ should be treated as timed out queries.
 </section>
 
 <section anchor="implementation-guidance" title="Implementation guidance">
-
-<section anchor="cbor" title="CBOR">
 <t>Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of <xref target="RFC7049"/>) the following guidance may be of use to implementors.
 </t>
 <t>Adherence to the first two rules given in Section 3.9 of <xref target="RFC7049"/> will minimise file sizes.
@@ -1596,7 +1596,6 @@ should be treated as timed out queries.
 wishes to perform may be missing. Consumers should consider providing configurable
 default values to be used in place of the missing values in their output.
 </t>
-</section>
 </section>
 
 <section anchor="trailing-bytes" title="Trailing bytes">
@@ -1628,13 +1627,11 @@ for example, to avoid memory issues when confronted with large XFR records.
 </section>
 
 <section anchor="timestamps" title="Timestamps">
-<t>The preamble to each block includes a timestamp of the earliest record in the block.
-As described in <xref target="blockpreamble"/>, the timestamp is an array of 2 unsigned integers.
-The first is a POSIX <spanx style="verb">time_t</spanx> <xref target="posix-time"/>. This is defined as the number of seconds
-since the POSIX epoch, excluding leap seconds; a day is exactly 86400 seconds long.
-The period of a leap second does not, therefore, have a unique POSIX representation,
-but appears as the same timestamp as the previous second. Implementations may want to
-account for this behaviour, for example when calculating throughput rates.
+<t>The preamble to each block includes a timestamp of the earliest record in the
+block. As described in <xref target="blockpreamble"/>, the timestamp is an array of 2 unsigned
+integers. The first is a POSIX <spanx style="verb">time_t</spanx> <xref target="posix-time"/>. Consumers of C-DNS
+should be aware of this as it excludes leap seconds and therefore may cause
+minor anomalies in the data e.g. when calculating query throughput.
 </t>
 </section>
 </section>
@@ -1751,7 +1748,8 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 <t>
 <list style="symbols">
 <t>Editorial changes arising from IESG review</t>
-<t>*-transport-flags</t>
+<t>*-transport-flags and may be mandatory in some configurations</t>
+<t>Mark fields that are conditionally mandatory</t>
 <t>Change `promisc' flag CDDL data type to boolean</t>
 <t>Add ranges to configuration quantities where appropriate</t>
 </list>
@@ -1870,17 +1868,17 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 </middle>
 <back>
 <references title="Normative References">
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-cbor-cddl.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.0792.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1035.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6891.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7049.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8484.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-cbor-cddl.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0792.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1035.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6891.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7049.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8484.xml"?>
 <reference anchor='pcap-filter' target='http://www.tcpdump.org/manpages/pcap-filter.7.html'>
     <front>
         <title>Manpage of PCAP-FILTER</title>
@@ -1912,10 +1910,9 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 </reference>
 </references>
 <references title="Informative References">
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.bortzmeyer-dprive-rfc7626-bis.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.daley-dnsxml.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.dickinson-dprive-bcp-op.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.hoffman-dns-in-json.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.bortzmeyer-dprive-rfc7626-bis.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.daley-dnsxml.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.dickinson-dprive-bcp-op.xml"?>
 <reference anchor='IEEE802.1Q'>
     <front>
         <title>IEEE Standard for Local and metropolitan area networks -- Bridges and Bridged Networks</title>
@@ -1926,8 +1923,9 @@ name compression and Paul Hoffman for a detailed review of the document and the 
     </front>
     <seriesInfo name="DOI" value="10.1109/IEEESTD.2014.6991462"/>
 </reference>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7942.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7942.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8427.xml"?>
 <reference anchor='ditl' target='https://www.dns-oarc.net/oarc/data/ditl'>
     <front>
         <title>DITL</title>

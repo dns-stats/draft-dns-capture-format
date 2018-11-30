@@ -115,7 +115,6 @@ the development of DNS traffic monitoring applications.
 </t>
 </abstract>
 
-
 </front>
 
 <middle>
@@ -503,6 +502,9 @@ that stored in the Block).
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See <xref target="block-size-choice"/> for more details.
 </t>
+<t>This design exploits data commonality to reduce storage and transmission requirements.
+It does, though, mean that C-DNS cannot be streamed below the level of a block.
+</t>
 
 <section anchor="block-parameters" title="Block Parameters">
 <t>The details of the Block Parameters items are not shown in the diagrams but are discussed
@@ -627,12 +629,13 @@ Parameters contains fields to indicate if only IP prefixes were stored.
 </t>
 <t>If the IP address prefixes are absent, then full addresses are stored. In this
 case the IP version can be directly inferred from the stored address length and
-the field <spanx style="verb">qr-transport-flags</spanx> in QueryResponseSignature (which contains the IP
-version bit) is optional.
+the fields <spanx style="verb">qr-transport-flags</spanx> in QueryResponseSignature and <spanx style="verb">mm-transport-flags</spanx>
+in MalformedMessageData (which contain the IP version bit) are optional.
 </t>
 <t>If IP address prefixes are given, only the prefix bits of addresses are stored.
-In this case the field <spanx style="verb">qr-transport-flags</spanx> in QueryResponseSignature MUST be
-present, so that the IP version can be determined, see <xref target="queryresponsesignature"/>.
+In this case the fields <spanx style="verb">qr-transport-flags</spanx> in QueryResponseSignature and
+<spanx style="verb">mm-transport-flags</spanx> in MalformedMessageData MUST be present, so that the IP
+version can be determined. See <xref target="queryresponsesignature"/> and <xref target="malformedmessagedata"/>.
 </t>
 <t>As an example of storing only IP prefixes, if a client IPv6 prefix of 48 is
 specified, a client address of 2001:db8:85a3::8a2e:370:7334 will be stored as
@@ -694,7 +697,8 @@ with hyphens (e.g. <spanx style="verb">block-tables</spanx>).
 <list style="symbols">
 <t>U - Unsigned integer</t>
 <t>I - Signed integer (i.e. CBOR unsigned or negative integer)</t>
-<t>B - Byte string</t>
+<t>B - Boolean</t>
+<t>S - Byte string</t>
 <t>T - Text string</t>
 <t>M - Map</t>
 <t>A - Array</t>
@@ -771,22 +775,22 @@ description.
 <c></c><c></c><c></c><c></c>
 <c>storage-hints</c><c>X</c><c>M</c><c>Collection of hints as to which fields are omitted in the arrays that have optional fields. Map of type <spanx style="verb">StorageHints</spanx>, see <xref target="storagehints"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>opcodes</c><c>X</c><c>A</c><c>Array of OPCODES <xref target="opcodes"/> (unsigned integers) recorded by the collection implementation. See <xref target="optional-rrs-and-opcodes"/>.</c>
+<c>opcodes</c><c>X</c><c>A</c><c>Array of OPCODES <xref target="opcodes"/> (unsigned integers, each in the range 0 to 15 inclusive) recorded by the collection implementation. See <xref target="optional-rrs-and-opcodes"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>rr-types</c><c>X</c><c>A</c><c>Array of RR types <xref target="rrtypes"/> (unsigned integers) recorded by the collection implementation. See <xref target="optional-rrs-and-opcodes"/>.</c>
+<c>rr-types</c><c>X</c><c>A</c><c>Array of RR types <xref target="rrtypes"/> (unsigned integers, each in the range 0 to 65535 inclusive) recorded by the collection implementation. See <xref target="optional-rrs-and-opcodes"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>storage-flags</c><c></c><c>U</c><c>Bit flags indicating attributes of stored data.</c>
 <c></c><c></c><c></c><c>Bit 0. 1 if the data has been anonymized.</c>
 <c></c><c></c><c></c><c>Bit 1. 1 if the data is sampled data.</c>
 <c></c><c></c><c></c><c>Bit 2. 1 if the names have been normalized (converted to uniform case).</c>
 <c></c><c></c><c></c><c></c>
-<c>client-address -prefix-ipv4</c><c></c><c>U</c><c>IPv4 client address prefix length. If specified, only the address prefix bits are stored.</c>
+<c>client-address -prefix-ipv4</c><c></c><c>U</c><c>IPv4 client address prefix length, in the range 1 to 32 inclusive. If specified, only the address prefix bits are stored.</c>
 <c></c><c></c><c></c><c></c>
-<c>client-address -prefix-ipv6</c><c></c><c>U</c><c>IPv6 client address prefix length. If specified, only the address prefix bits are stored.</c>
+<c>client-address -prefix-ipv6</c><c></c><c>U</c><c>IPv6 client address prefix length, in the range 1 to 128 inclusive. If specified, only the address prefix bits are stored.</c>
 <c></c><c></c><c></c><c></c>
-<c>server-address -prefix-ipv4</c><c></c><c>U</c><c>IPv4 server address prefix length. If specified, only the address prefix bits are stored.</c>
+<c>server-address -prefix-ipv4</c><c></c><c>U</c><c>IPv4 server address prefix length, in the range 1 to 32 inclusive. If specified, only the address prefix bits are stored.</c>
 <c></c><c></c><c></c><c></c>
-<c>server-address -prefix-ipv6</c><c></c><c>U</c><c>IPv6 server address prefix length. If specified, only the address prefix bits are stored.</c>
+<c>server-address -prefix-ipv6</c><c></c><c>U</c><c>IPv6 server address prefix length, in the range 1 to 128 inclusive. If specified, only the address prefix bits are stored.</c>
 <c></c><c></c><c></c><c></c>
 <c>sampling-method</c><c></c><c>T</c><c>Information on the sampling method used. See <xref target="storage-flags"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -877,13 +881,13 @@ captured.
 <c></c><c></c><c></c><c></c>
 <c>snaplen</c><c></c><c>U</c><c>Collect up to this many bytes per packet.</c>
 <c></c><c></c><c></c><c></c>
-<c>promisc</c><c></c><c>U</c><c>1 if promiscuous mode <xref target="pcap-options"/> was enabled on the interface, 0 otherwise.</c>
+<c>promisc</c><c></c><c>B</c><c><spanx style="verb">true</spanx> if promiscuous mode <xref target="pcap-options"/> was enabled on the interface, <spanx style="verb">false</spanx> otherwise.</c>
 <c></c><c></c><c></c><c></c>
 <c>interfaces</c><c></c><c>A</c><c>Array of identifiers (of type text string) of the interfaces used for collection.</c>
 <c></c><c></c><c></c><c></c>
 <c>server-addresses</c><c></c><c>A</c><c>Array of server collection IP addresses (of type byte string). Hint for downstream analysers; does not affect collection.</c>
 <c></c><c></c><c></c><c></c>
-<c>vlan-ids</c><c></c><c>A</c><c>Array of identifiers (of type unsigned integer) of VLANs <xref target="IEEE802.1Q"/> selected for collection. VLAN IDs are unique only within an administrative domain.</c>
+<c>vlan-ids</c><c></c><c>A</c><c>Array of identifiers (of type unsigned integer, each in the range 1 to 4094 inclusive) of VLANs <xref target="IEEE802.1Q"/> selected for collection. VLAN IDs are unique only within an administrative domain.</c>
 <c></c><c></c><c></c><c></c>
 <c>filter</c><c></c><c>T</c><c><spanx style="verb">tcpdump</spanx> <xref target="pcap-filter"/> style filter for input.</c>
 <c></c><c></c><c></c><c></c>
@@ -925,7 +929,7 @@ captured.
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>earliest-time</c><c></c><c>A</c><c>A timestamp (2 unsigned integers, <spanx style="verb">Timestamp</spanx>) for the earliest record in the <spanx style="verb">Block</spanx> item. The first integer is the number of seconds since the Posix epoch (<spanx style="verb">time_t</spanx>). The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.</c>
+<c>earliest-time</c><c>C</c><c>A</c><c>A timestamp (2 unsigned integers, <spanx style="verb">Timestamp</spanx>) for the earliest record in the <spanx style="verb">Block</spanx> item. The first integer is the number of seconds since the POSIX epoch <xref target="posix-time"/> (<spanx style="verb">time_t</spanx>), excluding leap seconds. The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.</c>
 <c></c><c></c><c></c><c></c>
 <c>block-parameters -index</c><c></c><c>U</c><c>The index of the item in the <spanx style="verb">block-parameters</spanx> array (in the <spanx style="verb">file-premable</spanx> item) applicable to this block. If not present, index 0 is used. See <xref target="blockparameters"/>.</c>
 </texttable>
@@ -1018,7 +1022,7 @@ individual Q/R data items. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
-<c>qr-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the query.</c>
+<c>qr-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the query. As <spanx style="verb">mm-transport-flags</spanx> in <xref target="malformedmessagedata"/>, with an additional indicator for trailing bytes.</c>
 <c></c><c></c><c></c><c>Bit 0. IP version. 0 if IPv4, 1 if IPv6. See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH <xref target="RFC8484"/>. Values 5-15 are reserved for future use.</c>
 <c></c><c></c><c></c><c>Bit 5. 1 if trailing bytes in query packet. See <xref target="trailing-bytes"/>.</c>
@@ -1058,7 +1062,7 @@ individual Q/R data items. A map containing the following:
 <c></c><c></c><c></c><c>Bit 13. Response TrunCation (TC).</c>
 <c></c><c></c><c></c><c>Bit 14. Response Authoritative Answer (AA).</c>
 <c></c><c></c><c></c><c></c>
-<c>query-rcode</c><c></c><c>U</c><c>Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE <xref target="rcodes"/>.</c>
+<c>query-rcode</c><c></c><c>U</c><c>Query RCODE. If the Query contains OPT <xref target="RFC6891"/>, this value incorporates any EXTENDED_RCODE_VALUE <xref target="rcodes"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>query-classtype -index</c><c></c><c>U</c><c>The index to the item in the the <spanx style="verb">classtype</spanx> array of the CLASS and TYPE of the first Question. See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1076,7 +1080,7 @@ individual Q/R data items. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>opt-rdata-index</c><c></c><c>U</c><c>The index in the <spanx style="verb">name-rdata</spanx> array  of the OPT RDATA. See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>response-rcode</c><c></c><c>U</c><c>Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE <xref target="rcodes"/>.</c>
+<c>response-rcode</c><c></c><c>U</c><c>Response RCODE. If the Response contains OPT <xref target="RFC6891"/>, this value incorporates any EXTENDED_RCODE_VALUE <xref target="rcodes"/>.</c>
 </texttable>
 </section>
 
@@ -1127,11 +1131,11 @@ individual Q/R data items. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
-<c>mm-transport-flags</c><c></c><c>U</c><c>Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.</c>
+<c>mm-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the query. As <spanx style="verb">qr-transport-flags</spanx> in <xref target="queryresponsesignature"/>, without the trailing bytes indicator.</c>
 <c></c><c></c><c></c><c>Bit 0. IP version. 0 if IPv4, 1 if IPv6</c>
 <c></c><c></c><c></c><c>Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH <xref target="RFC8484"/>. Values 5-15 are reserved for future use.</c>
 <c></c><c></c><c></c><c></c>
-<c>mm-payload</c><c></c><c>B</c><c>The payload (raw bytes) of the DNS message.</c>
+<c>mm-payload</c><c></c><c>S</c><c>The payload (raw bytes) of the DNS message.</c>
 </texttable>
 </section>
 </section>
@@ -1242,7 +1246,7 @@ individual client addresses. A map containing the following:
 <c></c><c></c><c></c><c>4. ICMPv6 destination unreachable.</c>
 <c></c><c></c><c></c><c>5. ICMPv6 packet too big.</c>
 <c></c><c></c><c></c><c></c>
-<c>ae-code</c><c></c><c>U</c><c>A code relating to the event.</c>
+<c>ae-code</c><c></c><c>U</c><c>A code relating to the event. For ICMP or ICMPv6 events, this MUST be the ICMP <xref target="RFC0792"/> or ICMPv6 <xref target="RFC4443"/> code. For other events the contents are undefined.</c>
 <c></c><c></c><c></c><c></c>
 <c>ae-address-index</c><c>X</c><c>U</c><c>The index in the <spanx style="verb">ip-address</spanx> array of the client address. See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1578,11 +1582,13 @@ should be treated as timed out queries.
 </section>
 
 <section anchor="implementation-guidance" title="Implementation guidance">
+
+<section anchor="cbor" title="CBOR">
 <t>Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of <xref target="RFC7049"/>) the following guidance may be of use to implementors.
 </t>
 <t>Adherence to the first two rules given in Section 3.9 of <xref target="RFC7049"/> will minimise file sizes.
 </t>
-<t>Adherence to the last two rules given in Section 3.9 of <xref target="RFC7049"/> for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
+<t>Adherence to the last two rules given in Section 3.9 of <xref target="RFC7049"/> for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments where outputting block tables after query/response data and allowing indefinite length maps and arrays could reduce memory requirements.
 </t>
 
 <section anchor="optional-data" title="Optional data">
@@ -1590,6 +1596,7 @@ should be treated as timed out queries.
 wishes to perform may be missing. Consumers should consider providing configurable
 default values to be used in place of the missing values in their output.
 </t>
+</section>
 </section>
 
 <section anchor="trailing-bytes" title="Trailing bytes">
@@ -1617,6 +1624,17 @@ This will not generate a trailing bytes record for the processed well-formed mes
 <section anchor="limiting-collection-of-rdata" title="Limiting collection of RDATA">
 <t>Implementations should consider providing a configurable maximum RDATA size for capture,
 for example, to avoid memory issues when confronted with large XFR records.
+</t>
+</section>
+
+<section anchor="timestamps" title="Timestamps">
+<t>The preamble to each block includes a timestamp of the earliest record in the block.
+As described in <xref target="blockpreamble"/>, the timestamp is an array of 2 unsigned integers.
+The first is a POSIX <spanx style="verb">time_t</spanx> <xref target="posix-time"/>. This is defined as the number of seconds
+since the POSIX epoch, excluding leap seconds; a day is exactly 86400 seconds long.
+The period of a leap second does not, therefore, have a unique POSIX representation,
+but appears as the same timestamp as the previous second. Implementations may want to
+account for this behaviour, for example when calculating throughput rates.
 </t>
 </section>
 </section>
@@ -1729,6 +1747,14 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 
 <section anchor="changelog" title="Changelog">
 <t>draft-ietf-dnsop-dns-capture-format-09
+</t>
+<t>
+<list style="symbols">
+<t>Editorial changes arising from IESG review</t>
+<t>*-transport-flags</t>
+<t>Change `promisc' flag CDDL data type to boolean</t>
+<t>Add ranges to configuration quantities where appropriate</t>
+</list>
 </t>
 <t>draft-ietf-dnsop-dns-capture-format-08
 </t>
@@ -1844,15 +1870,17 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 </middle>
 <back>
 <references title="Normative References">
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-cbor-cddl.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1035.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6891.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7049.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8484.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-cbor-cddl.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.0792.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1035.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6891.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7049.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8484.xml"?>
 <reference anchor='pcap-filter' target='http://www.tcpdump.org/manpages/pcap-filter.7.html'>
     <front>
         <title>Manpage of PCAP-FILTER</title>
@@ -1871,12 +1899,23 @@ name compression and Paul Hoffman for a detailed review of the document and the 
         <date year='2018'/>
     </front>
 </reference>
+<reference anchor='posix-time'>
+    <front>
+        <title>Section 4.16, Base Definitions, Standard for Information Technology - Portable Operating System Interface (POSIX(R)) Base Specifications, Issue 7</title>
+        <author>
+            <organization>The Open Group</organization>
+        </author>
+        <date year='2017'/>
+    </front>
+    <seriesInfo name="IEEE Standard 1003.1" value="2017 Edition"/>
+    <seriesInfo name="DOI" value="10.1109/IEEESTD.2018.8277153"/>
+</reference>
 </references>
 <references title="Informative References">
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.bortzmeyer-dprive-rfc7626-bis.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.daley-dnsxml.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.dickinson-dprive-bcp-op.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.hoffman-dns-in-json.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.bortzmeyer-dprive-rfc7626-bis.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.daley-dnsxml.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.dickinson-dprive-bcp-op.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.hoffman-dns-in-json.xml"?>
 <reference anchor='IEEE802.1Q'>
     <front>
         <title>IEEE Standard for Local and metropolitan area networks -- Bridges and Bridged Networks</title>
@@ -1887,8 +1926,8 @@ name compression and Paul Hoffman for a detailed review of the document and the 
     </front>
     <seriesInfo name="DOI" value="10.1109/IEEESTD.2014.6991462"/>
 </reference>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7942.xml"?>
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7942.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"?>
 <reference anchor='ditl' target='https://www.dns-oarc.net/oarc/data/ditl'>
     <front>
         <title>DITL</title>
@@ -2065,13 +2104,15 @@ collection-parameters = 1
 
   IPv6PrefixLength = 1..128
   IPv4PrefixLength = 1..32
+  OpcodeRange = 0..15
+  RRTypeRange = 0..65535
 
   StorageParameters = {
       ticks-per-second             =&gt; uint,
       max-block-items              =&gt; uint,
       storage-hints                =&gt; StorageHints,
-      opcodes                      =&gt; [+ uint],
-      rr-types                     =&gt; [+ uint],
+      opcodes                      =&gt; [+ OpcodeRange],
+      rr-types                     =&gt; [+ RRTypeRange],
       ? storage-flags              =&gt; StorageFlags,
       ? client-address-prefix-ipv4 =&gt; IPv4PrefixLength,
       ? client-address-prefix-ipv6 =&gt; IPv6PrefixLength,
@@ -2172,14 +2213,16 @@ collection-parameters = 1
     StorageFlags = uint .bits StorageFlagValues
 
  ; Hints for later analysis.
+ VLANIdRange = 1..4094
+
  CollectionParameters = {
       ? query-timeout      =&gt; uint,
       ? skew-timeout       =&gt; uint,
       ? snaplen            =&gt; uint,
-      ? promisc            =&gt; uint,
+      ? promisc            =&gt; bool,
       ? interfaces         =&gt; [+ tstr],
       ? server-addresses   =&gt; [+ IPAddress],
-      ? vlan-ids           =&gt; [+ uint],
+      ? vlan-ids           =&gt; [+ VLANIdRange],
       ? filter             =&gt; tstr,
       ? generator-id       =&gt; tstr,
       ? host-id            =&gt; tstr,

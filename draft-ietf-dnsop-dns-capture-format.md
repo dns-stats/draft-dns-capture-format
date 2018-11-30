@@ -447,6 +447,9 @@ The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
+This design exploits data commonality to reduce storage and transmission requirements.
+It does, though, mean that C-DNS cannot be streamed below the level of a block.
+
 ## Block Parameters
 
 The details of the Block Parameters items are not shown in the diagrams but are discussed
@@ -554,12 +557,13 @@ Parameters contains fields to indicate if only IP prefixes were stored.
 
 If the IP address prefixes are absent, then full addresses are stored. In this
 case the IP version can be directly inferred from the stored address length and
-the field `qr-transport-flags` in QueryResponseSignature (which contains the IP
-version bit) is optional.
+the fields `qr-transport-flags` in QueryResponseSignature and `mm-transport-flags`
+in MalformedMessageData (which contain the IP version bit) are optional.
 
 If IP address prefixes are given, only the prefix bits of addresses are stored.
-In this case the field `qr-transport-flags` in QueryResponseSignature MUST be
-present, so that the IP version can be determined, see (#queryresponsesignature).
+In this case the fields `qr-transport-flags` in QueryResponseSignature and
+`mm-transport-flags` in MalformedMessageData MUST be present, so that the IP
+version can be determined. See (#queryresponsesignature) and (#malformedmessagedata).
 
 As an example of storing only IP prefixes, if a client IPv6 prefix of 48 is
 specified, a client address of 2001:db8:85a3::8a2e:370:7334 will be stored as
@@ -612,7 +616,8 @@ For the sake of brevity, the following conventions are used in the tables:
 * The column T gives the CBOR data type of the item.
   * U - Unsigned integer
   * I - Signed integer (i.e. CBOR unsigned or negative integer)
-  * B - Byte string
+  * B - Boolean
+  * S - Byte string
   * T - Text string
   * M - Map
   * A - Array
@@ -669,22 +674,22 @@ max-block-items | X | U | The maximum number of items stored in any of the array
 ||
 storage-hints | X | M | Collection of hints as to which fields are omitted in the arrays that have optional fields. Map of type `StorageHints`, see (#storagehints).
 ||
-opcodes | X | A | Array of OPCODES [@opcodes] (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
+opcodes | X | A | Array of OPCODES [@opcodes] (unsigned integers, each in the range 0 to 15 inclusive) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
 ||
-rr-types | X | A | Array of RR types [@rrtypes] (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
+rr-types | X | A | Array of RR types [@rrtypes] (unsigned integers, each in the range 0 to 65535 inclusive) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
 ||
 storage-flags |   | U | Bit flags indicating attributes of stored data.
  | | | Bit 0. 1 if the data has been anonymized.
  | | | Bit 1. 1 if the data is sampled data.
  | | | Bit 2. 1 if the names have been normalized (converted to uniform case).
 ||
-client-address -prefix-ipv4 |   | U | IPv4 client address prefix length. If specified, only the address prefix bits are stored.
+client-address -prefix-ipv4 |   | U | IPv4 client address prefix length, in the range 1 to 32 inclusive. If specified, only the address prefix bits are stored.
 ||
-client-address -prefix-ipv6 |   | U | IPv6 client address prefix length. If specified, only the address prefix bits are stored.
+client-address -prefix-ipv6 |   | U | IPv6 client address prefix length, in the range 1 to 128 inclusive. If specified, only the address prefix bits are stored.
 ||
-server-address -prefix-ipv4 |   | U | IPv4 server address prefix length. If specified, only the address prefix bits are stored.
+server-address -prefix-ipv4 |   | U | IPv4 server address prefix length, in the range 1 to 32 inclusive. If specified, only the address prefix bits are stored.
 ||
-server-address -prefix-ipv6 |   | U | IPv6 server address prefix length. If specified, only the address prefix bits are stored.
+server-address -prefix-ipv6 |   | U | IPv6 server address prefix length, in the range 1 to 128 inclusive. If specified, only the address prefix bits are stored.
 ||
 sampling-method |   | T | Information on the sampling method used. See (#storage-flags).
 ||
@@ -764,13 +769,13 @@ skew-timeout |   | U | The network stack may report a response before the corres
 ||
 snaplen |   | U | Collect up to this many bytes per packet.
 ||
-promisc |   | U | 1 if promiscuous mode [@!pcap-options] was enabled on the interface, 0 otherwise.
+promisc |   | B | `true` if promiscuous mode [@!pcap-options] was enabled on the interface, `false` otherwise.
 ||
 interfaces |   | A | Array of identifiers (of type text string) of the interfaces used for collection.
 ||
 server-addresses |   | A | Array of server collection IP addresses (of type byte string). Hint for downstream analysers; does not affect collection.
 ||
-vlan-ids |   | A | Array of identifiers (of type unsigned integer) of VLANs [@?IEEE802.1Q] selected for collection. VLAN IDs are unique only within an administrative domain.
+vlan-ids |   | A | Array of identifiers (of type unsigned integer, each in the range 1 to 4094 inclusive) of VLANs [@?IEEE802.1Q] selected for collection. VLAN IDs are unique only within an administrative domain.
 ||
 filter |   | T | `tcpdump` [@!pcap-filter] style filter for input.
 ||
@@ -802,7 +807,7 @@ Overall information for a `Block` item. A map containing the following:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
-earliest-time |   | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the Posix epoch (`time_t`). The second integer is the number of ticks (see (#storageparameters)) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.
+earliest-time | C | A | A timestamp (2 unsigned integers, `Timestamp`) for the earliest record in the `Block` item. The first integer is the number of seconds since the POSIX epoch [@!posix-time] (`time_t`), excluding leap seconds. The second integer is the number of ticks (see (#storageparameters)) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.
 | | |
 block-parameters -index |   | U | The index of the item in the `block-parameters` array (in the `file-premable` item) applicable to this block. If not present, index 0 is used. See (#blockparameters).
 
@@ -876,7 +881,7 @@ server-address -index |   | U | The index in the item in the `ip-address` array 
 ||
 server-port |   | U | The server port.
 ||
-qr-transport-flags | C | U | Bit flags describing the transport used to service the query.
+qr-transport-flags | C | U | Bit flags describing the transport used to service the query. As `mm-transport-flags` in (#malformedmessagedata), with an additional indicator for trailing bytes.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6. See (#ip-address-storage).
  | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
  | | | Bit 5. 1 if trailing bytes in query packet. See (#trailing-bytes).
@@ -916,7 +921,7 @@ qr-dns-flags |   | U | Bit flags with values from the Query and Response DNS fla
  | | | Bit 13. Response TrunCation (TC).
  | | | Bit 14. Response Authoritative Answer (AA).
 ||
-query-rcode |   | U | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
+query-rcode |   | U | Query RCODE. If the Query contains OPT [@!RFC6891], this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
 ||
 query-classtype -index |   | U | The index to the item in the the `classtype` array of the CLASS and TYPE of the first Question. See (#blocktables).
 ||
@@ -934,7 +939,7 @@ udp-buf-size |   | U | The Query EDNS sender's UDP payload size.
 ||
 opt-rdata-index |   | U | The index in the `name-rdata` array  of the OPT RDATA. See (#blocktables).
 ||
-response-rcode |   | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
+response-rcode |   | U | Response RCODE. If the Response contains OPT [@!RFC6891], this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
 
 #### "Question"
 
@@ -970,11 +975,11 @@ server-address -index |   | U | The index in the `ip-address` array of the serve
 ||
 server-port |   | U | The server port.
 ||
-mm-transport-flags |   | U | Bit flags describing the transport used to service the query. Bit 0 is the least significant bit.
+mm-transport-flags | C | U | Bit flags describing the transport used to service the query. As `qr-transport-flags` in (#queryresponsesignature), without the trailing bytes indicator.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
  | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
 ||
-mm-payload |   | B | The payload (raw bytes) of the DNS message.
+mm-payload |   | S | The payload (raw bytes) of the DNS message.
 
 ## "QueryResponse"
 
@@ -1063,7 +1068,7 @@ ae-type | X | U | The type of event. The following events types are currently de
  | | | 4. ICMPv6 destination unreachable.
  | | | 5. ICMPv6 packet too big.
 ||
-ae-code |   | U | A code relating to the event.
+ae-code |   | U | A code relating to the event. For ICMP or ICMPv6 events, this MUST be the ICMP [@!RFC0792] or ICMPv6 [@!RFC4443] code. For other events the contents are undefined.
 ||
 ae-address-index | X | U | The index in the `ip-address` array of the client address. See (#blocktables).
 ||
@@ -1353,13 +1358,15 @@ should be treated as timed out queries.
 
 # Implementation guidance
 
+## CBOR
+
 Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of [@!RFC7049]) the following guidance may be of use to implementors.
 
 Adherence to the first two rules given in Section 3.9 of [@!RFC7049] will minimise file sizes.
 
-Adherence to the last two rules given in Section 3.9 of [@!RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
+Adherence to the last two rules given in Section 3.9 of [@!RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments where outputting block tables after query/response data and allowing indefinite length maps and arrays could reduce memory requirements.
 
-## Optional data
+### Optional data
 
 When decoding C-DNS data some of the items required for a particular function that the consumer
 wishes to perform may be missing. Consumers should consider providing configurable
@@ -1387,6 +1394,16 @@ can occur in two circumstances with different results:
 
 Implementations should consider providing a configurable maximum RDATA size for capture,
 for example, to avoid memory issues when confronted with large XFR records.
+
+## Timestamps
+
+The preamble to each block includes a timestamp of the earliest record in the block.
+As described in (#blockpreamble), the timestamp is an array of 2 unsigned integers.
+The first is a POSIX `time_t` [@!posix-time]. This is defined as the number of seconds
+since the POSIX epoch, excluding leap seconds; a day is exactly 86400 seconds long.
+The period of a leap second does not, therefore, have a unique POSIX representation,
+but appears as the same timestamp as the previous second. Implementations may want to
+account for this behaviour, for example when calculating throughput rates.
 
 # Implementation status
 
@@ -1490,6 +1507,12 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 # Changelog
 
 draft-ietf-dnsop-dns-capture-format-09
+
+* Editorial changes arising from IESG review
+* *-transport-flags and may be mandatory in some configurations
+* Mark fields that are conditionally mandatory
+* Change `promisc' flag CDDL data type to boolean
+* Add ranges to configuration quantities where appropriate
 
 draft-ietf-dnsop-dns-capture-format-08
 
@@ -1739,6 +1762,18 @@ draft-dickinson-dnsop-dns-capture-format-00
         </author>
         <date year='2018'/>
     </front>
+</reference>
+
+<reference anchor='posix-time'>
+    <front>
+        <title>Section 4.16, Base Definitions, Standard for Information Technology - Portable Operating System Interface (POSIX(R)) Base Specifications, Issue 7</title>
+        <author>
+            <organization>The Open Group</organization>
+        </author>
+        <date year='2017'/>
+    </front>
+    <seriesInfo name="IEEE Standard 1003.1" value="2017 Edition"/>
+    <seriesInfo name="DOI" value="10.1109/IEEESTD.2018.8277153"/>
 </reference>
 
 {backmatter}

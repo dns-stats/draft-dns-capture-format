@@ -6,7 +6,7 @@
 ; The overall structure of a file.
 ;
 File = [
-    file-type-id  : tstr .regexp "C-DNS",
+    file-type-id  : "C-DNS",
     file-preamble : FilePreamble,
     file-blocks   : [* Block],
 ]
@@ -15,8 +15,8 @@ File = [
 ; The file preamble.
 ;
 FilePreamble = {
-    major-format-version => uint .eq 1,
-    minor-format-version => uint .eq 0,
+    major-format-version => 1,
+    minor-format-version => 0,
     ? private-version    => uint,
     block-parameters     => [+ BlockParameters],
 }
@@ -32,6 +32,9 @@ BlockParameters = {
 storage-parameters    = 0
 collection-parameters = 1
 
+  IPv6PrefixLength = 1..128
+  IPv4PrefixLength = 1..32
+
   StorageParameters = {
       ticks-per-second             => uint,
       max-block-items              => uint,
@@ -39,10 +42,10 @@ collection-parameters = 1
       opcodes                      => [+ uint],
       rr-types                     => [+ uint],
       ? storage-flags              => StorageFlags,
-      ? client-address-prefix-ipv4 => uint,
-      ? client-address-prefix-ipv6 => uint,
-      ? server-address-prefix-ipv4 => uint,
-      ? server-address-prefix-ipv6 => uint,
+      ? client-address-prefix-ipv4 => IPv4PrefixLength,
+      ? client-address-prefix-ipv6 => IPv6PrefixLength,
+      ? server-address-prefix-ipv4 => IPv4PrefixLength,
+      ? server-address-prefix-ipv6 => IPv6PrefixLength,
       ? sampling-method            => tstr,
       ? anonymisation-method       => tstr,
   }
@@ -63,7 +66,8 @@ collection-parameters = 1
     ; item or will ignore the item if present.
     StorageHints = {
         query-response-hints           => QueryResponseHints,
-        query-response-signature-hints => QueryResponseSignatureHints,
+        query-response-signature-hints =>
+            QueryResponseSignatureHints,
         rr-hints                       => RRHints,
         other-data-hints               => OtherDataHints,
     }
@@ -84,7 +88,8 @@ collection-parameters = 1
           query-size                   : 8,
           response-size                : 9,
           response-processing-data     : 10,
-          query-question-sections      : 11,    ; Second & subsequent questions
+          query-question-sections      : 11,    ; Second & subsequent
+                                                ; questions
           query-answer-sections        : 12,
           query-authority-sections     : 13,
           query-additional-sections    : 14,
@@ -113,7 +118,8 @@ collection-parameters = 1
           query-opt-rdata    : 15,
           response-rcode     : 16,
       )
-      QueryResponseSignatureHints = uint .bits QueryResponseSignatureHintValues
+      QueryResponseSignatureHints =
+          uint .bits QueryResponseSignatureHintValues
 
       RRHintValues = &(
           ttl         : 0,
@@ -134,13 +140,14 @@ collection-parameters = 1
     )
     StorageFlags = uint .bits StorageFlagValues
 
-  CollectionParameters = {
+ ; Hints for later analysis.
+ CollectionParameters = {
       ? query-timeout      => uint,
       ? skew-timeout       => uint,
       ? snaplen            => uint,
       ? promisc            => uint,
       ? interfaces         => [+ tstr],
-      ? server-addresses   => [+ IPAddress], ; Hint for later analysis
+      ? server-addresses   => [+ IPAddress],
       ? vlan-ids           => [+ uint],
       ? filter             => tstr,
       ? generator-id       => tstr,
@@ -162,7 +169,8 @@ collection-parameters = 1
 ;
 Block = {
     block-preamble          => BlockPreamble,
-    ? block-statistics      => BlockStatistics, ; Much of this could be derived
+    ? block-statistics      => BlockStatistics, ; Much of this
+                                                ; could be derived
     ? block-tables          => BlockTables,
     ? query-responses       => [+ QueryResponse],
     ? address-event-counts  => [+ AddressEventCount],
@@ -185,8 +193,8 @@ BlockPreamble = {
 earliest-time          = 0
 block-parameters-index = 1
 
-; Ticks are subsecond intervals. The number of ticks in a second is file/block
-; metadata. Signed and unsigned tick types are defined.
+; Ticks are subsecond intervals. The number of ticks in a second is
+; file/block metadata. Signed and unsigned tick types are defined.
 ticks = int
 uticks = uint
 
@@ -219,7 +227,8 @@ malformed-items     = 5
 BlockTables = {
     ? ip-address             => [+ IPAddress],
     ? classtype              => [+ ClassType],
-    ? name-rdata             => [+ bstr],    ; Holds both Name RDATA and RDATA
+    ? name-rdata             => [+ bstr],    ; Holds both Names
+                                             ; and RDATA
     ? qr-sig                 => [+ QueryResponseSignature],
     ? QuestionTables,
     ? RRTables,
@@ -293,6 +302,7 @@ response-rcode        = 16
   ;     tcp               : 1,
   ;     tls               : 2,
   ;     dtls              : 3,
+  ;     doh               : 4,
   ; )
 
   TransportFlagValues = &(
@@ -303,7 +313,8 @@ response-rcode        = 16
   QueryResponseTransportFlagValues = &(
       query-trailingdata : 5,
   ) / TransportFlagValues
-  QueryResponseTransportFlags = uint .bits QueryResponseTransportFlagValues
+  QueryResponseTransportFlags =
+      uint .bits QueryResponseTransportFlagValues
 
   QueryResponseType = &(
       stub      : 0,
@@ -351,7 +362,8 @@ QuestionTables = (
   QuestionList = [+ uint]           ; Index of Question
 
   Question = {                      ; Second and subsequent questions
-      name-index      => uint,      ; Index to a name in the name-rdata table
+      name-index      => uint,      ; Index to a name in the
+                                    ; name-rdata table
       classtype-index => uint,
   }
   name-index      = 0
@@ -365,10 +377,12 @@ RRTables = (
   RRList = [+ uint]                     ; Index of RR
 
   RR = {
-      name-index      => uint,          ; Index to a name in the name-rdata table
+      name-index      => uint,          ; Index to a name in the
+                                        ; name-rdata table
       classtype-index => uint,
       ? ttl           => uint,
-      ? rdata-index   => uint,          ; Index to RDATA in the name-rdata table
+      ? rdata-index   => uint,          ; Index to RDATA in the
+                                        ; name-rdata table
   }
   ; Other map key values already defined above.
   ttl         = 2
@@ -388,7 +402,8 @@ mm-payload              = 3
 ; A single query/response pair.
 ;
 QueryResponse = {
-    ? time-offset              => uticks,     ; Time offset from start of block
+    ? time-offset              => uticks,     ; Time offset from
+                                              ; start of block
     ? client-address-index     => uint,
     ? client-port              => uint,
     ? transaction-id           => uint,
@@ -466,7 +481,8 @@ AddressEventType = (
 ; Malformed messages.
 ;
 MalformedMessage = {
-    ? time-offset           => uticks,   ; Time offset from start of block
+    ? time-offset           => uticks,   ; Time offset from
+                                         ; start of block
     ? client-address-index  => uint,
     ? client-port           => uint,
     ? message-data-index    => uint,

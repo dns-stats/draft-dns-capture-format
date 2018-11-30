@@ -447,6 +447,9 @@ The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
+This design exploits data commonality to reduce storage and transmission requirements.
+It does, though, mean that C-DNS cannot be streamed below the level of a block.
+
 ## Block Parameters
 
 The details of the Block Parameters items are not shown in the diagrams but are discussed
@@ -1358,7 +1361,7 @@ Whilst this document makes no specific recommendations with respect to Canonical
 
 Adherence to the first two rules given in Section 3.9 of [@!RFC7049] will minimise file sizes.
 
-Adherence to the last two rules given in Section 3.9 of [@!RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments.
+Adherence to the last two rules given in Section 3.9 of [@!RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments where outputting block tables after query/response data and allowing indefinite length maps and arrays could reduce memory requirements.
 
 ## Optional data
 

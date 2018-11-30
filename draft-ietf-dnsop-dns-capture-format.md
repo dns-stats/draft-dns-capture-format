@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2018-08-10T00:00:00Z
+    date = 2018-12-30T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -461,7 +461,7 @@ These parameters include:
 
 * The sub-second timing resolution used by the data.
 * Information (hints) on which optional data are omitted. See (#optional-data-items).
-* Recorded OPCODES and RR types. See (#optional-rrs-and-opcodes).
+* Recorded OPCODES [@opcodes] and RR types [@rrtypes]. See (#optional-rrs-and-opcodes).
 * Flags indicating, for example, whether the data is sampled or anonymised.
   See (#storage-flags).
 * Client and server IPv4 and IPv6 address prefixes. See (#ip-address-storage)
@@ -491,7 +491,7 @@ This does, however, mean that a consumer of a C-DNS file faces two problems:
 
 For example, capturing C-DNS data from within a nameserver implementation
 makes it unlikely that the Client Hoplimit can be recorded. Or, if
-there is no query ARCount recorded and no query OPT RDATA recorded, is that
+there is no query ARCount recorded and no query OPT RDATA [@!RFC6891] recorded, is that
 because no query contained an OPT RR, or because that data was not stored?
 
 The Storage Parameters therefore also contains a Storage Hints item which specifies
@@ -504,16 +504,16 @@ these to quickly determine whether the input data is rich enough for its needs.
 
 ### Optional RRs and OPCODEs
 
-Also included in the Storage Parameters are explicit arrays listing the RR types [@rrtypes] and
-the OPCODEs [@opcodes] to be recorded. These remove any ambiguity over whether
-messages containing particular OPCODEs or RR types are not present because they did not occur,
+Also included in the Storage Parameters are explicit arrays listing the RR types and
+the OPCODEs to be recorded. These remove any ambiguity over whether
+messages containing particular OPCODEs or are not present because they did not occur,
 or because the implementation is not configured to record them.
 
 In the case of OPCODEs, for a message to be fully parsable, the OPCODE must be known to the
 collecting implementation. Any message with an OPCODE unknown to the collecting implementation
 cannot be validated as correctly formed, and so must be treated as malformed. Messages with
 OPCODES known to the recording application but not listed in the Storage Parameters are discarded
-during C-DNS capture (regardless of whether they are malformed or not).
+by the recording application during C-DNS capture (regardless of whether they are malformed or not).
 
 In the case of RR records, each record in a message must be fully parsable, including
 parsing the record RDATA, as otherwise the message cannot be validated
@@ -538,20 +538,23 @@ describing the methods used.
 
 ### IP Address storage
 
-The format contains fields to indicate if only IP prefixes were stored.
-If IP address prefixes are given, only the prefix bits of addresses
-are stored. For example, if a client IPv6 prefix of 48 is specified,
-a client address of 2001:db8:85a3::8a2e:370:7334 will be stored
-as 0x20010db885a3, reducing address storage space requirements.
-Similarly, if a client IPv4 prefix of 16 is specified, a
-client address of 192.0.2.1 will be stored as 0xc000 (192.0).
+The format can store either full IP addresses or just IP prefixes, the Storage
+Parameters contains fields to indicate if only IP prefixes were stored.
 
-If an IP address prefix is specified, field `qr-transport-flags`
-in QueryResponseSignature, which is otherwise optional, MUST be present,
-so that the IP version can be determined.
+If the IP address prefixes are absent, then full addresses are stored. In this
+case the IP version can be directly inferred from the stored address length and
+the field `qr-transport-flags` in QueryResponseSignature (which contains the IP
+version bit) is optional.
 
-If the IP address prefixes are absent, then full addresses are stored.
-The IP version can then, if necessary, be inferred from the address length.
+If IP address prefixes are given, only the prefix bits of addresses are stored.
+In this case the field `qr-transport-flags` in QueryResponseSignature MUST be
+present, so that the IP version can be determined, see (#queryresponsesignature).
+
+As an example of storing only IP prefixes, if a client IPv6 prefix of 48 is
+specified, a client address of 2001:db8:85a3::8a2e:370:7334 will be stored as
+0x20010db885a3, reducing address storage space requirements. Similarly, if a
+client IPv4 prefix of 16 is specified, a client address of 192.0.2.1 will be
+stored as 0xc000 (192.0).
 
 # C-DNS format detailed description
 
@@ -655,9 +658,9 @@ max-block-items | X | U | The maximum number of items stored in any of the array
 ||
 storage-hints | X | M | Collection of hints as to which fields are omitted in the arrays that have optional fields. Map of type `StorageHints`, see (#storagehints).
 ||
-opcodes | X | A | Array of OPCODES (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
+opcodes | X | A | Array of OPCODES [@opcodes] (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
 ||
-rr-types | X | A | Array of RR types (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
+rr-types | X | A | Array of RR types [@rrtypes] (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
 ||
 storage-flags |   | U | Bit flags indicating attributes of stored data.
  | | | Bit 0. 1 if the data has been anonymised.
@@ -760,7 +763,7 @@ vlan-ids |   | A | Array of identifiers (of type unsigned integer) of VLANs [@?I
 ||
 filter |   | T | `tcpdump` [@!pcap-filter] style filter for input.
 ||
-generator-id |   | T | User specified human-readable string identifying the collection method.
+generator-id |   | T | Implementation specific human-readable string identifying the collection method.
 ||
 host-id |   | T | String identifying the collecting host. Empty if converting an existing packet capture file.
 
@@ -847,9 +850,9 @@ RR class and type information. A map containing the following:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
-type | X | U | TYPE value, see [@rrtypes].
+type | X | U | TYPE value [@rrtypes].
 ||
-class | X | U | CLASS value, see [@rrclasses].
+class | X | U | CLASS value [@rrclasses].
 
 #### "QueryResponseSignature"
 
@@ -902,7 +905,7 @@ qr-dns-flags |   | U | Bit flags with values from the Query and Response DNS fla
  | | | Bit 13. Response TrunCation (TC).
  | | | Bit 14. Response Authoritative Answer (AA).
 ||
-query-rcode |   | U | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE. See [@rcodes].
+query-rcode |   | U | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
 ||
 query-classtype -index |   | U | The index to the item in the the `classtype` array of the CLASS and TYPE of the first Question. See (#blocktables).
 ||
@@ -920,7 +923,7 @@ udp-buf-size |   | U | The Query EDNS sender's UDP payload size.
 ||
 opt-rdata-index |   | U | The index in the `name-rdata` array  of the OPT RDATA. See (#blocktables).
 ||
-response-rcode |   | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE. See [@rcodes].
+response-rcode |   | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
 
 #### "Question"
 

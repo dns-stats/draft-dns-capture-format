@@ -557,12 +557,13 @@ Parameters contains fields to indicate if only IP prefixes were stored.
 
 If the IP address prefixes are absent, then full addresses are stored. In this
 case the IP version can be directly inferred from the stored address length and
-the field `qr-transport-flags` in QueryResponseSignature (which contains the IP
-version bit) is optional.
+the fields `qr-transport-flags` in QueryResponseSignature and `mm-transport-flags`
+in MalformedMessageData (which contain the IP version bit) are optional.
 
 If IP address prefixes are given, only the prefix bits of addresses are stored.
-In this case the field `qr-transport-flags` in QueryResponseSignature MUST be
-present, so that the IP version can be determined, see (#queryresponsesignature).
+In this case the fields `qr-transport-flags` in QueryResponseSignature and
+`mm-transport-flags` in MalformedMessageData MUST be present, so that the IP
+version can be determined. See (#queryresponsesignature) and (#malformedmessagedata).
 
 As an example of storing only IP prefixes, if a client IPv6 prefix of 48 is
 specified, a client address of 2001:db8:85a3::8a2e:370:7334 will be stored as
@@ -974,7 +975,7 @@ server-address -index |   | U | The index in the `ip-address` array of the serve
 ||
 server-port |   | U | The server port.
 ||
-mm-transport-flags |   | U | Bit flags describing the transport used to service the query. As `qr-transport-flags` in (#queryresponsesignature), without the trailing bytes indicator.
+mm-transport-flags | C | U | Bit flags describing the transport used to service the query. As `qr-transport-flags` in (#queryresponsesignature), without the trailing bytes indicator.
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
  | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
 ||

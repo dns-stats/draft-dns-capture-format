@@ -1067,7 +1067,7 @@ ae-type | X | U | The type of event. The following events types are currently de
  | | | 4. ICMPv6 destination unreachable.
  | | | 5. ICMPv6 packet too big.
 ||
-ae-code |   | U | A code relating to the event.
+ae-code |   | U | A code relating to the event. For ICMP or ICMPv6 events, this MUST be the ICMP [@!RFC0792] or ICMPv6 [@!RFC4443] code. For other events the contents are undefined.
 ||
 ae-address-index | X | U | The index in the `ip-address` array of the client address. See (#blocktables).
 ||

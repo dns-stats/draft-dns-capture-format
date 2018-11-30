@@ -917,7 +917,7 @@ qr-dns-flags |   | U | Bit flags with values from the Query and Response DNS fla
  | | | Bit 13. Response TrunCation (TC).
  | | | Bit 14. Response Authoritative Answer (AA).
 ||
-query-rcode |   | U | Query RCODE. If the Query contains OPT, this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
+query-rcode |   | U | Query RCODE. If the Query contains OPT [@!RFC6891], this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
 ||
 query-classtype -index |   | U | The index to the item in the the `classtype` array of the CLASS and TYPE of the first Question. See (#blocktables).
 ||
@@ -935,7 +935,7 @@ udp-buf-size |   | U | The Query EDNS sender's UDP payload size.
 ||
 opt-rdata-index |   | U | The index in the `name-rdata` array  of the OPT RDATA. See (#blocktables).
 ||
-response-rcode |   | U | Response RCODE. If the Response contains OPT, this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
+response-rcode |   | U | Response RCODE. If the Response contains OPT [@!RFC6891], this value incorporates any EXTENDED_RCODE_VALUE [@rcodes].
 
 #### "Question"
 

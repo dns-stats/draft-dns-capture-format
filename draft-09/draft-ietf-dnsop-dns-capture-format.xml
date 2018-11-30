@@ -126,12 +126,17 @@ on authoritative and recursive name servers for monitoring and analysis.
 This data is used in a number of ways including traffic monitoring,
 analyzing network attacks and &quot;day in the life&quot; (DITL) <xref target="ditl"/> analysis.
 </t>
-<t>A wide variety of tools already exist that facilitate the collection of
-DNS traffic data, such as DSC <xref target="dsc"/>, packetq <xref target="packetq"/>, dnscap <xref target="dnscap"/> and dnstap <xref target="dnstap"/>.
-However, there is no standard exchange format for large DNS packet captures.
-The PCAP <xref target="pcap"/> or PCAP-NG <xref target="pcapng"/> formats are typically used in practice for packet captures, but these file
-formats can contain a great deal of additional information that is not directly pertinent to DNS traffic analysis
-and thus unnecessarily increases the capture file size.
+<t>A wide variety of tools already exist that facilitate the collection of DNS
+traffic data, such as DSC <xref target="dsc"/>, packetq <xref target="packetq"/>, dnscap <xref target="dnscap"/> and
+dnstap <xref target="dnstap"/>. However, there is no standard exchange format for large DNS
+packet captures. The PCAP <xref target="pcap"/> or PCAP-NG <xref target="pcapng"/> formats are typically
+used in practice for packet captures, but these file formats can contain a
+great deal of additional information that is not directly pertinent to DNS
+traffic analysis and thus unnecessarily increases the capture file size.
+Additionally these tools and formats typically have no filter mechanism to
+selectively record only certain fields at capture time, requiring
+post-processing for anonymization or pseudonymization of data to protect user
+privacy.
 </t>
 <t>There has also been work on using text based formats to describe
 DNS packets such as <xref target="I-D.daley-dnsxml"/>, <xref target="I-D.hoffman-dns-in-json"/>, but these are largely
@@ -289,11 +294,15 @@ Parsing a well-formed message means as a minimum:
 </list></t>
 <t>All top level fields in each Q/R data item will be optional.
 <list style="symbols">
-<t>Rationale: Different users will have different requirements for data to be available for analysis.
-Users with minimal requirements should not have to pay the cost of recording full data, though this will
-limit the ability to perform certain kinds of data analysis and also to reconstruct packet captures.
-For example, omitting the resource records from a Response will
-reduce the C-DNS file size; in principle responses can be synthesized if there is enough context.</t>
+<t>Rationale: Different operators will have different requirements for data
+to be available for analysis. Operators with minimal requirements should
+not have to pay the cost of recording full data, though this will limit
+the ability to perform certain kinds of data analysis and also to
+reconstruct packet captures. For example, omitting the resource records
+from a Response will reduce the C-DNS file size; in principle responses
+can be synthesized if there is enough context. Operators may have
+different policies for collecting user data and can choose to omit or
+anonymize certain fields at capture time e.g. client address.</t>
 </list></t>
 <t>Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and
 referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
@@ -522,8 +531,8 @@ fields stored in the C-DNS file.
 <t>The sub-second timing resolution used by the data.</t>
 <t>Information (hints) on which optional data are omitted. See <xref target="optional-data-items"/>.</t>
 <t>Recorded OPCODES <xref target="opcodes"/> and RR types <xref target="rrtypes"/>. See <xref target="optional-rrs-and-opcodes"/>.</t>
-<t>Flags indicating, for example, whether the data is sampled or anonymised.
-See <xref target="storage-flags"/>.</t>
+<t>Flags indicating, for example, whether the data is sampled or anonymized.
+See <xref target="storage-flags"/> and <xref target="privacy-considerations"/>.</t>
 <t>Client and server IPv4 and IPv6 address prefixes. See <xref target="ip-address-storage"/></t>
 </list>
 </t>
@@ -599,15 +608,16 @@ the RR records present.
 </t>
 <t>
 <list style="symbols">
-<t>the data is anonymised,</t>
+<t>the data is anonymized,</t>
 <t>the data is produced from sample data, or</t>
-<t>names in the data have been normalised (converted to uniform case).</t>
+<t>names in the data have been normalized (converted to uniform case).</t>
 </list>
 </t>
-<t>The Storage Parameters also contains optional fields holding details
-of the sampling method used and the anonymisation method used. It is
-RECOMMENDED these fields contain URIs <xref target="RFC3986"/> pointing to resources
-describing the methods used.
+<t>The Storage Parameters also contains optional fields holding details of the
+sampling method used and the anonymization method used. It is RECOMMENDED these
+fields contain URIs <xref target="RFC3986"/> pointing to resources describing the methods
+used. See <xref target="privacy-considerations"/> for further discussion of anonymization and
+normalization.
 </t>
 </section>
 
@@ -766,9 +776,9 @@ description.
 <c>rr-types</c><c>X</c><c>A</c><c>Array of RR types <xref target="rrtypes"/> (unsigned integers) recorded by the collection implementation. See <xref target="optional-rrs-and-opcodes"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>storage-flags</c><c></c><c>U</c><c>Bit flags indicating attributes of stored data.</c>
-<c></c><c></c><c></c><c>Bit 0. 1 if the data has been anonymised.</c>
+<c></c><c></c><c></c><c>Bit 0. 1 if the data has been anonymized.</c>
 <c></c><c></c><c></c><c>Bit 1. 1 if the data is sampled data.</c>
-<c></c><c></c><c></c><c>Bit 2. 1 if the names have been normalised (converted to uniform case).</c>
+<c></c><c></c><c></c><c>Bit 2. 1 if the names have been normalized (converted to uniform case).</c>
 <c></c><c></c><c></c><c></c>
 <c>client-address -prefix-ipv4</c><c></c><c>U</c><c>IPv4 client address prefix length. If specified, only the address prefix bits are stored.</c>
 <c></c><c></c><c></c><c></c>
@@ -780,7 +790,7 @@ description.
 <c></c><c></c><c></c><c></c>
 <c>sampling-method</c><c></c><c>T</c><c>Information on the sampling method used. See <xref target="storage-flags"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>anonymisation -method</c><c></c><c>T</c><c>Information on the anonymisation method used. See <xref target="storage-flags"/>.</c>
+<c>anonymization -method</c><c></c><c>T</c><c>Information on the anonymization method used. See <xref target="storage-flags"/>.</c>
 </texttable>
 
 <section anchor="storagehints" title="&quot;StorageHints&quot;">
@@ -1674,6 +1684,38 @@ exception of support for malformed messages and pico second time resolution.
 </t>
 </section>
 
+<section anchor="privacy-considerations" title="Privacy considerations">
+<t>Storage of DNS traffic by operators in PCAP and other formats is a long
+standing and widespread practice. Section 2.5 of
+<xref target="I-D.bortzmeyer-dprive-rfc7626-bis"/> is an analysis of the risks to Internet
+users of the storage of DNS traffic data in servers (recursive resolvers,
+authoritative and rogue servers).
+</t>
+<t>Section 5.2 of <xref target="I-D.dickinson-dprive-bcp-op"/> describes mitigations for those
+risks for data stored on recursive resolvers (but which could by extension
+apply to authoritative servers). These include data handling practices and
+methods for data minimization, IP address pseudonymization and anonymization.
+Appendix B of that document presents an analysis of 7 published anonymization
+processes. In addition, RSSAC have recently published
+<eref target="https://www.icann.org/en/system/files/files/rssac-040-07aug18-en.pdf">RSSAC04:</eref>
+ &quot; Recommendations on Anonymization Processes for Source IP Addresses Submitted
+for Future Analysis”.
+</t>
+<t>The above analyses consider full data capture (e.g using PCAP) as a baseline
+for privacy considerations and therefore this format specification introduces
+no new user privacy issues beyond those of full data capture (which are quite
+severe). It does provides mechanisms to selectively record only certain fields
+at the time of data capture to improve user privacy and to explicitly indicate
+that data is sampled and or anonymized. It also provide flags to indicate if
+data normalization has been performed; data normalization increases user
+privacy by reducing the potential for fingerprinting individuals, however, a
+trade-off is potentially reducing the capacity to identify attack traffic via
+query name signatures. Operators should carefully consider their operational
+requirements and privacy policies and SHOULD capture at source the minimum user
+data required to meet their needs.
+</t>
+</section>
+
 <section anchor="acknowledgements" title="Acknowledgements">
 <t>The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful discussions on binary
 formats, compression and packet matching. Also Jan Vcelak and Wouter Wijngaards for discussions on
@@ -1714,8 +1756,8 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 <list style="symbols">
 <t>Correct BlockParameters type to map</t>
 <t>Make RR ttl optional</t>
-<t>Add storage flag indicating name normalisation</t>
-<t>Add storage parameter fields for sampling and anonymisation methods</t>
+<t>Add storage flag indicating name normalization</t>
+<t>Add storage parameter fields for sampling and anonymization methods</t>
 <t>Editorial clarifications and improvements</t>
 </list>
 </t>
@@ -1726,7 +1768,7 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 <t>Make all data items in Q/R, QuerySignature and Malformed Message arrays optional</t>
 <t>Re-structure the FilePreamble and ConfigurationParameters into BlockParameters</t>
 <t>BlockParameters has separate Storage and Collection Parameters</t>
-<t>Storage Parameters includes information on what optional fields are present, and flags specifying anonymisation or sampling</t>
+<t>Storage Parameters includes information on what optional fields are present, and flags specifying anonymization or sampling</t>
 <t>Addresses can now be stored as prefixes.</t>
 <t>Switch to using a variable sub-second timing granularity</t>
 <t>Add response bailiwick and query response type</t>
@@ -1831,7 +1873,9 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 </reference>
 </references>
 <references title="Informative References">
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.bortzmeyer-dprive-rfc7626-bis.xml"?>
 <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.daley-dnsxml.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.dickinson-dprive-bcp-op.xml"?>
 <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.hoffman-dns-in-json.xml"?>
 <reference anchor='IEEE802.1Q'>
     <front>

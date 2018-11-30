@@ -92,12 +92,17 @@ on authoritative and recursive name servers for monitoring and analysis.
 This data is used in a number of ways including traffic monitoring,
 analyzing network attacks and "day in the life" (DITL) [@ditl] analysis.
 
-A wide variety of tools already exist that facilitate the collection of
-DNS traffic data, such as DSC [@dsc], packetq [@packetq], dnscap [@dnscap] and dnstap [@dnstap].
-However, there is no standard exchange format for large DNS packet captures.
-The PCAP [@pcap] or PCAP-NG [@pcapng] formats are typically used in practice for packet captures, but these file
-formats can contain a great deal of additional information that is not directly pertinent to DNS traffic analysis
-and thus unnecessarily increases the capture file size.
+A wide variety of tools already exist that facilitate the collection of DNS
+traffic data, such as DSC [@dsc], packetq [@packetq], dnscap [@dnscap] and
+dnstap [@dnstap]. However, there is no standard exchange format for large DNS
+packet captures. The PCAP [@pcap] or PCAP-NG [@pcapng] formats are typically
+used in practice for packet captures, but these file formats can contain a
+great deal of additional information that is not directly pertinent to DNS
+traffic analysis and thus unnecessarily increases the capture file size.
+Additionally these tools and formats typically have no filter mechanism to
+selectively record only certain fields at capture time, requiring
+post-processing for anonymization or pseudonymization of data to protect user
+privacy.
 
 There has also been work on using text based formats to describe
 DNS packets such as [@?I-D.daley-dnsxml], [@?I-D.hoffman-dns-in-json], but these are largely
@@ -232,11 +237,16 @@ the Question section from the response, if present, as an identifying QNAME).
 
 2. All top level fields in each Q/R data item will be optional.
 
-    * Rationale: Different users will have different requirements for data to be available for analysis.
-      Users with minimal requirements should not have to pay the cost of recording full data, though this will
-      limit the ability to perform certain kinds of data analysis and also to reconstruct packet captures.
-      For example, omitting the resource records from a Response will
-      reduce the C-DNS file size; in principle responses can be synthesized if there is enough context.
+    * Rationale: Different operators will have different requirements for data
+      to be available for analysis. Operators with minimal requirements should
+      not have to pay the cost of recording full data, though this will limit
+      the ability to perform certain kinds of data analysis and also to
+      reconstruct packet captures. For example, omitting the resource records
+      from a Response will reduce the C-DNS file size; in principle responses
+      can be synthesized if there is enough context. Operators may have
+      different policies for collecting user data and can choose to omit or
+      anonymize certain fields at capture time e.g. client address.
+
 
 3. Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and
 referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
@@ -462,8 +472,8 @@ These parameters include:
 * The sub-second timing resolution used by the data.
 * Information (hints) on which optional data are omitted. See (#optional-data-items).
 * Recorded OPCODES [@opcodes] and RR types [@rrtypes]. See (#optional-rrs-and-opcodes).
-* Flags indicating, for example, whether the data is sampled or anonymised.
-  See (#storage-flags).
+* Flags indicating, for example, whether the data is sampled or anonymized.
+  See (#storage-flags) and (#privacy-considerations).
 * Client and server IPv4 and IPv6 address prefixes. See (#ip-address-storage)
 
 ### Optional data items
@@ -527,14 +537,15 @@ the RR records present.
 
 The Storage Parameters contains flags that can be used to indicate if:
 
-* the data is anonymised,
+* the data is anonymized,
 * the data is produced from sample data, or
-* names in the data have been normalised (converted to uniform case).
+* names in the data have been normalized (converted to uniform case).
 
-The Storage Parameters also contains optional fields holding details
-of the sampling method used and the anonymisation method used. It is
-RECOMMENDED these fields contain URIs [@!RFC3986] pointing to resources
-describing the methods used.
+The Storage Parameters also contains optional fields holding details of the
+sampling method used and the anonymization method used. It is RECOMMENDED these
+fields contain URIs [@!RFC3986] pointing to resources describing the methods
+used. See (#privacy-considerations) for further discussion of anonymization and
+normalization.
 
 ### IP Address storage
 
@@ -663,9 +674,9 @@ opcodes | X | A | Array of OPCODES [@opcodes] (unsigned integers) recorded by th
 rr-types | X | A | Array of RR types [@rrtypes] (unsigned integers) recorded by the collection implementation. See (#optional-rrs-and-opcodes).
 ||
 storage-flags |   | U | Bit flags indicating attributes of stored data.
- | | | Bit 0. 1 if the data has been anonymised.
+ | | | Bit 0. 1 if the data has been anonymized.
  | | | Bit 1. 1 if the data is sampled data.
- | | | Bit 2. 1 if the names have been normalised (converted to uniform case).
+ | | | Bit 2. 1 if the names have been normalized (converted to uniform case).
 ||
 client-address -prefix-ipv4 |   | U | IPv4 client address prefix length. If specified, only the address prefix bits are stored.
 ||
@@ -677,7 +688,7 @@ server-address -prefix-ipv6 |   | U | IPv6 server address prefix length. If spec
 ||
 sampling-method |   | T | Information on the sampling method used. See (#storage-flags).
 ||
-anonymisation -method |   | T | Information on the anonymisation method used. See (#storage-flags).
+anonymization -method |   | T | Information on the anonymization method used. See (#storage-flags).
 
 ##### "StorageHints"
 
@@ -1435,6 +1446,37 @@ Any control interface MUST perform authentication and encryption.
 
 Any data upload MUST be authenticated and encrypted.
 
+# Privacy considerations
+
+Storage of DNS traffic by operators in PCAP and other formats is a long
+standing and widespread practice. Section 2.5 of
+[@I-D.bortzmeyer-dprive-rfc7626-bis] is an analysis of the risks to Internet
+users of the storage of DNS traffic data in servers (recursive resolvers,
+authoritative and rogue servers).
+
+Section 5.2 of [@I-D.dickinson-dprive-bcp-op] describes mitigations for those
+risks for data stored on recursive resolvers (but which could by extension
+apply to authoritative servers). These include data handling practices and
+methods for data minimization, IP address pseudonymization and anonymization.
+Appendix B of that document presents an analysis of 7 published anonymization
+processes. In addition, RSSAC have recently published
+[RSSAC04:](https://www.icann.org/en/system/files/files/rssac-040-07aug18-en.pdf)
+ " Recommendations on Anonymization Processes for Source IP Addresses Submitted
+for Future Analysis”.
+
+The above analyses consider full data capture (e.g using PCAP) as a baseline
+for privacy considerations and therefore this format specification introduces
+no new user privacy issues beyond those of full data capture (which are quite
+severe). It does provides mechanisms to selectively record only certain fields
+at the time of data capture to improve user privacy and to explicitly indicate
+that data is sampled and or anonymized. It also provide flags to indicate if
+data normalization has been performed; data normalization increases user
+privacy by reducing the potential for fingerprinting individuals, however, a
+trade-off is potentially reducing the capacity to identify attack traffic via
+query name signatures. Operators should carefully consider their operational
+requirements and privacy policies and SHOULD capture at source the minimum user
+data required to meet their needs.
+
 # Acknowledgements
 
 The authors wish to thank CZ.NIC, in particular Tomas Gavenciak, for many useful discussions on binary
@@ -1467,8 +1509,8 @@ draft-ietf-dnsop-dns-capture-format-06
 
 * Correct BlockParameters type to map
 * Make RR ttl optional
-* Add storage flag indicating name normalisation
-* Add storage parameter fields for sampling and anonymisation methods
+* Add storage flag indicating name normalization
+* Add storage parameter fields for sampling and anonymization methods
 * Editorial clarifications and improvements
 
 draft-ietf-dnsop-dns-capture-format-05
@@ -1476,7 +1518,7 @@ draft-ietf-dnsop-dns-capture-format-05
 * Make all data items in Q/R, QuerySignature and Malformed Message arrays optional
 * Re-structure the FilePreamble and ConfigurationParameters into BlockParameters
 * BlockParameters has separate Storage and Collection Parameters
-* Storage Parameters includes information on what optional fields are present, and flags specifying anonymisation or sampling
+* Storage Parameters includes information on what optional fields are present, and flags specifying anonymization or sampling
 * Addresses can now be stored as prefixes.
 * Switch to using a variable sub-second timing granularity
 * Add response bailiwick and query response type

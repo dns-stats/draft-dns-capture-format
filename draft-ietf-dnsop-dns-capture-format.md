@@ -1455,7 +1455,97 @@ This information was last updated on 3rd of May 2018.
 
 # IANA considerations
 
-None
+IANA is requested to create a registry "C-DNS DNS Capture Format" containing
+the subregistries defined in sections (#transport-types)
+to (#addressevent-types) inclusive.
+
+In all cases, new entries may be added to the subregistries by Expert Review
+as defined in [@!RFC8126]. Experts are expected to exercise their own
+expert judgement, and should consider the following general guidelines in
+addition to any guidelines given particular to a subregistry.
+
+* There should be a real and compelling use for any new value.
+* Values assigned should be carefully chosen to minimise storage requirements for common cases.
+
+## Transport types
+
+IANA is requested to create a registry "C-DNS Transports" of C-DNS transport
+types. The primary purpose of this registry is to provide unique identifiers
+for all transports used for DNS queries.
+
+The initial contents of the
+registry are as follows - see sections (#queryresponsesignature)
+and (#malformedmessagedata) of [[this RFC]]:
+
+Name | Value
+:----|:-----:
+UDP | 0
+TCP | 1
+TLS | 2
+DTLS | 3
+DoH | 4
+Unassigned | 5-15
+
+Expert reviewers should take the following points
+into consideration:
+
+* Is the requested DNS transport described by a Standards Track RFC?
+
+## Data storage flags
+
+IANA is requested to create a registry "C-DNS Storage Flags" of C-DNS
+data storage flags. The primary purpose of this registry is to provide
+indicators giving hints on processing of the data stored.
+
+The initial contents of the registry are as follows - see section
+(#storageparameters) of [[this RFC]]:
+
+Name | Value | Description
+:----|:-----:|:-----------
+anonymised-data | 0 | The data has been anonymised.
+sampled-data | 1 | The data is sampled data.
+normalized-names | 2 | Names in the data have been normalized.
+ | 3-63 | Unassigned.
+
+## Response processing flags
+
+IANA is requested to create a registry "C-DNS Response Flags"
+of C-DNS response processing flags. The primary purpose of this
+registry is to provide indicators
+giving hints on the generation of a particular response.
+
+The initial contents of the registry are as follows - see section
+(#responseprocessingdata) of [[this RFC]]:
+
+Name | Value | Description
+:----|:-----:|:-----------
+from-cache | 0 | The response came from cache.
+ | 1-63 | Unassigned.
+
+## AddressEvent types
+
+IANA is requested to create a registry "C-DNS Address Event Types"
+of C-DNS AddressEvent types. The primary purpose of this registry is
+to provide unique identifiers of different types of C-DNS address
+events, and so specify the contents of the optional companion field
+`ae-code` for each type.
+
+The initial contents of the registry are as follows - see section
+(#addresseventcount):
+
+Event Type | Value | `ae-code` contents
+:----------|:-----:|:------------------
+TCP reset | 0 | None
+ICMP time exceeded | 1 | ICMP code [@icmpcodes]
+ICMP destination unreachable | 2 | ICMP code [@icmpcodes]
+ICMPv6 time exceeded | 3 | ICMPv6 code [@icmp6codes]
+ICMPv6 destination unreachable | 4 | ICMPv6 code [@icmp6codes]
+ICMPv6 packet too big | 5 | ICMPv6 code [@icmp6codes]
+
+Expert reviewers should take the following points
+into consideration:
+
+* `ae-code` contents must be defined for a type, or if not appropriate specified as `None`. A specification of `None` requires less storage, and is therefore preferred.
 
 # Security considerations
 
@@ -1774,6 +1864,36 @@ draft-dickinson-dnsop-dns-capture-format-00
     </front>
     <seriesInfo name="IEEE Standard 1003.1" value="2017 Edition"/>
     <seriesInfo name="DOI" value="10.1109/IEEESTD.2018.8277153"/>
+</reference>
+
+<reference anchor='icmpcodes' target='https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml#icmp-parameters-codes'>
+    <front>
+        <title>Code Fields</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
+    </front>
+</reference>
+
+<reference anchor='icmp6codes' target='https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.xhtml#icmpv6-parameters-3'>
+    <front>
+        <title>ICMPv6 "Code" Fields</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
+    </front>
+</reference>
+
+'>
+    <front>
+        <title>Code Fields</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
+    </front>
 </reference>
 
 {backmatter}

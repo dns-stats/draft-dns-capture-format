@@ -2105,13 +2105,8 @@ Increasing block size, therefore, tends to increase maximum RSS a
 little, with no significant effect (if anything a small reduction) on
 CPU consumption.
 
-The following figure plots the effect of increasing block size on output file size for different compressions.
-
-![Figure showing effect of block size on file size (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.png)
-
-![Figure showing effect of block size on file size (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg)
-
-From the above, there is obviously scope for tuning the default block
+[This graph](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg) plots the effect of increasing block size on output file size for different compressions.
+There is obviously scope for tuning the default block
 size to the compression being employed, traffic characteristics, frequency of
 output file rollover etc. Using a strong compression scheme, block sizes over
 10,000 query/response pairs would seem to offer limited improvements.

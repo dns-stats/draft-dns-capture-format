@@ -4,7 +4,7 @@
 # - unoconv (https://github.com/dagwieers/unoconv)
 
 DRAFT=draft-ietf-dnsop-dns-capture-format
-VERSION=09
+VERSION=10
 
 CDDL=c-dns.cddl
 

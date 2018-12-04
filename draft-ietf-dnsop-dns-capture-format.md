@@ -2,12 +2,12 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-ietf-dnsop-dns-capture-format-09"
+    docName= "draft-ietf-dnsop-dns-capture-format-10"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2018-11-30T00:00:00Z
+    date = 2018-12-04T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -1876,16 +1876,6 @@ draft-dickinson-dnsop-dns-capture-format-00
 <reference anchor='icmp6codes' target='https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.xhtml#icmpv6-parameters-3'>
     <front>
         <title>ICMPv6 "Code" Fields</title>
-        <author>
-            <organization>IANA</organization>
-        </author>
-        <date year='2018'/>
-    </front>
-</reference>
-
-'>
-    <front>
-        <title>Code Fields</title>
         <author>
             <organization>IANA</organization>
         </author>

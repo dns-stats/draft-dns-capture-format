@@ -2708,24 +2708,23 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2018
    The initial contents of the registry are as follows - see section
    Section 7.7:
 
-   +-------------+---------------------+-------------------+-----------+
-   |    Event    | Event Type          | ae-code contents  | Reference |
-   |  Identifier |                     |                   |           |
-   +-------------+---------------------+-------------------+-----------+
-   |      0      | TCP reset           | None              | [[this    |
-   |             |                     |                   | RFC]]     |
-   |      1      | ICMP time exceeded  | ICMP code         | [[this    |
-   |             |                     | [icmpcodes]       | RFC]]     |
-   |      2      | ICMP destination    | ICMP code         | [[this    |
-   |             | unreachable         | [icmpcodes]       | RFC]]     |
-   |      3      | ICMPv6 time         | ICMPv6 code       | [[this    |
-   |             | exceeded            | [icmp6codes]      | RFC]]     |
-   |      4      | ICMPv6 destination  | ICMPv6 code       | [[this    |
-   |             | unreachable         | [icmp6codes]      | RFC]]     |
-   |      5      | ICMPv6 packet too   | ICMPv6 code       | [[this    |
-   |             | big                 | [icmp6codes]      | RFC]]     |
-   |      >5     | Unassigned          |                   |           |
-   +-------------+---------------------+-------------------+-----------+
+   +------------+----------------------+-------------------+-----------+
+   | Identifier | Event Type           | ae-code contents  | Reference |
+   +------------+----------------------+-------------------+-----------+
+   |     0      | TCP reset            | None              | [[this    |
+   |            |                      |                   | RFC]]     |
+   |     1      | ICMP time exceeded   | ICMP code         | [[this    |
+   |            |                      | [icmpcodes]       | RFC]]     |
+   |     2      | ICMP destination     | ICMP code         | [[this    |
+   |            | unreachable          | [icmpcodes]       | RFC]]     |
+   |     3      | ICMPv6 time exceeded | ICMPv6 code       | [[this    |
+   |            |                      | [icmp6codes]      | RFC]]     |
+   |     4      | ICMPv6 destination   | ICMPv6 code       | [[this    |
+   |            | unreachable          | [icmp6codes]      | RFC]]     |
+   |     5      | ICMPv6 packet too    | ICMPv6 code       | [[this    |
+   |            | big                  | [icmp6codes]      | RFC]]     |
+   |     >5     | Unassigned           |                   |           |
+   +------------+----------------------+-------------------+-----------+
 
    Expert reviewers should take the following points into consideration:
 
@@ -2738,6 +2737,7 @@ Internet-Draft     C-DNS: A DNS Packet Capture Format      December 2018
    Any control interface MUST perform authentication and encryption.
 
    Any data upload MUST be authenticated and encrypted.
+
 
 
 

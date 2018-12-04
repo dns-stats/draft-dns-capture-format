@@ -1805,7 +1805,7 @@ specific to the event type.&quot;
 <xref target="addresseventcount"/>:
 </t>
 <texttable>
-<ttcol align="center">Event Identifier</ttcol>
+<ttcol align="center">Identifier</ttcol>
 <ttcol align="left">Event Type</ttcol>
 <ttcol align="left">ae-code contents</ttcol>
 <ttcol align="left">Reference</ttcol>

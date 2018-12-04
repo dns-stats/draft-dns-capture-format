@@ -1549,8 +1549,8 @@ specific to the event type."
 The initial contents of the registry are as follows - see section
 (#addresseventcount):
 
-Event Identifier | Event Type | `ae-code` contents | Reference
-:---------------:|:-----------|:-------------------|:---------
+Identifier | Event Type | `ae-code` contents | Reference
+:---------:|:-----------|:-------------------|:---------
 0 | TCP reset | None | [[this RFC]]
 1 | ICMP time exceeded | ICMP code [@icmpcodes] | [[this RFC]]
 2 | ICMP destination unreachable | ICMP code [@icmpcodes] | [[this RFC]]

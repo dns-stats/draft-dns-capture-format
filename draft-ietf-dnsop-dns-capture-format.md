@@ -1467,21 +1467,25 @@ addition to any guidelines given particular to a subregistry.
 ## Transport types
 
 IANA is requested to create a registry "C-DNS Transports" of C-DNS transport
-types. The primary purpose of this registry is to provide unique identifiers
-for all transports used for DNS queries.
+type identifiers. The primary purpose of this registry is to provide unique
+identifiers for all transports used for DNS queries.
+
+The following note is included in this registry: "In version 1.0 of C-DNS
+[[this RFC]], there is a field to identify the type of DNS transport. This
+field is 4 bits in size."
 
 The initial contents of the
 registry are as follows - see sections (#queryresponsesignature)
 and (#malformedmessagedata) of [[this RFC]]:
 
-Name | Value
-:----|:-----:
-UDP | 0
-TCP | 1
-TLS | 2
-DTLS | 3
-DoH | 4
-Unassigned | 5-15
+Identifier | Name | Reference
+:---------:|:-----|:---------
+0 | UDP | [[this RFC]]
+1 | TCP | [[this RFC]]
+2 | TLS | [[this RFC]]
+3 | DTLS | [[this RFC]]
+4 | DoH | [[this RFC]]
+5-15 | Unassigned |
 
 Expert reviewers should take the following points
 into consideration:
@@ -1494,15 +1498,19 @@ IANA is requested to create a registry "C-DNS Storage Flags" of C-DNS
 data storage flags. The primary purpose of this registry is to provide
 indicators giving hints on processing of the data stored.
 
+The following note is included in this registry: "In version 1.0 of C-DNS
+[[this RFC]], there is a field describing attributes of the data recorded.
+The field is a CBOR [@RFC7049] unsigned integer holding bit flags."
+
 The initial contents of the registry are as follows - see section
 (#storageparameters) of [[this RFC]]:
 
-Name | Value | Description
-:----|:-----:|:-----------
-anonymised-data | 0 | The data has been anonymised.
-sampled-data | 1 | The data is sampled data.
-normalized-names | 2 | Names in the data have been normalized.
- | 3-63 | Unassigned.
+Bit | Name | Description | Reference
+:--:|:-----|:------------|:---------
+0 | anonymised-data | The data has been anonymised. | [[this RFC]]
+1 | sampled-data | The data is sampled data. | [[this RFC]]
+2 | normalized-names | Names in the data have been normalized. | [[this RFC]]
+3-63 | Unassigned
 
 ## Response processing flags
 
@@ -1511,13 +1519,17 @@ of C-DNS response processing flags. The primary purpose of this
 registry is to provide indicators
 giving hints on the generation of a particular response.
 
+The following note is included in this registry: "In version 1.0 of C-DNS
+[[this RFC]], there is a field describing attributes of the responses recorded.
+The field is a CBOR [@RFC7049] unsigned integer holding bit flags."
+
 The initial contents of the registry are as follows - see section
 (#responseprocessingdata) of [[this RFC]]:
 
-Name | Value | Description
-:----|:-----:|:-----------
-from-cache | 0 | The response came from cache.
- | 1-63 | Unassigned.
+Bit | Name | Description | Reference
+:--:|:-----|:------------|:---------
+0 | from-cache | The response came from cache. | [[this RFC]]
+1-63 | Unassigned
 
 ## AddressEvent types
 
@@ -1527,17 +1539,25 @@ to provide unique identifiers of different types of C-DNS address
 events, and so specify the contents of the optional companion field
 `ae-code` for each type.
 
+The following note is included in this registry: "In version 1.0 of C-DNS
+[[this RFC]], there is a field identify types of the events related
+to client addresses. This field is a CBOR [@RFC7049] unsigned integer.
+There is a related optional field `ae-code`, which, if present,
+holds an additional CBOR unsigned integer giving additional information
+specific to the event type."
+
 The initial contents of the registry are as follows - see section
 (#addresseventcount):
 
-Event Type | Value | `ae-code` contents
-:----------|:-----:|:------------------
-TCP reset | 0 | None
-ICMP time exceeded | 1 | ICMP code [@icmpcodes]
-ICMP destination unreachable | 2 | ICMP code [@icmpcodes]
-ICMPv6 time exceeded | 3 | ICMPv6 code [@icmp6codes]
-ICMPv6 destination unreachable | 4 | ICMPv6 code [@icmp6codes]
-ICMPv6 packet too big | 5 | ICMPv6 code [@icmp6codes]
+Event Identifier | Event Type | `ae-code` contents | Reference
+:---------------:|:-----------|:-------------------|:---------
+0 | TCP reset | None | [[this RFC]]
+1 | ICMP time exceeded | ICMP code [@icmpcodes] | [[this RFC]]
+2 | ICMP destination unreachable | ICMP code [@icmpcodes] | [[this RFC]]
+3 | ICMPv6 time exceeded | ICMPv6 code [@icmp6codes] | [[this RFC]]
+4 | ICMPv6 destination unreachable | ICMPv6 code [@icmp6codes] | [[this RFC]]
+5 | ICMPv6 packet too big | ICMPv6 code [@icmp6codes] | [[this RFC]]
+>5 | Unassigned
 
 Expert reviewers should take the following points
 into consideration:

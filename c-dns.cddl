@@ -138,7 +138,7 @@ collection-parameters = 1
     StorageFlagValues = &(
         anonymised-data      : 0,
         sampled-data         : 1,
-        normalised-names     : 2,
+        normalized-names     : 2,
     )
     StorageFlags = uint .bits StorageFlagValues
 

@@ -7,7 +7,7 @@
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2018-12-30T00:00:00Z
+    date = 2018-11-30T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -105,7 +105,7 @@ post-processing for anonymization or pseudonymization of data to protect user
 privacy.
 
 There has also been work on using text based formats to describe
-DNS packets such as [@?I-D.daley-dnsxml], [@?I-D.hoffman-dns-in-json], but these are largely
+DNS packets such as [@?I-D.daley-dnsxml], [@?RFC8427], but these are largely
 aimed at producing convenient representations of single messages.
 
 Many DNS operators may receive hundreds of thousands of queries per second on
@@ -447,8 +447,9 @@ The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
 10,000 Q/R data items give good results. See (#block-size-choice) for more details.
 
-This design exploits data commonality to reduce storage and transmission requirements.
-It does, though, mean that C-DNS cannot be streamed below the level of a block.
+This design exploits data commonality and block based storage to minimise the
+C-DNS file size. As a result C-DNS cannot be streamed below the level of a
+block.
 
 ## Block Parameters
 
@@ -881,7 +882,7 @@ server-address -index |   | U | The index in the item in the `ip-address` array 
 ||
 server-port |   | U | The server port.
 ||
-qr-transport-flags | C | U | Bit flags describing the transport used to service the query. As `mm-transport-flags` in (#malformedmessagedata), with an additional indicator for trailing bytes.
+qr-transport-flags | C | U | Bit flags describing the transport used to service the query. Same definition as `mm-transport-flags` in (#malformedmessagedata), with an additional indicator for trailing bytes, see (#cddl).
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6. See (#ip-address-storage).
  | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
  | | | Bit 5. 1 if trailing bytes in query packet. See (#trailing-bytes).
@@ -975,7 +976,7 @@ server-address -index |   | U | The index in the `ip-address` array of the serve
 ||
 server-port |   | U | The server port.
 ||
-mm-transport-flags | C | U | Bit flags describing the transport used to service the query. As `qr-transport-flags` in (#queryresponsesignature), without the trailing bytes indicator.
+mm-transport-flags | C | U | Bit flags describing the transport used to service the query, see (#ip-address-storage).
  | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
  | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use.
 ||
@@ -1358,15 +1359,13 @@ should be treated as timed out queries.
 
 # Implementation guidance
 
-## CBOR
-
 Whilst this document makes no specific recommendations with respect to Canonical CBOR (see Section 3.9 of [@!RFC7049]) the following guidance may be of use to implementors.
 
 Adherence to the first two rules given in Section 3.9 of [@!RFC7049] will minimise file sizes.
 
 Adherence to the last two rules given in Section 3.9 of [@!RFC7049] for all maps and arrays would unacceptably constrain implementations, for example, in the use case of real-time data collection in constrained environments where outputting block tables after query/response data and allowing indefinite length maps and arrays could reduce memory requirements.
 
-### Optional data
+## Optional data
 
 When decoding C-DNS data some of the items required for a particular function that the consumer
 wishes to perform may be missing. Consumers should consider providing configurable
@@ -1397,13 +1396,11 @@ for example, to avoid memory issues when confronted with large XFR records.
 
 ## Timestamps
 
-The preamble to each block includes a timestamp of the earliest record in the block.
-As described in (#blockpreamble), the timestamp is an array of 2 unsigned integers.
-The first is a POSIX `time_t` [@!posix-time]. This is defined as the number of seconds
-since the POSIX epoch, excluding leap seconds; a day is exactly 86400 seconds long.
-The period of a leap second does not, therefore, have a unique POSIX representation,
-but appears as the same timestamp as the previous second. Implementations may want to
-account for this behaviour, for example when calculating throughput rates.
+The preamble to each block includes a timestamp of the earliest record in the
+block. As described in (#blockpreamble), the timestamp is an array of 2 unsigned
+integers. The first is a POSIX `time_t` [@!posix-time]. Consumers of C-DNS
+should be aware of this as it excludes leap seconds and therefore may cause
+minor anomalies in the data e.g. when calculating query throughput.
 
 # Implementation status
 

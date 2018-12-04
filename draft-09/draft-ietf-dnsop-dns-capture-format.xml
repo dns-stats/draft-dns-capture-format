@@ -929,7 +929,7 @@ captured.
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>earliest-time</c><c>C</c><c>A</c><c>A timestamp (2 unsigned integers, <spanx style="verb">Timestamp</spanx>) for the earliest record in the <spanx style="verb">Block</spanx> item. The first integer is the number of seconds since the POSIX epoch <xref target="posix-time"/> (<spanx style="verb">time_t</spanx>), excluding leap seconds. The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.</c>
+<c>earliest-time</c><c>C</c><c>A</c><c>A timestamp (2 unsigned integers, <spanx style="verb">Timestamp</spanx>) for the earliest record in the <spanx style="verb">Block</spanx> item. The first integer is the number of seconds since the POSIX epoch <xref target="posix-time"/> (<spanx style="verb">time_t</spanx>), excluding leap seconds. The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. This field is mandatory unless all block items containing a time offset from the start of the block also omit that time offset.</c>
 <c></c><c></c><c></c><c></c>
 <c>block-parameters -index</c><c></c><c>U</c><c>The index of the item in the <spanx style="verb">block-parameters</spanx> array (in the <spanx style="verb">file-premable</spanx> item) applicable to this block. If not present, index 0 is used. See <xref target="blockparameters"/>.</c>
 </texttable>
@@ -1691,8 +1691,122 @@ exception of support for malformed messages and pico second time resolution.
 </section>
 
 <section anchor="iana-considerations" title="IANA considerations">
-<t>None
+<t>IANA is requested to create a registry &quot;C-DNS DNS Capture Format&quot; containing
+the subregistries defined in sections <xref target="transport-types"/>
+to <xref target="addressevent-types"/> inclusive.
 </t>
+<t>In all cases, new entries may be added to the subregistries by Expert Review
+as defined in <xref target="RFC8126"/>. Experts are expected to exercise their own
+expert judgement, and should consider the following general guidelines in
+addition to any guidelines given particular to a subregistry.
+</t>
+<t>
+<list style="symbols">
+<t>There should be a real and compelling use for any new value.</t>
+<t>Values assigned should be carefully chosen to minimise storage requirements for common cases.</t>
+</list>
+</t>
+
+<section anchor="transport-types" title="Transport types">
+<t>IANA is requested to create a registry &quot;C-DNS Transports&quot; of C-DNS transport
+types. The primary purpose of this registry is to provide unique identifiers
+for all transports used for DNS queries.
+</t>
+<t>The initial contents of the
+registry are as follows - see sections <xref target="queryresponsesignature"/>
+and <xref target="malformedmessagedata"/> of [[this RFC]]:
+</t>
+<texttable>
+<ttcol align="left">Name</ttcol>
+<ttcol align="center">Value</ttcol>
+
+<c>UDP</c><c>0</c>
+<c>TCP</c><c>1</c>
+<c>TLS</c><c>2</c>
+<c>DTLS</c><c>3</c>
+<c>DoH</c><c>4</c>
+<c>Unassigned</c><c>5-15</c>
+</texttable>
+<t>Expert reviewers should take the following points
+into consideration:
+</t>
+<t>
+<list style="symbols">
+<t>Is the requested DNS transport described by a Standards Track RFC?</t>
+</list>
+</t>
+</section>
+
+<section anchor="data-storage-flags" title="Data storage flags">
+<t>IANA is requested to create a registry &quot;C-DNS Storage Flags&quot; of C-DNS
+data storage flags. The primary purpose of this registry is to provide
+indicators giving hints on processing of the data stored.
+</t>
+<t>The initial contents of the registry are as follows - see section
+<xref target="storageparameters"/> of [[this RFC]]:
+</t>
+<texttable>
+<ttcol align="left">Name</ttcol>
+<ttcol align="center">Value</ttcol>
+<ttcol align="left">Description</ttcol>
+
+<c>anonymised-data</c><c>0</c><c>The data has been anonymised.</c>
+<c>sampled-data</c><c>1</c><c>The data is sampled data.</c>
+<c>normalized-names</c><c>2</c><c>Names in the data have been normalized.</c>
+<c></c><c>3-63</c><c>Unassigned.</c>
+</texttable>
+</section>
+
+<section anchor="response-processing-flags" title="Response processing flags">
+<t>IANA is requested to create a registry &quot;C-DNS Response Flags&quot;
+of C-DNS response processing flags. The primary purpose of this
+registry is to provide indicators
+giving hints on the generation of a particular response.
+</t>
+<t>The initial contents of the registry are as follows - see section
+<xref target="responseprocessingdata"/> of [[this RFC]]:
+</t>
+<texttable>
+<ttcol align="left">Name</ttcol>
+<ttcol align="center">Value</ttcol>
+<ttcol align="left">Description</ttcol>
+
+<c>from-cache</c><c>0</c><c>The response came from cache.</c>
+<c></c><c>1-63</c><c>Unassigned.</c>
+</texttable>
+</section>
+
+<section anchor="addressevent-types" title="AddressEvent types">
+<t>IANA is requested to create a registry &quot;C-DNS Address Event Types&quot;
+of C-DNS AddressEvent types. The primary purpose of this registry is
+to provide unique identifiers of different types of C-DNS address
+events, and so specify the contents of the optional companion field
+<spanx style="verb">ae-code</spanx> for each type.
+</t>
+<t>The initial contents of the registry are as follows - see section
+<xref target="addresseventcount"/>:
+</t>
+<texttable>
+<ttcol align="left">Event Type</ttcol>
+<ttcol align="center">Value</ttcol>
+<ttcol align="left">ae-code contents</ttcol>
+
+<c>TCP reset</c><c>0</c><c>None</c>
+<c>ICMP time exceeded</c><c>1</c><c>ICMP code <xref target="icmpcodes"/></c>
+<c>ICMP destination unreachable</c><c>2</c><c>ICMP code <xref target="icmpcodes"/></c>
+<c>ICMPv6 time exceeded</c><c>3</c><c>ICMPv6 code <xref target="icmp6codes"/></c>
+<c>ICMPv6 destination unreachable</c><c>4</c><c>ICMPv6 code <xref target="icmp6codes"/></c>
+<c>ICMPv6 packet too big</c><c>5</c><c>ICMPv6 code <xref target="icmp6codes"/></c>
+</texttable>
+<t>Expert reviewers should take the following points
+into consideration:
+</t>
+<t>
+<list style="symbols">
+<t><spanx style="verb">ae-code</spanx> contents must be defined for a type, or if not appropriate specified as <spanx style="verb">None</spanx>. A specification of <spanx style="verb">None</spanx> requires less storage, and is therefore preferred.</t>
+</list>
+</t>
+</section>
 </section>
 
 <section anchor="security-considerations" title="Security considerations">
@@ -1751,7 +1865,8 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 <t>
 <list style="symbols">
 <t>Editorial changes arising from IESG review</t>
-<t>*-transport-flags</t>
+<t>*-transport-flags and may be mandatory in some configurations</t>
+<t>Mark fields that are conditionally mandatory</t>
 <t>Change `promisc' flag CDDL data type to boolean</t>
 <t>Add ranges to configuration quantities where appropriate</t>
 </list>
@@ -1865,6 +1980,18 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 <t>Initial commit</t>
 </list>
 </t>
+<t>'&gt;
+</t>
+
+<figure align="center"><artwork align="center">
+&lt;front&gt;
+    &lt;title&gt;Code Fields&lt;/title&gt;
+    &lt;author&gt;
+        &lt;organization&gt;IANA&lt;/organization&gt;
+    &lt;/author&gt;
+    &lt;date year='2018'/&gt;
+&lt;/front&gt;
+</artwork></figure>
 </section>
 
 </middle>
@@ -1879,6 +2006,7 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 <?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6891.xml"?>
 <?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7049.xml"?>
 <?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8126.xml"?>
 <?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
 <?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8484.xml"?>
 <reference anchor='pcap-filter' target='http://www.tcpdump.org/manpages/pcap-filter.7.html'>
@@ -1965,6 +2093,24 @@ name compression and Paul Hoffman for a detailed review of the document and the 
             <organization>DNS-OARC</organization>
         </author>
         <date year='2016'/>
+    </front>
+</reference>
+<reference anchor='icmp6codes' target='https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.xhtml#icmpv6-parameters-3'>
+    <front>
+        <title>ICMPv6 "Code" Fields</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
+    </front>
+</reference>
+<reference anchor='icmpcodes' target='https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml#icmp-parameters-codes'>
+    <front>
+        <title>Code Fields</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
     </front>
 </reference>
 <reference anchor='opcodes' target='http://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-5'>
@@ -2208,7 +2354,7 @@ collection-parameters = 1
     StorageFlagValues = &amp;(
         anonymised-data      : 0,
         sampled-data         : 1,
-        normalised-names     : 2,
+        normalized-names     : 2,
     )
     StorageFlags = uint .bits StorageFlagValues
 
@@ -2925,13 +3071,8 @@ to C-DNS. File size is in Mb, resident set size (RSS) in kb.
 little, with no significant effect (if anything a small reduction) on
 CPU consumption.
 </t>
-<t>The following figure plots the effect of increasing block size on output file size for different compressions.
-</t>
-<t><eref target="https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.png">Figure showing effect of block size on file size (PNG)</eref>
-</t>
-<t><eref target="https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg">Figure showing effect of block size on file size (SVG)</eref>
-</t>
-<t>From the above, there is obviously scope for tuning the default block
+<t><eref target="https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg">This graph</eref> plots the effect of increasing block size on output file size for different compressions.
+There is obviously scope for tuning the default block
 size to the compression being employed, traffic characteristics, frequency of
 output file rollover etc. Using a strong compression scheme, block sizes over
 10,000 query/response pairs would seem to offer limited improvements.

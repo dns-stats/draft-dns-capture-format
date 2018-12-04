@@ -425,6 +425,10 @@
 <link href="#rfc.section.12" rel="Chapter" title="12 Implementation status"/>
 <link href="#rfc.section.12.1" rel="Chapter" title="12.1 DNS-STATS Compactor"/>
 <link href="#rfc.section.13" rel="Chapter" title="13 IANA considerations"/>
+<link href="#rfc.section.13.1" rel="Chapter" title="13.1 Transport types"/>
+<link href="#rfc.section.13.2" rel="Chapter" title="13.2 Data storage flags"/>
+<link href="#rfc.section.13.3" rel="Chapter" title="13.3 Response processing flags"/>
+<link href="#rfc.section.13.4" rel="Chapter" title="13.4 AddressEvent types"/>
 <link href="#rfc.section.14" rel="Chapter" title="14 Security considerations"/>
 <link href="#rfc.section.15" rel="Chapter" title="15 Privacy considerations"/>
 <link href="#rfc.section.16" rel="Chapter" title="16 Acknowledgements"/>
@@ -576,7 +580,11 @@
 </ul><li>12.   <a href="#rfc.section.12">Implementation status</a></li>
 <ul><li>12.1.   <a href="#rfc.section.12.1">DNS-STATS Compactor</a></li>
 </ul><li>13.   <a href="#rfc.section.13">IANA considerations</a></li>
-<li>14.   <a href="#rfc.section.14">Security considerations</a></li>
+<ul><li>13.1.   <a href="#rfc.section.13.1">Transport types</a></li>
+<li>13.2.   <a href="#rfc.section.13.2">Data storage flags</a></li>
+<li>13.3.   <a href="#rfc.section.13.3">Response processing flags</a></li>
+<li>13.4.   <a href="#rfc.section.13.4">AddressEvent types</a></li>
+</ul><li>14.   <a href="#rfc.section.14">Security considerations</a></li>
 <li>15.   <a href="#rfc.section.15">Privacy considerations</a></li>
 <li>16.   <a href="#rfc.section.16">Acknowledgements</a></li>
 <li>17.   <a href="#rfc.section.17">Changelog</a></li>
@@ -1709,7 +1717,7 @@
       <td class="left">earliest-time</td>
       <td class="center">C</td>
       <td class="center">A</td>
-      <td class="left">A timestamp (2 unsigned integers, <samp>Timestamp</samp>) for the earliest record in the <samp>Block</samp> item. The first integer is the number of seconds since the POSIX epoch <a href="#posix-time">[posix-time]</a> (<samp>time_t</samp>), excluding leap seconds. The second integer is the number of ticks (see <a href="#storageparameters">Section 7.4.1.1</a>) since the start of the second. This timestamp can only be omitted if all block items containing a time offset from the start of the block also omit that time offset.</td>
+      <td class="left">A timestamp (2 unsigned integers, <samp>Timestamp</samp>) for the earliest record in the <samp>Block</samp> item. The first integer is the number of seconds since the POSIX epoch <a href="#posix-time">[posix-time]</a> (<samp>time_t</samp>), excluding leap seconds. The second integer is the number of ticks (see <a href="#storageparameters">Section 7.4.1.1</a>) since the start of the second. This field is mandatory unless all block items containing a time offset from the start of the block also omit that time offset.</td>
     </tr>
     <tr>
       <td class="left"/>
@@ -3212,7 +3220,171 @@
 <p id="rfc.section.12.1.p.4">There is also some discussion of issues encountered during development available at <a href="https://www.sinodun.com/2017/06/compressing-pcap-files/">Compressing Pcap Files</a> and <a href="https://www.sinodun.com/2017/06/more-on-debian-jessieubuntu-trusty-packet-capture-woes/">Packet Capture</a>.  </p>
 <p id="rfc.section.12.1.p.5">This information was last updated on 3rd of May 2018.  </p>
 <h1 id="rfc.section.13"><a href="#rfc.section.13">13.</a> <a href="#iana-considerations" id="iana-considerations">IANA considerations</a></h1>
-<p id="rfc.section.13.p.1">None </p>
+<p id="rfc.section.13.p.1">IANA is requested to create a registry "C-DNS DNS Capture Format" containing the subregistries defined in sections <a href="#transport-types">Section 13.1</a> to <a href="#addressevent-types">Section 13.4</a> inclusive.  </p>
+<p id="rfc.section.13.p.2">In all cases, new entries may be added to the subregistries by Expert Review as defined in <a href="#RFC8126">[RFC8126]</a>. Experts are expected to exercise their own expert judgement, and should consider the following general guidelines in addition to any guidelines given particular to a subregistry.  </p>
+<p/>
+
+<ul>
+  <li>There should be a real and compelling use for any new value.</li>
+  <li>Values assigned should be carefully chosen to minimise storage requirements for common cases.</li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.13.1"><a href="#rfc.section.13.1">13.1.</a> <a href="#transport-types" id="transport-types">Transport types</a></h1>
+<p id="rfc.section.13.1.p.1">IANA is requested to create a registry "C-DNS Transports" of C-DNS transport types. The primary purpose of this registry is to provide unique identifiers for all transports used for DNS queries.  </p>
+<p id="rfc.section.13.1.p.2">The initial contents of the registry are as follows - see sections <a href="#queryresponsesignature">Section 7.5.3.2</a> and <a href="#malformedmessagedata">Section 7.5.3.5</a> of [[this RFC]]: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Name</th>
+      <th class="center">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">UDP</td>
+      <td class="center">0</td>
+    </tr>
+    <tr>
+      <td class="left">TCP</td>
+      <td class="center">1</td>
+    </tr>
+    <tr>
+      <td class="left">TLS</td>
+      <td class="center">2</td>
+    </tr>
+    <tr>
+      <td class="left">DTLS</td>
+      <td class="center">3</td>
+    </tr>
+    <tr>
+      <td class="left">DoH</td>
+      <td class="center">4</td>
+    </tr>
+    <tr>
+      <td class="left">Unassigned</td>
+      <td class="center">5-15</td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.13.1.p.3">Expert reviewers should take the following points into consideration: </p>
+<p/>
+
+<ul>
+  <li>Is the requested DNS transport described by a Standards Track RFC?</li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.13.2"><a href="#rfc.section.13.2">13.2.</a> <a href="#data-storage-flags" id="data-storage-flags">Data storage flags</a></h1>
+<p id="rfc.section.13.2.p.1">IANA is requested to create a registry "C-DNS Storage Flags" of C-DNS data storage flags. The primary purpose of this registry is to provide indicators giving hints on processing of the data stored.  </p>
+<p id="rfc.section.13.2.p.2">The initial contents of the registry are as follows - see section <a href="#storageparameters">Section 7.4.1.1</a> of [[this RFC]]: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Name</th>
+      <th class="center">Value</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">anonymised-data</td>
+      <td class="center">0</td>
+      <td class="left">The data has been anonymised.</td>
+    </tr>
+    <tr>
+      <td class="left">sampled-data</td>
+      <td class="center">1</td>
+      <td class="left">The data is sampled data.</td>
+    </tr>
+    <tr>
+      <td class="left">normalized-names</td>
+      <td class="center">2</td>
+      <td class="left">Names in the data have been normalized.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="center">3-63</td>
+      <td class="left">Unassigned.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.13.3"><a href="#rfc.section.13.3">13.3.</a> <a href="#response-processing-flags" id="response-processing-flags">Response processing flags</a></h1>
+<p id="rfc.section.13.3.p.1">IANA is requested to create a registry "C-DNS Response Flags" of C-DNS response processing flags. The primary purpose of this registry is to provide indicators giving hints on the generation of a particular response.  </p>
+<p id="rfc.section.13.3.p.2">The initial contents of the registry are as follows - see section <a href="#responseprocessingdata">Section 7.6.1</a> of [[this RFC]]: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Name</th>
+      <th class="center">Value</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">from-cache</td>
+      <td class="center">0</td>
+      <td class="left">The response came from cache.</td>
+    </tr>
+    <tr>
+      <td class="left"/>
+      <td class="center">1-63</td>
+      <td class="left">Unassigned.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.section.13.4"><a href="#rfc.section.13.4">13.4.</a> <a href="#addressevent-types" id="addressevent-types">AddressEvent types</a></h1>
+<p id="rfc.section.13.4.p.1">IANA is requested to create a registry "C-DNS Address Event Types" of C-DNS AddressEvent types. The primary purpose of this registry is to provide unique identifiers of different types of C-DNS address events, and so specify the contents of the optional companion field <samp>ae-code</samp> for each type.  </p>
+<p id="rfc.section.13.4.p.2">The initial contents of the registry are as follows - see section <a href="#addresseventcount">Section 7.7</a>: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Event Type</th>
+      <th class="center">Value</th>
+      <th class="left">ae-code contents</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">TCP reset</td>
+      <td class="center">0</td>
+      <td class="left">None</td>
+    </tr>
+    <tr>
+      <td class="left">ICMP time exceeded</td>
+      <td class="center">1</td>
+      <td class="left">ICMP code <a href="#icmpcodes">[icmpcodes]</a></td>
+    </tr>
+    <tr>
+      <td class="left">ICMP destination unreachable</td>
+      <td class="center">2</td>
+      <td class="left">ICMP code <a href="#icmpcodes">[icmpcodes]</a></td>
+    </tr>
+    <tr>
+      <td class="left">ICMPv6 time exceeded</td>
+      <td class="center">3</td>
+      <td class="left">ICMPv6 code <a href="#icmp6codes">[icmp6codes]</a></td>
+    </tr>
+    <tr>
+      <td class="left">ICMPv6 destination unreachable</td>
+      <td class="center">4</td>
+      <td class="left">ICMPv6 code <a href="#icmp6codes">[icmp6codes]</a></td>
+    </tr>
+    <tr>
+      <td class="left">ICMPv6 packet too big</td>
+      <td class="center">5</td>
+      <td class="left">ICMPv6 code <a href="#icmp6codes">[icmp6codes]</a></td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.13.4.p.3">Expert reviewers should take the following points into consideration: </p>
+<p/>
+
+<ul>
+  <li><samp>ae-code</samp> contents must be defined for a type, or if not appropriate specified as <samp>None</samp>. A specification of <samp>None</samp> requires less storage, and is therefore preferred.</li>
+</ul>
+
+<p> </p>
 <h1 id="rfc.section.14"><a href="#rfc.section.14">14.</a> <a href="#security-considerations" id="security-considerations">Security considerations</a></h1>
 <p id="rfc.section.14.p.1">Any control interface MUST perform authentication and encryption.  </p>
 <p id="rfc.section.14.p.2">Any data upload MUST be authenticated and encrypted.  </p>
@@ -3230,7 +3402,8 @@
 
 <ul>
   <li>Editorial changes arising from IESG review</li>
-  <li>*-transport-flags</li>
+  <li>*-transport-flags and may be mandatory in some configurations</li>
+  <li>Mark fields that are conditionally mandatory</li>
   <li>Change `promisc' flag CDDL data type to boolean</li>
   <li>Add ranges to configuration quantities where appropriate</li>
 </ul>
@@ -3355,6 +3528,16 @@
 </ul>
 
 <p> </p>
+<p id="rfc.section.17.p.23">'&gt; </p>
+<pre>
+&lt;front&gt;
+    &lt;title&gt;Code Fields&lt;/title&gt;
+    &lt;author&gt;
+        &lt;organization&gt;IANA&lt;/organization&gt;
+    &lt;/author&gt;
+    &lt;date year='2018'/&gt;
+&lt;/front&gt;
+</pre>
 <h1 id="rfc.references"><a href="#rfc.references">18.</a> References</h1>
 <h1 id="rfc.references.1"><a href="#rfc.references.1">18.1.</a> Normative References</h1>
 <table>
@@ -3433,6 +3616,12 @@
     </tr>
     <tr>
       <td class="reference">
+        <b id="RFC8126">[RFC8126]</b>
+      </td>
+      <td class="top"><a>Cotton, M.</a>, <a>Leiba, B.</a> and <a>T. Narten</a>, "<a href="http://tools.ietf.org/html/rfc8126">Guidelines for Writing an IANA Considerations Section in RFCs</a>", BCP 26, RFC 8126, DOI 10.17487/RFC8126, June 2017.</td>
+    </tr>
+    <tr>
+      <td class="reference">
         <b id="RFC8174">[RFC8174]</b>
       </td>
       <td class="top"><a>Leiba, B.</a>, "<a href="http://tools.ietf.org/html/rfc8174">Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</a>", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017.</td>
@@ -3495,6 +3684,18 @@
         <b id="I-D.hoffman-dns-in-json">[I-D.hoffman-dns-in-json]</b>
       </td>
       <td class="top"><a>Hoffman, P.</a>, "<a href="http://tools.ietf.org/html/draft-hoffman-dns-in-json-16">Representing DNS Messages in JSON</a>", Internet-Draft draft-hoffman-dns-in-json-16, May 2018.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="icmp6codes">[icmp6codes]</b>
+      </td>
+      <td class="top"><a>IANA</a>, "<a href="https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.xhtml#icmpv6-parameters-3">ICMPv6 "Code" Fields</a>", 2018.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="icmpcodes">[icmpcodes]</b>
+      </td>
+      <td class="top"><a>IANA</a>, "<a href="https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml#icmp-parameters-codes">Code Fields</a>", 2018.</td>
     </tr>
     <tr>
       <td class="reference">
@@ -3702,7 +3903,7 @@ collection-parameters = 1
     StorageFlagValues = &amp;(
         anonymised-data      : 0,
         sampled-data         : 1,
-        normalised-names     : 2,
+        normalized-names     : 2,
     )
     StorageFlags = uint .bits StorageFlagValues
 
@@ -4700,10 +4901,7 @@ message-data-index = 3
   </tbody>
 </table>
 <p id="rfc.section.C.6.p.3">Increasing block size, therefore, tends to increase maximum RSS a little, with no significant effect (if anything a small reduction) on CPU consumption.  </p>
-<p id="rfc.section.C.6.p.4">The following figure plots the effect of increasing block size on output file size for different compressions.  </p>
-<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.png">Figure showing effect of block size on file size (PNG)</a> </p>
-<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg">Figure showing effect of block size on file size (SVG)</a> </p>
-<p id="rfc.section.C.6.p.7">From the above, there is obviously scope for tuning the default block size to the compression being employed, traffic characteristics, frequency of output file rollover etc. Using a strong compression scheme, block sizes over 10,000 query/response pairs would seem to offer limited improvements.  </p>
+<p><a href="https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg">This graph</a> plots the effect of increasing block size on output file size for different compressions.  There is obviously scope for tuning the default block size to the compression being employed, traffic characteristics, frequency of output file rollover etc. Using a strong compression scheme, block sizes over 10,000 query/response pairs would seem to offer limited improvements.  </p>
 <h1 id="rfc.authors">
   <a href="#rfc.authors">Authors' Addresses</a>
 </h1>

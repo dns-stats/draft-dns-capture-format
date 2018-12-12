@@ -115,6 +115,7 @@ the development of DNS traffic monitoring applications.
 </t>
 </abstract>
 
+
 </front>
 
 <middle>
@@ -2012,18 +2013,18 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 </middle>
 <back>
 <references title="Normative References">
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-cbor-cddl.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.0792.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.1035.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6891.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7049.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8126.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8484.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-cbor-cddl.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.0792.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1035.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6891.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7049.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7858.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8126.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8484.xml"?>
 <reference anchor='pcap-filter' target='http://www.tcpdump.org/manpages/pcap-filter.7.html'>
     <front>
         <title>Manpage of PCAP-FILTER</title>
@@ -2055,9 +2056,9 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 </reference>
 </references>
 <references title="Informative References">
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.bortzmeyer-dprive-rfc7626-bis.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.daley-dnsxml.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.dickinson-dprive-bcp-op.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.bortzmeyer-dprive-rfc7626-bis.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.daley-dnsxml.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.dickinson-dprive-bcp-op.xml"?>
 <reference anchor='IEEE802.1Q'>
     <front>
         <title>IEEE Standard for Local and metropolitan area networks -- Bridges and Bridged Networks</title>
@@ -2068,9 +2069,9 @@ name compression and Paul Hoffman for a detailed review of the document and the 
     </front>
     <seriesInfo name="DOI" value="10.1109/IEEESTD.2014.6991462"/>
 </reference>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7942.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"?>
-<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8427.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7942.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8427.xml"?>
 <reference anchor='ditl' target='https://www.dns-oarc.net/oarc/data/ditl'>
     <front>
         <title>DITL</title>
@@ -3086,8 +3087,28 @@ to C-DNS. File size is in Mb, resident set size (RSS) in kb.
 little, with no significant effect (if anything a small reduction) on
 CPU consumption.
 </t>
-<t><eref target="https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg">This graph</eref> plots the effect of increasing block size on output file size for different compressions.
-There is obviously scope for tuning the default block
+<t>The following table demonstrates the effect of increasing block size
+on output file size for different compressions.
+</t>
+<texttable>
+<ttcol align="right">Block size</ttcol>
+<ttcol align="right">None</ttcol>
+<ttcol align="right">snzip</ttcol>
+<ttcol align="right">lz4</ttcol>
+<ttcol align="right">gzip</ttcol>
+<ttcol align="right">zstd</ttcol>
+<ttcol align="right">xz</ttcol>
+
+<c>1000</c><c>133.46</c><c>90.52</c><c>90.03</c><c>74.65</c><c>44.78</c><c>25.63</c>
+<c>5000</c><c>89.85</c><c>59.69</c><c>59.43</c><c>46.99</c><c>37.33</c><c>22.34</c>
+<c>10000</c><c>76.87</c><c>50.39</c><c>50.28</c><c>38.94</c><c>33.62</c><c>21.09</c>
+<c>20000</c><c>67.86</c><c>43.91</c><c>43.90</c><c>33.24</c><c>32.62</c><c>20.16</c>
+<c>40000</c><c>61.88</c><c>39.63</c><c>39.69</c><c>29.44</c><c>28.72</c><c>19.52</c>
+<c>80000</c><c>58.08</c><c>36.93</c><c>37.01</c><c>27.05</c><c>26.25</c><c>19.00</c>
+<c>160000</c><c>55.94</c><c>35.10</c><c>35.06</c><c>25.44</c><c>24.56</c><c>19.63</c>
+<c>320000</c><c>54.41</c><c>33.87</c><c>33.74</c><c>24.36</c><c>23.44</c><c>18.66</c>
+</texttable>
+<t>There is obviously scope for tuning the default block
 size to the compression being employed, traffic characteristics, frequency of
 output file rollover etc. Using a strong compression scheme, block sizes over
 10,000 query/response pairs would seem to offer limited improvements.

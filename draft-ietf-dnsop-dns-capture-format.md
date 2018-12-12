@@ -2,12 +2,12 @@
     Title = "C-DNS: A DNS Packet Capture Format"
     abbrev = "C-DNS: A DNS Packet Capture Format"
     category = "std"
-    docName= "draft-ietf-dnsop-dns-capture-format-09"
+    docName= "draft-ietf-dnsop-dns-capture-format-10"
     ipr = "trust200902"
     area = "Operations Area"
     workgroup = "dnsop"
     keyword = ["DNS"]
-    date = 2018-11-30T00:00:00Z
+    date = 2018-12-12T00:00:00Z
     [pi]
     toc = "yes"
     compact = "yes"
@@ -1452,7 +1452,117 @@ This information was last updated on 3rd of May 2018.
 
 # IANA considerations
 
-None
+IANA is requested to create a registry "C-DNS DNS Capture Format" containing
+the subregistries defined in sections (#transport-types)
+to (#addressevent-types) inclusive.
+
+In all cases, new entries may be added to the subregistries by Expert Review
+as defined in [@!RFC8126]. Experts are expected to exercise their own
+expert judgement, and should consider the following general guidelines in
+addition to any guidelines given particular to a subregistry.
+
+* There should be a real and compelling use for any new value.
+* Values assigned should be carefully chosen to minimise storage requirements for common cases.
+
+## Transport types
+
+IANA is requested to create a registry "C-DNS Transports" of C-DNS transport
+type identifiers. The primary purpose of this registry is to provide unique
+identifiers for all transports used for DNS queries.
+
+The following note is included in this registry: "In version 1.0 of C-DNS
+[[this RFC]], there is a field to identify the type of DNS transport. This
+field is 4 bits in size."
+
+The initial contents of the
+registry are as follows - see sections (#queryresponsesignature)
+and (#malformedmessagedata) of [[this RFC]]:
+
+Identifier | Name | Reference
+:---------:|:-----|:---------
+0 | UDP | [[this RFC]]
+1 | TCP | [[this RFC]]
+2 | TLS | [[this RFC]]
+3 | DTLS | [[this RFC]]
+4 | DoH | [[this RFC]]
+5-15 | Unassigned |
+
+Expert reviewers should take the following points
+into consideration:
+
+* Is the requested DNS transport described by a Standards Track RFC?
+
+## Data storage flags
+
+IANA is requested to create a registry "C-DNS Storage Flags" of C-DNS
+data storage flags. The primary purpose of this registry is to provide
+indicators giving hints on processing of the data stored.
+
+The following note is included in this registry: "In version 1.0 of C-DNS
+[[this RFC]], there is a field describing attributes of the data recorded.
+The field is a CBOR [@RFC7049] unsigned integer holding bit flags."
+
+The initial contents of the registry are as follows - see section
+(#storageparameters) of [[this RFC]]:
+
+Bit | Name | Description | Reference
+:--:|:-----|:------------|:---------
+0 | anonymised-data | The data has been anonymised. | [[this RFC]]
+1 | sampled-data | The data is sampled data. | [[this RFC]]
+2 | normalized-names | Names in the data have been normalized. | [[this RFC]]
+3-63 | Unassigned
+
+## Response processing flags
+
+IANA is requested to create a registry "C-DNS Response Flags"
+of C-DNS response processing flags. The primary purpose of this
+registry is to provide indicators
+giving hints on the generation of a particular response.
+
+The following note is included in this registry: "In version 1.0 of C-DNS
+[[this RFC]], there is a field describing attributes of the responses recorded.
+The field is a CBOR [@RFC7049] unsigned integer holding bit flags."
+
+The initial contents of the registry are as follows - see section
+(#responseprocessingdata) of [[this RFC]]:
+
+Bit | Name | Description | Reference
+:--:|:-----|:------------|:---------
+0 | from-cache | The response came from cache. | [[this RFC]]
+1-63 | Unassigned
+
+## AddressEvent types
+
+IANA is requested to create a registry "C-DNS Address Event Types"
+of C-DNS AddressEvent types. The primary purpose of this registry is
+to provide unique identifiers of different types of C-DNS address
+events, and so specify the contents of the optional companion field
+`ae-code` for each type.
+
+The following note is included in this registry: "In version 1.0 of C-DNS
+[[this RFC]], there is a field identify types of the events related
+to client addresses. This field is a CBOR [@RFC7049] unsigned integer.
+There is a related optional field `ae-code`, which, if present,
+holds an additional CBOR unsigned integer giving additional information
+specific to the event type."
+
+The initial contents of the registry are as follows - see section
+(#addresseventcount):
+
+Identifier | Event Type | `ae-code` contents | Reference
+:---------:|:-----------|:-------------------|:---------
+0 | TCP reset | None | [[this RFC]]
+1 | ICMP time exceeded | ICMP code [@icmpcodes] | [[this RFC]]
+2 | ICMP destination unreachable | ICMP code [@icmpcodes] | [[this RFC]]
+3 | ICMPv6 time exceeded | ICMPv6 code [@icmp6codes] | [[this RFC]]
+4 | ICMPv6 destination unreachable | ICMPv6 code [@icmp6codes] | [[this RFC]]
+5 | ICMPv6 packet too big | ICMPv6 code [@icmp6codes] | [[this RFC]]
+>5 | Unassigned
+
+Expert reviewers should take the following points
+into consideration:
+
+* `ae-code` contents must be defined for a type, or if not appropriate specified as `None`. A specification of `None` requires less storage, and is therefore preferred.
 
 # Security considerations
 
@@ -1502,6 +1612,11 @@ Thanks also to Robert Edmonds, Jerry Lundström, Richard Gibson, Stephane Bortzm
 Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 
 # Changelog
+
+draft-ietf-dnsop-dns-capture-format-10
+
+* Add IANA Considerations
+* Convert graph in C.6 to table
 
 draft-ietf-dnsop-dns-capture-format-09
 
@@ -1771,6 +1886,26 @@ draft-dickinson-dnsop-dns-capture-format-00
     </front>
     <seriesInfo name="IEEE Standard 1003.1" value="2017 Edition"/>
     <seriesInfo name="DOI" value="10.1109/IEEESTD.2018.8277153"/>
+</reference>
+
+<reference anchor='icmpcodes' target='https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml#icmp-parameters-codes'>
+    <front>
+        <title>Code Fields</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
+    </front>
+</reference>
+
+<reference anchor='icmp6codes' target='https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.xhtml#icmpv6-parameters-3'>
+    <front>
+        <title>ICMPv6 "Code" Fields</title>
+        <author>
+            <organization>IANA</organization>
+        </author>
+        <date year='2018'/>
+    </front>
 </reference>
 
 {backmatter}
@@ -2102,13 +2237,21 @@ Increasing block size, therefore, tends to increase maximum RSS a
 little, with no significant effect (if anything a small reduction) on
 CPU consumption.
 
-The following figure plots the effect of increasing block size on output file size for different compressions.
+The following table demonstrates the effect of increasing block size
+on output file size for different compressions.
 
-![Figure showing effect of block size on file size (PNG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.png)
+Block size|None|snzip|lz4|gzip|zstd|xz
+---------:|---:|----:|--:|---:|---:|--:
+1000|133.46|90.52|90.03|74.65|44.78|25.63
+5000|89.85|59.69|59.43|46.99|37.33|22.34
+10000|76.87|50.39|50.28|38.94|33.62|21.09
+20000|67.86|43.91|43.90|33.24|32.62|20.16
+40000|61.88|39.63|39.69|29.44|28.72|19.52
+80000|58.08|36.93|37.01|27.05|26.25|19.00
+160000|55.94|35.10|35.06|25.44|24.56|19.63
+320000|54.41|33.87|33.74|24.36|23.44|18.66
 
-![Figure showing effect of block size on file size (SVG)](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg)
-
-From the above, there is obviously scope for tuning the default block
+There is obviously scope for tuning the default block
 size to the compression being employed, traffic characteristics, frequency of
 output file rollover etc. Using a strong compression scheme, block sizes over
 10,000 query/response pairs would seem to offer limited improvements.

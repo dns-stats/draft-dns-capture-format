@@ -97,7 +97,7 @@
 <uri></uri>
 </address>
 </author>
-<date year="2018" month="December" day="4"/>
+<date year="2018" month="December" day="12"/>
 
 <area>Operations Area</area>
 <workgroup>dnsop</workgroup>
@@ -1886,6 +1886,7 @@ name compression and Paul Hoffman for a detailed review of the document and the 
 <t>
 <list style="symbols">
 <t>Add IANA Considerations</t>
+<t>Convert graph in C.6 to table</t>
 </list>
 </t>
 <t>draft-ietf-dnsop-dns-capture-format-09

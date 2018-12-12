@@ -1616,6 +1616,7 @@ Also, Miek Gieben for [mmark](https://github.com/miekg/mmark)
 draft-ietf-dnsop-dns-capture-format-10
 
 * Add IANA Considerations
+* Convert graph in C.6 to table
 
 draft-ietf-dnsop-dns-capture-format-09
 

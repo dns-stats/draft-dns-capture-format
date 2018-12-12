@@ -2236,7 +2236,20 @@ Increasing block size, therefore, tends to increase maximum RSS a
 little, with no significant effect (if anything a small reduction) on
 CPU consumption.
 
-[This graph](https://github.com/dns-stats/draft-dns-capture-format/blob/master/file-size-versus-block-size.svg) plots the effect of increasing block size on output file size for different compressions.
+The following table demonstrates the effect of increasing block size
+on output file size for different compressions.
+
+Block size|None|snzip|lz4|gzip|zstd|xz
+---------:|---:|----:|--:|---:|---:|--:
+1000|133.46|90.52|90.03|74.65|44.78|25.63
+5000|89.85|59.69|59.43|46.99|37.33|22.34
+10000|76.87|50.39|50.28|38.94|33.62|21.09
+20000|67.86|43.91|43.90|33.24|32.62|20.16
+40000|61.88|39.63|39.69|29.44|28.72|19.52
+80000|58.08|36.93|37.01|27.05|26.25|19.00
+160000|55.94|35.10|35.06|25.44|24.56|19.63
+320000|54.41|33.87|33.74|24.36|23.44|18.66
+
 There is obviously scope for tuning the default block
 size to the compression being employed, traffic characteristics, frequency of
 output file rollover etc. Using a strong compression scheme, block sizes over

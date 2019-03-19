@@ -203,8 +203,8 @@ ticks = int
 uticks = uint
 
 Timestamp = [
-    timestamp-secs   : uint,
-    timestamp-uticks : uticks,
+    timestamp-secs  : uint,
+    timestamp-ticks : uticks,
 ]
 
 ;

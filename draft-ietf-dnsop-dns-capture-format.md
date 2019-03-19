@@ -1591,7 +1591,7 @@ methods for data minimization, IP address pseudonymization and anonymization.
 Appendix B of that document presents an analysis of 7 published anonymization
 processes. In addition, RSSAC have recently published
 [RSSAC04:](https://www.icann.org/en/system/files/files/rssac-040-07aug18-en.pdf)
- " Recommendations on Anonymization Processes for Source IP Addresses Submitted
+ "Recommendations on Anonymization Processes for Source IP Addresses Submitted
 for Future Analysis”.
 
 The above analyses consider full data capture (e.g using PCAP) as a baseline

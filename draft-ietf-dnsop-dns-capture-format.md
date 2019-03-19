@@ -558,12 +558,14 @@ Parameters contains fields to indicate if only IP prefixes were stored.
 
 If the IP address prefixes are absent, then full addresses are stored. In this
 case the IP version can be directly inferred from the stored address length and
-the fields `qr-transport-flags` in QueryResponseSignature and `mm-transport-flags`
-in MalformedMessageData (which contain the IP version bit) are optional.
+the fields `qr-transport-flags` in QueryResponseSignature, `mm-transport-flags`
+in MalformedMessageData and `ae-transport-flags` in AddressEventCount
+(the latter two containing the IP version bit) are optional.
 
 If IP address prefixes are given, only the prefix bits of addresses are stored.
-In this case the fields `qr-transport-flags` in QueryResponseSignature and
-`mm-transport-flags` in MalformedMessageData MUST be present, so that the IP
+In this case the fields `qr-transport-flags` in QueryResponseSignature,
+`mm-transport-flags` in MalformedMessageData and `ae-transport-flags`
+in AddressEventCount MUST be present, so that the IP
 version can be determined. See (#queryresponsesignature) and (#malformedmessagedata).
 
 As an example of storing only IP prefixes, if a client IPv6 prefix of 48 is
@@ -1072,6 +1074,10 @@ ae-type | X | U | The type of event. The following events types are currently de
 ae-code |   | U | A code relating to the event. For ICMP or ICMPv6 events, this MUST be the ICMP [@!RFC0792] or ICMPv6 [@!RFC4443] code. For other events the contents are undefined.
 ||
 ae-address-index | X | U | The index in the `ip-address` array of the client address. See (#blocktables).
+||
+ae-transport-flags | C | U | Bit flags describing the transport in the event, see (#ip-address-storage).
+ | | | Bit 0. IP version. 0 if IPv4, 1 if IPv6
+ | | | Bit 1-4. Transport. 4 bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS [@!RFC7858], 4 = DoH [@!RFC8484]. Values 5-15 are reserved for future use. ICMP and ICMPv6 events are classified as UDP for transport flag purposes.
 ||
 ae-count | X | U | The number of occurrences of this event during the block collection period.
 

@@ -226,14 +226,21 @@ the Question section from the response, if present, as an identifying QNAME).
 
     In the context of generating a C-DNS file it is assumed that only
     those DNS payloads which can be parsed to produce a well-formed DNS
-    message are stored in the C-DNS format and that all other messages will be (optionally) recorded
-    as malformed messages.
+    message or which are malformed DNS messages are stored in the C-DNS format.
 
-    Parsing a well-formed message means as a minimum:
+    Parsing a well-formed DNS message means as a minimum:
 
     * The packet has a well-formed 12 byte DNS Header with a recognised OPCODE.
     * The section counts are consistent with the section contents.
     * All of the resource records can be fully parsed.
+
+    A DNS payload which is at least 12 bytes long but which does not meet
+    the criterial for a well-formed message is considered a malformed DNS
+    message. These may optionally be stored in the C-DNS format.
+
+    DNS payloads which are neither well-formed messages nor malformed DNS messages
+    are classified as unrecognised packets. There is no provision in the C-DNS format
+    for storing unrecognised packets.
 
 2. All top level fields in each Q/R data item will be optional.
 
@@ -262,7 +269,7 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
 4. Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets
 (e.g. ICMP, TCP resets) sent to the server may be of interest.
 
-5. The wire format content of malformed DNS messages may optionally be recorded.
+5. The DNS payload wire format content of malformed DNS messages may optionally be recorded.
 
     * Rationale: Any structured capture format that does not capture the DNS payload byte for
       byte will be limited to some extent in that it cannot represent malformed DNS messages.
@@ -270,7 +277,7 @@ referenced from individual Q/R data items by indexing. The maximum number of Q/R
       structured format can be fully represented. Note, however, this can result in rather misleading statistics. For example, a
       malformed query which cannot be represented in the C-DNS format will lead to the (well formed)
       DNS responses with error code FORMERR appearing as 'unmatched'. Therefore it can greatly aid downstream analysis
-      to have the wire format of the malformed DNS messages available directly in the C-DNS file.
+      to have the DNS payload wire format of malformed DNS messages available directly in the C-DNS file.
 
 
 # Choice of CBOR
@@ -440,8 +447,8 @@ A Block consists of a Block Preamble item, some Block Statistics
 for the traffic stored within the Block and then various arrays of common data collectively called the Block Tables. This is then
 followed by an array of the Query/Response data items detailing the queries and responses
 stored within the Block. The array of Query/Response data items is in turn followed
-by the Address/Event Counts data items (an array of per-client counts of particular IP events) and then Malformed Message data items (an array of malformed messages
-that stored in the Block).
+by the Address/Event Counts data items (an array of per-client counts of particular IP events) and then Malformed Message data items
+(an array of malformed DNS messages that is stored in the Block).
 
 The exact nature of the DNS data will affect what block size is the best fit,
 however sample data for a root server indicated that block sizes up to
@@ -487,7 +494,7 @@ as space-efficient manner as possible, all fields in the following arrays are op
 
 * Query/Response
 * Query Signature
-* Malformed messages
+* Malformed DNS messages
 
 In other words, an
 implementation can choose to omit any data item that is not required for
@@ -525,14 +532,14 @@ or because the implementation is not configured to record them.
 
 In the case of OPCODEs, for a message to be fully parsable, the OPCODE must be known to the
 collecting implementation. Any message with an OPCODE unknown to the collecting implementation
-cannot be validated as correctly formed, and so must be treated as malformed. Messages with
+cannot be validated as correctly formed, and so must be treated as malformed DNS messages. Messages with
 OPCODES known to the recording application but not listed in the Storage Parameters are discarded
 by the recording application during C-DNS capture (regardless of whether they are malformed or not).
 
 In the case of RR records, each record in a message must be fully parsable, including
 parsing the record RDATA, as otherwise the message cannot be validated
 as correctly formed. Any RR record with an RR type not known to the collecting implementation
-cannot be validated as correctly formed, and so must be treated as malformed.
+cannot be validated as correctly formed, and so must be treated as malformed DNS messages.
 
 Once a message is correctly parsed, an implementation is free to record only a subset of
 the RR records present.
@@ -673,7 +680,7 @@ Field | M | T | Description
 :-----|:-:|:-:|:-----------
 ticks-per-second | X | U | Sub-second timing is recorded in ticks. This specifies the number of ticks in a second.
 ||
-max-block-items | X | U | The maximum number of items stored in any of the arrays in a `Block` item (Q/R items, address event counts or malformed messages). An indication to a decoder of the resources needed to process the file.
+max-block-items | X | U | The maximum number of items stored in any of the arrays in a `Block` item (Q/R items, address event counts or malformed DNS messages). An indication to a decoder of the resources needed to process the file.
 ||
 storage-hints | X | M | Collection of hints as to which fields are omitted in the arrays that have optional fields. Map of type `StorageHints`, see (#storagehints).
 ||
@@ -830,7 +837,7 @@ unmatched-responses |   | U | Number of unmatched responses in this `Block` item
 | | |
 discarded-opcode |   | U | Number of DNS messages processed from the input traffic stream during collection of data in this `Block` item but not recorded because their OPCODE is not in the list to be collected.
 | | |
-malformed-items |   | U | Number of malformed messages found in input for this `Block` item.
+malformed-items |   | U | Number of malformed DNS messages found in input for this `Block` item.
 
 ### "BlockTables"
 
@@ -861,7 +868,7 @@ rrlist |   | A | Array of type `RRList`. An `RRList` is an array of unsigned int
 | | |
 rr |   | A | Array of type `RR`. Each entry is the contents of a single RR. See (#rr).
 | | |
-malformed-message -data |   | A | Array of the contents of malformed messages.  Array of type `MalformedMessageData`, see (#malformedmessagedata).
+malformed-message -data |   | A | Array of the contents of malformed DNS messages.  Array of type `MalformedMessageData`, see (#malformedmessagedata).
 
 #### "ClassType"
 
@@ -970,7 +977,7 @@ rdata-index |   | U | The index in the `name-rdata` array of the RR RDATA. See (
 
 #### "MalformedMessageData"
 
-Details on malformed message items in this `Block` item. A map containing the following:
+Details on malformed DNS message items in this `Block` item. A map containing the following:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
@@ -1083,7 +1090,7 @@ ae-count | X | U | The number of occurrences of this event during the block coll
 
 ## "MalformedMessage"
 
-Details of malformed messages. A map containing the following:
+Details of malformed DNS messages. A map containing the following:
 
 Field | M | T | Description
 :-----|:-:|:-:|:-----------
@@ -1143,14 +1150,14 @@ of the original packet stream cannot be re-constructed from the C-DNS format:
      * Multiple DNS messages may have been sent in a single TCP segment
      * A DNS payload may have been split across multiple TCP segments
      * Multiple DNS messages may have been sent on a single TCP session
-* Malformed DNS messages if the wire format is not recorded
-* Any Non-DNS messages that were in the original packet stream e.g. ICMP
+* Malformed DNS messages if the DNS payload wire format is not recorded
+* Unrecognised packets that were in the original packet stream e.g. ICMP
 
 Simple assumptions can be made on the reconstruction: fragmented and DNS-over-TCP messages
 can be reconstructed into single packets and a single TCP session can be constructed
 for each TCP packet.
 
-Additionally, if malformed messages and Non-DNS packets are captured separately,
+Additionally, if malformed DNS messages and unrecognised packets are captured separately,
 they can be merged with packet captures reconstructed from C-DNS to produce a more complete
 packet stream.
 
@@ -1442,9 +1449,9 @@ format. PCAP files for the captured traffic can also be reconstructed. See
 
 This implementation:
 
-* covers the whole of the specification described in the -03 draft with the
-exception of support for malformed messages and pico second time resolution.
-(Note: this implementation does allow malformed messages to be recorded separately in a PCAP file).
+* covers the whole of the specification described in the -10 draft with the
+exception of support for malformed DNS messages.
+(Note: this implementation does allow unrecognised packets to be recorded separately in a PCAP file).
 
 * is released under the Mozilla Public License Version 2.0.
 

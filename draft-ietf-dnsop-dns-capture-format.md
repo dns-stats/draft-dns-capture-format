@@ -1415,6 +1415,20 @@ integers. The first is a POSIX `time_t` [@!posix-time]. Consumers of C-DNS
 should be aware of this as it excludes leap seconds and therefore may cause
 minor anomalies in the data e.g. when calculating query throughput.
 
+## Determination of client and server addresses
+
+Implementations collecting DNS traffic data without a definite context - for example,
+those collecting traffic by monitoring a connection, as opposed to implementations that are
+part of a server or a resolver - must nevertheless assign the client and server addresses
+from the message source and destination addresses. This SHOULD be done by referencing the
+DNS header QR flag. If the message is a query, the client address is the source address and
+the server address the destination address. If the message is a response, the client address
+is the destination address and the server address the source address.
+
+In the case of malformed DNS messages, the QR flag may not be meaningful; C-DNS users should be
+aware that in this case the assignment of source and destination addresses to client and server
+addresses should be considered unreliable.
+
 # Implementation status
 
 [Note to RFC Editor: please remove this section and reference to [@RFC7942] prior to publication.]

@@ -605,7 +605,7 @@ which items the encoder of the file omits from the stored data and will therefor
 never be present. (This approach is taken because a flag that indicated which items
 were included for collection would not guarantee that the item was present --
 only that it might be.)
-An implementation decoding that file can then use these to quickly determine
+An implementation decoding that file can then use these flags to quickly determine
 whether the input data is rich enough for its needs.
 
 <!-- [rfced] Section 6.2.1:  Does "these" mean "these items," or
@@ -762,7 +762,7 @@ be mandatory in some configurations.</t>
 <t>The column T gives the CBOR datatype of the item.
 <list style="symbols">
 <t>U - Unsigned integer.</t>
-<t>I - Signed integer (i.e., CBOR unsigned or negative integer).</t>
+<t>I - Signed integer, so either CBOR unsigned integer or CBOR negative integer..</t>
 
 <!-- [rfced] Section 7.2:  Please confirm that "Signed integer
 (that is, CBOR unsigned ...)" is correct; "Signed ... that is
@@ -1159,7 +1159,7 @@ where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH
 <c></c><c></c><c></c><c>Bit 13. &nbsp;Response TrunCation (TC).</c>
 <c></c><c></c><c></c><c>Bit 14. &nbsp;Response Authoritative Answer (AA).</c>
 <c></c><c></c><c></c><c></c>
-<c>query-rcode</c><c></c><c>U</c><c>Query RCODE. &nbsp;If the Query contains OPT <xref target="RFC6891"/>, this value incorporates any EXTENDED_RCODE_VALUE <xref target="rcodes"/>.</c>
+<c>query-rcode</c><c></c><c>U</c><c>Query RCODE. &nbsp;If the Query contains OPT <xref target="RFC6891"/>, this value incorporates any EXTENDED-RCODE value<xref target="rcodes"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>query-classtype -index</c><c></c><c>U</c><c>The index to the item in the &quot;classtype&quot; array of the CLASS and TYPE of the first Question. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1582,7 +1582,7 @@ following sections.
        /____________________________________________/
 
        OFIFO = output FIFO containing Q/R items (Section 10.6)
-       RFIFO = FIFO holding responses (Section 10.6)
+       RFIFO = response FIFO containing unmatched Response items (Section 10.6)
        QT = Query Timeout (Section 10.3)
        ST = Skew Timeout (Section 10.3)
 </artwork></figure>
@@ -1720,9 +1720,9 @@ three types of content:
 </section>
 
 <section anchor="post-processing" title="Post-Processing">
-<t>When ending a capture, all items in the responses FIFO are timed out
-immediately, generating response-only entries to the Q/R data item
-FIFO. These and all other remaining entries in the Q/R data item FIFO
+<t>When ending a capture, all items in the RFIFO are timed out
+immediately, generating response-only entries to the OFIFO.
+These and all other remaining entries in the OFIFO
 should be treated as timed-out queries.
 
 <!-- [rfced] Section 10.8:  Should "responses FIFO" be "RFIFO," and
@@ -1808,7 +1808,7 @@ Original:
 
 <t>Implementations should consider providing a configurable maximum RDATA size
 for captures -- for example, to avoid memory issues when confronted with large
-XFR records.
+zone transfer records.
 </t>
 </section>
 
@@ -1900,7 +1900,7 @@ Section 7.4.1.1 ("Bit 0," "Bit 1," "Bit 2") -->
 <ttcol align="left">Name</ttcol>
 <ttcol align="left">Description</ttcol>
 <ttcol align="left">Reference</ttcol>
-<c>0</c><c>anonymised-data</c><c>The data has been anonymized.</c><c>RFC 8618</c>
+<c>0</c><c>anonymized-data</c><c>The data has been anonymized.</c><c>RFC 8618</c>
 <c>1</c><c>sampled-data</c><c>The data is sampled data.</c><c>RFC 8618</c>
 <c>2</c><c>normalized-names</c><c>Names in the data have been normalized.</c><c>RFC 8618</c>
 <c>3-63</c><c>Unassigned</c><c></c><c></c>
@@ -1933,6 +1933,8 @@ NEW:
 Side note: The original document used both British and American spelling;
 for internal consistency and consistency with RFC-to-be 8610, it has 
 been updated to the latter throughout.
+
+Response: Yes, this change can be made, and IANA updated.
 -->
 
 </section>
@@ -2178,6 +2180,8 @@ References unless you let us know otherwise.
               capture woes", June 2017,
               <https://www.sinodun.com/2017/06/
               more-on-debian-jessieubuntu-trusty-packet-capture-woes/>.
+
+Response: We choose (a).
 -->
 
 <!-- draft-dickinson-dprive-bcp-op (Replaced by draft-ietf-dprive-bcp-op)
@@ -2263,16 +2267,6 @@ Currently:
             <organization>The Apache Software Foundation</organization>
         </author>
         <date year="2019"/>
-    </front>
-</reference>
-
-<reference anchor="CBOR" target="https://cbor.io/">
-    <front>
-        <title>CBOR: RFC 7049 Concise Binary Object Representation</title>
-        <author initials="C." surname="Bormann" fullname="Carsten Bormann">
-            <organization></organization>
-        </author>
-        <date/>
     </front>
 </reference>
 
@@ -2761,7 +2755,7 @@ collection-parameters = 1
       OtherDataHints = uint .bits OtherDataHintValues
 
     StorageFlagValues = &amp;(
-        anonymised-data      : 0,
+        anonymized-data      : 0,
         sampled-data         : 1,
         normalized-names     : 2,
     )
@@ -2914,7 +2908,7 @@ query-rcode           = 7
 query-classtype-index = 8
 query-qd-count        = 9
 query-an-count        = 10
-query-ns-count        = 12
+query-ns-count        = 11
 query-ar-count        = 12
 edns-version          = 13
 udp-buf-size          = 14
@@ -2956,7 +2950,7 @@ response-rcode        = 16
 
   QueryResponseFlagValues = &amp;(
       has-query               : 0,
-      has-reponse             : 1,
+      has-response            : 1,
       query-has-opt           : 2,
       response-has-opt        : 3,
       query-has-no-question   : 4,
@@ -3146,7 +3140,10 @@ C. May we change "has-reponse" to "has-response," or is
 remain?)?
 
 Original:
- has-reponse             : 1, -->
+ has-reponse             : 1,
+
+Response: Both changes can be made; we have amended the XML.
+ -->
 
 </t>
 </section>
@@ -3161,8 +3158,9 @@ a reference back to part (or all) of the earlier name and (2)&nbsp;the
 uncompressed part of the name is shorter than any compression already found,
 the earlier name is noted as the compression target for the name.
 </t>
-<t>The following tables illustrate the process. In an example packet, the
-first name is foo.example.
+<t>The following tables illustrate the step by step process of adding
+names and performing name compression. In an example packet, the
+first name added is foo.example, which cannot be compressed.
 </t>
 
 <texttable>
@@ -3171,7 +3169,7 @@ first name is foo.example.
 <ttcol align="left">Uncompressed</ttcol>
 <ttcol align="left">Compression Target</ttcol>
 
-<c>1</c><c>foo.example</c><c></c><c></c>
+<c>1</c><c>foo.example</c><c>foo.example</c><c>None</c>
 </texttable>
 
 <t>The next name added is bar.example.
@@ -3208,7 +3206,7 @@ uncompressed part of the name being bar.
 <ttcol align="left">Uncompressed</ttcol>
 <ttcol align="left">Compression Target</ttcol>
 
-<c>1</c><c>foo.example</c><c></c><c></c>
+<c>1</c><c>foo.example</c><c>foo.example</c><c>None</c>
 <c>2</c><c>bar.example</c><c>bar</c><c>1 + offset to example</c>
 </texttable>
 <t>The third name added is www.bar.example. This is first matched against
@@ -3224,7 +3222,7 @@ and so it is adopted.
 <ttcol align="left">Uncompressed</ttcol>
 <ttcol align="left">Compression Target</ttcol>
 
-<c>1</c><c>foo.example</c><c></c><c></c>
+<c>1</c><c>foo.example</c><c>foo.example</c><c>None</c>
 <c>2</c><c>bar.example</c><c>bar</c><c>1 + offset to example</c>
 <c>3</c><c>www.bar.example</c><c>www</c><c>2</c>
 </texttable>
@@ -3314,7 +3312,7 @@ for encoding and decoding a schema for C++, Go,
 Java, Python, Ruby, C#, Objective-C, JavaScript, and PHP.</t>
 </list></t>
 
-<t>CBOR <xref target="CBOR"/>. Defined in <xref target="RFC7049"/>, this
+<t>CBOR <xref target="RFC7049"/>. This
 serialization format is comparable to JSON but with a binary
 representation. It does not use a predefined schema, so data is always stored
 tagged. However, CBOR data schemas can be described using CDDL

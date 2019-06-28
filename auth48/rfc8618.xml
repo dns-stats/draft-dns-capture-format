@@ -625,7 +625,7 @@ Original (the previous sentence is included for possible context):
 <section anchor="optional-rrs-and-opcodes" title="Optional RRs and OPCODEs">
 <t>Also included in the Storage Parameters item are explicit arrays listing the
 RR types and the OPCODEs to be recorded. These arrays remove any ambiguity over
-whether messages containing particular OPCODEs are not present because (1)
+whether e.g. messages containing particular OPCODEs are not present because (1)
 certain OPCODEs did not occur or (2) the implementation is not configured to
 record them.
 
@@ -763,7 +763,7 @@ be mandatory in some configurations.</t>
 <t>The column T gives the CBOR datatype of the item.
 <list style="symbols">
 <t>U - Unsigned integer.</t>
-<t>I - Signed integer (i.e.  either a CBOR unsigned integer or a CBOR negative integer).</t>
+<t>I - Signed integer (i.e. either a CBOR unsigned integer or a CBOR negative integer).</t>
 
 <!-- [rfced] Section 7.2:  Please confirm that "Signed integer
 (that is, CBOR unsigned ...)" is correct; "Signed ... that is

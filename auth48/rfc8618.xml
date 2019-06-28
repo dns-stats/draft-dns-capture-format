@@ -14,7 +14,7 @@
 <?rfc comments="no"?>
 
 <front>
-<title abbrev="C-DNS: A DNS Packet Capture Format">Compacted-DNS (C-DNS): A DNS Packet Capture Format</title>
+<title abbrev="C-DNS: A Format for DNS Packet Capture ">Compacted-DNS (C-DNS): A Format for DNS Packet Capture</title>
 
 <!-- [rfced] May the title be updated as follows?  The rationale is to
 avoid using "DNS packet capture" in the attributive position before
@@ -623,10 +623,11 @@ Original (the previous sentence is included for possible context):
 </section>
 
 <section anchor="optional-rrs-and-opcodes" title="Optional RRs and OPCODEs">
-<t>Also included in the Storage Parameters item are explicit arrays listing the RR types and
-the OPCODEs to be recorded. These remove any ambiguity over whether
-messages containing particular OPCODEs or are not present because they did not
-occur, or because the implementation is not configured to record them.
+<t>Also included in the Storage Parameters item are explicit arrays listing the
+RR types and the OPCODEs to be recorded. These arrays remove any ambiguity over
+whether messages containing particular OPCODEs are not present because (1)
+certain OPCODEs did not occur or (2) the implementation is not configured to
+record them.
 
 <!-- [rfced] Section 6.2.2:  This sentence does not parse.  If the
 suggested text is not correct, please clarify "These," what did not
@@ -762,7 +763,7 @@ be mandatory in some configurations.</t>
 <t>The column T gives the CBOR datatype of the item.
 <list style="symbols">
 <t>U - Unsigned integer.</t>
-<t>I - Signed integer, so either CBOR unsigned integer or CBOR negative integer..</t>
+<t>I - Signed integer (i.e.  either a CBOR unsigned integer or a CBOR negative integer).</t>
 
 <!-- [rfced] Section 7.2:  Please confirm that "Signed integer
 (that is, CBOR unsigned ...)" is correct; "Signed ... that is
@@ -1010,7 +1011,7 @@ captured.
 item. &nbsp;The first integer is the number of seconds since the POSIX epoch
 <xref target="posix-time"/> (&quot;time_t&quot;), excluding leap seconds. &nbsp;The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. &nbsp;This field is mandatory unless all block items containing a time offset from the start of the block also omit that time offset.</c>
 <c></c><c></c><c></c><c></c>
-<c>block-parameters -index</c><c></c><c>U</c><c>The index of the item in the &quot;block-parameters&quot; array (in the &quot;file-preamble&quot; item) applicable to this block. &nbsp;If not present, index 0 is used. &nbsp;See <xref target="blockparameters"/>.</c>
+<c>block-parameters -index</c><c></c><c>U</c><c>The index of the item in the &quot;block-parameters&quot; array (in the &quot;file-preamble&quot; item) applicable to this block. &nbsp;If not present, index 0 is used. &nbsp;See <xref target="filepreamble"/>.</c>
 </texttable>
 
 <!-- [rfced] Section 7.5.1:  Please confirm that "Section 7.4.1" is
@@ -2668,7 +2669,7 @@ collection-parameters = 1
       ? server-address-prefix-ipv4 =&gt; IPv4PrefixLength,
       ? server-address-prefix-ipv6 =&gt; IPv6PrefixLength,
       ? sampling-method            =&gt; tstr,
-      ? anonymisation-method       =&gt; tstr,
+      ? anonymization-method       =&gt; tstr,
   }
   ticks-per-second           = 0
   max-block-items            = 1
@@ -2681,7 +2682,7 @@ collection-parameters = 1
   server-address-prefix-ipv4 = 8
   server-address-prefix-ipv6 = 9
   sampling-method            = 10
-  anonymisation-method       = 11
+  anonymization-method       = 11
 
     ; A hint indicates whether the collection method will output
     ; the item or will ignore the item if present.

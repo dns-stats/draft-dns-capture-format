@@ -121,7 +121,7 @@ the development of DNS traffic-monitoring applications.
 <middle>
 
 <section anchor="introduction" title="Introduction">
-<t>There has long been a need for server operators to collect DNS queries and responses
+<t>There has long been a need for server operators to collect DNS Queries and Responses
 on authoritative and recursive name servers for monitoring and analysis.
 This data is used in a number of ways, including traffic monitoring,
 analyzing network attacks, and &quot;day in the life&quot; (DITL) <xref target="ditl"/> analysis.
@@ -158,7 +158,7 @@ privacy.
 DNS packets (for example, see <xref target="dnsxml"/> and <xref
 target="RFC8427"/>), but this work is largely aimed at producing convenient
 representations of single messages. </t>
-<t>Many DNS operators may receive hundreds of thousands of queries per second
+<t>Many DNS operators may receive hundreds of thousands of Queries per second
 on a single name server instance, so a mechanism to minimize the storage and
 transmission size (and therefore upload overhead) of the data collected is
 highly desirable.
@@ -263,7 +263,7 @@ with the most limited use case in mind, such that:
 <list style="symbols">
 <t>Data collection will occur on the same hardware as the name server itself</t>
 <t>Collected data will be stored on the same hardware as the name server itself, at least temporarily</t>
-<t>Collected data being returned to some central analysis system will use the same network interface as the DNS queries and responses</t>
+<t>Collected data being returned to some central analysis system will use the same network interface as the DNS Queries and Responses</t>
 <t>There can be multiple third-party servers involved</t>
 </list>
 </t>
@@ -272,7 +272,7 @@ format is minimal storage size of the capture files.
 </t>
 <t>Another significant consideration for any application that records DNS traffic
 is that the running of the name server software and the transmission of
-DNS queries and responses are the most important jobs of a name server; capturing data is not.
+DNS Queries and Responses are the most important jobs of a name server; capturing data is not.
 Any data collection system co-located with the name server needs to be intelligent enough to
 carefully manage its CPU, disk, memory, and network
 utilization. This leads to designing a format that requires a relatively low
@@ -295,8 +295,8 @@ restrictions above.
 <t>The basic unit of data is a combined DNS Query and the associated Response
 (a &quot;Q/R data item&quot;). The same structure
 will be used for unmatched Queries and Responses. Queries without Responses will be
-captured omitting the response data. Responses without queries will be captured omitting the Query data (but using
-the Question section from the response, if present, as an identifying QNAME).
+captured omitting the Response data. Responses without Queries will be captured omitting the Query data (but using
+the Question section from the Response, if present, as an identifying QNAME).
 <list style="symbols">
 <t>Rationale: A Query and the associated Response represent the basic level of a client's interaction with the server.
 Also, combining the Query and Response into one item often reduces storage requirements due to
@@ -319,7 +319,7 @@ to be available for analysis. Operators with minimal requirements should
 not have to pay the cost of recording full data, though this will limit
 the ability to perform certain kinds of data analysis and also to
 reconstruct packet captures. For example, omitting the RRs
-from a Response will reduce the C-DNS file size; in principle, responses
+from a Response will reduce the C-DNS file size; in principle, Responses
 can be synthesized if there is enough context. Operators may have
 different policies for collecting user data and can choose to omit or
 anonymize certain fields at capture time, e.g., client address.</t>
@@ -332,9 +332,9 @@ Although this introduces complexity, it provides compression of the data that ma
 <t>It is anticipated that the files produced can be subject to further compression using general-purpose compression tools.
 Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See <xref target="simple-versus-block-coding"/>.</t>
 <t>Examples of commonality between DNS messages are that in most cases the
-QUESTION RR is the same in the query and response and that there is a finite
-set of query signatures (based on a subset of attributes). For many
-authoritative servers, there is very likely to be a finite set of responses that are generated, of which a large number are NXDOMAIN.</t>
+QUESTION RR is the same in the Query and Response and that there is a finite
+set of Query 'signatures' (based on a subset of attributes). For many
+authoritative servers, there is very likely to be a finite set of Responses that are generated, of which a large number are NXDOMAIN.</t>
 </list></t>
 <t>Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets
 (e.g., ICMP, TCP resets) sent to the server may be of interest.</t>
@@ -344,8 +344,8 @@ authoritative servers, there is very likely to be a finite set of responses that
 byte will be limited to some extent in that it cannot represent malformed DNS messages.
 Only those messages that can be fully parsed and transformed into the
 structured format can be fully represented. Note, however, that this can result in rather misleading statistics. For example, a
-malformed query that cannot be represented in the C-DNS format will lead to the (well-formed)
-DNS responses with error code FORMERR appearing as &quot;unmatched&quot;. Therefore, it can greatly aid downstream analysis
+malformed Query that cannot be represented in the C-DNS format will lead to the (well-formed)
+DNS Responses with error code FORMERR appearing as &quot;unmatched&quot;. Therefore, it can greatly aid downstream analysis
 to have the wire format of the malformed DNS messages available directly in the C&nbhy;DNS&nbsp;file.</t>
 </list></t>
 </list>
@@ -382,7 +382,7 @@ representation and individual elements.
 </t>
 <t><xref target="fig1"/> shows the C-DNS format at the top level, including the file header and
 data blocks. The Query/Response data items, Address/Event Count data items, and
-Malformed Message data items link to various Block tables.
+Malformed Message data items link to various Block Tables.
 </t>
 
 <figure align="center" title="The C-DNS Format" anchor="fig1"><artwork align="center">
@@ -403,7 +403,7 @@ Malformed Message data items link to various Block tables.
 | +--------------------------------+
 | | Block statistics               |
 | +--------------------------------+
-| | Block tables                   |
+| | Block Tables                   |
 | +--------------------------------+
 | | Query/Response data items      |
 | +--------------------------------+
@@ -417,7 +417,7 @@ Malformed Message data items link to various Block tables.
 | +--------------------------------+
 | | Block statistics               |
 | +--------------------------------+
-| | Block tables                   |
+| | Block Tables                   |
 | +--------------------------------+
 | | Query/Response data items      |
 | +--------------------------------+
@@ -430,7 +430,7 @@ Malformed Message data items link to various Block tables.
 </artwork></figure>
 <t><xref target="fig2"/> shows some more-detailed relationships within each
 block, specifically those between the Query/Response data item and the
-relevant Block tables.
+relevant Block Tables.
 </t>
 
 <figure align="center" title="The Query/Response Data Item and Subsidiary
@@ -474,7 +474,7 @@ relevant Block tables.
 | +-----------------------+  |   |   |  +------------------------+ |
 | | Additional            |--+   |   |  | Query NS count (q)     | |
 +-+-----------------------+  |   |   |  +------------------------+ |
-| Extra response info (r) |  |-+ |   |  | Query EDNS version (q) | |
+| Extra Response info (r) |  |-+ |   |  | Query EDNS version (q) | |
 | +-----------------------+  | | |   |  +------------------------+ |
 | | Answer                |--+ | |   |  | EDNS UDP size (q)      | |
 | +-----------------------+  | | |   |  +------------------------+ |
@@ -507,8 +507,8 @@ relevant Block tables.
 </artwork></figure>
 
 <t>In <xref target="fig2"/>, data items annotated (q) are only present when a
-query&wj;/response has a query, and those annotated (r) are only present when a
-query/response response is present.
+Query&wj;/Response has a Query, and those annotated (r) are only present when a
+Query/Response Response is present.
 </t>
 <t>A C-DNS file begins with a file header containing a File Type Identifier and
 a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items
@@ -518,7 +518,7 @@ a File Preamble. The File Preamble contains information on the file Format Versi
 </t>
 <t>A Block consists of a Block Preamble item, some Block Statistics
 for the traffic stored within the Block, and then various arrays of common data collectively called the Block Tables. This is then
-followed by an array of the Query&wj;/Response data items detailing the queries and responses
+followed by an array of the Query&wj;/Response data items detailing the Queries and Responses
 stored within the Block. The array of Query&wj;/Response data items is in turn followed
 by the Address/Event Counts data items (an array of per-client counts of
 particular IP events) and then Malformed Message data items (an array of
@@ -577,7 +577,7 @@ are optional:
 <list style="symbols">
 <t>Query/Response</t>
 <t>Query Signature</t>
-<t>Malformed messages</t>
+<t>Malformed Messages</t>
 </list>
 </t>
 <t>In other words, an
@@ -590,15 +590,15 @@ RRs or to only record messages with certain OPCODES.
 <t>
 <list style="numbers">
 <t>How can it quickly determine if a file definitely does not contain the data items it requires to complete a
-particular task (e.g., reconstructing query traffic or performing a specific piece of data analysis)?</t>
+particular task (e.g., reconstructing DNS traffic or performing a specific piece of data analysis)?</t>
 <t>How can it determine whether a data item is not present because it was
 (1)&nbsp;explicitly not recorded or (2)&nbsp;not available/present?</t>
 </list></t>
 
 <t>For example, capturing C-DNS data from within a name server implementation
 makes it unlikely that the Client Hoplimit can be recorded. Or, if
-there is no query ARCount recorded and no query OPT RDATA <xref target="RFC6891"/> recorded, is that
-because no query contained an OPT RR, or because that data was not stored?
+there is no Query ARCount recorded and no Query OPT RDATA <xref target="RFC6891"/> recorded, is that
+because no Query contained an OPT RR, or because that data was not stored?
 </t>
 <t>The Storage Parameters item therefore also contains a Storage Hints item, which specifies
 which items the encoder of the file omits from the stored data and will therefore
@@ -746,7 +746,7 @@ significant bit, i.e., flag &quot;n&quot; in quantity
 </t>
 <t>For the sake of readability, all type and field names defined in the
 CDDL definition are shown in double quotes. Type names are by
-convention camel case (e.g., &quot;BlockTable&quot;), and field names are
+convention camel case (e.g., &quot;BlockTables&quot;), and field names are
 lowercase with hyphens (e.g., &quot;block-tables&quot;).
 </t>
 <t>For the sake of brevity, the following conventions are used in the tables:
@@ -952,9 +952,9 @@ captured.
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>query-timeout</c><c></c><c>U</c><c>To be matched with a query, a response must arrive within this number of seconds.</c>
+<c>query-timeout</c><c></c><c>U</c><c>To be matched with a Query, a Response must arrive within this number of seconds.</c>
 <c></c><c></c><c></c><c></c>
-<c>skew-timeout</c><c></c><c>U</c><c>The network stack may report a response before the corresponding query. &nbsp;A response is not considered to be missing a query until after this many microseconds.</c>
+<c>skew-timeout</c><c></c><c>U</c><c>The network stack may report a Response before the corresponding Query. &nbsp;A Response is not considered to be missing a Query until after this many microseconds.</c>
 <c></c><c></c><c></c><c></c>
 <c>snaplen</c><c></c><c>U</c><c>Collect up to this many bytes per packet.</c>
 <c></c><c></c><c></c><c></c>
@@ -1041,9 +1041,9 @@ Original (best viewed with a fixed-point font such as Courier.
 <c></c><c></c><c></c><c></c>
 <c>qr-data-items</c><c></c><c>U</c><c>Total number of Q/R data items in this &quot;Block&quot; item.</c>
 <c></c><c></c><c></c><c></c>
-<c>unmatched-queries</c><c></c><c>U</c><c>Number of unmatched queries in this &quot;Block&quot; item.</c>
+<c>unmatched-queries</c><c></c><c>U</c><c>Number of unmatched Queries in this &quot;Block&quot; item.</c>
 <c></c><c></c><c></c><c></c>
-<c>unmatched-responses</c><c></c><c>U</c><c>Number of unmatched responses in this &quot;Block&quot; item.</c>
+<c>unmatched-responses</c><c></c><c>U</c><c>Number of unmatched Responses in this &quot;Block&quot; item.</c>
 <c></c><c></c><c></c><c></c>
 <c>discarded-opcode</c><c></c><c>U</c><c>Number of DNS messages processed from the input traffic stream during collection of data in this &quot;Block&quot; item but not recorded because their OPCODE is not in the list to be collected.</c>
 <c></c><c></c><c></c><c></c>
@@ -1080,7 +1080,7 @@ name compression (per <xref target="RFC1035"/>) is used on the individual names/
 <c></c><c></c><c></c><c></c>
 <c>qlist</c><c></c><c>A</c><c>Array of type &quot;QuestionList&quot;. &nbsp;A &quot;QuestionList&quot; is an array of unsigned integers, indexes to &quot;Question&quot; items in the &quot;qrr&quot; array.</c>
 <c></c><c></c><c></c><c></c>
-<c>qrr</c><c></c><c>A</c><c>Array of type &quot;Question&quot;. &nbsp;Each entry is the contents of a single question, where a question is the second or subsequent question in a query. &nbsp;See <xref target="question"/>.</c>
+<c>qrr</c><c></c><c>A</c><c>Array of type &quot;Question&quot;. &nbsp;Each entry is the contents of a single question, where a question is the second or subsequent Question in a Query. &nbsp;See <xref target="question"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>rrlist</c><c></c><c>A</c><c>Array of type &quot;RRList&quot;. &nbsp;An &quot;RRList&quot; is an array of unsigned integers, indexes to &quot;RR&quot; items in the &quot;rr&quot; array.</c>
 <c></c><c></c><c></c><c></c>
@@ -1118,20 +1118,20 @@ individual Q/R data items. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
-<c>qr-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the query. &nbsp;Same definition as &quot;mm-transport-flags&quot; in <xref target="malformedmessagedata"/>, with an additional indicator for trailing bytes. &nbsp;See <xref target="cddl"/>.</c>
+<c>qr-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the Query. &nbsp;Same definition as &quot;mm-transport-flags&quot; in <xref target="malformedmessagedata"/>, with an additional indicator for trailing bytes. &nbsp;See <xref target="cddl"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6. &nbsp;See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value
 where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH
-<xref target="RFC8484"/>. &nbsp;("DoH" stands for DNS (queries) over HTTPS.) &nbsp;Values 5-15 are reserved for future use.</c>
-<c></c><c></c><c></c><c>Bit 5. &nbsp;1 if trailing bytes in query packet. &nbsp;See <xref target="trailing-bytes"/>.</c>
+<xref target="RFC8484"/>. &nbsp;("DoH" stands for DNS over HTTPS.) &nbsp;Values 5-15 are reserved for future use.</c>
+<c></c><c></c><c></c><c>Bit 5. &nbsp;1 if trailing bytes in Query packet. &nbsp;See <xref target="trailing-bytes"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>qr-type</c><c></c><c>U</c><c>Type of Query/Response transaction.</c>
-<c></c><c></c><c></c><c>0 = Stub. &nbsp;A query from a stub resolver.</c>
-<c></c><c></c><c></c><c>1 = Client. &nbsp;An incoming query to a recursive resolver.</c>
-<c></c><c></c><c></c><c>2 = Resolver. &nbsp;A query sent from a recursive resolver to an authoritative resolver.</c>
-<c></c><c></c><c></c><c>3 = Authoritative. &nbsp;A query to an authoritative resolver.</c>
-<c></c><c></c><c></c><c>4 = Forwarder. &nbsp;A query sent from a recursive resolver to an upstream recursive resolver.</c>
-<c></c><c></c><c></c><c>5 = Tool. &nbsp;A query sent to a server by a server tool.</c>
+<c></c><c></c><c></c><c>0 = Stub. &nbsp;A Query from a stub resolver.</c>
+<c></c><c></c><c></c><c>1 = Client. &nbsp;An incoming Query to a recursive resolver.</c>
+<c></c><c></c><c></c><c>2 = Resolver. &nbsp;A Query sent from a recursive resolver to an authoritative resolver.</c>
+<c></c><c></c><c></c><c>3 = Authoritative. &nbsp;A Query to an authoritative resolver.</c>
+<c></c><c></c><c></c><c>4 = Forwarder. &nbsp;A Query sent from a recursive resolver to an upstream recursive resolver.</c>
+<c></c><c></c><c></c><c>5 = Tool. &nbsp;A Query sent to a server by a server tool.</c>
 <c></c><c></c><c></c><c></c>
 <c>qr-sig-flags</c><c></c><c>U</c><c>Bit flags explicitly indicating attributes of the message pair represented by this Q/R data item (not all attributes may be recorded or deducible).</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;1 if a Query was present.</c>
@@ -1247,7 +1247,7 @@ Original (best viewed with a fixed-point font such as Courier):
 <c></c><c></c><c></c><c></c>
 <c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
-<c>mm-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the query. &nbsp;See <xref target="ip-address-storage"/>.</c>
+<c>mm-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the Query. &nbsp;See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6.</c>
 <c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH <xref target="RFC8484"/>. &nbsp;Values 5-15 are reserved for future use.</c>
 <c></c><c></c><c></c><c></c>
@@ -1282,15 +1282,15 @@ Original (best viewed with a fixed-point font such as Courier):
 <c></c><c></c><c></c><c></c>
 <c>client-hoplimit</c><c></c><c>U</c><c>The IPv4 TTL or IPv6 Hoplimit from the Query packet.</c>
 <c></c><c></c><c></c><c></c>
-<c>response-delay</c><c></c><c>I</c><c>The time difference between Query and Response, in ticks. &nbsp;See <xref target="storageparameters"/>. &nbsp;Only present if there is a query and a response. &nbsp;The delay can be negative if the network stack/capture library returns packets out of order.</c>
+<c>response-delay</c><c></c><c>I</c><c>The time difference between Query and Response, in ticks. &nbsp;See <xref target="storageparameters"/>. &nbsp;Only present if there is a Query and a Response. &nbsp;The delay can be negative if the network stack/capture library returns packets out of order.</c>
 <c></c><c></c><c></c><c></c>
 <c>query-name-index</c><c></c><c>U</c><c>The index in the &quot;name-rdata&quot; array of the item containing the QNAME for the first Question. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>query-size</c><c></c><c>U</c><c>DNS query message size (see below).</c>
+<c>query-size</c><c></c><c>U</c><c>DNS Query message size (see below).</c>
 <c></c><c></c><c></c><c></c>
-<c>response-size</c><c></c><c>U</c><c>DNS response message size (see below).</c>
+<c>response-size</c><c></c><c>U</c><c>DNS Response message size (see below).</c>
 <c></c><c></c><c></c><c></c>
-<c>response-processing -data</c><c></c><c>M</c><c>Data on response processing. &nbsp;Map of type &quot;ResponseProcessingData&quot;. &nbsp;See <xref target="responseprocessingdata"/>.</c>
+<c>response-processing -data</c><c></c><c>M</c><c>Data on Response processing. &nbsp;Map of type &quot;ResponseProcessingData&quot;. &nbsp;See <xref target="responseprocessingdata"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>query-extended</c><c></c><c>M</c><c>Extended Query data. &nbsp;Map of type &quot;QueryResponseExtended&quot;. &nbsp;See <xref target="queryresponseextended"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1299,13 +1299,13 @@ Original (best viewed with a fixed-point font such as Courier):
 <t>The &quot;query-size&quot; and &quot;response-size&quot; fields hold the DNS message
 size. For UDP, this is the size of the UDP payload that contained the
 DNS message. For TCP, it is the size of the DNS message as specified in
-the two-byte message length header. Trailing bytes in UDP queries are
+the two-byte message length header. Trailing bytes in UDP Queries are
 routinely observed in traffic to authoritative servers, and this value
 allows a calculation of how many trailing bytes were present.
 </t>
 
 <section anchor="responseprocessingdata" title="&quot;ResponseProcessingData&quot;">
-<t>Information on the server processing that produced the response. A map containing the following:
+<t>Information on the server processing that produced the Response. A map containing the following:
 </t>
 <texttable>
 <ttcol align="left">Field</ttcol>
@@ -1313,10 +1313,10 @@ allows a calculation of how many trailing bytes were present.
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>bailiwick-index</c><c></c><c>U</c><c>The index in the &quot;name-rdata&quot; array of the owner name for the response bailiwick. &nbsp;See <xref target="blocktables"/>.</c>
+<c>bailiwick-index</c><c></c><c>U</c><c>The index in the &quot;name-rdata&quot; array of the owner name for the Response bailiwick. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>processing-flags</c><c></c><c>U</c><c>Flags relating to response processing.</c>
-<c></c><c></c><c></c><c>Bit 0. &nbsp;1 if the response came from cache.</c>
+<c>processing-flags</c><c></c><c>U</c><c>Flags relating to Response processing.</c>
+<c></c><c></c><c></c><c>Bit 0. &nbsp;1 if the Response came from cache.</c>
 </texttable>
 </section>
 
@@ -1424,11 +1424,11 @@ Some of the issues with reconstructing both the DNS payload and the
 full packet stream are outlined here.
 </t>
 <t>The reconstruction depends on whether or not all the optional sections
-of both the query and response were captured in the C-DNS file.
+of both the Query and Response were captured in the C-DNS file.
 Clearly, if they were not all captured, the reconstruction will be imperfect.
 </t>
-<t>Even if all sections of the response were captured, one cannot reconstruct the DNS
-response payload exactly, due to the fact that some DNS names in the message on the wire
+<t>Even if all sections of the Response were captured, one cannot reconstruct the DNS
+Response payload exactly, due to the fact that some DNS names in the message on the wire
 may have been compressed.
 <xref target="name-compression"/> discusses this in more detail.
 </t>
@@ -1468,18 +1468,18 @@ packet.
 <t>Name compression per <xref target="RFC1035"/> works by substituting trailing sections of a name with a
 reference back to the occurrence of those sections earlier in the message.
 Not all name server software uses the same algorithm when compressing domain names
-within the responses. Some attempt maximum recompression
+within the Responses. Some attempt maximum recompression
 at the expense of runtime resources, others use heuristics to balance compression
 and speed, and others use different rules for what is a valid compression target.
 </t>
-<t>This means that responses to the
+<t>This means that Responses to the
 same question from different name server software that match in terms of DNS payload
 content (header, counts, RRs with name compression removed) do
 not necessarily match byte for byte on the wire.
 </t>
-<t>Therefore, it is not possible to ensure that the DNS response payload is reconstructed
+<t>Therefore, it is not possible to ensure that the DNS Response payload is reconstructed
 byte for byte from C-DNS data. However, it can at least, in principle, be reconstructed to have the correct payload
-length (since the original response length is captured) if there is enough knowledge of the
+length (since the original Response length is captured) if there is enough knowledge of the
 commonly implemented name compression algorithms. For example, a simplistic approach would be
 to try each algorithm in turn
 to see if it reproduces the original length, stopping at the first match. This would not
@@ -1495,8 +1495,8 @@ different compression algorithms used by well-known name server software.
 
 <section anchor="data-collection" title="Data Collection">
 <t>This section describes a non-normative proposed algorithm for the
-processing of a captured stream of DNS queries and responses and production of
-a stream of query/response items, matching queries&wj;/responses where
+processing of a captured stream of DNS Queries and Responses and production of
+a stream of Query/Response data items, matching Queries and Responses where
 possible.
 </t>
 <t>For the purposes of this discussion, it is assumed that the input has been preprocessed such that:
@@ -1506,8 +1506,8 @@ possible.
 <t>All IP fragmentation reassembly, TCP stream reassembly, and so&nbsp;on, have already been performed.</t>
 <t>Each message is associated with transport metadata required to generate the Primary ID (see <xref target="primary-id"/>).</t>
 <t>Each message has a well-formed DNS header of 12 bytes, and (if present) the first Question in the Question section can be
-parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed query being
-removed in the preprocessing stage, but the correctly formed response with RCODE of FORMERR being present.</t>
+parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed Query being
+removed in the preprocessing stage, but the correctly formed Response with RCODE of FORMERR being present.</t>
 </list>
 </t>
 <t>DNS messages are processed in the order they are delivered to the implementation.
@@ -1515,19 +1515,19 @@ removed in the preprocessing stage, but the correctly formed response with RCODE
 <t>It should be noted that packet capture libraries do not necessarily provide packets in strict chronological order.
 This can, for example, arise on multi-core platforms where packets arriving at a network device
 are processed by different cores. On systems where this behavior has been observed, the timestamps associated
-with each packet are consistent; queries always have a timestamp prior to the response timestamp.
+with each packet are consistent; Queries always have a timestamp prior to the Response timestamp.
 However, the order in which these packets appear in the packet capture stream is not necessarily
-strictly chronological; a response can appear in the capture stream before the query that provoked
-the response. For this discussion, this non&nbhy;chronological delivery is termed &quot;skew&quot;.
+strictly chronological; a Response can appear in the capture stream before the Query that provoked
+the Response. For this discussion, this non&nbhy;chronological delivery is termed &quot;skew&quot;.
 </t>
-<t>In the presence of skew, response packets can arrive for matching before the corresponding query. To avoid
-generating false instances of responses without a matching query, and queries without a matching response,
+<t>In the presence of skew, Response packets can arrive for matching before the corresponding Query. To avoid
+generating false instances of Responses without a matching Query, and Queries without a matching Response,
 the matching algorithm must take the possibility of skew into account.
 </t>
 
 <section anchor="matching-algorithm" title="Matching Algorithm">
 <t>A schematic representation of the algorithm for matching Q/R data items is shown
-in <xref target="fig3"/>. It takes individual DNS query or response messages
+in <xref target="fig3"/>. It takes individual DNS Query or Response messages
 as input, and it outputs matched Q/R items. The numbers in the figure identify
 matching operations listed in <xref target="table1"/>. Specific details of the
 algorithm -- for example, queues, timers, and identifiers -- are given in the
@@ -1583,7 +1583,7 @@ following sections.
        /____________________________________________/
 
        OFIFO = output FIFO containing Q/R items (Section 10.6)
-       RFIFO = response FIFO containing unmatched Response items (Section 10.6)
+       RFIFO = Response FIFO containing unmatched Response items (Section 10.6)
        QT = Query Timeout (Section 10.3)
        ST = Skew Timeout (Section 10.3)
 </artwork></figure>
@@ -1650,9 +1650,9 @@ Currently:
 
 <section anchor="secondary-id" title="Secondary ID (Optional)">
 <t>If present, the first Question in the Question section is used as a
-secondary ID for each message. Note that there may be well-formed DNS queries
-that have a QDCOUNT of 0, and some responses may have a QDCOUNT of 0 (for
-example, responses with RCODE=FORMERR or NOTIMP). In this case, the
+secondary ID for each message. Note that there may be well-formed DNS Queries
+that have a QDCOUNT of 0, and some Responses may have a QDCOUNT of 0 (for
+example, Responses with RCODE=FORMERR or NOTIMP). In this case, the
 secondary ID is not used in matching.
 </t>
 </section>
@@ -1661,13 +1661,13 @@ secondary ID is not used in matching.
 <section anchor="algorithm-parameters" title="Algorithm Parameters">
 <t>
 <list style="numbers">
-<t>Query Timeout (QT). A query arrives with timestamp t1. If no response
-matching that query has arrived before other input arrives timestamped later
-than (t1 + QT), a query/response item containing only a query item is
+<t>Query Timeout (QT). A Query arrives with timestamp t1. If no Response
+matching that Query has arrived before other input arrives timestamped later
+than (t1 + QT), a Query/Response data item containing only a Query is
 recorded. The QT value is typically on the order of 5 seconds.</t>
-<t>Skew Timeout (ST). A response arrives with timestamp t2. If a response has
-not been matched by a query before input arrives timestamped later than (t2 +
-ST), a query/response item containing only a response is recorded. The ST
+<t>Skew Timeout (ST). A Response arrives with timestamp t2. If a Response has
+not been matched by a Query before input arrives timestamped later than (t2 +
+ST), a Query/Response data item containing only a Response is recorded. The ST
 value is typically a few microseconds.</t>
 </list>
 </t>
@@ -1678,17 +1678,17 @@ value is typically a few microseconds.</t>
 </t>
 <t>
 <list style="numbers">
-<t>Multiple queries with the same Primary ID (but different Secondary ID) arriving before any responses for these queries are&nbsp;seen.</t>
-<t>Multiple queries with the same Primary and Secondary ID arriving before any responses for these queries are seen.</t>
-<t>Queries for which no later response can be found within the specified timeout.</t>
-<t>Responses for which no previous query can be found within the specified timeout.</t>
+<t>Multiple Queries with the same Primary ID (but different Secondary ID) arriving before any Responses for these Queries are&nbsp;seen.</t>
+<t>Multiple Queries with the same Primary and Secondary ID arriving before any Responses for these Queries are seen.</t>
+<t>Queries for which no later Response can be found within the specified timeout.</t>
+<t>Responses for which no previous Query can be found within the specified timeout.</t>
 </list>
 </t>
 </section>
 
 <section anchor="algorithm-limitations" title="Algorithm Limitations">
-<t>For cases 1 and 2 listed in the above requirements, it is not possible to unambiguously match queries with responses.
-This algorithm chooses to match to the earliest query with the correct Primary and Secondary ID.
+<t>For cases 1 and 2 listed in the above requirements, it is not possible to unambiguously match Queries with Responses.
+This algorithm chooses to match to the earliest Query with the correct Primary and Secondary ID.
 </t>
 </section>
 
@@ -1698,7 +1698,7 @@ This algorithm chooses to match to the earliest query with the correct Primary a
 <t>
 <list style="symbols">
 <t>OFIFO: an output FIFO containing Q/R items in chronological order.</t>
-<t>RFIFO: a FIFO holding responses without a matching query in order of
+<t>RFIFO: a FIFO holding Responses without a matching Query in order of
 arrival.</t>
 </list>
 </t>
@@ -1711,20 +1711,20 @@ three types of content:
 </t>
 <t>
 <list style="numbers">
-<t>A matched pair of query and response messages</t>
-<t>A query message with no response</t>
-<t>A response message with no query</t>
+<t>A matched pair of Query and Response messages</t>
+<t>A Query message with no Response</t>
+<t>A Response message with no Query</t>
 </list>
 </t>
-<t>The timestamp of a list item is that of the query for cases 1 and 2 and that of the response for case 3.
+<t>The timestamp of a list item is that of the Query for cases 1 and 2 and that of the Response for case 3.
 </t>
 </section>
 
 <section anchor="post-processing" title="Post-Processing">
 <t>When ending a capture, all items in the RFIFO are timed out
-immediately, generating response-only entries to the OFIFO.
+immediately, generating Response only entries to the OFIFO.
 These and all other remaining entries in the OFIFO
-should be treated as timed-out queries.
+should be treated as timed-out Queries.
 
 <!-- [rfced] Section 10.8:  Should "responses FIFO" be "RFIFO," and
 should "Q/R data item FIFO" be "OFIFO" here?
@@ -1733,7 +1733,7 @@ Original:
  When ending capture, all items in the responses FIFO are timed out
  immediately, generating response-only entries to the Q/R data item
  FIFO.  These and all other remaining entries in the Q/R data item
- FIFO should be treated as timed out queries.
+ FIFO should be treated as timed out Queries.
 
 Possibly:
  When ending a capture, all items in the RFIFO are timed out
@@ -1755,7 +1755,7 @@ following guidance may be of use to implementers.
 <t>Adherence to the last two rules given in Section&nbsp;3.9 of <xref
 target="RFC7049"/> for all maps and arrays would unacceptably constrain
 implementations -- for example, in the use case of real-time data collection in
-constrained environments where outputting block tables after query&wj;/response
+constrained environments where outputting Block Tables after query&wj;/response
 data and allowing indefinite-length maps and arrays could reduce memory
 requirements.
 </t>
@@ -1769,7 +1769,7 @@ missing values in their output.
 </section>
 
 <section anchor="trailing-bytes" title="Trailing Bytes">
-<t>A DNS query message in a UDP or TCP payload can be followed by some additional (spurious) bytes, which are not stored in C-DNS.
+<t>A DNS Query message in a UDP or TCP payload can be followed by some additional (spurious) bytes, which are not stored in C-DNS.
 </t>
 <t>When DNS traffic is sent over TCP, each message is prefixed with a
 two&nbhy;byte length field, which gives the message length, excluding the
@@ -1819,7 +1819,7 @@ the block. As described in <xref target="blockpreamble"/>, the timestamp is an
 array of two unsigned integers. The first is a POSIX &quot;time_t&quot; <xref
 target="posix-time"/>. Consumers of C-DNS should be aware of this, as it
 excludes leap seconds and therefore may cause minor anomalies in the data,
-e.g., when calculating query throughput.
+e.g., when calculating Query throughput.
 </t>
 </section>
 </section>
@@ -1845,7 +1845,7 @@ addition to any provided guidelines that are particular to a subregistry.
 <section anchor="transport-types" title="Transport Types">
 <t>IANA has created a registry &quot;C-DNS Transports&quot; of C-DNS transport
 type identifiers. The primary purpose of this registry is to provide unique
-identifiers for all transports used for DNS queries.
+identifiers for all transports used for DNS Queries.
 </t>
 
 <t>The following note is included in this registry: &quot;In version 1.0 of
@@ -1944,10 +1944,10 @@ Response: Yes, this change can be made, and IANA updated.
 <t>IANA has created a registry &quot;C-DNS Response Flags&quot;
 of C-DNS response-processing flags. The primary purpose of this
 registry is to provide indicators giving hints on the generation of a
-particular response.
+particular Response.
 </t>
 <t>The following note is included in this registry: &quot;In version 1.0 of
-C-DNS [RFC8618], there is a field describing attributes of the responses
+C-DNS [RFC8618], there is a field describing attributes of the Responses
 recorded. The field is a CBOR <xref target="RFC7049"/> unsigned integer
 holding bit flags.&quot;
 </t>
@@ -1965,7 +1965,7 @@ table in Section 7.6.1. -->
 <ttcol align="left">Description</ttcol>
 <ttcol align="left">Reference</ttcol>
 
-<c>0</c><c>from-cache</c><c>The response came from cache.</c><c>RFC 8618</c>
+<c>0</c><c>from-cache</c><c>The Response came from cache.</c><c>RFC 8618</c>
 <c>1-63</c><c>Unassigned</c><c></c><c></c>
 </texttable>
 </section>
@@ -2062,7 +2062,7 @@ Currently:
 flags to indicate if data normalization has been performed; data normalization
 increases user privacy by reducing the potential for fingerprinting
 individuals. However, a trade-off is the potential reduction of the capacity to
-identify attack traffic via query name signatures. Operators should carefully
+identify attack traffic via Query name signatures. Operators should carefully
 consider their operational requirements and privacy policies and SHOULD
 capture at the source the minimum user data required to meet their needs.
 </t>
@@ -2985,7 +2985,7 @@ QuestionTables = (
 
   QuestionList = [+ uint]           ; Index of Question
 
-  Question = {                      ; Second and subsequent questions
+  Question = {                      ; Second and subsequent Questions
       name-index      =&gt; uint,      ; Index to a name in the
                                     ; name-rdata table
       classtype-index =&gt; uint,
@@ -3023,7 +3023,7 @@ mm-transport-flags      = 2
 mm-payload              = 3
 
 ;
-; A single query/response pair.
+; A single Query/Response data item.
 ;
 QueryResponse = {
     ? time-offset              =&gt; uticks,     ; Time offset from
@@ -3035,8 +3035,8 @@ QueryResponse = {
     ? client-hoplimit          =&gt; uint,
     ? response-delay           =&gt; ticks,
     ? query-name-index         =&gt; uint,
-    ? query-size               =&gt; uint,       ; DNS size of query
-    ? response-size            =&gt; uint,       ; DNS size of response
+    ? query-size               =&gt; uint,       ; DNS size of Query
+    ? response-size            =&gt; uint,       ; DNS size of Response
     ? response-processing-data =&gt; ResponseProcessingData,
     ? query-extended           =&gt; QueryResponseExtended,
     ? response-extended        =&gt; QueryResponseExtended,
@@ -3233,7 +3233,7 @@ for compression.
 </t>
 
 <section anchor="nsd-compression-algorithm" title="NSD Compression Algorithm">
-<t>Using the above basic algorithm, the packet lengths of responses generated
+<t>Using the above basic algorithm, the packet lengths of Responses generated
 by the Name Server Daemon (NSD) <xref target="NSD"/> can be matched
 almost exactly. At the time of writing, a tiny number (&lt;.01%) of the
 reconstructed packets had incorrect lengths.
@@ -3259,7 +3259,7 @@ of the section in which the name occurs matches the TYPE of the name used as
 the compression target.</t>
 <t>If the name occurs in RDATA:
 <list style="symbols">
-<t>If the compression target name is in a query, then only the first RR in an
+<t>If the compression target name is in a Query, then only the first RR in an
 RRSET can use that name as a compression target.</t>
 <t>The compression target name MUST be in RDATA.</t>
 <t>The name section TYPE must match the compression target name section
@@ -3275,7 +3275,7 @@ incorrect lengths.
 </section>
 
 <section anchor="observed-differences" title="Observed Differences">
-<t>In sample traffic collected on a root name server, around 2-4% of responses
+<t>In sample traffic collected on a root name server, around 2-4% of Responses
 generated by Knot had different packet lengths than those produced by NSD.
 </t>
 </section>
@@ -3333,7 +3333,7 @@ effort compared to CBOR.
 </t>
 <t>A test program was written that reads input from a PCAP file
 and writes output using one of two basic structures:
-either a simple structure, where each query/response pair is represented in a
+either a simple structure, where each Query/Response pair is represented in a
 single record entry, or the C-DNS block structure.
 </t>
 <t>The resulting output files were then compressed using a variety of common
@@ -3446,8 +3446,8 @@ resulting compressed files are smaller than compressed PCAP.
 
 <section anchor="simple-versus-block-coding" title="Simple versus Block Coding">
 <t>The intention of the block coding is to perform data deduplication on
-query/response records within the block. The simple and block formats
-shown above store exactly the same information for each query&wj;/response
+Query/Response records within the block. The simple and block formats
+shown above store exactly the same information for each Query&wj;/Response
 record. This information is parsed from the DNS traffic in the input
 PCAP file, and in all cases each field has an identifier and the field
 data is typed.
@@ -3583,7 +3583,7 @@ on output file size for different compressions.
 <t>There is obviously scope for tuning the default block
 size to the compression being employed, traffic characteristics, frequency of
 output file rollover, etc. Using a strong compression scheme, block sizes over
-10,000 query/response pairs would seem to offer limited improvements.
+10,000 Query/Response pairs would seem to offer limited improvements.
 </t>
 </section>
 </section>

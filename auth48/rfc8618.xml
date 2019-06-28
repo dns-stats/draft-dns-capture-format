@@ -293,7 +293,7 @@ restrictions above.
 <t>
 <list style="numbers">
 <t>The basic unit of data is a combined DNS Query and the associated Response
-(a &quot;Q/R data item&quot;). The same structure
+(a &quot;Query/Response (Q/R) data item&quot;). The same structure
 will be used for unmatched Queries and Responses. Queries without Responses will be
 captured omitting the Response data. Responses without Queries will be captured omitting the Query data (but using
 the Question section from the Response, if present, as an identifying QNAME).
@@ -514,13 +514,13 @@ Query/Response Response is present.
 a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items
 (the contents of which include Collection and Storage Parameters used for one or more blocks).
 </t>
-<t>The file header is followed by a series of data Blocks.
+<t>The file header is followed by a series of Blocks.
 </t>
 <t>A Block consists of a Block Preamble item, some Block Statistics
 for the traffic stored within the Block, and then various arrays of common data collectively called the Block Tables. This is then
 followed by an array of the Query&wj;/Response data items detailing the Queries and Responses
 stored within the Block. The array of Query&wj;/Response data items is in turn followed
-by the Address/Event Counts data items (an array of per-client counts of
+by the Address/Event Count data items (an array of per-client counts of
 particular IP events) and then Malformed Message data items (an array of
 malformed messages that are stored in the Block).
 </t>
@@ -597,7 +597,7 @@ particular task (e.g., reconstructing DNS traffic or performing a specific piece
 
 <t>For example, capturing C-DNS data from within a name server implementation
 makes it unlikely that the Client Hoplimit can be recorded. Or, if
-there is no Query ARCount recorded and no Query OPT RDATA <xref target="RFC6891"/> recorded, is that
+there is no Query ARCOUNT recorded and no Query OPT RDATA <xref target="RFC6891"/> recorded, is that
 because no Query contained an OPT RR, or because that data was not stored?
 </t>
 <t>The Storage Parameters item therefore also contains a Storage Hints item, which specifies
@@ -848,7 +848,7 @@ minor version of the format used in the file. &nbsp;See <xref target="versioning
 
 <c>ticks-per-second</c><c>X</c><c>U</c><c>Sub-second timing is recorded in ticks. &nbsp;This specifies the number of ticks in a second.</c>
 <c></c><c></c><c></c><c></c>
-<c>max-block-items</c><c>X</c><c>U</c><c>The maximum number of items stored in any of the arrays in a &quot;Block&quot; item (Q/R items, address event counts, or malformed messages). &nbsp;An indication to a decoder of the resources needed to process the file.</c>
+<c>max-block-items</c><c>X</c><c>U</c><c>The maximum number of items stored in any of the arrays in a &quot;Block&quot; item (Q/R, Address/Event Count, or Malformed Message data items). &nbsp;An indication to a decoder of the resources needed to process the file.</c>
 <c></c><c></c><c></c><c></c>
 <c>storage-hints</c><c>X</c><c>M</c><c>Collection of hints as to which fields are omitted in the arrays that have optional fields. &nbsp;Map of type &quot;StorageHints&quot;. &nbsp;See <xref target="storagehints"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1009,7 +1009,7 @@ captured.
 <c>earliest-time</c><c>C</c><c>A</c><c>A timestamp (two unsigned integers,
 &quot;Timestamp&quot;) for the earliest record in the &quot;Block&quot;
 item. &nbsp;The first integer is the number of seconds since the POSIX epoch
-<xref target="posix-time"/> (&quot;time_t&quot;), excluding leap seconds. &nbsp;The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. &nbsp;This field is mandatory unless all block items containing a time offset from the start of the block also omit that time offset.</c>
+<xref target="posix-time"/> (&quot;time_t&quot;), excluding leap seconds. &nbsp;The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. &nbsp;This field is mandatory unless all block items containing a time offset from the start of the Block also omit that time offset.</c>
 <c></c><c></c><c></c><c></c>
 <c>block-parameters -index</c><c></c><c>U</c><c>The index of the item in the &quot;block-parameters&quot; array (in the &quot;file-preamble&quot; item) applicable to this block. &nbsp;If not present, index 0 is used. &nbsp;See <xref target="filepreamble"/>.</c>
 </texttable>
@@ -1139,7 +1139,7 @@ where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH
 <c></c><c></c><c></c><c>Bit 2. &nbsp;1 if a Query was present and it had an OPT RR.</c>
 <c></c><c></c><c></c><c>Bit 3. &nbsp;1 if a Response was present and it had an OPT RR.</c>
 <c></c><c></c><c></c><c>Bit 4. &nbsp;1 if a Query was present but had no Question.</c>
-<c></c><c></c><c></c><c>Bit 5. &nbsp;1 if a Response was present but had no Question (only one query-name-index is stored per Q/R item).</c>
+<c></c><c></c><c></c><c>Bit 5. &nbsp;1 if a Response was present but had no Question (only one query-name-index is stored per Q/R data item).</c>
 <c></c><c></c><c></c><c></c>
 <c>query-opcode</c><c></c><c>U</c><c>Query OPCODE.</c>
 <c></c><c></c><c></c><c></c>
@@ -1369,7 +1369,7 @@ individual client addresses. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>ae-address-index</c><c>X</c><c>U</c><c>The index in the &quot;ip-address&quot; array of the client address. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>ae-count</c><c>X</c><c>U</c><c>The number of occurrences of this event during the block collection period.</c>
+<c>ae-count</c><c>X</c><c>U</c><c>The number of occurrences of this event during the Block collection period.</c>
 </texttable>
 </section>
 
@@ -1394,7 +1394,7 @@ individual client addresses. A map containing the following:
 </section>
 
 <section anchor="versioning" title="Versioning">
-<t>The C-DNS file preamble includes a file format version; a major and minor
+<t>The C-DNS File Preamble includes a file Format Version; a major and minor
 version number are required fields. This document defines version 1.0 of the
 C-DNS specification. This section describes the intended use of these version
 numbers in future specifications.
@@ -1496,7 +1496,7 @@ different compression algorithms used by well-known name server software.
 <section anchor="data-collection" title="Data Collection">
 <t>This section describes a non-normative proposed algorithm for the
 processing of a captured stream of DNS Queries and Responses and production of
-a stream of Query/Response data items, matching Queries and Responses where
+a stream of Q/R data items, matching Queries and Responses where
 possible.
 </t>
 <t>For the purposes of this discussion, it is assumed that the input has been preprocessed such that:
@@ -1505,7 +1505,7 @@ possible.
 <list style="numbers">
 <t>All IP fragmentation reassembly, TCP stream reassembly, and so&nbsp;on, have already been performed.</t>
 <t>Each message is associated with transport metadata required to generate the Primary ID (see <xref target="primary-id"/>).</t>
-<t>Each message has a well-formed DNS header of 12 bytes, and (if present) the first Question in the Question section can be
+<t>Each message has a well-formed DNS Header of 12 bytes, and (if present) the first Question in the Question section can be
 parsed to generate the Secondary ID (see below). As noted earlier, this requirement can result in a malformed Query being
 removed in the preprocessing stage, but the correctly formed Response with RCODE of FORMERR being present.</t>
 </list>
@@ -1528,7 +1528,7 @@ the matching algorithm must take the possibility of skew into account.
 <section anchor="matching-algorithm" title="Matching Algorithm">
 <t>A schematic representation of the algorithm for matching Q/R data items is shown
 in <xref target="fig3"/>. It takes individual DNS Query or Response messages
-as input, and it outputs matched Q/R items. The numbers in the figure identify
+as input, and it outputs matched Q/R data items. The numbers in the figure identify
 matching operations listed in <xref target="table1"/>. Specific details of the
 algorithm -- for example, queues, timers, and identifiers -- are given in the
 following sections.
@@ -1582,7 +1582,7 @@ following sections.
         /   front of OFIFO for further processing    /
        /____________________________________________/
 
-       OFIFO = output FIFO containing Q/R items (Section 10.6)
+       OFIFO = output FIFO containing Q/R data items (Section 10.6)
        RFIFO = Response FIFO containing unmatched Response items (Section 10.6)
        QT = Query Timeout (Section 10.3)
        ST = Skew Timeout (Section 10.3)
@@ -1650,10 +1650,10 @@ Currently:
 
 <section anchor="secondary-id" title="Secondary ID (Optional)">
 <t>If present, the first Question in the Question section is used as a
-secondary ID for each message. Note that there may be well-formed DNS Queries
+Secondary ID for each message. Note that there may be well-formed DNS Queries
 that have a QDCOUNT of 0, and some Responses may have a QDCOUNT of 0 (for
 example, Responses with RCODE=FORMERR or NOTIMP). In this case, the
-secondary ID is not used in matching.
+Secondary ID is not used in matching.
 </t>
 </section>
 </section>
@@ -1663,11 +1663,11 @@ secondary ID is not used in matching.
 <list style="numbers">
 <t>Query Timeout (QT). A Query arrives with timestamp t1. If no Response
 matching that Query has arrived before other input arrives timestamped later
-than (t1 + QT), a Query/Response data item containing only a Query is
+than (t1 + QT), a Q/R data item containing only a Query is
 recorded. The QT value is typically on the order of 5 seconds.</t>
 <t>Skew Timeout (ST). A Response arrives with timestamp t2. If a Response has
 not been matched by a Query before input arrives timestamped later than (t2 +
-ST), a Query/Response data item containing only a Response is recorded. The ST
+ST), a Q/R data item containing only a Response is recorded. The ST
 value is typically a few microseconds.</t>
 </list>
 </t>
@@ -1697,7 +1697,7 @@ This algorithm chooses to match to the earliest Query with the correct Primary a
 </t>
 <t>
 <list style="symbols">
-<t>OFIFO: an output FIFO containing Q/R items in chronological order.</t>
+<t>OFIFO: an output FIFO containing Q/R data items in chronological order.</t>
 <t>RFIFO: a FIFO holding Responses without a matching Query in order of
 arrival.</t>
 </list>
@@ -1755,8 +1755,8 @@ following guidance may be of use to implementers.
 <t>Adherence to the last two rules given in Section&nbsp;3.9 of <xref
 target="RFC7049"/> for all maps and arrays would unacceptably constrain
 implementations -- for example, in the use case of real-time data collection in
-constrained environments where outputting Block Tables after query&wj;/response
-data and allowing indefinite-length maps and arrays could reduce memory
+constrained environments where outputting Block Tables after Q/R
+data items and allowing indefinite-length maps and arrays could reduce memory
 requirements.
 </t>
 
@@ -1815,7 +1815,7 @@ zone transfer records.
 
 <section anchor="timestamps" title="Timestamps">
 <t>The preamble to each block includes a timestamp of the earliest record in
-the block. As described in <xref target="blockpreamble"/>, the timestamp is an
+the Block. As described in <xref target="blockpreamble"/>, the timestamp is an
 array of two unsigned integers. The first is a POSIX &quot;time_t&quot; <xref
 target="posix-time"/>. Consumers of C-DNS should be aware of this, as it
 excludes leap seconds and therefore may cause minor anomalies in the data,
@@ -2632,7 +2632,7 @@ File = [
 ]
 
 ;
-; The file preamble.
+; The File Preamble.
 ;
 FilePreamble = {
     major-format-version =&gt; 1,
@@ -2711,7 +2711,7 @@ collection-parameters = 1
           response-size                : 9,
           response-processing-data     : 10,
           query-question-sections      : 11,    ; Second &amp; subsequent
-                                                ; questions
+                                                ; Questions
           query-answer-sections        : 12,
           query-authority-sections     : 13,
           query-additional-sections    : 14,
@@ -2828,7 +2828,7 @@ Timestamp = [
 ]
 
 ;
-; Statistics about the block contents.
+; Statistics about the Block contents.
 ;
 BlockStatistics = {
     ? processed-messages  =&gt; uint,
@@ -3516,7 +3516,7 @@ the reasons listed in <xref target="choice-of-cbor"/>.
 <section anchor="block-size-choice" title="Block Size Choice">
 <t>Given the choice of a CBOR format using blocking, the question arises
 of what an appropriate default value for the maximum number of
-query&wj;/response pairs in a block should be. This has two components:</t>
+Query&wj;/Response pairs in a block should be. This has two components:</t>
 <t><list style="numbers">
 <t>What is the impact on performance of using different block sizes in
 the format file?</t>

@@ -322,7 +322,7 @@ reconstruct packet captures. For example, omitting the RRs
 from a Response will reduce the C-DNS file size; in principle, Responses
 can be synthesized if there is enough context. Operators may have
 different policies for collecting user data and can choose to omit or
-anonymize certain fields at capture time, e.g., Client Address.</t>
+anonymize certain fields at capture time, e.g., client address.</t>
 </list></t>
 <t>Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and
 referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
@@ -564,7 +564,7 @@ target="rrtypes"/>. See <xref target="optional-rrs-and-opcodes"/>.</t>
 <t>Flags indicating, for example, whether the data is sampled or anonymized.
 See Sections&nbsp;<xref target="storage-flags" format="counter"/> and
 <xref target="privacy-considerations" format="counter"/>.</t>
-<t>Client and Server IPv4 and IPv6 Address Prefixes. See <xref target="ip-address-storage"/>.</t>
+<t>Client and server IPv4 and IPv6 address prefixes. See <xref target="ip-address-storage"/>.</t>
 </list>
 </t>
 
@@ -684,18 +684,18 @@ normalization.
 </section>
 
 <section anchor="ip-address-storage" title="IP Address Storage">
-<t>The format can store either full IP Addresses or just IP Prefixes; the
-Storage Parameters item contains fields to indicate if only IP Prefixes were
+<t>The format can store either full IP addresses or just IP prefixes; the
+Storage Parameters item contains fields to indicate if only IP prefixes were
 stored.
 
 </t>
-<t>If the IP Address Prefixes are absent, then full addresses are stored. In
+<t>If the IP address prefixes are absent, then full addresses are stored. In
 this case, the IP version can be directly inferred from the stored address
 length and the fields &quot;qr-transport-flags&quot; in QueryResponseSignature
 and &quot;mm-transport-flags&quot; in MalformedMessageData (which contain the
 IP version bit) are optional.
 </t>
-<t>If IP Address Prefixes are given, only the prefix bits of addresses are
+<t>If IP address prefixes are given, only the prefix bits of addresses are
 stored. In this case, in order to determine the IP version, the fields
 &quot;qr-transport-flags&quot; in QueryResponseSignature and
 &quot;mm&nbhy;transport-flags&quot; in MalformedMessageData MUST
@@ -703,10 +703,10 @@ be present. See Sections&nbsp;<xref target="queryresponsesignature"
 format="counter"/> and <xref target="malformedmessagedata" format="counter"/>.
 
 </t>
-<t>As an example of storing only IP prefixes, if a Client IPv6 Prefix of 48 is
-specified, a Client Address of 2001:db8:85a3::8a2e:370:7334 will be stored as
+<t>As an example of storing only IP prefixes, if a client IPv6 prefix of 48 is
+specified, a client address of 2001:db8:85a3::8a2e:370:7334 will be stored as
 0x20010db885a3, reducing address storage space requirements. Similarly, if a
-Client IPv4 Prefix of 16 is specified, a Client Address of 192.0.2.1 will be
+client IPv4 prefix of 16 is specified, a client address of 192.0.2.1 will be
 stored as 0xc000 (192.0).
 </t>
 </section>
@@ -861,13 +861,13 @@ minor version of the format used in the file. &nbsp;See <xref target="versioning
 <c></c><c></c><c></c><c>Bit 1. &nbsp;1 if the data is sampled data.</c>
 <c></c><c></c><c></c><c>Bit 2. &nbsp;1 if the names have been normalized (converted to uniform case).</c>
 <c></c><c></c><c></c><c></c>
-<c>client-address -prefix-ipv4</c><c></c><c>U</c><c>IPv4 Client Address Prefix length, in the range 1 to 32 inclusive. &nbsp;If specified, only the address prefix bits are stored.</c>
+<c>client-address -prefix-ipv4</c><c></c><c>U</c><c>IPv4 client address prefix length, in the range 1 to 32 inclusive. &nbsp;If specified, only the address prefix bits are stored.</c>
 <c></c><c></c><c></c><c></c>
-<c>client-address -prefix-ipv6</c><c></c><c>U</c><c>IPv6 Client Address Prefix length, in the range 1 to 128 inclusive. &nbsp;If specified, only the address prefix bits are stored.</c>
+<c>client-address -prefix-ipv6</c><c></c><c>U</c><c>IPv6 client address prefix length, in the range 1 to 128 inclusive. &nbsp;If specified, only the address prefix bits are stored.</c>
 <c></c><c></c><c></c><c></c>
-<c>server-address -prefix-ipv4</c><c></c><c>U</c><c>IPv4 Server Address Prefix length, in the range 1 to 32 inclusive. &nbsp;If specified, only the address prefix bits are stored.</c>
+<c>server-address -prefix-ipv4</c><c></c><c>U</c><c>IPv4 server address prefix length, in the range 1 to 32 inclusive. &nbsp;If specified, only the address prefix bits are stored.</c>
 <c></c><c></c><c></c><c></c>
-<c>server-address -prefix-ipv6</c><c></c><c>U</c><c>IPv6 Server Address Prefix length, in the range 1 to 128 inclusive. &nbsp;If specified, only the address prefix bits are stored.</c>
+<c>server-address -prefix-ipv6</c><c></c><c>U</c><c>IPv6 server address prefix length, in the range 1 to 128 inclusive. &nbsp;If specified, only the address prefix bits are stored.</c>
 <c></c><c></c><c></c><c></c>
 <c>sampling-method</c><c></c><c>T</c><c>Information on the sampling method used. &nbsp;See <xref target="storage-flags"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -962,7 +962,7 @@ captured.
 <c></c><c></c><c></c><c></c>
 <c>interfaces</c><c></c><c>A</c><c>Array of identifiers (of type text string) of the interfaces used for collection.</c>
 <c></c><c></c><c></c><c></c>
-<c>server-addresses</c><c></c><c>A</c><c>Array of server collection IP Addresses (of type byte string). &nbsp;Hint for downstream analyzers; does not affect collection.</c>
+<c>server-addresses</c><c></c><c>A</c><c>Array of server collection IP addresses (of type byte string). &nbsp;Hint for downstream analyzers; does not affect collection.</c>
 <c></c><c></c><c></c><c></c>
 <c>vlan-ids</c><c></c><c>A</c><c>Array of identifiers (of type unsigned integer, each in the range 1 to 4094 inclusive) of VLANs <xref target="IEEE802.1Q"/> selected for collection. &nbsp;VLAN IDs are unique only within an administrative domain.</c>
 <c></c><c></c><c></c><c></c>
@@ -1009,7 +1009,7 @@ captured.
 <c>earliest-time</c><c>C</c><c>A</c><c>A timestamp (two unsigned integers,
 &quot;Timestamp&quot;) for the earliest record in the &quot;Block&quot;
 item. &nbsp;The first integer is the number of seconds since the POSIX epoch
-<xref target="posix-time"/> (&quot;time_t&quot;), excluding leap seconds. &nbsp;The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. &nbsp;This field is mandatory unless all block items containing a Time Offset from the start of the Block also omit that Time Offset.</c>
+<xref target="posix-time"/> (&quot;time_t&quot;), excluding leap seconds. &nbsp;The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. &nbsp;This field is mandatory unless all block items containing a time offset from the start of the Block also omit that time offset.</c>
 <c></c><c></c><c></c><c></c>
 <c>block-parameters -index</c><c></c><c>U</c><c>The index of the item in the &quot;block-parameters&quot; array (in the &quot;file-preamble&quot; item) applicable to this block. &nbsp;If not present, index 0 is used. &nbsp;See <xref target="filepreamble"/>.</c>
 </texttable>
@@ -1067,7 +1067,7 @@ present. Similarly, if &quot;rrlist&quot; is present, &quot;rr&quot; must also b
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>ip-address</c><c></c><c>A</c><c>Array of IP Addresses, in network byte order (of type byte string). &nbsp;If Client or Server Address prefixes are set, only the address prefix bits are stored. &nbsp;Each string is therefore up to 4 bytes long for an IPv4 address, or up to 16 bytes long for an IPv6 address. &nbsp;See <xref target="storageparameters"/>.</c>
+<c>ip-address</c><c></c><c>A</c><c>Array of IP addresses, in network byte order (of type byte string). &nbsp;If client or server address prefixes are set, only the address prefix bits are stored. &nbsp;Each string is therefore up to 4 bytes long for an IPv4 address, or up to 16 bytes long for an IPv6 address. &nbsp;See <xref target="storageparameters"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>classtype</c><c></c><c>A</c><c>Array of RR CLASS and TYPE information. &nbsp;Type is &quot;ClassType&quot;. &nbsp;See <xref target="classtype"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1114,9 +1114,9 @@ individual Q/R data items. A map containing the following:
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>server-address -index</c><c></c><c>U</c><c>The index in the item in the &quot;ip-address&quot; array of the Server IP Address. &nbsp;See <xref target="blocktables"/>.</c>
+<c>server-address -index</c><c></c><c>U</c><c>The index in the item in the &quot;ip-address&quot; array of the server IP address. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>server-port</c><c></c><c>U</c><c>The Server Port.</c>
+<c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
 <c>qr-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the Query. &nbsp;Same definition as &quot;mm-transport-flags&quot; in <xref target="malformedmessagedata"/>, with an additional indicator for trailing bytes. &nbsp;See <xref target="cddl"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6. &nbsp;See <xref target="ip-address-storage"/>.</c>
@@ -1143,7 +1143,7 @@ where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH
 <c></c><c></c><c></c><c></c>
 <c>query-opcode</c><c></c><c>U</c><c>Query OPCODE.</c>
 <c></c><c></c><c></c><c></c>
-<c>qr-dns-flags</c><c></c><c>U</c><c>Bit flags with values from the Query and Response DNS Flags. &nbsp;Flag values are 0 if the Query or Response is not present.</c>
+<c>qr-dns-flags</c><c></c><c>U</c><c>Bit flags with values from the Query and Response DNS flags. &nbsp;Flag values are 0 if the Query or Response is not present.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;Query Checking Disabled (CD).</c>
 <c></c><c></c><c></c><c>Bit 1. &nbsp;Query Authenticated Data (AD).</c>
 <c></c><c></c><c></c><c>Bit 2. &nbsp;Query reserved (Z).</c>
@@ -1243,9 +1243,9 @@ Original (best viewed with a fixed-point font such as Courier):
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>server-address -index</c><c></c><c>U</c><c>The index in the &quot;ip-address&quot; array of the Server IP Address. &nbsp;See <xref target="blocktables"/>.</c>
+<c>server-address -index</c><c></c><c>U</c><c>The index in the &quot;ip-address&quot; array of the server IP address. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>server-port</c><c></c><c>U</c><c>The Server Port.</c>
+<c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
 <c>mm-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the Query. &nbsp;See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6.</c>
@@ -1272,9 +1272,9 @@ Original (best viewed with a fixed-point font such as Courier):
 
 <c>time-offset</c><c></c><c>U</c><c>Q/R timestamp as an offset in ticks (see <xref target="storageparameters"/>) from &quot;earliest-time&quot;. &nbsp;The timestamp is the timestamp of the Query, or the Response if there is no Query.</c>
 <c></c><c></c><c></c><c></c>
-<c>client-address-index</c><c></c><c>U</c><c>The index in the &quot;ip-address&quot; array of the Client IP Address. &nbsp;See <xref target="blocktables"/>.</c>
+<c>client-address-index</c><c></c><c>U</c><c>The index in the &quot;ip-address&quot; array of the client IP address. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>client-port</c><c></c><c>U</c><c>The Client Port.</c>
+<c>client-port</c><c></c><c>U</c><c>The client port.</c>
 <c></c><c></c><c></c><c></c>
 <c>transaction-id</c><c></c><c>U</c><c>DNS transaction identifier.</c>
 <c></c><c></c><c></c><c></c>
@@ -1290,7 +1290,7 @@ Original (best viewed with a fixed-point font such as Courier):
 <c></c><c></c><c></c><c></c>
 <c>response-size</c><c></c><c>U</c><c>DNS Response message size (see below).</c>
 <c></c><c></c><c></c><c></c>
-<c>response-processing -data</c><c></c><c>M</c><c>Data on Response Processing. &nbsp;Map of type &quot;ResponseProcessingData&quot;. &nbsp;See <xref target="responseprocessingdata"/>.</c>
+<c>response-processing -data</c><c></c><c>M</c><c>Data on Response processing. &nbsp;Map of type &quot;ResponseProcessingData&quot;. &nbsp;See <xref target="responseprocessingdata"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>query-extended</c><c></c><c>M</c><c>Extended Query data. &nbsp;Map of type &quot;QueryResponseExtended&quot;. &nbsp;See <xref target="queryresponseextended"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1313,9 +1313,9 @@ allows a calculation of how many trailing bytes were present.
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>bailiwick-index</c><c></c><c>U</c><c>The index in the &quot;name-rdata&quot; array of the owner name for the Response Bailiwick. &nbsp;See <xref target="blocktables"/>.</c>
+<c>bailiwick-index</c><c></c><c>U</c><c>The index in the &quot;name-rdata&quot; array of the owner name for the Response bailiwick. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>processing-flags</c><c></c><c>U</c><c>Flags relating to Response Processing.</c>
+<c>processing-flags</c><c></c><c>U</c><c>Flags relating to Response processing.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;1 if the Response came from cache.</c>
 </texttable>
 </section>
@@ -1349,7 +1349,7 @@ data can optionally be stored in the QuerySignature.</c>
 
 <section anchor="addresseventcount" title="&quot;AddressEventCount&quot;">
 <t>Counts of various IP-related events relating to traffic with
-individual Client Addresses. A map containing the following:
+individual client addresses. A map containing the following:
 </t>
 <texttable>
 <ttcol align="left">Field</ttcol>
@@ -1367,7 +1367,7 @@ individual Client Addresses. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>ae-code</c><c></c><c>U</c><c>A code relating to the event. &nbsp;For ICMP or ICMPv6 events, this MUST be the ICMP <xref target="RFC0792"/> or ICMPv6 <xref target="RFC4443"/> code. &nbsp;For other events, the contents are undefined.</c>
 <c></c><c></c><c></c><c></c>
-<c>ae-address-index</c><c>X</c><c>U</c><c>The index in the &quot;ip-address&quot; array of the Client Address. &nbsp;See <xref target="blocktables"/>.</c>
+<c>ae-address-index</c><c>X</c><c>U</c><c>The index in the &quot;ip-address&quot; array of the client address. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>ae-count</c><c>X</c><c>U</c><c>The number of occurrences of this event during the Block collection period.</c>
 </texttable>
@@ -1384,9 +1384,9 @@ individual Client Addresses. A map containing the following:
 
 <c>time-offset</c><c></c><c>U</c><c>Message timestamp as an offset in ticks (see <xref target="storageparameters"/>) from &quot;earliest-time&quot;.</c>
 <c></c><c></c><c></c><c></c>
-<c>client-address-index</c><c></c><c>U</c><c>The index in the &quot;ip-address&quot; array of the Client IP Address. &nbsp;See <xref target="blocktables"/>.</c>
+<c>client-address-index</c><c></c><c>U</c><c>The index in the &quot;ip-address&quot; array of the client IP address. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>client-port</c><c></c><c>U</c><c>The Client Port.</c>
+<c>client-port</c><c></c><c>U</c><c>The client port.</c>
 <c></c><c></c><c></c><c></c>
 <c>message-data-index</c><c></c><c>U</c><c>The index in the &quot;malformed-message-data&quot; array of the message data for this message. &nbsp;See <xref target="blocktables"/>.</c>
 </texttable>
@@ -1638,10 +1638,10 @@ Currently:
 </t>
 <t>
 <list style="numbers">
-<t>Source IP Address</t>
-<t>Destination IP Address</t>
-<t>Source Port</t>
-<t>Destination Port</t>
+<t>Source IP address</t>
+<t>Destination IP address</t>
+<t>Source port</t>
+<t>Destination port</t>
 <t>Transport</t>
 <t>DNS Message ID</t>
 </list>
@@ -1942,7 +1942,7 @@ Response: Yes, this change can be made, and IANA updated.
 
 <section anchor="response-processing-flags" title="Response-Processing Flags">
 <t>IANA has created a registry &quot;C-DNS Response Flags&quot;
-of C-DNS Response Processing Flags. The primary purpose of this
+of C-DNS response-processing flags. The primary purpose of this
 registry is to provide indicators giving hints on the generation of a
 particular Response.
 </t>
@@ -1973,8 +1973,8 @@ table in Section 7.6.1. -->
 <section anchor="addressevent-types" title="AddressEvent Types">
 <t>IANA has created a registry &quot;C-DNS Address Event Types&quot;
 of C-DNS AddressEvent types. The primary purpose of this registry is
-to provide unique identifiers of different types of C-DNS Address
-Events and so specify the contents of the optional companion field
+to provide unique identifiers of different types of C-DNS address
+events and so specify the contents of the optional companion field
 &quot;ae-code&quot; for each type.
 </t>
 <t>The following note is included in this registry: &quot;In version 1.0 of C-DNS
@@ -3026,8 +3026,8 @@ mm-payload              = 3
 ; A single Query/Response data item.
 ;
 QueryResponse = {
-    ? time-offset              =&gt; uticks,     ; Time Offset from
-                                              ; start of Block
+    ? time-offset              =&gt; uticks,     ; Time offset from
+                                              ; start of block
     ? client-address-index     =&gt; uint,
     ? client-port              =&gt; uint,
     ? transaction-id           =&gt; uint,
@@ -3105,8 +3105,8 @@ AddressEventType = (
 ; Malformed messages.
 ;
 MalformedMessage = {
-    ? time-offset           =&gt; uticks,   ; Time Offset from
-                                         ; start of Block
+    ? time-offset           =&gt; uticks,   ; Time offset from
+                                         ; start of block
     ? client-address-index  =&gt; uint,
     ? client-port           =&gt; uint,
     ? message-data-index    =&gt; uint,

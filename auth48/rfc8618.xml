@@ -460,7 +460,7 @@ relevant Block Tables.
 +-------------------------+  |          +------------------------+ |
 | Response Processing (r) |  |          | QR Signature Flags     | |
 | +-----------------------+  |          +------------------------+ |
-| | Bailiwick Index       |--+          | Query OPCODE (q)       | |
+| | Bailiwick             |--+          | Query OPCODE (q)       | |
 | +-----------------------+             +------------------------+ |
 | | Flags                 |             | QR DNS Flags           | |
 +-+-----------------------+             +------------------------+ |
@@ -1638,10 +1638,10 @@ Currently:
 </t>
 <t>
 <list style="numbers">
-<t>Source IP address</t>
-<t>Destination IP address</t>
-<t>Source port</t>
-<t>Destination port</t>
+<t>Source IP Address</t>
+<t>Destination IP Address</t>
+<t>Source Port</t>
+<t>Destination Port</t>
 <t>Transport</t>
 <t>DNS Message ID</t>
 </list>

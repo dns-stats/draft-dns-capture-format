@@ -277,8 +277,9 @@ commonality in the data of the two messages.</t>
 </list>
 In the context of generating a C-DNS file, it is assumed that only
 those DNS payloads that can be parsed to produce a well&nbhy;formed DNS
-message are stored in the C-DNS format and that all other messages will
-(optionally) be recorded as malformed messages.
+message are stored in the structured Query/Response data items of the C-DNS 
+format and that all other messages will
+(optionally) be recorded as separate malformed messages.
 Parsing a well-formed message means, at a minimum, the following:
 <list style="symbols">
 <t>The packet has a well-formed 12-byte DNS Header with a recognized OPCODE.</t>
@@ -1083,8 +1084,8 @@ where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH
 <c></c><c></c><c></c><c>Bit 13. &nbsp;Response TrunCation (TC).</c>
 <c></c><c></c><c></c><c>Bit 14. &nbsp;Response Authoritative Answer (AA).</c>
 <c></c><c></c><c></c><c></c>
-<c>query-rcode</c><c></c><c>U</c><c>Query RCODE. &nbsp;If the Query contains
-OPT <xref target="RFC6891"/>, this value incorporates any EXTENDED-RCODE value
+<c>query-rcode</c><c></c><c>U</c><c>Query RCODE. &nbsp;If the Query contains an
+OPT RR <xref target="RFC6891"/>, this value incorporates any EXTENDED-RCODE value
 <xref target="rcodes"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>query-classtype -index</c><c></c><c>U</c><c>The index to the item in the &quot;classtype&quot; array of the CLASS and TYPE of the first Question. &nbsp;See <xref target="blocktables"/>.</c>
@@ -1105,7 +1106,7 @@ stands for Extension Mechanisms for DNS.)</c>
 <c>opt-rdata-index</c><c></c><c>U</c><c>The index in the &quot;name-rdata&quot; array  of the OPT RDATA. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>response-rcode</c><c></c><c>U</c><c>Response RCODE. &nbsp;If the Response
-contains OPT <xref target="RFC6891"/>, this value incorporates any
+contains an OPT RR <xref target="RFC6891"/>, this value incorporates any
 EXTENDED_RCODE value <xref target="rcodes"/>.</c>
 </texttable>
 
@@ -1334,9 +1335,18 @@ be capable of reading a previous major version.
 Some of the issues with reconstructing both the DNS payload and the
 full packet stream are outlined here.
 </t>
-<t>The reconstruction depends on whether or not all the optional sections
-of both the Query and Response were captured in the C-DNS file.
-Clearly, if they were not all captured, the reconstruction will be imperfect.
+<t>The reconstruction depends on whether or not a particular subset of the
+optional fields were captured in the C-DNS file, specifically the data fields
+required to re-construct a valid IP header and DNS payload. Clearly, if they
+were not all captured, the reconstruction may not be possible and even if
+reasonable defaults are provided the re-construction is likely to be imperfect.
+</t>
+<t>
+It is noted again that simply having hints set indicating data was not
+configured to be omitted does not guarantee that the data was actually
+captured. Therefore the ability to reconstruct PCAP data (in the absence of
+defaults) can in principle vary for each record captured in a C-DNS file, and
+between Blocks which have differing hints.
 </t>
 <t>Even if all sections of the Response were captured, one cannot reconstruct the DNS
 Response payload exactly, due to the fact that some DNS names in the message on the wire
@@ -2378,8 +2388,8 @@ collection-parameters = 1
   sampling-method            = 10
   anonymization-method       = 11
 
-    ; A hint indicates whether the collection method will output
-    ; the item or will ignore the item if present.
+    ; A hint indicates whether the collection method will always omit
+    ; the item from the file.
     StorageHints = {
         query-response-hints           =&gt; QueryResponseHints,
         query-response-signature-hints =&gt;
@@ -2456,7 +2466,7 @@ collection-parameters = 1
     )
     StorageFlags = uint .bits StorageFlagValues
 
- ; Hints for later analysis.
+ ; Meta data about data collection
  VLANIdRange = 1..4094
 
  CollectionParameters = {
@@ -2518,7 +2528,7 @@ uticks = uint
 
 Timestamp = [
     timestamp-secs   : uint,
-    timestamp-uticks : uticks,
+    timestamp-ticks  : uticks,
 ]
 
 ;

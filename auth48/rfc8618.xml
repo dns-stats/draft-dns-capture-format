@@ -86,17 +86,17 @@ NEW: C-DNS: A Format for DNS Packet Capture
 </author>
 
 <author initials="J." surname="Bond" fullname="John Bond">
-<organization>ICANN</organization>
+<organization>Wikimedia Foundation, Inc.</organization>
 <address>
 <postal>
-<street>12025 Waterfront Drive</street>
-<street> Suite 300</street>
-<city>Los Angeles</city>
+<street>1 Montgomery Street</street>
+<street>Suite 1600</street>
+<city>San Francisco</city>
 <region>CA</region>
-<code>90094-2536</code>
+<code>94104</code>
 <country>United States of America</country>
 </postal>
-<email>john.r.bond@gmail.com</email>
+<email>ietf-wikimedia@johnbond.org</email>
 </address>
 </author>
 
@@ -429,7 +429,7 @@ Malformed Message data items link to various Block Tables.
 +----------------------------------+
 </artwork></figure>
 <t><xref target="fig2"/> shows some more-detailed relationships within each
-block, specifically those between the Query/Response data item and the
+Block, specifically those between the Query/Response data item and the
 relevant Block Tables.
 </t>
 
@@ -512,7 +512,7 @@ Query/Response Response is present.
 </t>
 <t>A C-DNS file begins with a file header containing a File Type Identifier and
 a File Preamble. The File Preamble contains information on the file Format Version and an array of Block Parameters items
-(the contents of which include Collection and Storage Parameters used for one or more blocks).
+(the contents of which include Collection and Storage Parameters used for one or more Blocks).
 </t>
 <t>The file header is followed by a series of Blocks.
 </t>
@@ -524,13 +524,13 @@ by the Address/Event Count data items (an array of per-client counts of
 particular IP events) and then Malformed Message data items (an array of
 malformed messages that are stored in the Block).
 </t>
-<t>The exact nature of the DNS data will affect what block size is the best
-fit; however, sample data for a root server indicated that block sizes up to
+<t>The exact nature of the DNS data will affect what Block size is the best
+fit; however, sample data for a root server indicated that Block sizes up to
 10,000 Q/R data items give good results. See <xref target="block-size-choice"/> for more details.
 </t>
 <t>This design exploits data commonality and block-based storage to minimize
 the C-DNS file size. As a result, C-DNS cannot be streamed below the level of a
-block.
+Block.
 </t>
 
 <section anchor="block-parameters" title="Block Parameters">
@@ -1122,7 +1122,7 @@ individual Q/R data items. A map containing the following:
 <c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6. &nbsp;See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value
 where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH
-<xref target="RFC8484"/>. &nbsp;("DoH" stands for DNS over HTTPS.) &nbsp;Values 5-15 are reserved for future use.</c>
+<xref target="RFC8484"/>. &nbsp;("DoH" stands for DNS (Queries) over HTTPS.) &nbsp;Values 5-15 are reserved for future use.</c>
 <c></c><c></c><c></c><c>Bit 5. &nbsp;1 if trailing bytes in Query packet. &nbsp;See <xref target="trailing-bytes"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>qr-type</c><c></c><c>U</c><c>Type of Query/Response transaction.</c>
@@ -2808,7 +2808,7 @@ address-event-counts  = 4
 malformed-messages    = 5
 
 ;
-; The (mandatory) preamble to a block.
+; The (mandatory) preamble to a Block.
 ;
 BlockPreamble = {
     ? earliest-time          =&gt; Timestamp,
@@ -2846,7 +2846,7 @@ discarded-opcode    = 4
 malformed-items     = 5
 
 ;
-; Tables of common data referenced from records in a block.
+; Tables of common data referenced from records in a Block.
 ;
 BlockTables = {
     ? ip-address             =&gt; [+ IPAddress],
@@ -3027,7 +3027,7 @@ mm-payload              = 3
 ;
 QueryResponse = {
     ? time-offset              =&gt; uticks,     ; Time offset from
-                                              ; start of block
+                                              ; start of Block
     ? client-address-index     =&gt; uint,
     ? client-port              =&gt; uint,
     ? transaction-id           =&gt; uint,
@@ -3106,7 +3106,7 @@ AddressEventType = (
 ;
 MalformedMessage = {
     ? time-offset           =&gt; uticks,   ; Time offset from
-                                         ; start of block
+                                         ; start of Block
     ? client-address-index  =&gt; uint,
     ? client-port           =&gt; uint,
     ? message-data-index    =&gt; uint,

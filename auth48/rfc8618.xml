@@ -840,22 +840,22 @@ minor version of the format used in the file. &nbsp;See <xref target="versioning
 <c></c><c></c><c></c><c>Bit 17. &nbsp;response-additional-sections</c>
 <c></c><c></c><c></c><c></c>
 <c>query-response -signature-hints</c><c>X</c><c>U</c><c>Hints indicating which &quot;QueryResponseSignature&quot; fields are candidates for capture or omitted; see <xref target="queryresponsesignature"/>. &nbsp;If a bit is unset, the field is omitted from the capture.</c>
-<c></c><c></c><c></c><c>Bit 0. &nbsp;server-address</c>
+<c></c><c></c><c></c><c>Bit 0. &nbsp;server-address-index</c>
 <c></c><c></c><c></c><c>Bit 1. &nbsp;server-port</c>
 <c></c><c></c><c></c><c>Bit 2. &nbsp;qr-transport-flags</c>
 <c></c><c></c><c></c><c>Bit 3. &nbsp;qr-type</c>
 <c></c><c></c><c></c><c>Bit 4. &nbsp;qr-sig-flags</c>
 <c></c><c></c><c></c><c>Bit 5. &nbsp;query-opcode</c>
-<c></c><c></c><c></c><c>Bit 6. &nbsp;dns-flags</c>
+<c></c><c></c><c></c><c>Bit 6. &nbsp;qr-dns-flags</c>
 <c></c><c></c><c></c><c>Bit 7. &nbsp;query-rcode</c>
-<c></c><c></c><c></c><c>Bit 8. &nbsp;query-class-type</c>
+<c></c><c></c><c></c><c>Bit 8. &nbsp;query-classtype-index</c>
 <c></c><c></c><c></c><c>Bit 9. &nbsp;query-qdcount</c>
 <c></c><c></c><c></c><c>Bit 10. &nbsp;query-ancount</c>
 <c></c><c></c><c></c><c>Bit 11. &nbsp;query-nscount</c>
 <c></c><c></c><c></c><c>Bit 12. &nbsp;query-arcount</c>
 <c></c><c></c><c></c><c>Bit 13. &nbsp;query-edns-version</c>
 <c></c><c></c><c></c><c>Bit 14. &nbsp;query-udp-size</c>
-<c></c><c></c><c></c><c>Bit 15. &nbsp;query-opt-rdata</c>
+<c></c><c></c><c></c><c>Bit 15. &nbsp;query-opt-rdata-index</c>
 <c></c><c></c><c></c><c>Bit 16. &nbsp;response-rcode</c>
 <c></c><c></c><c></c><c></c>
 <c>rr-hints</c><c>X</c><c>U</c><c>Hints indicating which optional &quot;RR&quot; fields are candidates for capture or omitted; see <xref target="rr"/>. &nbsp;If a bit is unset, the field is omitted from the capture.</c>
@@ -1090,20 +1090,20 @@ OPT RR <xref target="RFC6891"/>, this value incorporates any EXTENDED-RCODE valu
 <c></c><c></c><c></c><c></c>
 <c>query-classtype -index</c><c></c><c>U</c><c>The index to the item in the &quot;classtype&quot; array of the CLASS and TYPE of the first Question. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>query-qd-count</c><c></c><c>U</c><c>The QDCOUNT in the Query, or Response if no Query present.</c>
+<c>query-qdcount</c><c></c><c>U</c><c>The QDCOUNT in the Query, or Response if no Query present.</c>
 <c></c><c></c><c></c><c></c>
-<c>query-an-count</c><c></c><c>U</c><c>Query ANCOUNT.</c>
+<c>query-ancount</c><c></c><c>U</c><c>Query ANCOUNT.</c>
 <c></c><c></c><c></c><c></c>
-<c>query-ns-count</c><c></c><c>U</c><c>Query NSCOUNT.</c>
+<c>query-nscount</c><c></c><c>U</c><c>Query NSCOUNT.</c>
 <c></c><c></c><c></c><c></c>
-<c>query-ar-count</c><c></c><c>U</c><c>Query ARCOUNT.</c>
+<c>query-arcount</c><c></c><c>U</c><c>Query ARCOUNT.</c>
 <c></c><c></c><c></c><c></c>
-<c>edns-version</c><c></c><c>U</c><c>The Query EDNS version. &nbsp;("EDNS"
+<c>query-edns-version</c><c></c><c>U</c><c>The Query EDNS version. &nbsp;("EDNS"
 stands for Extension Mechanisms for DNS.)</c>
 <c></c><c></c><c></c><c></c>
-<c>udp-buf-size</c><c></c><c>U</c><c>The Query EDNS sender's UDP payload size.</c>
+<c>query-udp-size</c><c></c><c>U</c><c>The Query EDNS sender's UDP payload size.</c>
 <c></c><c></c><c></c><c></c>
-<c>opt-rdata-index</c><c></c><c>U</c><c>The index in the &quot;name-rdata&quot; array  of the OPT RDATA. &nbsp;See <xref target="blocktables"/>.</c>
+<c>query-opt-rdata -index</c><c></c><c>U</c><c>The index in the &quot;name-rdata&quot; array  of the OPT RDATA. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>response-rcode</c><c></c><c>U</c><c>Response RCODE. &nbsp;If the Response
 contains an OPT RR <xref target="RFC6891"/>, this value incorporates any
@@ -2426,23 +2426,23 @@ collection-parameters = 1
       QueryResponseHints = uint .bits QueryResponseHintValues
 
       QueryResponseSignatureHintValues = &amp;(
-          server-address     : 0,
-          server-port        : 1,
-          qr-transport-flags : 2,
-          qr-type            : 3,
-          qr-sig-flags       : 4,
-          query-opcode       : 5,
-          dns-flags          : 6,
-          query-rcode        : 7,
-          query-class-type   : 8,
-          query-qdcount      : 9,
-          query-ancount      : 10,
-          query-arcount      : 11,
-          query-nscount      : 12,
-          query-edns-version : 13,
-          query-udp-size     : 14,
-          query-opt-rdata    : 15,
-          response-rcode     : 16,
+          server-address-index  : 0,
+          server-port           : 1,
+          qr-transport-flags    : 2,
+          qr-type               : 3,
+          qr-sig-flags          : 4,
+          query-opcode          : 5,
+          qr-dns-flags          : 6,
+          query-rcode           : 7,
+          query-classtype-index : 8,
+          query-qdcount         : 9,
+          query-ancount         : 10,
+          query-arcount         : 11,
+          query-nscount         : 12,
+          query-edns-version    : 13,
+          query-udp-size        : 14,
+          query-opt-rdata-index : 15,
+          response-rcode        : 16,
       )
       QueryResponseSignatureHints =
           uint .bits QueryResponseSignatureHintValues
@@ -2593,13 +2593,13 @@ QueryResponseSignature = {
     ? qr-dns-flags          =&gt; DNSFlags,
     ? query-rcode           =&gt; uint,
     ? query-classtype-index =&gt; uint,
-    ? query-qd-count        =&gt; uint,
-    ? query-an-count        =&gt; uint,
-    ? query-ns-count        =&gt; uint,
-    ? query-ar-count        =&gt; uint,
-    ? edns-version          =&gt; uint,
-    ? udp-buf-size          =&gt; uint,
-    ? opt-rdata-index       =&gt; uint,
+    ? query-qdcount         =&gt; uint,
+    ? query-ancount         =&gt; uint,
+    ? query-nscount         =&gt; uint,
+    ? query-arcount         =&gt; uint,
+    ? query-edns-version    =&gt; uint,
+    ? query-udp-size        =&gt; uint,
+    ? query-opt-rdata-index =&gt; uint,
     ? response-rcode        =&gt; uint,
 }
 server-address-index  = 0
@@ -2611,13 +2611,13 @@ query-opcode          = 5
 qr-dns-flags          = 6
 query-rcode           = 7
 query-classtype-index = 8
-query-qd-count        = 9
-query-an-count        = 10
-query-ns-count        = 11
-query-ar-count        = 12
-edns-version          = 13
-udp-buf-size          = 14
-opt-rdata-index       = 15
+query-qdcount         = 9
+query-ancount         = 10
+query-nscount         = 11
+query-arcount         = 12
+query-edns-version    = 13
+query-udp-size        = 14
+query-opt-rdata-index = 15
 response-rcode        = 16
 
   ; Transport gives the values that may appear in bits 1..4 of

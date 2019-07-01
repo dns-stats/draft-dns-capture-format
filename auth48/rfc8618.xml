@@ -389,19 +389,19 @@ Malformed Message data items link to various Block Tables.
 +-------+
 + C-DNS |
 +-------+--------------------------+
-| File type identifier             |
+| File Type Identifier             |
 +----------------------------------+
-| File preamble                    |
+| File Preamble                    |
 | +--------------------------------+
-| | Format version info            |
+| | Format Version                 |
 | +--------------------------------+
-| | Block parameters               |
+| | Block Parameters               |
 +-+--------------------------------+
 | Block                            |
 | +--------------------------------+
-| | Block preamble                 |
+| | Block Preamble                 |
 | +--------------------------------+
-| | Block statistics               |
+| | Block Statistics               |
 | +--------------------------------+
 | | Block Tables                   |
 | +--------------------------------+
@@ -413,9 +413,9 @@ Malformed Message data items link to various Block Tables.
 +-+--------------------------------+
 | Block                            |
 | +--------------------------------+
-| | Block preamble                 |
+| | Block Preamble                 |
 | +--------------------------------+
-| | Block statistics               |
+| | Block Statistics               |
 | +--------------------------------+
 | | Block Tables                   |
 | +--------------------------------+

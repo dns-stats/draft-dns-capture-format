@@ -2521,8 +2521,8 @@ BlockPreamble = {
 earliest-time          = 0
 block-parameters-index = 1
 
-; Ticks are sub-second intervals.  The number of ticks in a second is
-; file/block metadata.  Signed and unsigned tick types are defined.
+; Ticks are sub-second intervals. The number of ticks in a second is
+; file/block metadata. Signed and unsigned tick types are defined.
 ticks = int
 uticks = uint
 
@@ -2621,8 +2621,8 @@ query-opt-rdata-index = 15
 response-rcode        = 16
 
   ; Transport gives the values that may appear in bits 1..4 of
-  ; TransportFlags.  There is currently no way to express this in
-  ; CDDL, so Transport is unused.  To avoid confusion when used
+  ; TransportFlags. There is currently no way to express this in
+  ; CDDL, so Transport is unused. To avoid confusion when used
   ; with CDDL tools, it is commented out.
   ;
   ; Transport = &amp;(

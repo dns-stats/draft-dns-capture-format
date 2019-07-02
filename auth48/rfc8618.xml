@@ -1003,7 +1003,7 @@ name compression (per <xref target="RFC1035"/>) is used on the individual names/
 <c></c><c></c><c></c><c></c>
 <c>qlist</c><c></c><c>A</c><c>Array of type &quot;QuestionList&quot;. &nbsp;A &quot;QuestionList&quot; is an array of unsigned integers, indexes to &quot;Question&quot; items in the &quot;qrr&quot; array.</c>
 <c></c><c></c><c></c><c></c>
-<c>qrr</c><c></c><c>A</c><c>Array of type &quot;Question&quot;. &nbsp;Each entry is the contents of a single question, where a question is the second or subsequent Question in a Query. &nbsp;See <xref target="question"/>.</c>
+<c>qrr</c><c></c><c>A</c><c>Array of type &quot;Question&quot;. &nbsp;Each entry is the contents of a single Question, where a Question is the second or subsequent Question in a Query. &nbsp;See <xref target="question"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>rrlist</c><c></c><c>A</c><c>Array of type &quot;RRList&quot;. &nbsp;An &quot;RRList&quot; is an array of unsigned integers, indexes to &quot;RR&quot; items in the &quot;rr&quot; array.</c>
 <c></c><c></c><c></c><c></c>
@@ -1146,7 +1146,7 @@ EXTENDED_RCODE value <xref target="rcodes"/>.</c>
 </section>
 
 <section anchor="malformedmessagedata" title="&quot;MalformedMessageData&quot;">
-<t>Details on malformed message items in this &quot;Block&quot; item. A map containing the following:
+<t>Details on malformed DNS messages stored in this &quot;Block&quot; item. A map containing the following:
 </t>
 <texttable>
 <ttcol align="left">Field</ttcol>
@@ -1285,7 +1285,7 @@ individual client addresses. A map containing the following:
 </section>
 
 <section anchor="malformedmessage" title="&quot;MalformedMessage&quot;">
-<t>Details of malformed messages. A map containing the following:
+<t>Details on Malformed Messages data items. A map containing the following:
 </t>
 <texttable>
 <ttcol align="left">Field</ttcol>
@@ -1384,7 +1384,7 @@ at the expense of runtime resources, others use heuristics to balance compressio
 and speed, and others use different rules for what is a valid compression target.
 </t>
 <t>This means that Responses to the
-same question from different name server software that match in terms of DNS payload
+same Query from different name server software that match in terms of DNS payload
 content (header, counts, RRs with name compression removed) do
 not necessarily match byte for byte on the wire.
 </t>

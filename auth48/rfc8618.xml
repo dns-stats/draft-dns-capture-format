@@ -1285,7 +1285,7 @@ individual client addresses. A map containing the following:
 </section>
 
 <section anchor="malformedmessage" title="&quot;MalformedMessage&quot;">
-<t>Details on Malformed Messages data items. A map containing the following:
+<t>Details on Malformed Message data items. A map containing the following:
 </t>
 <texttable>
 <ttcol align="left">Field</ttcol>

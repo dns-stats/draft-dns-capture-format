@@ -580,24 +580,8 @@ never be present. (This approach is taken because a flag that indicated which it
 were included for collection would not guarantee that the item was present --
 only that it might be.)
 An implementation decoding that file can then use these flags to quickly determine
-<<<<<<< HEAD
-whether the input data is rich enough for its needs.</t>
-=======
 whether the input data is not rich enough for its needs.
-
-<!-- [rfced] Section 6.2.1:  Does "these" mean "these items," or
-something else?
-
-Original (the previous sentence is included for possible context):
- (This approach is
- taken because a flag that indicated which items were included for
- collection would not guarantee that the item was present, only that
- it might be.)  An implementation decoding that file can then use
- these to quickly determine whether the input data is rich enough for
- its needs. -->
-
 </t>
->>>>>>> Minor changes:
 </section>
 
 <section anchor="optional-rrs-and-opcodes" title="Optional RRs and OPCODEs">

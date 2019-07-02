@@ -14,19 +14,7 @@
 <?rfc comments="no"?>
 
 <front>
-<title abbrev="C-DNS: A Format for DNS Packet Capture ">Compacted-DNS (C-DNS): A Format for DNS Packet Capture</title>
-
-<!-- [rfced] May the title be updated as follows?  The rationale is to
-avoid using "DNS packet capture" in the attributive position before
-"format".
-
-OLD: Compacted-DNS (C-DNS): A DNS Packet Capture Format
-NEW: Compacted-DNS (C-DNS): A Format for DNS Packet Capture
-
-Similarly, with the abbreviated title (in the running header):
-OLD: C-DNS: A DNS Packet Capture Format
-NEW: C-DNS: A Format for DNS Packet Capture 
--->
+<title abbrev="C-DNS: A Format for DNS Packet Capture">Compacted-DNS (C-DNS): A Format for DNS Packet Capture</title>
 
 <author initials="J." surname="Dickinson" fullname="John Dickinson">
 <organization>Sinodun IT</organization>
@@ -100,7 +88,7 @@ NEW: C-DNS: A Format for DNS Packet Capture
 </address>
 </author>
 
-<date year="2019" month="June"/>
+<date year="2019" month="July"/>
 
 <keyword>DNS</keyword>
 
@@ -128,22 +116,7 @@ analyzing network attacks, and &quot;day in the life&quot; (DITL) <xref target="
 </t>
 <t>A wide variety of tools already exist that facilitate the collection of DNS
 traffic data, such as the DNS Stats Collector (DSC) <xref target="dsc"/>, packetq <xref target="packetq"/>, dnscap <xref target="dnscap"/>, and
-dnstap <xref target="dnstap"/>.
-
-<!-- [rfced] Section 1:  We expanded "DSC" as "DNS Stats Collector."
-Please let us know any objections.
-
-Original:
- A wide variety of tools already exist that facilitate the collection
- of DNS traffic data, such as DSC [dsc], packetq [packetq], dnscap
- [dnscap] and dnstap [dnstap].
-
-Currently:
- A wide variety of tools already exist that facilitate the collection
- of DNS traffic data, such as the DNS Stats Collector (DSC) [dsc],
- packetq [packetq], dnscap [dnscap], and dnstap [dnstap]. -->
-
- However, there is no standard exchange format for large DNS
+dnstap <xref target="dnstap"/>. However, there is no standard exchange format for large DNS
 packet captures. The PCAP ("packet capture") <xref target="pcap"/> format or
 the PCAP Next Generation (PCAP-NG) <xref target="pcapng"/> format is typically
 used in practice for packet captures, but these file formats can contain a
@@ -333,7 +306,7 @@ Although this introduces complexity, it provides compression of the data that ma
 Measurements show that blocking significantly reduces the CPU required to perform such strong compression. See <xref target="simple-versus-block-coding"/>.</t>
 <t>Examples of commonality between DNS messages are that in most cases the
 QUESTION RR is the same in the Query and Response and that there is a finite
-set of Query 'signatures' (based on a subset of attributes). For many
+set of Query "signatures" (based on a subset of attributes). For many
 authoritative servers, there is very likely to be a finite set of Responses that are generated, of which a large number are NXDOMAIN.</t>
 </list></t>
 <t>Traffic metadata can optionally be included in each block. Specifically, counts of some types of non-DNS packets
@@ -606,46 +579,15 @@ never be present. (This approach is taken because a flag that indicated which it
 were included for collection would not guarantee that the item was present --
 only that it might be.)
 An implementation decoding that file can then use these flags to quickly determine
-whether the input data is rich enough for its needs.
-
-<!-- [rfced] Section 6.2.1:  Does "these" mean "these items," or
-something else?
-
-Original (the previous sentence is included for possible context):
- (This approach is
- taken because a flag that indicated which items were included for
- collection would not guarantee that the item was present, only that
- it might be.)  An implementation decoding that file can then use
- these to quickly determine whether the input data is rich enough for
- its needs. -->
-
-</t>
+whether the input data is rich enough for its needs.</t>
 </section>
 
 <section anchor="optional-rrs-and-opcodes" title="Optional RRs and OPCODEs">
 <t>Also included in the Storage Parameters item are explicit arrays listing the
 RR TYPEs and the OPCODEs to be recorded. These arrays remove any ambiguity over
-whether e.g. messages containing particular OPCODEs are not present because (1)
-certain OPCODEs did not occur or (2) the implementation is not configured to
-record them.
-
-<!-- [rfced] Section 6.2.2:  This sentence does not parse.  If the
-suggested text is not correct, please clarify "These," what did not
-occur, and "messages containing particular OPCODEs or are ..."
-
-Original (the previous sentence is included for context):
- Also included in the Storage Parameters are explicit arrays listing
- the RR types and the OPCODEs to be recorded.  These remove any
- ambiguity over whether messages containing particular OPCODEs or are
- not present because they did not occur, or because the implementation
- is not configured to record them.
-
-Suggested:
- These arrays remove
- any ambiguity over whether messages containing particular OPCODEs
- are not present because (1) certain OPCODEs did not occur or (2) the
- implementation is not configured to record them. -->
-
+whether, for example, messages containing particular OPCODEs are not present
+because (1)&nbsp;certain OPCODEs did not occur or (2)&nbsp;the implementation
+is not configured to record them.
 </t>
 <t>In the case of OPCODEs, for a message to be fully parsable, the OPCODE must be known to the
 collecting implementation. Any message with an OPCODE unknown to the collecting implementation
@@ -763,14 +705,7 @@ be mandatory in some configurations.</t>
 <t>The column T gives the CBOR datatype of the item.
 <list style="symbols">
 <t>U - Unsigned integer.</t>
-<t>I - Signed integer (i.e. either a CBOR unsigned integer or a CBOR negative integer).</t>
-
-<!-- [rfced] Section 7.2:  Please confirm that "Signed integer
-(that is, CBOR unsigned ...)" is correct; "Signed ... that is
-unsigned" reads oddly.
-
-Original:
- *  I - Signed integer (i.e.  CBOR unsigned or negative integer) -->
+<t>I - Signed integer (i.e., either a CBOR unsigned integer or a CBOR negative integer).</t>
 
 <t>B - Boolean.</t>
 <t>S - Byte string.</t>
@@ -1014,18 +949,6 @@ item. &nbsp;The first integer is the number of seconds since the POSIX epoch
 <c>block-parameters -index</c><c></c><c>U</c><c>The index of the item in the &quot;block-parameters&quot; array (in the &quot;file-preamble&quot; item) applicable to this block. &nbsp;If not present, index 0 is used. &nbsp;See <xref target="filepreamble"/>.</c>
 </texttable>
 
-<!-- [rfced] Section 7.5.1:  Please confirm that "Section 7.4.1" is
-the correct citation here.  We could not find a relationship.
-
-Original (best viewed with a fixed-point font such as Courier.
-   The spelling of "premable" has been corrected):
- | block-parameters |   | U | The index of the item in the "block-   |
- | -index           |   |   | parameters" array (in the "file-       |
- |                  |   |   | premable" item) applicable to this     |
- |                  |   |   | block. If not present, index 0 is      |
- |                  |   |   | used. See Section 7.4.1.               |
--->
-
 </section>
 
 <section anchor="blockstatistics" title="&quot;BlockStatistics&quot;">
@@ -1160,7 +1083,9 @@ where 0 = UDP, 1 = TCP, 2 = TLS, 3 = DTLS <xref target="RFC7858"/>, 4 = DoH
 <c></c><c></c><c></c><c>Bit 13. &nbsp;Response TrunCation (TC).</c>
 <c></c><c></c><c></c><c>Bit 14. &nbsp;Response Authoritative Answer (AA).</c>
 <c></c><c></c><c></c><c></c>
-<c>query-rcode</c><c></c><c>U</c><c>Query RCODE. &nbsp;If the Query contains OPT <xref target="RFC6891"/>, this value incorporates any EXTENDED-RCODE value<xref target="rcodes"/>.</c>
+<c>query-rcode</c><c></c><c>U</c><c>Query RCODE. &nbsp;If the Query contains
+OPT <xref target="RFC6891"/>, this value incorporates any EXTENDED-RCODE value
+<xref target="rcodes"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>query-classtype -index</c><c></c><c>U</c><c>The index to the item in the &quot;classtype&quot; array of the CLASS and TYPE of the first Question. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1179,24 +1104,10 @@ stands for Extension Mechanisms for DNS.)</c>
 <c></c><c></c><c></c><c></c>
 <c>opt-rdata-index</c><c></c><c>U</c><c>The index in the &quot;name-rdata&quot; array  of the OPT RDATA. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>response-rcode</c><c></c><c>U</c><c>Response RCODE. &nbsp;If the Response contains OPT <xref target="RFC6891"/>, this value incorporates any EXTENDED_RCODE_VALUE <xref target="rcodes"/>.</c>
+<c>response-rcode</c><c></c><c>U</c><c>Response RCODE. &nbsp;If the Response
+contains OPT <xref target="RFC6891"/>, this value incorporates any
+EXTENDED_RCODE value <xref target="rcodes"/>.</c>
 </texttable>
-
-<!-- [rfced] Section 7.5.3.2:  What does "EXTENDED_RCODE_VALUE" 
-refer to? It does not appear in the DNS RCODEs registry [rcodes] or 
-in any published RFC.  Will these table entries be clear to readers?
-
-Original (best viewed with a fixed-point font such as Courier):
- | query-rcode        |   | U | Query RCODE. If the Query contains   |
- |                    |   |   | OPT [RFC6891], this value            |
- |                    |   |   | incorporates any                     |
- |                    |   |   | EXTENDED_RCODE_VALUE [rcodes].       |
-...
- | response-rcode     |   | U | Response RCODE. If the Response      |
- |                    |   |   | contains OPT [RFC6891], this value   |
- |                    |   |   | incorporates any                     |
- |                    |   |   | EXTENDED_RCODE_VALUE [rcodes].       |
--->
 
 </section>
 
@@ -1583,24 +1494,11 @@ following sections.
        /____________________________________________/
 
        OFIFO = output FIFO containing Q/R data items (Section 10.6)
-       RFIFO = Response FIFO containing unmatched Response items (Section 10.6)
+       RFIFO = Response FIFO containing unmatched Response items
+               (Section 10.6)
        QT = Query Timeout (Section 10.3)
        ST = Skew Timeout (Section 10.3)
 </artwork></figure>
-
-<!-- [rfced] Section 10.1:  For ease of the reader, we defined
-"OFIFO," "RFIFO," "QT," and "ST" at the end of Figure 3.  Please let
-us know any objections.
-
-Original:
- [no text]
-
-Currently:
- OFIFO = output FIFO containing Q/R items (Section 10.6)
- RFIFO = FIFO holding responses (Section 10.6)
- QT = Query Timeout (Section 10.3)
- ST = Skew Timeout (Section 10.3)
--->
 
 <texttable title="Operations Used in the Matching Algorithm" anchor="table1">
 <ttcol align="left">Reference</ttcol>
@@ -1726,21 +1624,6 @@ immediately, generating Response only entries to the OFIFO.
 These and all other remaining entries in the OFIFO
 should be treated as timed-out Queries.
 
-<!-- [rfced] Section 10.8:  Should "responses FIFO" be "RFIFO," and
-should "Q/R data item FIFO" be "OFIFO" here?
-
-Original:
- When ending capture, all items in the responses FIFO are timed out
- immediately, generating response-only entries to the Q/R data item
- FIFO.  These and all other remaining entries in the Q/R data item
- FIFO should be treated as timed out Queries.
-
-Possibly:
- When ending a capture, all items in the RFIFO are timed out
- immediately, generating response-only entries to the OFIFO.
- These and all other remaining entries in the OFIFO should be
- treated as timed-out queries. -->
-
 </t>
 </section>
 </section>
@@ -1796,16 +1679,6 @@ message.</t>
 </section>
 
 <section anchor="limiting-collection-of-rdata" title="Limiting Collection of RDATA">
-
-<!-- [rfced] What does "large XFR records" refer to here?
-Does it refer to the RR types, e.g., "large AXFR or IXFR data"?
-Or, would it be clear written out as "large transfer records"?
-
-Original:
-   Implementations should consider providing a configurable maximum
-   RDATA size for capture, for example, to avoid memory issues when
-   confronted with large XFR records.
---> 
 
 <t>Implementations should consider providing a configurable maximum RDATA size
 for captures -- for example, to avoid memory issues when confronted with large
@@ -1907,36 +1780,6 @@ Section 7.4.1.1 ("Bit 0," "Bit 1," "Bit 2") -->
 <c>3-63</c><c>Unassigned</c><c></c><c></c>
 </texttable>
 <?rfc compact="yes"?>
-
-<!-- [rfced] Section 13.2 and Appendix A:  Is "anonymised-data"
-a string that may be changed?  We would like to change the
-spelling to "anonymized-data" if possible; we ask this because we see
-"normalized-names."
-
-Original (best viewed with a fixed-point font such as Courier):
- |  0   | anonymised-data  | The data has been           | [[this    |
- |      |                  | anonymised.                 | RFC]]     |
-...
- anonymised-data      : 0,
-
-If this change is acceptable, we will ask IANA to update the
-following entry in the "C-DNS Storage Flags" registry on
-<https://www.iana.org/assignments/c-dns/> accordingly:
-
-OLD:
-0    anonymised-data    The data has been anonymised.
-
-NEW:
-0    anonymized-data    The data has been anonymized. *
-
-* We see "Names in the data have been normalized" two entries later. 
-
-Side note: The original document used both British and American spelling;
-for internal consistency and consistency with RFC-to-be 8610, it has 
-been updated to the latter throughout.
-
-Response: Yes, this change can be made, and IANA updated.
--->
 
 </section>
 
@@ -2041,24 +1884,7 @@ baseline for privacy considerations; therefore, this format specification
 introduces no new user privacy issues beyond those of full data capture (which
 are quite severe). It does provide mechanisms to selectively record only
 certain fields at the time of data capture, to improve user privacy and to
-explicitly indicate that data is sampled, anonymized, or both.
-
-<!-- [rfced] Section 15:  We corrected "does provides" and "and or"
-in this sentence as follows.  Please let us know if this is incorrect.
-
-Original:
- It does provides
- mechanisms to selectively record only certain fields at the time of
- data capture to improve user privacy and to explicitly indicate that
- data is sampled and or anonymized.
-
-Currently:
- It does provide
- mechanisms to selectively record only certain fields at the time of
- data capture to improve user privacy and to explicitly indicate that
- data is sampled, anonymized, or both. -->
-
- It also provides
+explicitly indicate that data is sampled, anonymized, or both. It also provides
 flags to indicate if data normalization has been performed; data normalization
 increases user privacy by reducing the potential for fingerprinting
 individuals. However, a trade-off is the potential reduction of the capacity to
@@ -2074,7 +1900,7 @@ capture at the source the minimum user data required to meet their needs.
 
 <references title="Normative References">
 
-<!-- draft-ietf-cbor-cddl (RFC 8610) in AUTH48 -->
+<!-- draft-ietf-cbor-cddl (RFC 8610) (published 2019-06-12) -->
 <reference anchor="RFC8610" target="https://www.rfc-editor.org/info/rfc8610">
 <front>
 <title>Concise Data Definition Language (CDDL): A Notational Convention to 
@@ -2143,48 +1969,6 @@ Express Concise Binary Object Representation (CBOR) and JSON Data Structures</ti
 
 <references title="Informative References">
 
-<!-- [rfced] Please note that per current style guidelines we
-converted "<eref>" items to Informative References.  Please let us
-know if you prefer otherwise. 
--->
-
-<!-- [rfced] As a result of the removal of the "Implementation status"
-section, the following URIs are no longer mentioned in this
-document.  Please let us know if you would like to (a) leave them out,
-(b) add citations of them and have corresponding informative references,
-or (c) put the URL in the body of the document.
-
-   [1] https://github.com/dns-stats/compactor/wiki
-   [2] https://mm.dns-stats.org/mailman/listinfo/dns-stats-users
-   [3] https://www.sinodun.com/2017/06/compressing-pcap-files/
-   [4] https://www.sinodun.com/2017/06/more-on-debian-jessieubuntu-
-       trusty-packet-capture-woes/
-
-If you choose (b), they would appear as follows in the Informative 
-References unless you let us know otherwise.
-
-   [Compactor]
-              "DNS-STATS Compactor project homepage", commit 10527b9,
-              May 2019, <https://github.com/dns-stats/compactor/wiki>.
-
-   [dns-stats-Users]
-              "dns-stats-users - dns-stats Users List",
-              <https://mm.dns-stats.org/mailman/listinfo/
-              dns-stats-users>.
-
-   [Compress-PCAP]
-              Hague, J., "Compressing pcap files", June 2017,
-              <https://www.sinodun.com/2017/06/compressing-pcap-files/>.
-
-   [Pkt-Cap-Woes]
-              Hague, J., "More on Debian Jessie/Ubuntu Trusty packet
-              capture woes", June 2017,
-              <https://www.sinodun.com/2017/06/
-              more-on-debian-jessieubuntu-trusty-packet-capture-woes/>.
-
-Response: We choose (a).
--->
-
 <!-- draft-dickinson-dprive-bcp-op (Replaced by draft-ietf-dprive-bcp-op)
      (I-D Exists) -->
 <reference anchor="DNS-Priv-Svc">
@@ -2206,27 +1990,6 @@ Response: We choose (a).
 </front>
 <seriesInfo name='Work in Progress,' value='draft-ietf-dprive-bcp-op-02' />
 </reference>
-
-<!-- [rfced] Informative Reference [I-D.dickinson-dprive-bcp-op]
-(draft-dickinson-dprive-bcp-op) has been replaced by
-draft-ietf-dprive-bcp-op.  We checked the citations in Section 15 and
-changed "Appendix B" to "Appendix C" accordingly.  We also updated
-this reference to reflect the current work in progress.
-Please let us know any objections.
-
-Original:
- [I-D.dickinson-dprive-bcp-op]
-            Dickinson, S., Overeinder, B., Rijswijk-Deij, R., and A.
-            Mankin, "Recommendations for DNS Privacy Service
-            Operators", draft-dickinson-dprive-bcp-op-01 (work in
-            progress), July 2018.
-
-Currently:
- [DNS-Priv-Svc]
-            Dickinson, S., Overeinder, B., van Rijswijk-Deij, R., and
-            A. Mankin, "Recommendations for DNS Privacy Service
-            Operators", Work in Progress, draft-ietf-dprive-bcp-op-02,
-            March 2019. -->
 
 <!-- draft-bortzmeyer-dprive-rfc7626-bis (I-D Exists) -->
 <reference anchor="DNS-Priv-Cons">
@@ -2271,49 +2034,6 @@ Currently:
     </front>
 </reference>
 
-<!-- This was removed because it is no longer cited.  (It was only cited in
-the "Implementation status" section, which was removed.) 
-
-<reference anchor="Compactor" target="https://github.com/dns-stats/compactor/wiki">
-    <front>
-        <title>DNS-STATS Compactor project homepage</title>
-        <author>
-            <organization></organization>
-        </author>
-        <date month="May" year='2019'/>
-    </front>
-  <seriesInfo name="commit" value="10527b9"/>
-</reference>
--->
-
-<!-- This was removed because it is no longer cited.  (It was only cited in
-the "Implementation status" section, which was removed.) 
-
-<reference anchor="Compress-PCAP" target="https://www.sinodun.com/2017/06/compressing-pcap-files/">
-    <front>
-        <title>Compressing pcap files</title>
-        <author initials="J." surname="Hague" fullname="Jim Hague">
-            <organization>Sinodun Internet Technologies Ltd.</organization>
-        </author>
-        <date month="June" year="2017"/>
-    </front>
-</reference>
--->
-
-<!-- This was removed because it is no longer cited.  (It was only cited in
-the "Implementation status" section, which was removed.)
-
-<reference anchor="dns-stats-Users" target="https://mm.dns-stats.org/mailman/listinfo/dns-stats-users">
-    <front>
-        <title>dns-stats-users - dns-stats Users List</title>
-        <author>
-            <organization></organization>
-        </author>
-        <date/>
-    </front>
-</reference>
--->
-
 <reference anchor="gzip" target="https://www.gzip.org/">
     <front>
         <title>gzip</title>
@@ -2355,17 +2075,6 @@ the "Implementation status" section, which was removed.)
   <seriesInfo name="commit" value="de69698"/>
 </reference>
 
-<!-- [rfced] The provided URL for mmark includes a note that
-says "!THIS REPOSITORY IS DEPRECATED!"  We updated the listing
-accordingly.  Please let us know any objections.
-
-Original:
- [6] https://github.com/miekg/mmark
-
-Currently:
- [mmark]    Gieben, M., "mmark", commit de69698, May 2019,
-            <https://github.com/mmarkdown/mmark>. -->
-
 <reference anchor="NSD" target="https://www.nlnetlabs.nl/projects/nsd/about/">
     <front>
         <title>NSD</title>
@@ -2375,21 +2084,6 @@ Currently:
         <date year="2019"/>
     </front>
 </reference>
-
-
-<!-- This was removed because it is no longer cited.  (It was only cited in
-the "Implementation status" section, which was removed.)
-
-<reference anchor="Pkt-Cap-Woes" target="https://www.sinodun.com/2017/06/more-on-debian-jessieubuntu-trusty-packet-capture-woes/">
-    <front>
-        <title>More on Debian Jessie/Ubuntu Trusty packet capture woes</title>
-        <author initials="J." surname="Hague" fullname="Jim Hague">
-            <organization>Sinodun Internet Technologies Ltd.</organization>
-        </author>
-        <date month="June" year="2017"/>
-    </front>
-</reference>
--->
 
 <reference anchor="Protocol-Buffers" target="https://developers.google.com/protocol-buffers/">
     <front>
@@ -3114,38 +2808,6 @@ MalformedMessage = {
 ; Other map key values already defined above.
 message-data-index = 3
 </artwork></figure>
-
-<!-- [rfced] Appendix A:  Please advise regarding the following
-three items:
-
-A. May we change the two instances of "anonymisation-method" to
-"anonymization-method," or is "anonymisation-method" used in code?
-(We ask this question because we see "anonymization" in text and
-"anonymization-method" at the end of the table in Section 7.4.1.1.)
-
-Original:
- ? anonymisation-method       => tstr,
-...
- anonymisation-method       = 11
-
-B. Should the value for query-ns-count be 11, or is it correct for
-both query-ns-count and query-ar-count to have a value of 12 (with
-nothing in the list having a value of 11)?
-
-Original:
- query-ns-count        = 12
- query-ar-count        = 12
-
-C. May we change "has-reponse" to "has-response," or is
-"has-reponse" used in code (i.e., does the misspelled form have to
-remain?)?
-
-Original:
- has-reponse             : 1,
-
-Response: Both changes can be made; we have amended the XML.
- -->
-
 </t>
 </section>
 
@@ -3159,7 +2821,7 @@ a reference back to part (or all) of the earlier name and (2)&nbsp;the
 uncompressed part of the name is shorter than any compression already found,
 the earlier name is noted as the compression target for the name.
 </t>
-<t>The following tables illustrate the step by step process of adding
+<t>The following tables illustrate the step-by-step process of adding
 names and performing name compression. In an example packet, the
 first name added is foo.example, which cannot be compressed.
 </t>
@@ -3173,31 +2835,7 @@ first name added is foo.example, which cannot be compressed.
 <c>1</c><c>foo.example</c><c>foo.example</c><c>None</c>
 </texttable>
 
-<t>The next name added is bar.example.
-
-<!-- [rfced] Appendix B:  We were confused at first by the empty
-cells in the first table.  Is the first table necessary?
-
-Original (best viewed with a fixed-point font such as Courier.
-   Dashed lines are broken so XML won't treat them as comments.):
-
- The following tables illustrate the process.  In an example packet,
- the first name is foo.example.
-
-          +- -+- - - - - - -+- - - - - - - +- - - - - - - - - - +
-          | N | Name        | Uncompressed | Compression Target |
-          +- -+- - - - - - -+- - - - - - - +- - - - - - - - - - +
-          | 1 | foo.example |              |                    |
-          +- -+- - - - - - -+- - - - - - - +- - - - - - - - - - +
-
- The next name added is bar.example. ...
-
-Possibly:
- The following tables illustrate the process.  In an example packet,
- the first name is foo.example.  The next name added is bar.example.
- ... -->
-
- This is matched against foo.example. The
+<t>The next name added is bar.example. This is matched against foo.example. The
 example part of this can be used as a compression target, with the remaining
 uncompressed part of the name being bar.
 </t>
@@ -3526,19 +3164,9 @@ compression?</t>
 
 <t>The following table addresses the performance question, showing the
 impact on the performance of a C++ program converting &quot;test.pcap&quot;
-to C-DNS. File sizes are in MB, and RSS is in kB.
+to&nbsp;C-DNS. File sizes are in MB, RSS is in kB, and user time is
+in&nbsp;seconds.
 </t>
-
-<!-- [rfced] Appendix C.6:  Is the user time shown in the first
-table in this subsection expressed in seconds?  If yes, would it
-be appropriate to update the sentence preceding the table, per text
-in Appendix C?
-
-Original:
- File size is in Mb, resident set size (RSS) in kb.
-
-Possibly:
- File sizes are in MB, RSS is in kB, and user time is in seconds. -->
 
 <texttable>
 <ttcol align="right">Block Size</ttcol>
@@ -3605,88 +3233,4 @@ Bortzmeyer, and many other members of DNSOP for review.</t>
 </section>
 
 </back>
-
-<!-- [rfced] FYI, the following term (which appears 3 times) has been 
-updated to the latter form in order to match how it appears in
-the normative reference draft-ietf-cbor-cddl-08 (RFC-to-be 8610).
-Please let us know if you prefer otherwise.
-
-  data type vs. datatype
--->
-
-<!-- [rfced] Please let us know if any changes are needed for the
-following:
-
-a) The following terms were used inconsistently in this document.
-We chose to use the latter forms.  Please let us know any objections.
-
- nameserver (1 instance) / name server (16 instances)
- Opt RDATA / OPT RDATA (per RFC 6891)
-
-b) The following terms appear to be used inconsistently in this
-document.  Please let us know which form is preferred.
-
- Block table(s) / Block Table(s) / block table(s) (in text)
- BlockTable / BlockTables
- subsequent question / subsequent Question
- query / Query (including general usage in running text)*
-   (e.g., "DNS query" vs. "DNS Query"; note that we see "DNS response"
-    in text but not "DNS Response"; "a Query and a Response" vs.
-    "a query and a response," "query or response" vs. "Query or
-    Response")
-
- queries / Queries (including general usage in running text)*
- response(s) / Response(s) (including general usage in running text)
-   (e.g., "a response" vs. "a Response")*
- query/response / Query/Response (in running text)*
-
- * Do "Q/R," "QR," and "query/response" (or "Query/Response") mean
-   the same thing?  We see that "Q/R" is consistently capitalized.
-   If yes, perhaps we could change "(a "Q/R data item")" in Section 4
-   to "(a "Query/Response (Q/R) data item")" and use "Q/R" after that.
-
- response data / Response data (We see "Query data" used in this
-   document.)
-
- DNS Header / DNS header (1 instance each, in text)
-
- file preamble (text) / File preamble (Figure 1) / File Preamble (text)
- Block preamble (Figure 1) / Block Preamble (text)
- Block parameters (Figure 1) / Block Parameters (text)
- file Format Version (text) / file format version (text)
-   (We see "Format version" in Figure 1.)
- File type identifier (Figure 1)/ File Type Identifier (text)
- Client hoplimit (Figure 2) / Client Hoplimit
-   (We see "IPv6 Hoplimit" in the table in Section 7.6.)
- query signature (text) / Query signature (Figure 2) /
-   Query Signature (Figure 2 and also in text)
- Class/type (Figure 2) / Class/Type (Figure 2)
- QD count (Figure 2) / QDCOUNT (table in Section 7.5.3.2, text)
- AN count (Figure 2) / ANCOUNT ((table in Section 7.5.3.2)
- NS count (Figure 2) / NSCOUNT (table in Section 7.5.3.2)
-
- Please confirm that the following are distinct items (perhaps the
-   latter forms are the "-hints" variation?):
-   query-qd-count vs. query-qdcount
-   query-an-count vs. query-ancount
-   query-ns-count vs. query-nscount
-   query-ar-count vs. query-arcount
-
- ARCount / ARCOUNT
- data blocks / data Blocks
- the block / the Block (used generally in text)
- block statistics (text) / Block statistics (Figure 1)
-   / Block Statistics (text)
- collection and storage parameters / Collection and Storage Parameters
-
- Address/Event Count data items / Address/Event Counts data item
-   (We ask because we see "AddressEventCount" and
-    "address-event-counts.")
-
- and subsequent questions / and subsequent Questions
-
- secondary ID / Secondary ID
-   (e.g., "the secondary ID" vs. "the Secondary ID"; we see
-    "Primary ID" in this document but not "primary ID") -->
-
 </rfc>

@@ -286,7 +286,7 @@ Parsing a well-formed message means, at a minimum, the following:
 <t>The section counts are consistent with the section contents.</t>
 <t>All of the Resource Records (RRs) can be fully parsed.</t>
 </list></t>
-<t>All top-level fields in each Q/R data item will be optional.
+<t>All top-level fields in each Query/Response data item will be optional.
 <list style="symbols">
 <t>Rationale: Different operators will have different requirements for data
 to be available for analysis. Operators with minimal requirements should
@@ -298,8 +298,8 @@ can be synthesized if there is enough context. Operators may have
 different policies for collecting user data and can choose to omit or
 anonymize certain fields at capture time, e.g., client address.</t>
 </list></t>
-<t>Multiple Q/R data items will be collected into blocks in the format. Common data in a block will be abstracted and
-referenced from individual Q/R data items by indexing. The maximum number of Q/R data items in a block will be configurable.
+<t>Multiple Query/Response data items will be collected into blocks in the format. Common data in a block will be abstracted and
+referenced from individual Query/Response data items by indexing. The maximum number of Query/Response data items in a block will be configurable.
 <list style="symbols">
 <t>Rationale: This blocking and indexing action provides a significant reduction in the volume of file data generated.
 Although this introduces complexity, it provides compression of the data that makes use of knowledge of the DNS message structure.</t>
@@ -319,7 +319,7 @@ byte will be limited to some extent in that it cannot represent malformed DNS me
 Only those messages that can be fully parsed and transformed into the
 structured format can be fully represented. Note, however, that this can result in rather misleading statistics. For example, a
 malformed Query that cannot be represented in the C-DNS format will lead to the (well-formed)
-DNS Responses with error code FORMERR appearing as &quot;unmatched&quot;. Therefore, it can greatly aid downstream analysis
+DNS Response with error code FORMERR appearing as &quot;unmatched&quot;. Therefore, it can greatly aid downstream analysis
 to have the wire format of the malformed DNS messages available directly in the C&nbhy;DNS&nbsp;file.</t>
 </list></t>
 </list>
@@ -500,7 +500,7 @@ malformed messages that are stored in the Block).
 </t>
 <t>The exact nature of the DNS data will affect what Block size is the best
 fit; however, sample data for a root server indicated that Block sizes up to
-10,000 Q/R data items give good results. See <xref target="block-size-choice"/> for more details.
+10,000 Query/Response data items give good results. See <xref target="block-size-choice"/> for more details.
 </t>
 <t>This design exploits data commonality and block-based storage to minimize
 the C-DNS file size. As a result, C-DNS cannot be streamed below the level of a
@@ -580,7 +580,24 @@ never be present. (This approach is taken because a flag that indicated which it
 were included for collection would not guarantee that the item was present --
 only that it might be.)
 An implementation decoding that file can then use these flags to quickly determine
+<<<<<<< HEAD
 whether the input data is rich enough for its needs.</t>
+=======
+whether the input data is not rich enough for its needs.
+
+<!-- [rfced] Section 6.2.1:  Does "these" mean "these items," or
+something else?
+
+Original (the previous sentence is included for possible context):
+ (This approach is
+ taken because a flag that indicated which items were included for
+ collection would not guarantee that the item was present, only that
+ it might be.)  An implementation decoding that file can then use
+ these to quickly determine whether the input data is rich enough for
+ its needs. -->
+
+</t>
+>>>>>>> Minor changes:
 </section>
 
 <section anchor="optional-rrs-and-opcodes" title="Optional RRs and OPCODEs">
@@ -898,7 +915,7 @@ captured.
 <c></c><c></c><c></c><c></c>
 <c>interfaces</c><c></c><c>A</c><c>Array of identifiers (of type text string) of the interfaces used for collection.</c>
 <c></c><c></c><c></c><c></c>
-<c>server-addresses</c><c></c><c>A</c><c>Array of server collection IP addresses (of type byte string). &nbsp;Hint for downstream analyzers; does not affect collection.</c>
+<c>server-addresses</c><c></c><c>A</c><c>Array of server collection IP addresses (of type byte string). &nbsp;Meta data for downstream analyzers; does not affect collection.</c>
 <c></c><c></c><c></c><c></c>
 <c>vlan-ids</c><c></c><c>A</c><c>Array of identifiers (of type unsigned integer, each in the range 1 to 4094 inclusive) of VLANs <xref target="IEEE802.1Q"/> selected for collection. &nbsp;VLAN IDs are unique only within an administrative domain.</c>
 <c></c><c></c><c></c><c></c>
@@ -926,7 +943,7 @@ captured.
 <c></c><c></c><c></c><c></c>
 <c>block-tables</c><c></c><c>M</c><c>The arrays containing data referenced by individual &quot;QueryResponse&quot; or &quot;MalformedMessage&quot; items. &nbsp;Map of type &quot;BlockTables&quot;; see <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>query-responses</c><c></c><c>A</c><c>Details of individual DNS Q/R data items. &nbsp;Array of items of type &quot;QueryResponse&quot;; see <xref target="queryresponse"/>. &nbsp;If present, the array must not be empty.</c>
+<c>query-responses</c><c></c><c>A</c><c>Details of individual C-DNS Q/R data items. &nbsp;Array of items of type &quot;QueryResponse&quot;; see <xref target="queryresponse"/>. &nbsp;If present, the array must not be empty.</c>
 <c></c><c></c><c></c><c></c>
 <c>address-event -counts</c><c></c><c>A</c><c>Per-client counts of ICMP messages and TCP resets. &nbsp;Array of items of type &quot;AddressEventCount&quot;; see <xref target="addresseventcount"/>. &nbsp;If present, the array must not be empty.</c>
 <c></c><c></c><c></c><c></c>
@@ -1337,14 +1354,14 @@ full packet stream are outlined here.
 </t>
 <t>The reconstruction depends on whether or not a particular subset of the
 optional fields were captured in the C-DNS file, specifically the data fields
-required to re-construct a valid IP header and DNS payload. Clearly, if they
-were not all captured, the reconstruction may not be possible and even if
+required to re-construct a valid IP header and DNS payload. Clearly, if not all 
+these data fields were captured, the reconstruction may not be possible and even if
 reasonable defaults are provided the re-construction is likely to be imperfect.
 </t>
 <t>
-It is noted again that simply having hints set indicating data was not
-configured to be omitted does not guarantee that the data was actually
-captured. Therefore the ability to reconstruct PCAP data (in the absence of
+It is noted again that simply having hints which indicate certain fields data
+were not omitted does not guarantee that those data fields were actually captured.
+Therefore the ability to reconstruct PCAP data (in the absence of
 defaults) can in principle vary for each record captured in a C-DNS file, and
 between Blocks which have differing hints.
 </t>

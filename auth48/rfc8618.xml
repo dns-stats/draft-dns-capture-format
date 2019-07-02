@@ -2470,8 +2470,8 @@ collection-parameters = 1
  VLANIdRange = 1..4094
 
  CollectionParameters = {
-      ? query-timeout      =&gt; uint,
-      ? skew-timeout       =&gt; uint,
+      ? query-timeout      =&gt; uint,             ; Seconds
+      ? skew-timeout       =&gt; uint,             ; Microseconds
       ? snaplen            =&gt; uint,
       ? promisc            =&gt; bool,
       ? interfaces         =&gt; [+ tstr],

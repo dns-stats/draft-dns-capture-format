@@ -2527,7 +2527,7 @@ ticks = int
 uticks = uint
 
 Timestamp = [
-    timestamp-secs   : uint,
+    timestamp-secs   : uint,      ; POSIX time
     timestamp-ticks  : uticks,
 ]
 

@@ -2572,8 +2572,8 @@ rrlist                 = 6
 rr                     = 7
 malformed-message-data = 8
 
-IPv4Address = bstr .size 4
-IPv6Address = bstr .size 16
+IPv4Address = bstr .size (0..4)
+IPv6Address = bstr .size (0..16)
 IPAddress = IPv4Address / IPv6Address
 
 ClassType = {

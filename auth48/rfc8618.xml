@@ -899,7 +899,7 @@ captured.
 <c></c><c></c><c></c><c></c>
 <c>interfaces</c><c></c><c>A</c><c>Array of identifiers (of type text string) of the interfaces used for collection.</c>
 <c></c><c></c><c></c><c></c>
-<c>server-addresses</c><c></c><c>A</c><c>Array of server collection IP addresses (of type byte string). &nbsp;Meta data for downstream analyzers; does not affect collection.</c>
+<c>server-addresses</c><c></c><c>A</c><c>Array of server collection IP addresses (of type byte string). &nbsp;Metadata for downstream analyzers; does not affect collection.</c>
 <c></c><c></c><c></c><c></c>
 <c>vlan-ids</c><c></c><c>A</c><c>Array of identifiers (of type unsigned integer, each in the range 1 to 4094 inclusive) of VLANs <xref target="IEEE802.1Q"/> selected for collection. &nbsp;VLAN IDs are unique only within an administrative domain.</c>
 <c></c><c></c><c></c><c></c>
@@ -1338,16 +1338,16 @@ full packet stream are outlined here.
 </t>
 <t>The reconstruction depends on whether or not a particular subset of the
 optional fields were captured in the C-DNS file, specifically the data fields
-required to re-construct a valid IP header and DNS payload. Clearly, if not all 
+required to reconstruct a valid IP header and DNS payload. Clearly, if not all 
 these data fields were captured, the reconstruction may not be possible and even if
-reasonable defaults are provided the re-construction is likely to be imperfect.
+reasonable defaults are provided the reconstruction is likely to be imperfect.
 </t>
 <t>
-It is noted again that simply having hints which indicate certain fields data
+It is noted again that simply having hints that indicate certain fields data
 were not omitted does not guarantee that those data fields were actually captured.
-Therefore the ability to reconstruct PCAP data (in the absence of
+Therefore, the ability to reconstruct PCAP data (in the absence of
 defaults) can in principle vary for each record captured in a C-DNS file, and
-between Blocks which have differing hints.
+between Blocks that have differing hints.
 </t>
 <t>Even if all sections of the Response were captured, one cannot reconstruct the DNS
 Response payload exactly, due to the fact that some DNS names in the message on the wire
@@ -2467,7 +2467,7 @@ collection-parameters = 1
     )
     StorageFlags = uint .bits StorageFlagValues
 
- ; Meta data about data collection
+ ; Metadata about data collection
  VLANIdRange = 1..4094
 
  CollectionParameters = {
@@ -2522,8 +2522,8 @@ BlockPreamble = {
 earliest-time          = 0
 block-parameters-index = 1
 
-; Ticks are sub-second intervals. The number of ticks in a second is
-; file/block metadata. Signed and unsigned tick types are defined.
+; Ticks are sub-second intervals.  The number of ticks in a second is
+; file/block metadata.  Signed and unsigned tick types are defined.
 ticks = int
 uticks = uint
 
@@ -2622,8 +2622,8 @@ query-opt-rdata-index = 15
 response-rcode        = 16
 
   ; Transport gives the values that may appear in bits 1..4 of
-  ; TransportFlags. There is currently no way to express this in
-  ; CDDL, so Transport is unused. To avoid confusion when used
+  ; TransportFlags.  There is currently no way to express this in
+  ; CDDL, so Transport is unused.  To avoid confusion when used
   ; with CDDL tools, it is commented out.
   ;
   ; Transport = &amp;(

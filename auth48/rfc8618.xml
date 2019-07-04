@@ -3287,15 +3287,11 @@ that is possible with C-DNS.</t>
 </t>
 </section>
 
-<section anchor="min-traffic-fields" title="Minimal Fields for Traffic Regeneration">
-<t> This section specifies a subset of the above data fields. If only these data
+<section anchor="min-traffic-fields" title="Issues with Small Data Captures">
+<t> This following list specifies a subset of the above data fields. If only these data
 fields are captured then even a minimal traffic re-construction is problematic
 because there is not enough information to determine if the Query/Response data
-item contained just a Query, just a Response or a Query/Response pair. It is 
-recommended to capture at least these fields as well as the qr-sig-type field if
-minimal traffic reconstruction is desired. Also capturing response-delay, 
-query-opcode and response-rcode will avoid having to rely on potentially 
-misleading defaults for these values.</t>
+item contained just a Query, just a Response or a Query/Response pair. </t>
 <t>
 <list style="symbols">
 <t>The following data fields from the QueryResponse type:
@@ -3314,6 +3310,13 @@ misleading defaults for these values.</t>
 <t>query-classtype-index</t>
 </list></t>
 </list></t>
+
+<t>It is therefore recommended to capture at least these fields as well as the
+qr-sig-type field if a minimal traffic reconstruction is desired but with the
+smallest possible data capture. Additionally capturing response-delay,
+query-opcode and response-rcode will avoid having to rely on potentially
+misleading defaults for these values and should result in a PCAP that represents
+the basics of the real traffic flow.</t>
 </section>
 </section>
 

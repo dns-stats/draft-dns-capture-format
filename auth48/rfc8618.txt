@@ -145,7 +145,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
      C.6.  Block Size Choice . . . . . . . . . . . . . . . . . . . .  72
    Appendix D.  Data Fields for Traffic Regeneration . . . . . . . .  74
      D.1.  Recommended Field for Traffic Regeneration  . . . . . . .  74
-     D.2.  Minimal Fields for Traffic Regeneration . . . . . . . . .  74
+     D.2.  Issues with Small Data Captures . . . . . . . . . . . . .  74
    Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  75
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  75
 
@@ -4107,17 +4107,13 @@ D.1.  Recommended Field for Traffic Regeneration
 
    o  All data fields in the RR type.
 
-D.2.  Minimal Fields for Traffic Regeneration
+D.2.  Issues with Small Data Captures
 
-   This section specifies a subset of the above data fields.  If only
-   these data fields are captured then even a minimal traffic re-
+   This following list specifies a subset of the above data fields.  If
+   only these data fields are captured then even a minimal traffic re-
    construction is problematic because there is not enough information
    to determine if the Query/Response data item contained just a Query,
-   just a Response or a Query/Response pair.  It is recommended to
-   capture at least these fields as well as the qr-sig-type field if
-   minimal traffic reconstruction is desired.  Also capturing response-
-   delay, query-opcode and response-rcode will avoid having to rely on
-   potentially misleading defaults for these values.
+   just a Response or a Query/Response pair.
 
    o  The following data fields from the QueryResponse type:
 
@@ -4141,12 +4137,21 @@ D.2.  Minimal Fields for Traffic Regeneration
 
       *  query-classtype-index
 
+   It is therefore recommended to capture at least these fields as well
+   as the qr-sig-type field if a minimal traffic reconstruction is
+   desired but with the smallest possible data capture.  Additionally
+
 
 
 Dickinson, et al.            Standards Track                   [Page 74]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
+
+   capturing response-delay, query-opcode and response-rcode will avoid
+   having to rely on potentially misleading defaults for these values
+   and should result in a PCAP that represents the basics of the real
+   traffic flow.
 
 Acknowledgements
 
@@ -4191,11 +4196,6 @@ Authors' Addresses
    United Kingdom
 
    Email: sara@sinodun.com
-
-
-
-
-
 
 
 

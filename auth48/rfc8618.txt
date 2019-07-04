@@ -4137,9 +4137,9 @@ D.2.  Issues with Small Data Captures
 
       *  query-classtype-index
 
-   It is therefore recommended to capture at least these fields as well
-   as the qr-sig-type field if a minimal traffic reconstruction is
-   desired but with the smallest possible data capture.  Additionally
+   In this case, simply also capturing the qr-sig-type will provide
+   enough information to perform a minimal traffic reconstruction
+   (assuming suitable defaults for the remaining fields are provided).
 
 
 
@@ -4148,10 +4148,10 @@ Dickinson, et al.            Standards Track                   [Page 74]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-   capturing response-delay, query-opcode and response-rcode will avoid
-   having to rely on potentially misleading defaults for these values
-   and should result in a PCAP that represents the basics of the real
-   traffic flow.
+   Additionally capturing response-delay, query-opcode and response-
+   rcode will avoid having to rely on potentially misleading defaults
+   for these values and should result in a PCAP that represents the
+   basics of the real traffic flow.
 
 Acknowledgements
 

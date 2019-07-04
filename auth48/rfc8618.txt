@@ -4109,7 +4109,7 @@ D.1.  Recommended Field for Traffic Regeneration
 
 D.2.  Issues with Small Data Captures
 
-   At the other extreme, and interesting corner case arises when opting
+   At the other extreme, an interesting corner case arises when opting
    to perform captures with a smaller data set than that recommended
    above.  The following list specifies a subset of the above data
    fields; if only these data fields are captured then even a minimal

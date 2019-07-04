@@ -1686,6 +1686,11 @@ data items and allowing indefinite-length maps and arrays could reduce memory
 requirements.
 </t>
 
+<t>It is recommended that implementations which have fundamental restrictions on
+what data fields they can collect SHOULD always store hints with the bits unset
+for those fields, i.e. they unambiguously indicate that those data fields will
+be omitted from captured C-DNS.</t>
+
 <section anchor="optional-data" title="Optional Data">
 <t>When decoding C-DNS data, some of the items required for a particular
 function that the consumer wishes to perform may be missing. Consumers should

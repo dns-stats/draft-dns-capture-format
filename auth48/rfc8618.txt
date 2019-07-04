@@ -4109,11 +4109,13 @@ D.1.  Recommended Field for Traffic Regeneration
 
 D.2.  Issues with Small Data Captures
 
-   This following list specifies a subset of the above data fields.  If
-   only these data fields are captured then even a minimal traffic re-
-   construction is problematic because there is not enough information
-   to determine if the Query/Response data item contained just a Query,
-   just a Response or a Query/Response pair.
+   At the other extreme, and interesting corner case arises when opting
+   to perform captures with a smaller data set than that recommended
+   above.  The following list specifies a subset of the above data
+   fields; if only these data fields are captured then even a minimal
+   traffic re-construction is problematic because there is not enough
+   information to determine if the Query/Response data item contained
+   just a Query, just a Response or a Query/Response pair.
 
    o  The following data fields from the QueryResponse type:
 
@@ -4137,9 +4139,7 @@ D.2.  Issues with Small Data Captures
 
       *  query-classtype-index
 
-   In this case, simply also capturing the qr-sig-type will provide
-   enough information to perform a minimal traffic reconstruction
-   (assuming suitable defaults for the remaining fields are provided).
+
 
 
 
@@ -4148,6 +4148,9 @@ Dickinson, et al.            Standards Track                   [Page 74]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+   In this case, simply also capturing the qr-sig-type will provide
+   enough information to perform a minimal traffic reconstruction
+   (assuming suitable defaults for the remaining fields are provided).
    Additionally capturing response-delay, query-opcode and response-
    rcode will avoid having to rely on potentially misleading defaults
    for these values and should result in a PCAP that represents the
@@ -4188,6 +4191,19 @@ Authors' Addresses
    Email: jim@sinodun.com
 
 
+
+
+
+
+
+
+
+
+Dickinson, et al.            Standards Track                   [Page 75]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
+
    Sara Dickinson
    Sinodun IT
    Magdalen Centre
@@ -4196,12 +4212,6 @@ Authors' Addresses
    United Kingdom
 
    Email: sara@sinodun.com
-
-
-
-Dickinson, et al.            Standards Track                   [Page 75]
-
-RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
    Terry Manderson
@@ -4222,16 +4232,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    United States of America
 
    Email: ietf-wikimedia@johnbond.org
-
-
-
-
-
-
-
-
-
-
 
 
 

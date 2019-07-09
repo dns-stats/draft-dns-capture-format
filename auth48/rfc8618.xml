@@ -583,9 +583,9 @@ An implementation decoding that file can then use these flags to quickly determi
 whether the input data is not rich enough for its needs.</t>
 
 <t>One scenario where this may be particularly important is the case of 
-re-generating traffic. It is possible to collect such a small set of data items
+regenerating traffic. It is possible to collect such a small set of data items
 that an implementation decoding the file cannot determine if a given Query/Response data item was 
-generated from just a Query, just a Response or a Query/Response pair. This makes
+generated from just a Query, just a Response, or a Query/Response pair. This makes
 it impossible to reconstruct DNS traffic even if sensible defaults are 
 provided for the missing data items. This is discussed in more detail in <xref target="cdns-to-pcap"/>.
 </t>
@@ -643,12 +643,12 @@ stored.
 <t>If the IP address prefixes are absent, then full addresses are stored. In
 this case, the IP version can be directly inferred from the stored address
 length and the fields &quot;qr-transport-flags&quot; in QueryResponseSignature,
-&quot;ae-transport-flags&quot; in AddressEventCount and
+&quot;ae-transport-flags&quot; in AddressEventCount, and
 &quot;mm-transport-flags&quot; in MalformedMessageData (which contain the IP
 version bit) are optional. </t> <t>If IP address prefixes are given, only the
 prefix bits of addresses are stored. In this case, in order to determine the IP
 version, the fields &quot;qr-transport-flags&quot; in QueryResponseSignature,
-&quot;ae-transport-flags&quot; in AddressEventCount and
+&quot;ae-transport-flags&quot; in AddressEventCount, and
 &quot;mm&nbhy;transport-flags&quot; in MalformedMessageData MUST be present. See
 Sections&nbsp;<xref target="queryresponsesignature" format="counter"/> and <xref
 target="malformedmessagedata" format="counter"/>.
@@ -821,7 +821,7 @@ minor version of the format used in the file. &nbsp;See <xref target="versioning
 <section anchor="storagehints" title="&quot;StorageHints&quot;">
 <t>An indicator of which fields the collecting implementation omits in the maps with optional fields. 
 Note that hints have a top-down precedence. In other words, where a map contains another 
-map the hint on the containing map overrides any hints in the contained map and the contained map is omitted.
+map, the hint on the containing map overrides any hints in the contained map and the contained map is omitted.
 
 A map containing the following:
 </t>
@@ -1057,7 +1057,7 @@ individual Q/R data items. A map containing the following:
 <c>qr-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the Query. &nbsp;Same definition as &quot;mm-transport-flags&quot; in <xref target="malformedmessagedata"/>, with an additional indicator for trailing bytes. &nbsp;See <xref target="cddl"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6. &nbsp;See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value
-where 0 = UDP, 1 = TCP, 2 = TLS  <xref target="RFC7858"/>, 3 = DTLS <xref target="RFC8094"/>, 4 = HTTPS
+where 0 = UDP, 1 = TCP, 2 = TLS <xref target="RFC7858"/>, 3 = DTLS <xref target="RFC8094"/>, 4 = HTTPS
 <xref target="RFC8484"/>. &nbsp;Values 5-15 are reserved for future use.</c>
 <c></c><c></c><c></c><c>Bit 5. &nbsp;1 if trailing bytes in Query packet. &nbsp;See <xref target="trailing-bytes"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1291,7 +1291,7 @@ individual client addresses. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>ae-code</c><c></c><c>U</c><c>A code relating to the event. &nbsp;For ICMP or ICMPv6 events, this MUST be the ICMP <xref target="RFC0792"/> or ICMPv6 <xref target="RFC4443"/> code. &nbsp;For other events, the contents are undefined.</c>
 <c></c><c></c><c></c><c></c>
-<c>ae-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the Event. &nbsp;See <xref target="ip-address-storage"/>.</c>
+<c>ae-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the event. &nbsp;See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6.</c>
 <c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS <xref target="RFC7858"/>, 3 = DTLS <xref target="RFC8094"/>, 4 = HTTPS <xref target="RFC8484"/>. &nbsp;Values 5-15 are reserved for future use.</c>
 <c></c><c></c><c></c><c></c>
@@ -1359,17 +1359,17 @@ the C-DNS file, specifically the data fields required to reconstruct a valid IP
 header and DNS payload for both Query and Response (see <xref
 target="max-traffic-fields"/>). Clearly, if not all these data fields were
 captured, the reconstruction is likely to be imperfect even if reasonable
-defaults are provided the reconstruction.</t>
+defaults are provided for the reconstruction.</t>
 <t>Whether or not at least one field was captured that unambiguously identifies
-the Query/Response data item as containing just a Query, just a Response or a
-Query/Response pair. Obviously the qr-sig-flags defined in 
+the Query/Response data item as containing just a Query, just a Response, or a
+Query/Response pair. Obviously, the qr-sig-flags defined in 
 <xref target="queryresponsesignature"/>
-is such a field, however this field is optional. For more details, see <xref
-target="min-traffic-fields"/></t>
+is such a field; however, this field is optional. For more details, see <xref
+target="min-traffic-fields"/>.</t>
 </list></t>
 <t>
-It is noted again that simply having hints that indicate certain data fields
-were not omitted does not guarantee that those data fields were actually captured.
+It is noted again that simply having hints that indicate that certain data
+fields were not omitted does not guarantee that those data fields were actually captured.
 Therefore, the ability to reconstruct PCAP data (in the absence of
 defaults) can in principle vary for each record captured in a C-DNS file, and
 between Blocks that have differing hints.
@@ -1395,7 +1395,7 @@ of the original packet stream cannot be reconstructed from the C-DNS format:
 <t>TLS session information:
 <list style="symbols">
 <t>TLS version or cipher suites</t>
-<t>TLS related features such as TFO <xref target="RFC7413"/> or TLS session resumption <xref target="RFC5077"/></t>
+<t>TLS-related features such as TCP Fast Open (TFO) <xref target="RFC7413"/> or TLS session resumption <xref target="RFC5077"/></t>
 </list></t>
 <t>DNS-over-HTTPS <xref target="RFC8484"/> message details:
 <list style="symbols">
@@ -1689,9 +1689,9 @@ data items and allowing indefinite-length maps and arrays could reduce memory
 requirements.
 </t>
 
-<t>It is recommended that implementations which have fundamental restrictions on
+<t>It is recommended that implementations that have fundamental restrictions on
 what data fields they can collect SHOULD always store hints with the bits unset
-for those fields, i.e. they unambiguously indicate that those data fields will
+for those fields, i.e., they unambiguously indicate that those data fields will
 be omitted from captured C-DNS.</t>
 
 <section anchor="optional-data" title="Optional Data">
@@ -3274,15 +3274,15 @@ output file rollover, etc. Using a strong compression scheme, block sizes over
 
 <section anchor="data-field-lists" title="Data Fields for Traffic Regeneration">
 
-<section anchor="max-traffic-fields" title="Recommended Field for Traffic Regeneration">
+<section anchor="max-traffic-fields" title="Recommended Fields for Traffic Regeneration">
 <t> This section specifies the data fields that should be captured in order to
-perform the fullest PCAP traffic reconstruction for well-formed DNS message 
+perform the fullest PCAP traffic reconstruction for well&nbhy;formed DNS messages
 that is possible with C-DNS.</t>
 <t>
 <list style="symbols">
 <t>All data fields in the QueryResponse type except response-processing-data.</t>
 <t>All data fields in the QueryResponseSignature type except qr-type.</t>
-<t>All data fields in the RR type.</t>
+<t>All data fields in the RR TYPE.</t>
 </list>
 </t>
 </section>
@@ -3291,9 +3291,9 @@ that is possible with C-DNS.</t>
 <t> At the other extreme, an interesting corner case arises when opting to
 perform captures with a smaller data set than that recommended above. The
 following list specifies a subset of the above data fields; if only these data
-fields are captured then even a minimal traffic re-construction is problematic
+fields are captured, then even a minimal traffic reconstruction is problematic
 because there is not enough information to determine if the Query/Response data
-item contained just a Query, just a Response or a Query/Response pair. </t>
+item contained just a Query, just a Response, or a Query/Response pair. </t>
 <t>
 <list style="symbols">
 <t>The following data fields from the QueryResponse type:
@@ -3314,9 +3314,9 @@ item contained just a Query, just a Response or a Query/Response pair. </t>
 </list></t>
 
 <t>In this case, simply also capturing the qr-sig-type will provide enough
-information to perform a minimal traffic reconstruction (assuming suitable
-defaults for the remaining fields are provided). Additionally capturing
-response-delay, query-opcode and response-rcode will avoid having to rely on
+information to perform a minimal traffic reconstruction (assuming that suitable
+defaults for the remaining fields are provided). Additionally, capturing
+response-delay, query-opcode, and response-rcode will avoid having to rely on
 potentially misleading defaults for these values and should result in a PCAP
 that represents the basics of the real traffic flow.</t>
 </section>

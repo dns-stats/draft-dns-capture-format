@@ -144,7 +144,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
      C.5.  Conclusions . . . . . . . . . . . . . . . . . . . . . . .  72
      C.6.  Block Size Choice . . . . . . . . . . . . . . . . . . . .  72
    Appendix D.  Data Fields for Traffic Regeneration . . . . . . . .  74
-     D.1.  Recommended Field for Traffic Regeneration  . . . . . . .  74
+     D.1.  Recommended Fields for Traffic Regeneration . . . . . . .  74
      D.2.  Issues with Small Data Captures . . . . . . . . . . . . .  74
    Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  75
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  75
@@ -776,10 +776,10 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    enough for its needs.
 
    One scenario where this may be particularly important is the case of
-   re-generating traffic.  It is possible to collect such a small set of
+   regenerating traffic.  It is possible to collect such a small set of
    data items that an implementation decoding the file cannot determine
    if a given Query/Response data item was generated from just a Query,
-   just a Response or a Query/Response pair.  This makes it impossible
+   just a Response, or a Query/Response pair.  This makes it impossible
 
 
 
@@ -853,14 +853,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    If the IP address prefixes are absent, then full addresses are
    stored.  In this case, the IP version can be directly inferred from
    the stored address length and the fields "qr-transport-flags" in
-   QueryResponseSignature, "ae-transport-flags" in AddressEventCount and
-   "mm-transport-flags" in MalformedMessageData (which contain the IP
-   version bit) are optional.
+   QueryResponseSignature, "ae-transport-flags" in AddressEventCount,
+   and "mm-transport-flags" in MalformedMessageData (which contain the
+   IP version bit) are optional.
 
    If IP address prefixes are given, only the prefix bits of addresses
    are stored.  In this case, in order to determine the IP version, the
    fields "qr-transport-flags" in QueryResponseSignature, "ae-transport-
-   flags" in AddressEventCount and "mm-transport-flags" in
+   flags" in AddressEventCount, and "mm-transport-flags" in
    MalformedMessageData MUST be present.  See Sections 7.5.3.2 and
    7.5.3.5.
 
@@ -1115,7 +1115,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    An indicator of which fields the collecting implementation omits in
    the maps with optional fields.  Note that hints have a top-down
-   precedence.  In other words, where a map contains another map the
+   precedence.  In other words, where a map contains another map, the
 
 
 
@@ -1552,7 +1552,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                    |   |   | IPv6.  See Section 6.2.4.            |
    |                    |   |   | Bits 1-4.  Transport.  4-bit         |
    |                    |   |   | unsigned value where 0 = UDP, 1 =    |
-   |                    |   |   | TCP, 2 = TLS  [RFC7858], 3 = DTLS    |
+   |                    |   |   | TCP, 2 = TLS [RFC7858], 3 = DTLS     |
    |                    |   |   | [RFC8094], 4 = HTTPS [RFC8484].      |
    |                    |   |   | Values 5-15 are reserved for future  |
    |                    |   |   | use.                                 |
@@ -1983,7 +1983,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                    |   |   | the contents are undefined.          |
    |                    |   |   |                                      |
    | ae-transport-flags | C | U | Bit flags describing the transport   |
-   |                    |   |   | used to service the Event.  See      |
+   |                    |   |   | used to service the event.  See      |
    |                    |   |   | Section 6.2.4.                       |
    |                    |   |   | Bit 0.  IP version.  0 if IPv4, 1 if |
    |                    |   |   | IPv6.                                |
@@ -2090,19 +2090,19 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
        to reconstruct a valid IP header and DNS payload for both Query
        and Response (see Appendix D.1).  Clearly, if not all these data
        fields were captured, the reconstruction is likely to be
-       imperfect even if reasonable defaults are provided the
+       imperfect even if reasonable defaults are provided for the
        reconstruction.
 
    2.  Whether or not at least one field was captured that unambiguously
        identifies the Query/Response data item as containing just a
-       Query, just a Response or a Query/Response pair.  Obviously the
-       qr-sig-flags defined in Section 7.5.3.2 is such a field, however
-       this field is optional.  For more details, see Appendix D.2
+       Query, just a Response, or a Query/Response pair.  Obviously, the
+       qr-sig-flags defined in Section 7.5.3.2 is such a field; however,
+       this field is optional.  For more details, see Appendix D.2.
 
-   It is noted again that simply having hints that indicate certain data
-   fields were not omitted does not guarantee that those data fields
-   were actually captured.  Therefore, the ability to reconstruct PCAP
-   data (in the absence of defaults) can in principle vary for each
+   It is noted again that simply having hints that indicate that certain
+   data fields were not omitted does not guarantee that those data
+   fields were actually captured.  Therefore, the ability to reconstruct
+   PCAP data (in the absence of defaults) can in principle vary for each
    record captured in a C-DNS file, and between Blocks that have
    differing hints.
 
@@ -2139,8 +2139,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
       *  TLS version or cipher suites
 
-      *  TLS related features such as TFO [RFC7413] or TLS session
-         resumption [RFC5077]
+      *  TLS-related features such as TCP Fast Open (TFO) [RFC7413] or
+         TLS session resumption [RFC5077]
 
    o  DNS-over-HTTPS [RFC8484] message details:
 
@@ -2524,9 +2524,9 @@ Dickinson, et al.            Standards Track                   [Page 45]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-   It is recommended that implementations which have fundamental
+   It is recommended that implementations that have fundamental
    restrictions on what data fields they can collect SHOULD always store
-   hints with the bits unset for those fields, i.e. they unambiguously
+   hints with the bits unset for those fields, i.e., they unambiguously
    indicate that those data fields will be omitted from captured C-DNS.
 
 11.1.  Optional Data
@@ -4094,28 +4094,28 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 Appendix D.  Data Fields for Traffic Regeneration
 
-D.1.  Recommended Field for Traffic Regeneration
+D.1.  Recommended Fields for Traffic Regeneration
 
    This section specifies the data fields that should be captured in
-   order to perform the fullest PCAP traffic reconstruction for well-
-   formed DNS message that is possible with C-DNS.
+   order to perform the fullest PCAP traffic reconstruction for
+   well-formed DNS messages that is possible with C-DNS.
 
    o  All data fields in the QueryResponse type except response-
       processing-data.
 
    o  All data fields in the QueryResponseSignature type except qr-type.
 
-   o  All data fields in the RR type.
+   o  All data fields in the RR TYPE.
 
 D.2.  Issues with Small Data Captures
 
    At the other extreme, an interesting corner case arises when opting
    to perform captures with a smaller data set than that recommended
    above.  The following list specifies a subset of the above data
-   fields; if only these data fields are captured then even a minimal
-   traffic re-construction is problematic because there is not enough
+   fields; if only these data fields are captured, then even a minimal
+   traffic reconstruction is problematic because there is not enough
    information to determine if the Query/Response data item contained
-   just a Query, just a Response or a Query/Response pair.
+   just a Query, just a Response, or a Query/Response pair.
 
    o  The following data fields from the QueryResponse type:
 
@@ -4150,11 +4150,11 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    In this case, simply also capturing the qr-sig-type will provide
    enough information to perform a minimal traffic reconstruction
-   (assuming suitable defaults for the remaining fields are provided).
-   Additionally capturing response-delay, query-opcode and response-
-   rcode will avoid having to rely on potentially misleading defaults
-   for these values and should result in a PCAP that represents the
-   basics of the real traffic flow.
+   (assuming that suitable defaults for the remaining fields are
+   provided).  Additionally, capturing response-delay, query-opcode, and
+   response-rcode will avoid having to rely on potentially misleading
+   defaults for these values and should result in a PCAP that represents
+   the basics of the real traffic flow.
 
 Acknowledgements
 

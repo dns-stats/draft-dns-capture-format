@@ -1057,8 +1057,14 @@ individual Q/R data items. A map containing the following:
 <c>qr-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the Query. &nbsp;Same definition as &quot;mm-transport-flags&quot; in <xref target="malformedmessagedata"/>, with an additional indicator for trailing bytes. &nbsp;See <xref target="cddl"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6. &nbsp;See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value
-where 0 = UDP, 1 = TCP, 2 = TLS <xref target="RFC7858"/>, 3 = DTLS <xref target="RFC8094"/>, 4 = HTTPS
-<xref target="RFC8484"/>. &nbsp;Values 5-15 are reserved for future use.</c>
+where</c>
+<c></c><c></c><c></c><c>0 = UDP <xref target="RFC1035"/></c>
+<c></c><c></c><c></c><c>1 = TCP <xref target="RFC1035"/></c>
+<c></c><c></c><c></c><c>2 = TLS <xref target="RFC7858"/></c> 
+<c></c><c></c><c></c><c>3 = DTLS <xref target="RFC8094"/></c>
+<c></c><c></c><c></c><c>4 = HTTPS <xref target="RFC8484"/></c> 
+<c></c><c></c><c></c><c>15 = Non-standard transport (see below)</c>
+<c></c><c></c><c></c><c>Values 5-14 are reserved for future use.</c>
 <c></c><c></c><c></c><c>Bit 5. &nbsp;1 if trailing bytes in Query packet. &nbsp;See <xref target="trailing-bytes"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>qr-type</c><c></c><c>U</c><c>Type of Query/Response transaction.</c>
@@ -1122,6 +1128,16 @@ contains an OPT RR <xref target="RFC6891"/>, this value incorporates any
 EXTENDED_RCODE value <xref target="rcodes"/>.</c>
 </texttable>
 
+<t>Version 1.0 of C-DNS supports transport values corresponding to DNS
+transports defined in IETF Standards Track documents at the time of writing.
+There are numerous non-standard methods of sending DNS messages over various
+transports using a variety of protocols but they are out of scope for this
+document. With the current specification these can be generically stored using
+value 15 (Non-standard transport) or implementations are free to use the
+negative integer map keys to define their own mappings. Such non-standard
+transports may also be the subject of a future extension to the specification.
+</t>
+
 </section>
 
 <section anchor="question" title="&quot;Question&quot;">
@@ -1172,8 +1188,15 @@ EXTENDED_RCODE value <xref target="rcodes"/>.</c>
 <c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
 <c>mm-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the Query. &nbsp;See <xref target="ip-address-storage"/>.</c>
-<c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6.</c>
-<c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS <xref target="RFC7858"/>, 3 = DTLS <xref target="RFC8094"/>, 4 = HTTPS <xref target="RFC8484"/>. &nbsp;Values 5-15 are reserved for future use.</c>
+<c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value
+where</c>
+<c></c><c></c><c></c><c>0 = UDP <xref target="RFC1035"/></c>
+<c></c><c></c><c></c><c>1 = TCP <xref target="RFC1035"/></c>
+<c></c><c></c><c></c><c>2 = TLS <xref target="RFC7858"/></c> 
+<c></c><c></c><c></c><c>3 = DTLS <xref target="RFC8094"/></c>
+<c></c><c></c><c></c><c>4 = HTTPS <xref target="RFC8484"/></c> 
+<c></c><c></c><c></c><c>15 = Non-standard transport</c>
+<c></c><c></c><c></c><c>Values 5-14 are reserved for future use.</c>
 <c></c><c></c><c></c><c></c>
 <c>mm-payload</c><c></c><c>S</c><c>The payload (raw bytes) of the DNS message.</c>
 </texttable>
@@ -1293,7 +1316,15 @@ individual client addresses. A map containing the following:
 <c></c><c></c><c></c><c></c>
 <c>ae-transport-flags</c><c>C</c><c>U</c><c>Bit flags describing the transport used to service the event. &nbsp;See <xref target="ip-address-storage"/>.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;IP version. &nbsp;0 if IPv4, 1 if IPv6.</c>
-<c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value where 0 = UDP, 1 = TCP, 2 = TLS <xref target="RFC7858"/>, 3 = DTLS <xref target="RFC8094"/>, 4 = HTTPS <xref target="RFC8484"/>. &nbsp;Values 5-15 are reserved for future use.</c>
+<c></c><c></c><c></c><c>Bits 1-4. &nbsp;Transport. &nbsp;4-bit unsigned value
+where</c>
+<c></c><c></c><c></c><c>0 = UDP <xref target="RFC1035"/></c>
+<c></c><c></c><c></c><c>1 = TCP <xref target="RFC1035"/></c>
+<c></c><c></c><c></c><c>2 = TLS <xref target="RFC7858"/></c> 
+<c></c><c></c><c></c><c>3 = DTLS <xref target="RFC8094"/></c>
+<c></c><c></c><c></c><c>4 = HTTPS <xref target="RFC8484"/></c> 
+<c></c><c></c><c></c><c>15 = Non-standard transport</c>
+<c></c><c></c><c></c><c>Values 5-14 are reserved for future use.</c>
 <c></c><c></c><c></c><c></c>
 <c>ae-address-index</c><c>X</c><c>U</c><c>The index in the &quot;ip-address&quot; array of the client address. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
@@ -1355,7 +1386,7 @@ full packet stream are outlined here.
 <t>The reconstruction of well-formed DNS messages depends on two factors:
 <list style="numbers">
 <t>Whether or not a particular subset of the optional fields were captured in
-the C-DNS file, specifically the data fields required to reconstruct a valid IP
+the C-DNS file, specifically the data fields necessary to reconstruct a valid IP
 header and DNS payload for both Query and Response (see <xref
 target="max-traffic-fields"/>). Clearly, if not all these data fields were
 captured, the reconstruction is likely to be imperfect even if reasonable
@@ -2664,7 +2695,7 @@ query-udp-size        = 14
 query-opt-rdata-index = 15
 response-rcode        = 16
 
-  ; Transport gives the values that may appear in bits 1..4 of
+  ; Transport gives the values that may appear in the bits of
   ; TransportFlags.  There is currently no way to express this in
   ; CDDL, so Transport is unused.  To avoid confusion when used
   ; with CDDL tools, it is commented out.
@@ -2675,6 +2706,7 @@ response-rcode        = 16
   ;     tls               : 2,
   ;     dtls              : 3,
   ;     https             : 4,
+  ;     non-standard      : 15,
   ; )
 
   TransportFlagValues = &amp;(
@@ -3275,7 +3307,7 @@ output file rollover, etc. Using a strong compression scheme, block sizes over
 <section anchor="data-field-lists" title="Data Fields for Traffic Regeneration">
 
 <section anchor="max-traffic-fields" title="Recommended Fields for Traffic Regeneration">
-<t> This section specifies the data fields that should be captured in order to
+<t> This section specifies the data fields that would need to be captured in order to
 perform the fullest PCAP traffic reconstruction for well&nbhy;formed DNS messages
 that is possible with C-DNS.</t>
 <t>
@@ -3313,7 +3345,7 @@ item contained just a Query, just a Response, or a Query/Response pair. </t>
 </list></t>
 </list></t>
 
-<t>In this case, simply also capturing the qr-sig-type will provide enough
+<t>In this case, simply also capturing the qr-sig-flags will provide enough
 information to perform a minimal traffic reconstruction (assuming that suitable
 defaults for the remaining fields are provided). Additionally, capturing
 response-delay, query-opcode, and response-rcode will avoid having to rely on

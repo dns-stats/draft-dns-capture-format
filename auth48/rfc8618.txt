@@ -35,11 +35,11 @@ Status of This Memo
    (IETF).  It represents the consensus of the IETF community.  It has
    received public review and has been approved for publication by the
    Internet Engineering Steering Group (IESG).  Further information on
-   Internet Standards is available in Section 2 of RFC 5741.
+   Internet Standards is available in Section 2 of RFC 7841.
 
    Information about the current status of this document, any errata,
    and how to provide feedback on it may be obtained at
-   http://www.rfc-editor.org/info/rfc8618.
+   https://www.rfc-editor.org/info/rfc8618.
 
 Copyright Notice
 
@@ -48,7 +48,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
+   (https://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -89,7 +89,7 @@ Table of Contents
        7.5.1.  "BlockPreamble" . . . . . . . . . . . . . . . . . . .  24
        7.5.2.  "BlockStatistics" . . . . . . . . . . . . . . . . . .  25
        7.5.3.  "BlockTables" . . . . . . . . . . . . . . . . . . . .  26
-     7.6.  "QueryResponse" . . . . . . . . . . . . . . . . . . . . .  32
+     7.6.  "QueryResponse" . . . . . . . . . . . . . . . . . . . . .  33
        7.6.1.  "ResponseProcessingData"  . . . . . . . . . . . . . .  34
        7.6.2.  "QueryResponseExtended" . . . . . . . . . . . . . . .  34
      7.7.  "AddressEventCount" . . . . . . . . . . . . . . . . . . .  35
@@ -1551,19 +1551,19 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                    |   |   | Bit 0.  IP version.  0 if IPv4, 1 if |
    |                    |   |   | IPv6.  See Section 6.2.4.            |
    |                    |   |   | Bits 1-4.  Transport.  4-bit         |
-   |                    |   |   | unsigned value where 0 = UDP, 1 =    |
-   |                    |   |   | TCP, 2 = TLS [RFC7858], 3 = DTLS     |
-   |                    |   |   | [RFC8094], 4 = HTTPS [RFC8484].      |
-   |                    |   |   | Values 5-15 are reserved for future  |
+   |                    |   |   | unsigned value where                 |
+   |                    |   |   | 0 = UDP [RFC1035]                    |
+   |                    |   |   | 1 = TCP [RFC1035]                    |
+   |                    |   |   | 2 = TLS [RFC7858]                    |
+   |                    |   |   | 3 = DTLS [RFC8094]                   |
+   |                    |   |   | 4 = HTTPS [RFC8484]                  |
+   |                    |   |   | 15 = Non-standard transport (see     |
+   |                    |   |   | below)                               |
+   |                    |   |   | Values 5-14 are reserved for future  |
    |                    |   |   | use.                                 |
    |                    |   |   | Bit 5.  1 if trailing bytes in Query |
    |                    |   |   | packet.  See Section 11.2.           |
    |                    |   |   |                                      |
-   | qr-type            |   | U | Type of Query/Response transaction.  |
-   |                    |   |   | 0 = Stub.  A Query from a stub       |
-   |                    |   |   | resolver.                            |
-   |                    |   |   | 1 = Client.  An incoming Query to a  |
-   |                    |   |   | recursive resolver.                  |
 
 
 
@@ -1572,6 +1572,11 @@ Dickinson, et al.            Standards Track                   [Page 28]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+   | qr-type            |   | U | Type of Query/Response transaction.  |
+   |                    |   |   | 0 = Stub.  A Query from a stub       |
+   |                    |   |   | resolver.                            |
+   |                    |   |   | 1 = Client.  An incoming Query to a  |
+   |                    |   |   | recursive resolver.                  |
    |                    |   |   | 2 = Resolver.  A Query sent from a   |
    |                    |   |   | recursive resolver to an             |
    |                    |   |   | authoritative resolver.              |
@@ -1615,11 +1620,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                    |   |   | Bit 3.  Query Recursion Available    |
    |                    |   |   | (RA).                                |
    |                    |   |   | Bit 4.  Query Recursion Desired      |
-   |                    |   |   | (RD).                                |
-   |                    |   |   | Bit 5.  Query TrunCation (TC).       |
-   |                    |   |   | Bit 6.  Query Authoritative Answer   |
-   |                    |   |   | (AA).                                |
-   |                    |   |   | Bit 7.  Query DNSSEC answer OK (DO). |
 
 
 
@@ -1628,6 +1628,11 @@ Dickinson, et al.            Standards Track                   [Page 29]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+   |                    |   |   | (RD).                                |
+   |                    |   |   | Bit 5.  Query TrunCation (TC).       |
+   |                    |   |   | Bit 6.  Query Authoritative Answer   |
+   |                    |   |   | (AA).                                |
+   |                    |   |   | Bit 7.  Query DNSSEC answer OK (DO). |
    |                    |   |   | Bit 8.  Response Checking Disabled   |
    |                    |   |   | (CD).                                |
    |                    |   |   | Bit 9.  Response Authenticated Data  |
@@ -1671,11 +1676,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | -index             |   |   | of the OPT RDATA.  See Section       |
    |                    |   |   | 7.5.3.                               |
    |                    |   |   |                                      |
-   | response-rcode     |   | U | Response RCODE.  If the Response     |
-   |                    |   |   | contains an OPT RR [RFC6891], this   |
-   |                    |   |   | value incorporates any               |
-   |                    |   |   | EXTENDED_RCODE value [rcodes].       |
-   +--------------------+---+---+--------------------------------------+
 
 
 
@@ -1683,6 +1683,23 @@ Dickinson, et al.            Standards Track                   [Page 30]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
+
+   | response-rcode     |   | U | Response RCODE.  If the Response     |
+   |                    |   |   | contains an OPT RR [RFC6891], this   |
+   |                    |   |   | value incorporates any               |
+   |                    |   |   | EXTENDED_RCODE value [rcodes].       |
+   +--------------------+---+---+--------------------------------------+
+
+   Version 1.0 of C-DNS supports transport values corresponding to DNS
+   transports defined in IETF Standards Track documents at the time of
+   writing.  There are numerous non-standard methods of sending DNS
+   messages over various transports using a variety of protocols but
+   they are out of scope for this document.  With the current
+   specification these can be generically stored using value 15 (Non-
+   standard transport) or implementations are free to use the negative
+   integer map keys to define their own mappings.  Such non-standard
+   transports may also be the subject of a future extension to the
+   specification.
 
 7.5.3.3.  "Question"
 
@@ -1705,6 +1722,24 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    Details on individual RRs in RR sections.  A map containing the
    following:
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Dickinson, et al.            Standards Track                   [Page 31]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
+
    +-----------------+---+---+-----------------------------------------+
    | Field           | M | T | Description                             |
    +-----------------+---+---+-----------------------------------------+
@@ -1726,20 +1761,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    Details on malformed DNS messages stored in this "Block" item.  A map
    containing the following:
 
-
-
-
-
-
-
-
-
-
-Dickinson, et al.            Standards Track                   [Page 31]
-
-RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
-
-
    +--------------------+---+---+--------------------------------------+
    | Field              | M | T | Description                          |
    +--------------------+---+---+--------------------------------------+
@@ -1752,18 +1773,28 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | mm-transport-flags | C | U | Bit flags describing the transport   |
    |                    |   |   | used to service the Query.  See      |
    |                    |   |   | Section 6.2.4.                       |
-   |                    |   |   | Bit 0.  IP version.  0 if IPv4, 1 if |
-   |                    |   |   | IPv6.                                |
    |                    |   |   | Bits 1-4.  Transport.  4-bit         |
-   |                    |   |   | unsigned value where 0 = UDP, 1 =    |
-   |                    |   |   | TCP, 2 = TLS [RFC7858], 3 = DTLS     |
-   |                    |   |   | [RFC8094], 4 = HTTPS [RFC8484].      |
-   |                    |   |   | Values 5-15 are reserved for future  |
+   |                    |   |   | unsigned value where                 |
+   |                    |   |   | 0 = UDP [RFC1035]                    |
+   |                    |   |   | 1 = TCP [RFC1035]                    |
+   |                    |   |   | 2 = TLS [RFC7858]                    |
+   |                    |   |   | 3 = DTLS [RFC8094]                   |
+   |                    |   |   | 4 = HTTPS [RFC8484]                  |
+   |                    |   |   | 15 = Non-standard transport          |
+   |                    |   |   | Values 5-14 are reserved for future  |
    |                    |   |   | use.                                 |
    |                    |   |   |                                      |
    | mm-payload         |   | S | The payload (raw bytes) of the DNS   |
    |                    |   |   | message.                             |
    +--------------------+---+---+--------------------------------------+
+
+
+
+
+Dickinson, et al.            Standards Track                   [Page 32]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
 
 7.6.  "QueryResponse"
 
@@ -1788,14 +1819,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                      |   |   | See Section 7.5.3.                 |
    |                      |   |   |                                    |
    | client-port          |   | U | The client port.                   |
-
-
-
-Dickinson, et al.            Standards Track                   [Page 32]
-
-RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
-
-
    |                      |   |   |                                    |
    | transaction-id       |   | U | DNS transaction identifier.        |
    |                      |   |   |                                    |
@@ -1821,6 +1844,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                      |   |   |                                    |
    | query-size           |   | U | DNS Query message size (see        |
    |                      |   |   | below).                            |
+
+
+
+Dickinson, et al.            Standards Track                   [Page 33]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
+
    |                      |   |   |                                    |
    | response-size        |   | U | DNS Response message size (see     |
    |                      |   |   | below).                            |
@@ -1843,15 +1874,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    the DNS message.  For TCP, it is the size of the DNS message as
    specified in the two-byte message length header.  Trailing bytes in
    UDP Queries are routinely observed in traffic to authoritative
-
-
-
-
-Dickinson, et al.            Standards Track                   [Page 33]
-
-RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
-
-
    servers, and this value allows a calculation of how many trailing
    bytes were present.
 
@@ -1879,34 +1901,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    Each item in the map is present only if collection of the relevant
    details is configured.
 
-   A map containing the following items:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 Dickinson, et al.            Standards Track                   [Page 34]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
+
+   A map containing the following items:
 
    +------------------+---+---+----------------------------------------+
    | Field            | M | T | Description                            |
@@ -1957,8 +1959,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-
-
 Dickinson, et al.            Standards Track                   [Page 35]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
@@ -1988,10 +1988,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                    |   |   | Bit 0.  IP version.  0 if IPv4, 1 if |
    |                    |   |   | IPv6.                                |
    |                    |   |   | Bits 1-4.  Transport.  4-bit         |
-   |                    |   |   | unsigned value where 0 = UDP, 1 =    |
-   |                    |   |   | TCP, 2 = TLS [RFC7858], 3 = DTLS     |
-   |                    |   |   | [RFC8094], 4 = HTTPS [RFC8484].      |
-   |                    |   |   | Values 5-15 are reserved for future  |
+   |                    |   |   | unsigned value where                 |
+   |                    |   |   | 0 = UDP [RFC1035]                    |
+   |                    |   |   | 1 = TCP [RFC1035]                    |
+   |                    |   |   | 2 = TLS [RFC7858]                    |
+   |                    |   |   | 3 = DTLS [RFC8094]                   |
+   |                    |   |   | 4 = HTTPS [RFC8484]                  |
+   |                    |   |   | 15 = Non-standard transport          |
+   |                    |   |   | Values 5-14 are reserved for future  |
    |                    |   |   | use.                                 |
    |                    |   |   |                                      |
    | ae-address-index   | X | U | The index in the "ip-address" array  |
@@ -2007,10 +2011,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    Details on Malformed Message data items.  A map containing the
    following:
-
-
-
-
 
 
 
@@ -2086,11 +2086,11 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    factors:
 
    1.  Whether or not a particular subset of the optional fields were
-       captured in the C-DNS file, specifically the data fields required
-       to reconstruct a valid IP header and DNS payload for both Query
-       and Response (see Appendix D.1).  Clearly, if not all these data
-       fields were captured, the reconstruction is likely to be
-       imperfect even if reasonable defaults are provided for the
+       captured in the C-DNS file, specifically the data fields
+       necessary to reconstruct a valid IP header and DNS payload for
+       both Query and Response (see Appendix D.1).  Clearly, if not all
+       these data fields were captured, the reconstruction is likely to
+       be imperfect even if reasonable defaults are provided for the
        reconstruction.
 
    2.  Whether or not at least one field was captured that unambiguously
@@ -2862,8 +2862,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
-              editor.org/info/rfc2119>.
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
    [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
               Resource Identifier (URI): Generic Syntax", STD 66,
@@ -2878,8 +2878,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
               for DNS (EDNS(0))", STD 75, RFC 6891,
-              DOI 10.17487/RFC6891, April 2013, <https://www.rfc-
-              editor.org/info/rfc6891>.
+              DOI 10.17487/RFC6891, April 2013,
+              <https://www.rfc-editor.org/info/rfc6891>.
 
    [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
@@ -2892,8 +2892,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    [RFC8094]  Reddy, T., Wing, D., and P. Patil, "DNS over Datagram
               Transport Layer Security (DTLS)", RFC 8094,
-              DOI 10.17487/RFC8094, February 2017, <https://www.rfc-
-              editor.org/info/rfc8094>.
+              DOI 10.17487/RFC8094, February 2017,
+              <https://www.rfc-editor.org/info/rfc8094>.
 
    [RFC8126]  Cotton, M., Leiba, B., and T. Narten, "Guidelines for
               Writing an IANA Considerations Section in RFCs", BCP 26,
@@ -2927,8 +2927,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    [Avro]     The Apache Software Foundation, "Apache Avro(TM)", 2019,
               <https://avro.apache.org/>.
 
-   [ditl]     DNS-OARC, "DITL", 2018, <https://www.dns-
-              oarc.net/oarc/data/ditl>.
+   [ditl]     DNS-OARC, "DITL", 2018,
+              <https://www.dns-oarc.net/oarc/data/ditl>.
 
    [DNS-Priv-Cons]
               Bortzmeyer, S. and S. Dickinson, "DNS Privacy
@@ -2941,8 +2941,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
               Operators", Work in Progress, draft-ietf-dprive-bcp-op-02,
               March 2019.
 
-   [dnscap]   DNS-OARC, "DNSCAP", 2018, <https://www.dns-oarc.net/tools/
-              dnscap>.
+   [dnscap]   DNS-OARC, "DNSCAP", 2018,
+              <https://www.dns-oarc.net/tools/dnscap>.
 
    [dnstap]   "dnstap", 2016, <https://dnstap.info/>.
 
@@ -2960,8 +2960,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
               <https://www.iana.org/assignments/icmpv6-parameters/>.
 
    [icmpcodes]
-              IANA, "Code Fields", <https://www.iana.org/assignments/
-              icmp-parameters/>.
+              IANA, "Code Fields",
+              <https://www.iana.org/assignments/icmp-parameters/>.
 
 
 
@@ -2987,25 +2987,25 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    [NSD]      NLnet Labs, "NSD", 2019,
               <https://www.nlnetlabs.nl/projects/nsd/about/>.
 
-   [opcodes]  IANA, "DNS OpCodes", <https://www.iana.org/assignments/
-              dns-parameters/>.
+   [opcodes]  IANA, "DNS OpCodes",
+              <https://www.iana.org/assignments/dns-parameters/>.
 
    [packetq]  .SE - The Internet Infrastructure Foundation, "PacketQ",
-              commit c9b2e89, February 2019, <https://github.com/DNS-
-              OARC/PacketQ>.
+              commit c9b2e89, February 2019,
+              <https://github.com/DNS-OARC/PacketQ>.
 
    [pcap]     "PCAP", 2019, <https://www.tcpdump.org/>.
 
    [pcapng]   "pcapng: PCAP next generation file format specification",
-              commit 3c35b6a, March 2019, <https://github.com/pcapng/
-              pcapng>.
+              commit 3c35b6a, March 2019,
+              <https://github.com/pcapng/pcapng>.
 
    [Protocol-Buffers]
               Google LLC, "Protocol Buffers",
               <https://developers.google.com/protocol-buffers/>.
 
-   [rcodes]   IANA, "DNS RCODEs", <https://www.iana.org/assignments/dns-
-              parameters/>.
+   [rcodes]   IANA, "DNS RCODEs",
+              <https://www.iana.org/assignments/dns-parameters/>.
 
    [RFC5077]  Salowey, J., Zhou, H., Eronen, P., and H. Tschofenig,
               "Transport Layer Security (TLS) Session Resumption without
@@ -3018,8 +3018,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
               Interchange Format", STD 90, RFC 8259,
-              DOI 10.17487/RFC8259, December 2017, <https://www.rfc-
-              editor.org/info/rfc8259>.
+              DOI 10.17487/RFC8259, December 2017,
+              <https://www.rfc-editor.org/info/rfc8259>.
 
 
 
@@ -3033,22 +3033,22 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
               <https://www.rfc-editor.org/info/rfc8427>.
 
    [rrclasses]
-              IANA, "DNS CLASSes", <https://www.iana.org/assignments/
-              dns-parameters/>.
+              IANA, "DNS CLASSes",
+              <https://www.iana.org/assignments/dns-parameters/>.
 
    [rrtypes]  IANA, "Resource Record (RR) TYPEs",
               <https://www.iana.org/assignments/dns-parameters/>.
 
    [RSSAC04]  ICANN, "Recommendations on Anonymization Processes for
               Source IP Addresses Submitted for Future Analysis", August
-              2018, <https://www.icann.org/en/system/files/files/rssac-
-              040-07aug18-en.pdf>.
+              2018, <https://www.icann.org/en/system/files/files/
+              rssac-040-07aug18-en.pdf>.
 
    [snappy]   "snappy", <https://google.github.io/snappy/>.
 
    [snzip]    "Snzip, a compression/decompression tool based on snappy",
-              commit 809c6f2, October 2018, <https://github.com/kubo/
-              snzip>.
+              commit 809c6f2, October 2018,
+              <https://github.com/kubo/snzip>.
 
    [xz]       "XZ Utils", <https://tukaani.org/xz/>.
 
@@ -3408,7 +3408,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    query-opt-rdata-index = 15
    response-rcode        = 16
 
-     ; Transport gives the values that may appear in bits 1..4 of
+     ; Transport gives the values that may appear in the bits of
      ; TransportFlags.  There is currently no way to express this in
      ; CDDL, so Transport is unused.  To avoid confusion when used
      ; with CDDL tools, it is commented out.
@@ -3427,6 +3427,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
      ;     tls               : 2,
      ;     dtls              : 3,
      ;     https             : 4,
+     ;     non-standard      : 15,
      ; )
 
      TransportFlagValues = &(
@@ -3467,7 +3468,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
          query-rd   : 4,
          query-tc   : 5,
          query-aa   : 6,
-         query-do   : 7,
 
 
 
@@ -3476,6 +3476,7 @@ Dickinson, et al.            Standards Track                   [Page 62]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+         query-do   : 7,
          response-cd: 8,
          response-ad: 9,
          response-z : 10,
@@ -3523,7 +3524,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    MalformedMessageData = {
        ? server-address-index   => uint,
        ? server-port            => uint,
-       ? mm-transport-flags     => TransportFlags,
 
 
 
@@ -3532,6 +3532,7 @@ Dickinson, et al.            Standards Track                   [Page 63]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+       ? mm-transport-flags     => TransportFlags,
        ? mm-payload             => bstr,
    }
    ; Other map key values already defined above.
@@ -3579,7 +3580,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    processing-flags = 1
 
      ResponseProcessingFlagValues = &(
-         from-cache : 0,
 
 
 
@@ -3588,6 +3588,7 @@ Dickinson, et al.            Standards Track                   [Page 64]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+         from-cache : 0,
      )
      ResponseProcessingFlags = uint .bits ResponseProcessingFlagValues
 
@@ -3635,7 +3636,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
                                             ; start of Block
        ? client-address-index  => uint,
        ? client-port           => uint,
-       ? message-data-index    => uint,
 
 
 
@@ -3644,6 +3644,7 @@ Dickinson, et al.            Standards Track                   [Page 65]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+       ? message-data-index    => uint,
    }
    ; Other map key values already defined above.
    message-data-index = 3
@@ -3688,7 +3689,6 @@ Appendix B.  DNS Name Compression Example
    be a compression target.  Because the remaining uncompressed part of
    the name is www, this is an improved compression, and so it is
    adopted.
-
 
 
 
@@ -4096,8 +4096,8 @@ Appendix D.  Data Fields for Traffic Regeneration
 
 D.1.  Recommended Fields for Traffic Regeneration
 
-   This section specifies the data fields that should be captured in
-   order to perform the fullest PCAP traffic reconstruction for
+   This section specifies the data fields that would need to be captured
+   in order to perform the fullest PCAP traffic reconstruction for
    well-formed DNS messages that is possible with C-DNS.
 
    o  All data fields in the QueryResponse type except response-
@@ -4148,7 +4148,7 @@ Dickinson, et al.            Standards Track                   [Page 74]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-   In this case, simply also capturing the qr-sig-type will provide
+   In this case, simply also capturing the qr-sig-flags will provide
    enough information to perform a minimal traffic reconstruction
    (assuming that suitable defaults for the remaining fields are
    provided).  Additionally, capturing response-delay, query-opcode, and

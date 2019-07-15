@@ -1131,10 +1131,10 @@ EXTENDED_RCODE value <xref target="rcodes"/>.</c>
 <t>Version 1.0 of C-DNS supports transport values corresponding to DNS
 transports defined in IETF Standards Track documents at the time of writing.
 There are numerous non-standard methods of sending DNS messages over various
-transports using a variety of protocols but they are out of scope for this
-document. With the current specification these can be generically stored using
-value 15 (Non-standard transport) or implementations are free to use the
-negative integer map keys to define their own mappings. Such non-standard
+transports using a variety of protocols, but they are out of scope for this
+document. With the current specification, these can be generically stored using
+value 15 (Non&nbhy;standard transport), or implementations are free to use the
+negative integer map keys to define their own mappings. Such non&nbhy;standard
 transports may also be the subject of a future extension to the specification.
 </t>
 

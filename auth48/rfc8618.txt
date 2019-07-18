@@ -2616,18 +2616,18 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    transport.  This field is 4 bits in size."
 
    The initial contents of the registry are as follows.  See
-   Sections 7.5.3.2 and 7.5.3.5 of this document:
+   Sections 7.5.3.2 and 7.5.3.5 and 7.7 of this document:
 
-                  +------------+------------+-----------+
-                  | Identifier | Name       | Reference |
-                  +------------+------------+-----------+
-                  |     0      | UDP        | RFC 8618  |
-                  |     1      | TCP        | RFC 8618  |
-                  |     2      | TLS        | RFC 8618  |
-                  |     3      | DTLS       | RFC 8618  |
-                  |     4      | HTTPS      | RFC 8618  |
-                  |    5-15    | Unassigned |           |
-                  +------------+------------+-----------+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2635,6 +2635,18 @@ Dickinson, et al.            Standards Track                   [Page 47]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
+
+            +------------+------------------------+-----------+
+            | Identifier | Name                   | Reference |
+            +------------+------------------------+-----------+
+            |     0      | UDP                    | RFC 8618  |
+            |     1      | TCP                    | RFC 8618  |
+            |     2      | TLS                    | RFC 8618  |
+            |     3      | DTLS                   | RFC 8618  |
+            |     4      | HTTPS                  | RFC 8618  |
+            |    5-14    | Unassigned             |           |
+            |     15     | Non-standard transport | RFC 8618  |
+            +------------+------------------------+-----------+
 
    Expert reviewers should take the following point into consideration:
    Is the requested DNS transport described by a Standards Track RFC?
@@ -2673,6 +2685,13 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    processing flags.  The primary purpose of this registry is to provide
    indicators giving hints on the generation of a particular Response.
 
+
+
+Dickinson, et al.            Standards Track                   [Page 48]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
+
    The following note is included in this registry: "In version 1.0 of
    C-DNS [RFC8618], there is a field describing attributes of the
    Responses recorded.  The field is a CBOR [RFC7049] unsigned integer
@@ -2680,17 +2699,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    The initial contents of the registry are as follows.  See
    Section 7.6.1 of this document:
-
-
-
-
-
-
-
-Dickinson, et al.            Standards Track                   [Page 48]
-
-RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
-
 
      +------+------------+-------------------------------+-----------+
      | Bit  | Name       | Description                   | Reference |
@@ -2716,14 +2724,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    The initial contents of the registry are as follows.  See Section 7.7
    of this document:
-
-
-
-
-
-
-
-
 
 
 

@@ -1810,8 +1810,8 @@ field is 4 bits in size.&quot;
 <t>The initial contents of the
 registry are as follows. See Sections&nbsp;<xref
 target="queryresponsesignature" format="counter"/> and
-<xref target="malformedmessagedata" format="counter"/> of
-this document:
+<xref target="malformedmessagedata" format="counter"/> and
+<xref target="addresseventcount" format="counter"/>  of this document:
 </t>
 
 <!-- Note: Values below are also in Sections 7.5.3.2 and 7.5.3.5 -->
@@ -1826,7 +1826,8 @@ this document:
 <c>2</c><c>TLS</c><c>RFC 8618</c>
 <c>3</c><c>DTLS</c><c>RFC 8618</c>
 <c>4</c><c>HTTPS</c><c>RFC 8618</c>
-<c>5-15</c><c>Unassigned</c><c></c>
+<c>5-14</c><c>Unassigned</c><c></c>
+<c>15</c><c>Non-standard transport</c><c>RFC 8618</c>
 </texttable>
 <t>Expert reviewers should take the following point into consideration:
 Is the requested DNS transport described by a Standards Track RFC?</t>

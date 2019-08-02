@@ -115,7 +115,7 @@ This data is used in a number of ways, including traffic monitoring,
 analyzing network attacks, and &quot;day in the life&quot; (DITL) <xref target="ditl"/> analysis.
 </t>
 <t>A wide variety of tools already exist that facilitate the collection of DNS
-traffic data, such as the DNS Stats Collector (DSC) <xref target="dsc"/>, packetq <xref target="packetq"/>, dnscap <xref target="dnscap"/>, and
+traffic data, such as the DNS Statistics Collector (DSC) <xref target="dsc"/>, packetq <xref target="packetq"/>, dnscap <xref target="dnscap"/>, and
 dnstap <xref target="dnstap"/>. However, there is no standard exchange format for large DNS
 packet captures. The PCAP ("packet capture") <xref target="pcap"/> format or
 the PCAP Next Generation (PCAP-NG) <xref target="pcapng"/> format is typically
@@ -327,7 +327,8 @@ to have the wire format of the malformed DNS messages available directly in the 
 </section>
 
 <section anchor="choice-of-cbor" title="Choice of CBOR">
-<t>This document presents a detailed format description using CBOR <xref target="RFC7049"/>.
+<t>This document presents a detailed format description for C-DNS.
+The format uses CBOR <xref target="RFC7049"/>.
 </t>
 <t>The choice of CBOR was made taking a number of factors into account.
 </t>
@@ -731,7 +732,7 @@ description.
 </section>
 
 <section anchor="file" title="&quot;File&quot;">
-<t>A C-DNS file has an outer structure &quot;File&quot;, a map that contains the following:
+<t>A C-DNS file has an outer structure &quot;File&quot;, an array that contains the following:
 </t>
 <texttable>
 <ttcol align="left">Field</ttcol>
@@ -831,7 +832,7 @@ A map containing the following:
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>query-response -hints</c><c>X</c><c>U</c><c>Hints indicating which &quot;QueryResponse&quot; fields are candidates for capture or omitted; see <xref target="queryresponse"/>. &nbsp;If a bit is unset, the field is omitted from the capture.</c>
+<c>query-response -hints</c><c>X</c><c>U</c><c>Hints indicating which &quot;QueryResponse&quot; fields are omitted; see <xref target="queryresponse"/>. &nbsp;If a bit is unset, the field is omitted from the capture.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;time-offset</c>
 <c></c><c></c><c></c><c>Bit 1. &nbsp;client-address-index</c>
 <c></c><c></c><c></c><c>Bit 2. &nbsp;client-port</c>
@@ -851,7 +852,7 @@ A map containing the following:
 <c></c><c></c><c></c><c>Bit 16. &nbsp;response-authority-sections</c>
 <c></c><c></c><c></c><c>Bit 17. &nbsp;response-additional-sections</c>
 <c></c><c></c><c></c><c></c>
-<c>query-response -signature-hints</c><c>X</c><c>U</c><c>Hints indicating which &quot;QueryResponseSignature&quot; fields are candidates for capture or omitted; see <xref target="queryresponsesignature"/>. &nbsp;If a bit is unset, the field is omitted from the capture.</c>
+<c>query-response -signature-hints</c><c>X</c><c>U</c><c>Hints indicating which &quot;QueryResponseSignature&quot; fields are omitted; see <xref target="queryresponsesignature"/>. &nbsp;If a bit is unset, the field is omitted from the capture.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;server-address-index</c>
 <c></c><c></c><c></c><c>Bit 1. &nbsp;server-port</c>
 <c></c><c></c><c></c><c>Bit 2. &nbsp;qr-transport-flags</c>
@@ -870,7 +871,7 @@ A map containing the following:
 <c></c><c></c><c></c><c>Bit 15. &nbsp;query-opt-rdata-index</c>
 <c></c><c></c><c></c><c>Bit 16. &nbsp;response-rcode</c>
 <c></c><c></c><c></c><c></c>
-<c>rr-hints</c><c>X</c><c>U</c><c>Hints indicating which optional &quot;RR&quot; fields are candidates for capture or omitted; see <xref target="rr"/>. &nbsp;If a bit is unset, the field is omitted from the capture.</c>
+<c>rr-hints</c><c>X</c><c>U</c><c>Hints indicating which optional &quot;RR&quot; fields are omitted; see <xref target="rr"/>. &nbsp;If a bit is unset, the field is omitted from the capture.</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;ttl</c>
 <c></c><c></c><c></c><c>Bit 1. &nbsp;rdata-index</c>
 <c>other-data-hints</c><c>X</c><c>U</c><c>Hints indicating which other datatypes are omitted. &nbsp;If a bit is unset, the datatype is omitted from the capture.</c>
@@ -884,7 +885,7 @@ A map containing the following:
 <section anchor="collectionparameters" title="&quot;CollectionParameters&quot;">
 <t>Parameters providing information regarding how data in the file was
 collected (applicable for some, but not all, collection environments).
-The values are informational only and serve as hints to downstream
+The values are informational only and serve as metadata to downstream
 analyzers as to the configuration of a collecting implementation. They
 can provide context when interpreting what data is present&wj;/absent from
 the capture but cannot necessarily be validated against the data
@@ -918,7 +919,7 @@ captured.
 <c></c><c></c><c></c><c></c>
 <c>generator-id</c><c></c><c>T</c><c>Implementation-specific human-readable string identifying the collection method.</c>
 <c></c><c></c><c></c><c></c>
-<c>host-id</c><c></c><c>T</c><c>String identifying the collecting host. &nbsp;Empty if converting an existing packet capture file.</c>
+<c>host-id</c><c></c><c>T</c><c>String identifying the collecting host.</c>
 </texttable>
 </section>
 </section>
@@ -954,7 +955,7 @@ captured.
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>earliest-time</c><c>C</c><c>A</c><c>A timestamp (two unsigned integers,
+<c>earliest-time</c><c>C</c><c>A</c><c>A timestamp (two unsigned integers, of type
 &quot;Timestamp&quot;) for the earliest record in the &quot;Block&quot;
 item. &nbsp;The first integer is the number of seconds since the POSIX epoch
 <xref target="posix-time"/> (&quot;time_t&quot;), excluding leap seconds. &nbsp;The second integer is the number of ticks (see <xref target="storageparameters"/>) since the start of the second. &nbsp;This field is mandatory unless all block items containing a time offset from the start of the Block also omit that time offset.</c>

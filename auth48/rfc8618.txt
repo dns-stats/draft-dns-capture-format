@@ -71,43 +71,43 @@ Table of Contents
    3.  Data Collection Use Cases . . . . . . . . . . . . . . . . . .   5
    4.  Design Considerations . . . . . . . . . . . . . . . . . . . .   7
    5.  Choice of CBOR  . . . . . . . . . . . . . . . . . . . . . . .   9
-   6.  C-DNS Format Conceptual Overview  . . . . . . . . . . . . . .   9
-     6.1.  Block Parameters  . . . . . . . . . . . . . . . . . . . .  13
-     6.2.  Storage Parameters  . . . . . . . . . . . . . . . . . . .  13
-       6.2.1.  Optional Data Items . . . . . . . . . . . . . . . . .  14
-       6.2.2.  Optional RRs and OPCODEs  . . . . . . . . . . . . . .  15
-       6.2.3.  Storage Flags . . . . . . . . . . . . . . . . . . . .  15
-       6.2.4.  IP Address Storage  . . . . . . . . . . . . . . . . .  16
-   7.  C-DNS Format Detailed Description . . . . . . . . . . . . . .  16
-     7.1.  Map Quantities and Indexes  . . . . . . . . . . . . . . .  16
-     7.2.  Tabular Representation  . . . . . . . . . . . . . . . . .  17
-     7.3.  "File"  . . . . . . . . . . . . . . . . . . . . . . . . .  18
-       7.3.1.  "FilePreamble"  . . . . . . . . . . . . . . . . . . .  18
-         7.3.1.1.  "BlockParameters" . . . . . . . . . . . . . . . .  19
-       7.3.2.  "Block" . . . . . . . . . . . . . . . . . . . . . . .  24
-         7.3.2.1.  "BlockPreamble" . . . . . . . . . . . . . . . . .  24
-         7.3.2.2.  "BlockStatistics" . . . . . . . . . . . . . . . .  25
-         7.3.2.3.  "BlockTables" . . . . . . . . . . . . . . . . . .  26
-         7.3.2.4.  "QueryResponse" . . . . . . . . . . . . . . . . .  33
-         7.3.2.5.  "AddressEventCount" . . . . . . . . . . . . . . .  35
-         7.3.2.6.  "MalformedMessage"  . . . . . . . . . . . . . . .  36
-   8.  Versioning  . . . . . . . . . . . . . . . . . . . . . . . . .  37
-   9.  C-DNS to PCAP . . . . . . . . . . . . . . . . . . . . . . . .  38
-     9.1.  Name Compression  . . . . . . . . . . . . . . . . . . . .  39
-   10. Data Collection . . . . . . . . . . . . . . . . . . . . . . .  40
-     10.1.  Matching Algorithm . . . . . . . . . . . . . . . . . . .  41
-     10.2.  Message Identifiers  . . . . . . . . . . . . . . . . . .  43
-       10.2.1.  Primary ID (Required)  . . . . . . . . . . . . . . .  43
-       10.2.2.  Secondary ID (Optional)  . . . . . . . . . . . . . .  44
-     10.3.  Algorithm Parameters . . . . . . . . . . . . . . . . . .  44
-     10.4.  Algorithm Requirements . . . . . . . . . . . . . . . . .  44
-     10.5.  Algorithm Limitations  . . . . . . . . . . . . . . . . .  44
-     10.6.  Workspace  . . . . . . . . . . . . . . . . . . . . . . .  45
-     10.7.  Output . . . . . . . . . . . . . . . . . . . . . . . . .  45
-     10.8.  Post-Processing  . . . . . . . . . . . . . . . . . . . .  45
-   11. Implementation Guidance . . . . . . . . . . . . . . . . . . .  45
-     11.1.  Optional Data  . . . . . . . . . . . . . . . . . . . . .  46
-     11.2.  Trailing Bytes . . . . . . . . . . . . . . . . . . . . .  46
+   6.  C-DNS Format Conceptual Overview  . . . . . . . . . . . . . .  10
+     6.1.  Block Parameters  . . . . . . . . . . . . . . . . . . . .  14
+     6.2.  Storage Parameters  . . . . . . . . . . . . . . . . . . .  14
+       6.2.1.  Optional Data Items . . . . . . . . . . . . . . . . .  15
+       6.2.2.  Optional RRs and OPCODEs  . . . . . . . . . . . . . .  16
+       6.2.3.  Storage Flags . . . . . . . . . . . . . . . . . . . .  16
+       6.2.4.  IP Address Storage  . . . . . . . . . . . . . . . . .  17
+   7.  C-DNS Format Detailed Description . . . . . . . . . . . . . .  17
+     7.1.  Map Quantities and Indexes  . . . . . . . . . . . . . . .  17
+     7.2.  Tabular Representation  . . . . . . . . . . . . . . . . .  18
+     7.3.  "File"  . . . . . . . . . . . . . . . . . . . . . . . . .  19
+       7.3.1.  "FilePreamble"  . . . . . . . . . . . . . . . . . . .  19
+         7.3.1.1.  "BlockParameters" . . . . . . . . . . . . . . . .  20
+           7.3.1.1.1.  "StorageParameters" . . . . . . . . . . . . .  20
+             7.3.1.1.1.1.  "StorageHints"  . . . . . . . . . . . . .  21
+           7.3.1.1.2.  "CollectionParameters"  . . . . . . . . . . .  23
+       7.3.2.  "Block" . . . . . . . . . . . . . . . . . . . . . . .  25
+         7.3.2.1.  "BlockPreamble" . . . . . . . . . . . . . . . . .  25
+         7.3.2.2.  "BlockStatistics" . . . . . . . . . . . . . . . .  26
+         7.3.2.3.  "BlockTables" . . . . . . . . . . . . . . . . . .  27
+           7.3.2.3.1.  "ClassType" . . . . . . . . . . . . . . . . .  29
+           7.3.2.3.2.  "QueryResponseSignature"  . . . . . . . . . .  29
+           7.3.2.3.3.  "Question"  . . . . . . . . . . . . . . . . .  32
+           7.3.2.3.4.  "RR"  . . . . . . . . . . . . . . . . . . . .  32
+           7.3.2.3.5.  "MalformedMessageData"  . . . . . . . . . . .  33
+         7.3.2.4.  "QueryResponse" . . . . . . . . . . . . . . . . .  34
+           7.3.2.4.1.  "ResponseProcessingData"  . . . . . . . . . .  35
+           7.3.2.4.2.  "QueryResponseExtended" . . . . . . . . . . .  35
+         7.3.2.5.  "AddressEventCount" . . . . . . . . . . . . . . .  36
+         7.3.2.6.  "MalformedMessage"  . . . . . . . . . . . . . . .  37
+   8.  Versioning  . . . . . . . . . . . . . . . . . . . . . . . . .  38
+   9.  C-DNS to PCAP . . . . . . . . . . . . . . . . . . . . . . . .  39
+     9.1.  Name Compression  . . . . . . . . . . . . . . . . . . . .  40
+   10. Data Collection . . . . . . . . . . . . . . . . . . . . . . .  41
+     10.1.  Matching Algorithm . . . . . . . . . . . . . . . . . . .  42
+     10.2.  Message Identifiers  . . . . . . . . . . . . . . . . . .  44
+       10.2.1.  Primary ID (Required)  . . . . . . . . . . . . . . .  44
 
 
 
@@ -116,35 +116,45 @@ Dickinson, et al.            Standards Track                    [Page 2]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-     11.3.  Limiting Collection of RDATA . . . . . . . . . . . . . .  46
-     11.4.  Timestamps . . . . . . . . . . . . . . . . . . . . . . .  47
-   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  47
-     12.1.  Transport Types  . . . . . . . . . . . . . . . . . . . .  47
-     12.2.  Data Storage Flags . . . . . . . . . . . . . . . . . . .  48
-     12.3.  Response-Processing Flags  . . . . . . . . . . . . . . .  48
-     12.4.  AddressEvent Types . . . . . . . . . . . . . . . . . . .  49
-   13. Security Considerations . . . . . . . . . . . . . . . . . . .  50
-   14. Privacy Considerations  . . . . . . . . . . . . . . . . . . .  50
-   15. References  . . . . . . . . . . . . . . . . . . . . . . . . .  51
-     15.1.  Normative References . . . . . . . . . . . . . . . . . .  51
-     15.2.  Informative References . . . . . . . . . . . . . . . . .  53
-   Appendix A.  CDDL . . . . . . . . . . . . . . . . . . . . . . . .  55
-   Appendix B.  DNS Name Compression Example . . . . . . . . . . . .  66
-     B.1.  NSD Compression Algorithm . . . . . . . . . . . . . . . .  67
-     B.2.  Knot Authoritative Compression Algorithm  . . . . . . . .  67
-     B.3.  Observed Differences  . . . . . . . . . . . . . . . . . .  68
-   Appendix C.  Comparison of Binary Formats . . . . . . . . . . . .  68
-     C.1.  Comparison with Full PCAP Files . . . . . . . . . . . . .  71
-     C.2.  Simple versus Block Coding  . . . . . . . . . . . . . . .  71
-     C.3.  Binary versus Text Formats  . . . . . . . . . . . . . . .  71
-     C.4.  Performance . . . . . . . . . . . . . . . . . . . . . . .  72
-     C.5.  Conclusions . . . . . . . . . . . . . . . . . . . . . . .  72
-     C.6.  Block Size Choice . . . . . . . . . . . . . . . . . . . .  72
-   Appendix D.  Data Fields for Traffic Regeneration . . . . . . . .  74
-     D.1.  Recommended Fields for Traffic Regeneration . . . . . . .  74
-     D.2.  Issues with Small Data Captures . . . . . . . . . . . . .  74
-   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  75
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  75
+       10.2.2.  Secondary ID (Optional)  . . . . . . . . . . . . . .  45
+     10.3.  Algorithm Parameters . . . . . . . . . . . . . . . . . .  45
+     10.4.  Algorithm Requirements . . . . . . . . . . . . . . . . .  45
+     10.5.  Algorithm Limitations  . . . . . . . . . . . . . . . . .  45
+     10.6.  Workspace  . . . . . . . . . . . . . . . . . . . . . . .  46
+     10.7.  Output . . . . . . . . . . . . . . . . . . . . . . . . .  46
+     10.8.  Post-Processing  . . . . . . . . . . . . . . . . . . . .  46
+   11. Implementation Guidance . . . . . . . . . . . . . . . . . . .  46
+     11.1.  Optional Data  . . . . . . . . . . . . . . . . . . . . .  47
+     11.2.  Trailing Bytes . . . . . . . . . . . . . . . . . . . . .  47
+     11.3.  Limiting Collection of RDATA . . . . . . . . . . . . . .  47
+     11.4.  Timestamps . . . . . . . . . . . . . . . . . . . . . . .  48
+   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  48
+     12.1.  Transport Types  . . . . . . . . . . . . . . . . . . . .  48
+     12.2.  Data Storage Flags . . . . . . . . . . . . . . . . . . .  49
+     12.3.  Response-Processing Flags  . . . . . . . . . . . . . . .  49
+     12.4.  AddressEvent Types . . . . . . . . . . . . . . . . . . .  50
+   13. Security Considerations . . . . . . . . . . . . . . . . . . .  51
+   14. Privacy Considerations  . . . . . . . . . . . . . . . . . . .  51
+   15. References  . . . . . . . . . . . . . . . . . . . . . . . . .  52
+     15.1.  Normative References . . . . . . . . . . . . . . . . . .  52
+     15.2.  Informative References . . . . . . . . . . . . . . . . .  54
+   Appendix A.  CDDL . . . . . . . . . . . . . . . . . . . . . . . .  56
+   Appendix B.  DNS Name Compression Example . . . . . . . . . . . .  67
+     B.1.  NSD Compression Algorithm . . . . . . . . . . . . . . . .  68
+     B.2.  Knot Authoritative Compression Algorithm  . . . . . . . .  68
+     B.3.  Observed Differences  . . . . . . . . . . . . . . . . . .  69
+   Appendix C.  Comparison of Binary Formats . . . . . . . . . . . .  69
+     C.1.  Comparison with Full PCAP Files . . . . . . . . . . . . .  72
+     C.2.  Simple versus Block Coding  . . . . . . . . . . . . . . .  72
+     C.3.  Binary versus Text Formats  . . . . . . . . . . . . . . .  72
+     C.4.  Performance . . . . . . . . . . . . . . . . . . . . . . .  73
+     C.5.  Conclusions . . . . . . . . . . . . . . . . . . . . . . .  73
+     C.6.  Block Size Choice . . . . . . . . . . . . . . . . . . . .  73
+   Appendix D.  Data Fields for Traffic Regeneration . . . . . . . .  75
+     D.1.  Recommended Fields for Traffic Regeneration . . . . . . .  75
+     D.2.  Issues with Small Data Captures . . . . . . . . . . . . .  75
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  76
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  76
 
 1.  Introduction
 
@@ -153,6 +163,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    monitoring and analysis.  This data is used in a number of ways,
    including traffic monitoring, analyzing network attacks, and "day in
    the life" (DITL) [ditl] analysis.
+
+
+
+
+Dickinson, et al.            Standards Track                    [Page 3]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
 
    A wide variety of tools already exist that facilitate the collection
    of DNS traffic data, such as the DNS Statistics Collector (DSC)
@@ -164,14 +182,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    of additional information that is not directly pertinent to DNS
    traffic analysis and thus unnecessarily increases the capture file
    size.  Additionally, these tools and formats typically have no filter
-
-
-
-Dickinson, et al.            Standards Track                    [Page 3]
-
-RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
-
-
    mechanism to selectively record only certain fields at capture time,
    requiring post-processing for anonymization or pseudonymization of
    data to protect user privacy.
@@ -209,16 +219,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    o  A conceptual overview of the C-DNS format; see Section 6.
 
-   o  The definition of the C-DNS format for the collection of DNS
-      messages; see Section 7.
-
-   o  Notes on converting C-DNS data to PCAP format; see Section 9.
-
-   o  Some high-level implementation considerations for applications
-      designed to produce C-DNS; see Section 10.
-
-
-
 
 
 
@@ -227,6 +227,14 @@ Dickinson, et al.            Standards Track                    [Page 4]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
+
+   o  The definition of the C-DNS format for the collection of DNS
+      messages; see Section 7.
+
+   o  Notes on converting C-DNS data to PCAP format; see Section 9.
+
+   o  Some high-level implementation considerations for applications
+      designed to produce C-DNS; see Section 10.
 
 2.  Terminology
 
@@ -244,8 +252,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    The parts of DNS messages are named as they are in [RFC1035].
    Specifically, the DNS message has five sections: Header, Question,
    Answer, Authority, and Additional.
-
-   Pairs of DNS messages are called a Query and a Response.
 
 3.  Data Collection Use Cases
 
@@ -271,18 +277,18 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
       *  On virtualized servers
 
-      *  On servers that are under DoS attack
-
-      *  On servers that are unwitting intermediaries in DoS attacks
-
-   o  Traffic can be collected via a variety of mechanisms:
-
 
 
 Dickinson, et al.            Standards Track                    [Page 5]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
+
+      *  On servers that are under DoS attack
+
+      *  On servers that are unwitting intermediaries in DoS attacks
+
+   o  Traffic can be collected via a variety of mechanisms:
 
       *  Within the name server implementation itself
 
@@ -327,12 +333,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    o  There can be multiple third-party servers involved
 
-   Because of these considerations, a major factor in the design of the
-   format is minimal storage size of the capture files.
-
-   Another significant consideration for any application that records
-   DNS traffic is that the running of the name server software and the
-
 
 
 Dickinson, et al.            Standards Track                    [Page 6]
@@ -340,6 +340,11 @@ Dickinson, et al.            Standards Track                    [Page 6]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+   Because of these considerations, a major factor in the design of the
+   format is minimal storage size of the capture files.
+
+   Another significant consideration for any application that records
+   DNS traffic is that the running of the name server software and the
    transmission of DNS Queries and Responses are the most important jobs
    of a name server; capturing data is not.  Any data collection system
    co-located with the name server needs to be intelligent enough to
@@ -384,17 +389,16 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
        *  The packet has a well-formed 12-byte DNS Header with a
           recognized OPCODE.
 
-       *  The section counts are consistent with the section contents.
-
-       *  All of the Resource Records (RRs) can be fully parsed.
-
-
 
 
 Dickinson, et al.            Standards Track                    [Page 7]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
+
+       *  The section counts are consistent with the section contents.
+
+       *  All of the Resource Records (RRs) can be fully parsed.
 
    2.  All top-level fields in each Query/Response data item will be
        optional.
@@ -440,10 +444,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
        Specifically, counts of some types of non-DNS packets (e.g.,
        ICMP, TCP resets) sent to the server may be of interest.
 
-   5.  The wire-format content of malformed DNS messages may optionally
-       be recorded.
-
-
 
 
 
@@ -451,6 +451,9 @@ Dickinson, et al.            Standards Track                    [Page 8]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
+
+   5.  The wire-format content of malformed DNS messages may optionally
+       be recorded.
 
        *  Rationale: Any structured capture format that does not capture
           the DNS payload byte for byte will be limited to some extent
@@ -494,12 +497,9 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    o  CBOR data schemas can be described using the Concise Data
       Definition Language (CDDL) [RFC8610].
 
-6.  C-DNS Format Conceptual Overview
 
-   The following figures show purely schematic representations of the
-   C-DNS format to convey the high-level structure of the C-DNS format.
-   Section 7 provides a detailed discussion of the CBOR representation
-   and individual elements.
+
+
 
 
 
@@ -508,10 +508,61 @@ Dickinson, et al.            Standards Track                    [Page 9]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+6.  C-DNS Format Conceptual Overview
+
+   The following figures show purely schematic representations of the
+   C-DNS format to convey the high-level structure of the C-DNS format.
+   Section 7 provides a detailed discussion of the CBOR representation
+   and individual elements.
+
    Figure 1 shows the C-DNS format at the top level, including the file
    header and data blocks.  The Query/Response data items, Address/Event
    Count data items, and Malformed Message data items link to various
    Block Tables.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Dickinson, et al.            Standards Track                   [Page 10]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
 
                    +-------+
                    + C-DNS |
@@ -557,16 +608,17 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
                         Figure 1: The C-DNS Format
 
-
-
-Dickinson, et al.            Standards Track                   [Page 10]
-
-RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
-
-
    Figure 2 shows some more-detailed relationships within each Block,
    specifically those between the Query/Response data item and the
    relevant Block Tables.
+
+
+
+
+Dickinson, et al.            Standards Track                   [Page 11]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
 
    +----------------+
    | Query/Response |
@@ -612,18 +664,18 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | | Answer                |--+ | |   |  | EDNS UDP Size (q)      | |
    | +-----------------------+  | | |   |  +------------------------+ |
    | | Authority             |--+ | |   |  | Query OPT RDATA (q)    | |
-
-
-
-Dickinson, et al.            Standards Track                   [Page 11]
-
-RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
-
-
    | +-----------------------+  | | |   |  +------------------------+ |
    | | Additional            |--+ | |   |  | Response RCODE (r)     | |
    +-+-----------------------+    | |   |  +------------------------+ |
                                   | |   |                             |
+
+
+
+Dickinson, et al.            Standards Track                   [Page 12]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
+
                                   | |   |                             |
    + -----------------------------+ |   +----------+                  |
    |                                |              |                  |
@@ -667,20 +719,19 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    Queries and Responses stored within the Block.  The array of
    Query/Response data items is in turn followed by the Address/Event
    Count data items (an array of per-client counts of particular IP
-
-
-
-
-Dickinson, et al.            Standards Track                   [Page 12]
-
-RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
-
-
    events) and then Malformed Message data items (an array of malformed
    messages that are stored in the Block).
 
    The exact nature of the DNS data will affect what Block size is the
    best fit; however, sample data for a root server indicated that Block
+
+
+
+Dickinson, et al.            Standards Track                   [Page 13]
+
+RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
+
+
    sizes up to 10,000 Query/Response data items give good results.  See
    Appendix C.6 for more details.
 
@@ -727,7 +778,12 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 13]
+
+
+
+
+
+Dickinson, et al.            Standards Track                   [Page 14]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -745,9 +801,10 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    o  Malformed Messages
 
    In other words, an implementation can choose to omit any data item
-   that is not required for its use case.  In addition, implementations
-   may be configured to not record all RRs or to only record messages
-   with certain OPCODES.
+   that is not required for its use case (whilst observing the
+   restrictions relating to IP Address Storage described in
+   Section 6.2.4).  In addition, implementations may be configured to
+   not record all RRs or to only record messages with certain OPCODES.
 
    This does, however, mean that a consumer of a C-DNS file faces two
    problems:
@@ -779,15 +836,15 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    regenerating traffic.  It is possible to collect such a small set of
    data items that an implementation decoding the file cannot determine
    if a given Query/Response data item was generated from just a Query,
-   just a Response, or a Query/Response pair.  This makes it impossible
 
 
 
-Dickinson, et al.            Standards Track                   [Page 14]
+Dickinson, et al.            Standards Track                   [Page 15]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+   just a Response, or a Query/Response pair.  This makes it impossible
    to reconstruct DNS traffic even if sensible defaults are provided for
    the missing data items.  This is discussed in more detail in
    Section 9.
@@ -838,8 +895,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-
-Dickinson, et al.            Standards Track                   [Page 15]
+Dickinson, et al.            Standards Track                   [Page 16]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -895,7 +951,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 16]
+Dickinson, et al.            Standards Track                   [Page 17]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -951,7 +1007,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 17]
+Dickinson, et al.            Standards Track                   [Page 18]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1007,7 +1063,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 18]
+Dickinson, et al.            Standards Track                   [Page 19]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1063,7 +1119,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 19]
+Dickinson, et al.            Standards Track                   [Page 20]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1119,7 +1175,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 20]
+Dickinson, et al.            Standards Track                   [Page 21]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1175,7 +1231,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 21]
+Dickinson, et al.            Standards Track                   [Page 22]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1231,7 +1287,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 22]
+Dickinson, et al.            Standards Track                   [Page 23]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1287,7 +1343,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 23]
+Dickinson, et al.            Standards Track                   [Page 24]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1343,7 +1399,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 24]
+Dickinson, et al.            Standards Track                   [Page 25]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1399,7 +1455,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 25]
+Dickinson, et al.            Standards Track                   [Page 26]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1455,7 +1511,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 26]
+Dickinson, et al.            Standards Track                   [Page 27]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1511,7 +1567,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 27]
+Dickinson, et al.            Standards Track                   [Page 28]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1536,9 +1592,9 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    +--------------------+---+---+--------------------------------------+
    | Field              | M | T | Description                          |
    +--------------------+---+---+--------------------------------------+
-   | server-address     |   | U | The index in the item in the "ip-    |
-   | -index             |   |   | address" array of the server IP      |
-   |                    |   |   | address.  See Section 7.3.2.3.       |
+   | server-address     |   | U | The index in the "ip-address" array  |
+   | -index             |   |   | of the server IP address.  See       |
+   |                    |   |   | Section 7.3.2.3.                     |
    |                    |   |   |                                      |
    | server-port        |   | U | The server port.                     |
    |                    |   |   |                                      |
@@ -1567,7 +1623,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 28]
+Dickinson, et al.            Standards Track                   [Page 29]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1623,7 +1679,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 29]
+Dickinson, et al.            Standards Track                   [Page 30]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1651,10 +1707,9 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                    |   |   | incorporates any EXTENDED-RCODE      |
    |                    |   |   | value [rcodes].                      |
    |                    |   |   |                                      |
-   | query-classtype    |   | U | The index to the item in the         |
-   | -index             |   |   | "classtype" array of the CLASS and   |
-   |                    |   |   | TYPE of the first Question.  See     |
-   |                    |   |   | Section 7.3.2.3.                     |
+   | query-classtype    |   | U | The index in the "classtype" array   |
+   | -index             |   |   | of the CLASS and TYPE of the first   |
+   |                    |   |   | Question.  See Section 7.3.2.3.      |
    |                    |   |   |                                      |
    | query-qdcount      |   | U | The QDCOUNT in the Query, or         |
    |                    |   |   | Response if no Query present.        |
@@ -1676,18 +1731,18 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | -index             |   |   | of the OPT RDATA.  See Section       |
    |                    |   |   | 7.3.2.3.                             |
    |                    |   |   |                                      |
+   | response-rcode     |   | U | Response RCODE.  If the Response     |
 
 
 
-Dickinson, et al.            Standards Track                   [Page 30]
+Dickinson, et al.            Standards Track                   [Page 31]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-   | response-rcode     |   | U | Response RCODE.  If the Response     |
    |                    |   |   | contains an OPT RR [RFC6891], this   |
-   |                    |   |   | value incorporates any               |
-   |                    |   |   | EXTENDED_RCODE value [rcodes].       |
+   |                    |   |   | value incorporates any EXTENDED-     |
+   |                    |   |   | RCODE value [rcodes].                |
    +--------------------+---+---+--------------------------------------+
 
    Version 1.0 of C-DNS supports transport values corresponding to DNS
@@ -1735,7 +1790,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 31]
+
+Dickinson, et al.            Standards Track                   [Page 32]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1791,7 +1847,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 32]
+Dickinson, et al.            Standards Track                   [Page 33]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1847,7 +1903,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 33]
+Dickinson, et al.            Standards Track                   [Page 34]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1903,7 +1959,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 34]
+Dickinson, et al.            Standards Track                   [Page 35]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -1959,7 +2015,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 35]
+Dickinson, et al.            Standards Track                   [Page 36]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2015,7 +2071,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 36]
+Dickinson, et al.            Standards Track                   [Page 37]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2071,7 +2127,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 37]
+Dickinson, et al.            Standards Track                   [Page 38]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2127,7 +2183,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 38]
+Dickinson, et al.            Standards Track                   [Page 39]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2183,7 +2239,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 39]
+Dickinson, et al.            Standards Track                   [Page 40]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2239,7 +2295,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 40]
+Dickinson, et al.            Standards Track                   [Page 41]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2295,7 +2351,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 41]
+Dickinson, et al.            Standards Track                   [Page 42]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2351,7 +2407,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 42]
+Dickinson, et al.            Standards Track                   [Page 43]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2407,7 +2463,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 43]
+Dickinson, et al.            Standards Track                   [Page 44]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2463,7 +2519,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 44]
+Dickinson, et al.            Standards Track                   [Page 45]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2519,7 +2575,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 45]
+Dickinson, et al.            Standards Track                   [Page 46]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2575,7 +2631,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 46]
+Dickinson, et al.            Standards Track                   [Page 47]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2631,7 +2687,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 47]
+Dickinson, et al.            Standards Track                   [Page 48]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2687,7 +2743,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 48]
+Dickinson, et al.            Standards Track                   [Page 49]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2743,7 +2799,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 49]
+Dickinson, et al.            Standards Track                   [Page 50]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2799,7 +2855,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 50]
+Dickinson, et al.            Standards Track                   [Page 51]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2855,7 +2911,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 51]
+Dickinson, et al.            Standards Track                   [Page 52]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2911,7 +2967,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 52]
+Dickinson, et al.            Standards Track                   [Page 53]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -2967,7 +3023,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 53]
+Dickinson, et al.            Standards Track                   [Page 54]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3023,7 +3079,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 54]
+Dickinson, et al.            Standards Track                   [Page 55]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3079,7 +3135,7 @@ Appendix A.  CDDL
 
 
 
-Dickinson, et al.            Standards Track                   [Page 55]
+Dickinson, et al.            Standards Track                   [Page 56]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3135,7 +3191,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 56]
+Dickinson, et al.            Standards Track                   [Page 57]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3191,7 +3247,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 57]
+Dickinson, et al.            Standards Track                   [Page 58]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3247,7 +3303,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 58]
+Dickinson, et al.            Standards Track                   [Page 59]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3303,7 +3359,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 59]
+Dickinson, et al.            Standards Track                   [Page 60]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3359,7 +3415,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 60]
+Dickinson, et al.            Standards Track                   [Page 61]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3415,7 +3471,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 61]
+Dickinson, et al.            Standards Track                   [Page 62]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3471,7 +3527,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 62]
+Dickinson, et al.            Standards Track                   [Page 63]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3527,7 +3583,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 63]
+Dickinson, et al.            Standards Track                   [Page 64]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3583,7 +3639,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 64]
+Dickinson, et al.            Standards Track                   [Page 65]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3639,7 +3695,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 65]
+Dickinson, et al.            Standards Track                   [Page 66]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3695,7 +3751,7 @@ Appendix B.  DNS Name Compression Example
 
 
 
-Dickinson, et al.            Standards Track                   [Page 66]
+Dickinson, et al.            Standards Track                   [Page 67]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3751,7 +3807,7 @@ B.2.  Knot Authoritative Compression Algorithm
 
 
 
-Dickinson, et al.            Standards Track                   [Page 67]
+Dickinson, et al.            Standards Track                   [Page 68]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3807,7 +3863,7 @@ Appendix C.  Comparison of Binary Formats
 
 
 
-Dickinson, et al.            Standards Track                   [Page 68]
+Dickinson, et al.            Standards Track                   [Page 69]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3863,7 +3919,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 69]
+Dickinson, et al.            Standards Track                   [Page 70]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3919,7 +3975,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 70]
+Dickinson, et al.            Standards Track                   [Page 71]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -3975,7 +4031,7 @@ C.3.  Binary versus Text Formats
 
 
 
-Dickinson, et al.            Standards Track                   [Page 71]
+Dickinson, et al.            Standards Track                   [Page 72]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -4031,7 +4087,7 @@ C.6.  Block Size Choice
 
 
 
-Dickinson, et al.            Standards Track                   [Page 72]
+Dickinson, et al.            Standards Track                   [Page 73]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -4087,7 +4143,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 73]
+Dickinson, et al.            Standards Track                   [Page 74]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -4143,7 +4199,7 @@ D.2.  Issues with Small Data Captures
 
 
 
-Dickinson, et al.            Standards Track                   [Page 74]
+Dickinson, et al.            Standards Track                   [Page 75]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -4199,7 +4255,7 @@ Authors' Addresses
 
 
 
-Dickinson, et al.            Standards Track                   [Page 75]
+Dickinson, et al.            Standards Track                   [Page 76]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
@@ -4255,4 +4311,4 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
 
-Dickinson, et al.            Standards Track                   [Page 76]
+Dickinson, et al.            Standards Track                   [Page 77]

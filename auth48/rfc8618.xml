@@ -7,7 +7,7 @@
      consensus="yes">
 
 <?rfc toc="yes"?>
-<?rfc tocdepth="4"?>
+<?rfc tocdepth="7"?>
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
 <?rfc compact="yes"?>
@@ -180,8 +180,6 @@ stream.
 <t>The parts of DNS messages are named as they are in <xref target="RFC1035"/>. Specifically,
 the DNS message has five sections: Header, Question, Answer, Authority,
 and Additional.
-</t>
-<t>Pairs of DNS messages are called a Query and a Response.
 </t>
 </section>
 
@@ -558,7 +556,9 @@ are optional:
 </t>
 <t>In other words, an
 implementation can choose to omit any data item that is not required for
-its use case. In addition, implementations may be configured to not record all
+its use case (whilst observing the restrictions relating to IP Address Storage
+described in <xref target="ip-address-storage"/>). In addition, implementations may be 
+configured to not record all
 RRs or to only record messages with certain OPCODES.
 </t>
 <t>This does, however, mean that a consumer of a C-DNS file faces two problems:
@@ -1050,7 +1050,7 @@ individual Q/R data items. A map containing the following:
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>server-address -index</c><c></c><c>U</c><c>The index in the item in the &quot;ip-address&quot; array of the server IP address. &nbsp;See <xref target="blocktables"/>.</c>
+<c>server-address -index</c><c></c><c>U</c><c>The index in the &quot;ip-address&quot; array of the server IP address. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>server-port</c><c></c><c>U</c><c>The server port.</c>
 <c></c><c></c><c></c><c></c>
@@ -1106,7 +1106,7 @@ where</c>
 OPT RR <xref target="RFC6891"/>, this value incorporates any EXTENDED-RCODE value
 <xref target="rcodes"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>query-classtype -index</c><c></c><c>U</c><c>The index to the item in the &quot;classtype&quot; array of the CLASS and TYPE of the first Question. &nbsp;See <xref target="blocktables"/>.</c>
+<c>query-classtype -index</c><c></c><c>U</c><c>The index in the &quot;classtype&quot; array of the CLASS and TYPE of the first Question. &nbsp;See <xref target="blocktables"/>.</c>
 <c></c><c></c><c></c><c></c>
 <c>query-qdcount</c><c></c><c>U</c><c>The QDCOUNT in the Query, or Response if no Query present.</c>
 <c></c><c></c><c></c><c></c>
@@ -1125,7 +1125,7 @@ stands for Extension Mechanisms for DNS.)</c>
 <c></c><c></c><c></c><c></c>
 <c>response-rcode</c><c></c><c>U</c><c>Response RCODE. &nbsp;If the Response
 contains an OPT RR <xref target="RFC6891"/>, this value incorporates any
-EXTENDED_RCODE value <xref target="rcodes"/>.</c>
+EXTENDED-RCODE value <xref target="rcodes"/>.</c>
 </texttable>
 
 <t>Version 1.0 of C-DNS supports transport values corresponding to DNS

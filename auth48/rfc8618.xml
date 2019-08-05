@@ -1067,13 +1067,13 @@ where</c>
 <c></c><c></c><c></c><c>Values 5-14 are reserved for future use.</c>
 <c></c><c></c><c></c><c>Bit 5. &nbsp;1 if trailing bytes in Query packet. &nbsp;See <xref target="trailing-bytes"/>.</c>
 <c></c><c></c><c></c><c></c>
-<c>qr-type</c><c></c><c>U</c><c>Type of Query/Response transaction.</c>
-<c></c><c></c><c></c><c>0 = Stub. &nbsp;A Query from a stub resolver.</c>
-<c></c><c></c><c></c><c>1 = Client. &nbsp;An incoming Query to a recursive resolver.</c>
-<c></c><c></c><c></c><c>2 = Resolver. &nbsp;A Query sent from a recursive resolver to an authoritative resolver.</c>
-<c></c><c></c><c></c><c>3 = Authoritative. &nbsp;A Query to an authoritative resolver.</c>
-<c></c><c></c><c></c><c>4 = Forwarder. &nbsp;A Query sent from a recursive resolver to an upstream recursive resolver.</c>
-<c></c><c></c><c></c><c>5 = Tool. &nbsp;A Query sent to a server by a server tool.</c>
+<c>qr-type</c><c></c><c>U</c><c>Type of Query/Response transaction based on the definitions in the dnstap schema <xref target="dnstap-schema"/>.</c>
+<c></c><c></c><c></c><c>0 = Stub. &nbsp;A transaction between a stub resolver and a DNS server from the perspective of the stub resolver.</c>
+<c></c><c></c><c></c><c>1 = Client. &nbsp;An transaction between a client and a DNS server (a proxy or full recursive resolver) from the perspective of the DNS server.</c>
+<c></c><c></c><c></c><c>2 = Resolver. &nbsp;A transaction between a recursive resolver and an authoritative server from the perspective of the recursive resolver.</c>
+<c></c><c></c><c></c><c>3 = Authoritative. &nbsp;A transaction between a recursive resolver and an authoritative server from the perspective of the authoritative server.</c>
+<c></c><c></c><c></c><c>4 = Forwarder. &nbsp;A transaction between a downstream forwarder and an upstream DNS server (a recursive resolver) from the perspective of the downstream forwarder.</c>
+<c></c><c></c><c></c><c>5 = Tool. &nbsp;A transaction between a DNS software tool and a DNS server, from the perspective of the tool.</c>
 <c></c><c></c><c></c><c></c>
 <c>qr-sig-flags</c><c></c><c>U</c><c>Bit flags explicitly indicating attributes of the message pair represented by this Q/R data item (not all attributes may be recorded or deducible).</c>
 <c></c><c></c><c></c><c>Bit 0. &nbsp;1 if a Query was present.</c>
@@ -2273,6 +2273,15 @@ Express Concise Binary Object Representation (CBOR) and JSON Data Structures</ti
 <reference anchor='dnstap' target='https://dnstap.info/'>
     <front>
         <title>dnstap</title>
+        <author>
+            <organization></organization>
+        </author>
+        <date year='2016'/>
+    </front>
+</reference>
+<reference anchor='dnstap-schema' target='https://github.com/dnstap/dnstap.pb/blob/master/dnstap.proto'>
+    <front>
+        <title>dnstap schema</title>
         <author>
             <organization></organization>
         </author>

@@ -35,11 +35,11 @@ Status of This Memo
    (IETF).  It represents the consensus of the IETF community.  It has
    received public review and has been approved for publication by the
    Internet Engineering Steering Group (IESG).  Further information on
-   Internet Standards is available in Section 2 of RFC 7841.
+   Internet Standards is available in Section 2 of RFC 5741.
 
    Information about the current status of this document, any errata,
    and how to provide feedback on it may be obtained at
-   https://www.rfc-editor.org/info/rfc8618.
+   http://www.rfc-editor.org/info/rfc8618.
 
 Copyright Notice
 
@@ -48,7 +48,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (https://trustee.ietf.org/license-info) in effect on the date of
+   (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -82,18 +82,15 @@ Table of Contents
      7.1.  Map Quantities and Indexes  . . . . . . . . . . . . . . .  16
      7.2.  Tabular Representation  . . . . . . . . . . . . . . . . .  17
      7.3.  "File"  . . . . . . . . . . . . . . . . . . . . . . . . .  18
-     7.4.  "FilePreamble"  . . . . . . . . . . . . . . . . . . . . .  18
-       7.4.1.  "BlockParameters" . . . . . . . . . . . . . . . . . .  19
-       7.4.2.  "CollectionParameters"  . . . . . . . . . . . . . . .  22
-     7.5.  "Block" . . . . . . . . . . . . . . . . . . . . . . . . .  24
-       7.5.1.  "BlockPreamble" . . . . . . . . . . . . . . . . . . .  24
-       7.5.2.  "BlockStatistics" . . . . . . . . . . . . . . . . . .  25
-       7.5.3.  "BlockTables" . . . . . . . . . . . . . . . . . . . .  26
-     7.6.  "QueryResponse" . . . . . . . . . . . . . . . . . . . . .  33
-       7.6.1.  "ResponseProcessingData"  . . . . . . . . . . . . . .  34
-       7.6.2.  "QueryResponseExtended" . . . . . . . . . . . . . . .  34
-     7.7.  "AddressEventCount" . . . . . . . . . . . . . . . . . . .  35
-     7.8.  "MalformedMessage"  . . . . . . . . . . . . . . . . . . .  36
+       7.3.1.  "FilePreamble"  . . . . . . . . . . . . . . . . . . .  18
+         7.3.1.1.  "BlockParameters" . . . . . . . . . . . . . . . .  19
+       7.3.2.  "Block" . . . . . . . . . . . . . . . . . . . . . . .  24
+         7.3.2.1.  "BlockPreamble" . . . . . . . . . . . . . . . . .  24
+         7.3.2.2.  "BlockStatistics" . . . . . . . . . . . . . . . .  25
+         7.3.2.3.  "BlockTables" . . . . . . . . . . . . . . . . . .  26
+         7.3.2.4.  "QueryResponse" . . . . . . . . . . . . . . . . .  33
+         7.3.2.5.  "AddressEventCount" . . . . . . . . . . . . . . .  35
+         7.3.2.6.  "MalformedMessage"  . . . . . . . . . . . . . . .  36
    8.  Versioning  . . . . . . . . . . . . . . . . . . . . . . . . .  37
    9.  C-DNS to PCAP . . . . . . . . . . . . . . . . . . . . . . . .  38
      9.1.  Name Compression  . . . . . . . . . . . . . . . . . . . .  39
@@ -108,6 +105,9 @@ Table of Contents
      10.6.  Workspace  . . . . . . . . . . . . . . . . . . . . . . .  45
      10.7.  Output . . . . . . . . . . . . . . . . . . . . . . . . .  45
      10.8.  Post-Processing  . . . . . . . . . . . . . . . . . . . .  45
+   11. Implementation Guidance . . . . . . . . . . . . . . . . . . .  45
+     11.1.  Optional Data  . . . . . . . . . . . . . . . . . . . . .  46
+     11.2.  Trailing Bytes . . . . . . . . . . . . . . . . . . . . .  46
 
 
 
@@ -116,9 +116,6 @@ Dickinson, et al.            Standards Track                    [Page 2]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-   11. Implementation Guidance . . . . . . . . . . . . . . . . . . .  45
-     11.1.  Optional Data  . . . . . . . . . . . . . . . . . . . . .  46
-     11.2.  Trailing Bytes . . . . . . . . . . . . . . . . . . . . .  46
      11.3.  Limiting Collection of RDATA . . . . . . . . . . . . . .  46
      11.4.  Timestamps . . . . . . . . . . . . . . . . . . . . . . .  47
    12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  47
@@ -158,12 +155,15 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    the life" (DITL) [ditl] analysis.
 
    A wide variety of tools already exist that facilitate the collection
-   of DNS traffic data, such as the DNS Stats Collector (DSC) [dsc],
-   packetq [packetq], dnscap [dnscap], and dnstap [dnstap].  However,
-   there is no standard exchange format for large DNS packet captures.
-   The PCAP ("packet capture") [pcap] format or the PCAP Next Generation
-   (PCAP-NG) [pcapng] format is typically used in practice for packet
-   captures, but these file formats can contain a great deal of
+   of DNS traffic data, such as the DNS Statistics Collector (DSC)
+   [dsc], packetq [packetq], dnscap [dnscap], and dnstap [dnstap].
+   However, there is no standard exchange format for large DNS packet
+   captures.  The PCAP ("packet capture") [pcap] format or the PCAP Next
+   Generation (PCAP-NG) [pcapng] format is typically used in practice
+   for packet captures, but these file formats can contain a great deal
+   of additional information that is not directly pertinent to DNS
+   traffic analysis and thus unnecessarily increases the capture file
+   size.  Additionally, these tools and formats typically have no filter
 
 
 
@@ -172,9 +172,6 @@ Dickinson, et al.            Standards Track                    [Page 3]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-   additional information that is not directly pertinent to DNS traffic
-   analysis and thus unnecessarily increases the capture file size.
-   Additionally, these tools and formats typically have no filter
    mechanism to selectively record only certain fields at capture time,
    requiring post-processing for anonymization or pseudonymization of
    data to protect user privacy.
@@ -219,6 +216,9 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    o  Some high-level implementation considerations for applications
       designed to produce C-DNS; see Section 10.
+
+
+
 
 
 
@@ -467,8 +467,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 5.  Choice of CBOR
 
-   This document presents a detailed format description using CBOR
-   [RFC7049].
+   This document presents a detailed format description for C-DNS.  The
+   format uses CBOR [RFC7049].
 
    The choice of CBOR was made taking a number of factors into account.
 
@@ -861,8 +861,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    are stored.  In this case, in order to determine the IP version, the
    fields "qr-transport-flags" in QueryResponseSignature, "ae-transport-
    flags" in AddressEventCount, and "mm-transport-flags" in
-   MalformedMessageData MUST be present.  See Sections 7.5.3.2 and
-   7.5.3.5.
+   MalformedMessageData MUST be present.  See Sections 7.3.2.3.2 and
+   7.3.2.3.5.
 
    As an example of storing only IP prefixes, if a client IPv6 prefix of
    48 is specified, a client address of 2001:db8:85a3::8a2e:370:7334
@@ -958,8 +958,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 7.3.  "File"
 
-   A C-DNS file has an outer structure "File", a map that contains the
-   following:
+   A C-DNS file has an outer structure "File", an array that contains
+   the following:
 
    +---------------+---+---+-------------------------------------------+
    | Field         | M | T | Description                               |
@@ -968,14 +968,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |               |   |   |                                           |
    | file-preamble | X | M | Version and parameter information for the |
    |               |   |   | whole file.  Map of type "FilePreamble";  |
-   |               |   |   | see Section 7.4.                          |
+   |               |   |   | see Section 7.3.1.                        |
    |               |   |   |                                           |
    | file-blocks   | X | A | Array of items of type "Block"; see       |
-   |               |   |   | Section 7.5.  The array may be empty if   |
+   |               |   |   | Section 7.3.2.  The array may be empty if |
    |               |   |   | the file contains no data.                |
    +---------------+---+---+-------------------------------------------+
 
-7.4.  "FilePreamble"
+7.3.1.  "FilePreamble"
 
    Information about data in the file.  A map containing the following:
 
@@ -995,8 +995,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                      |   |   |                                    |
    | block-parameters     | X | A | Array of items of type             |
    |                      |   |   | "BlockParameters".  See Section    |
-   |                      |   |   | 7.4.1.  The array must contain at  |
-   |                      |   |   | least one entry.  (The "block-     |
+   |                      |   |   | 7.3.1.1.  The array must contain   |
+   |                      |   |   | at least one entry.  (The "block-  |
    |                      |   |   | parameters-index" item in each     |
    |                      |   |   | "BlockPreamble" indicates which    |
    |                      |   |   | array entry applies to that        |
@@ -1012,7 +1012,7 @@ Dickinson, et al.            Standards Track                   [Page 18]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-7.4.1.  "BlockParameters"
+7.3.1.1.  "BlockParameters"
 
    Parameters relating to data storage and collection that apply to one
    or more items of type "Block".  A map containing the following:
@@ -1023,16 +1023,16 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | storage-parameters    | X | M | Parameters relating to data       |
    |                       |   |   | storage in a "Block" item.  Map   |
    |                       |   |   | of type "StorageParameters"; see  |
-   |                       |   |   | Section 7.4.1.1.                  |
+   |                       |   |   | Section 7.3.1.1.1.                |
    |                       |   |   |                                   |
    | collection-parameters |   | M | Parameters relating to collection |
    |                       |   |   | of the data in a "Block" item.    |
    |                       |   |   | Map of type                       |
    |                       |   |   | "CollectionParameters"; see       |
-   |                       |   |   | Section 7.4.2.                    |
+   |                       |   |   | Section 7.3.1.1.2.                |
    +-----------------------+---+---+-----------------------------------+
 
-7.4.1.1.  "StorageParameters"
+7.3.1.1.1.  "StorageParameters"
 
    Parameters relating to how data is stored in the items of type
    "Block".  A map containing the following:
@@ -1055,7 +1055,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                  |   |   | are omitted in the arrays that have    |
    |                  |   |   | optional fields.  Map of type          |
    |                  |   |   | "StorageHints".  See Section           |
-   |                  |   |   | 7.4.1.1.1.                             |
+   |                  |   |   | 7.3.1.1.1.1.                           |
    |                  |   |   |                                        |
    | opcodes          | X | A | Array of OPCODES [opcodes] (unsigned   |
    |                  |   |   | integers, each in the range 0 to 15    |
@@ -1111,7 +1111,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | -method          |   |   | method used.  See Section 6.2.3.       |
    +------------------+---+---+----------------------------------------+
 
-7.4.1.1.1.  "StorageHints"
+7.3.1.1.1.1.  "StorageHints"
 
    An indicator of which fields the collecting implementation omits in
    the maps with optional fields.  Note that hints have a top-down
@@ -1131,10 +1131,9 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | Field            | M | T | Description                            |
    +------------------+---+---+----------------------------------------+
    | query-response   | X | U | Hints indicating which "QueryResponse" |
-   | -hints           |   |   | fields are candidates for capture or   |
-   |                  |   |   | omitted; see Section 7.6.  If a bit is |
-   |                  |   |   | unset, the field is omitted from the   |
-   |                  |   |   | capture.                               |
+   | -hints           |   |   | fields are omitted; see Section        |
+   |                  |   |   | 7.3.2.4.  If a bit is unset, the field |
+   |                  |   |   | is omitted from the capture.           |
    |                  |   |   | Bit 0.  time-offset                    |
    |                  |   |   | Bit 1.  client-address-index           |
    |                  |   |   | Bit 2.  client-port                    |
@@ -1156,9 +1155,9 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                  |   |   |                                        |
    | query-response   | X | U | Hints indicating which                 |
    | -signature-hints |   |   | "QueryResponseSignature" fields are    |
-   |                  |   |   | candidates for capture or omitted; see |
-   |                  |   |   | Section 7.5.3.2.  If a bit is unset,   |
-   |                  |   |   | the field is omitted from the capture. |
+   |                  |   |   | omitted; see Section 7.3.2.3.2.  If a  |
+   |                  |   |   | bit is unset, the field is omitted     |
+   |                  |   |   | from the capture.                      |
    |                  |   |   | Bit 0.  server-address-index           |
    |                  |   |   | Bit 1.  server-port                    |
    |                  |   |   | Bit 2.  qr-transport-flags             |
@@ -1172,6 +1171,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                  |   |   | Bit 10.  query-ancount                 |
    |                  |   |   | Bit 11.  query-nscount                 |
    |                  |   |   | Bit 12.  query-arcount                 |
+   |                  |   |   | Bit 13.  query-edns-version            |
 
 
 
@@ -1180,16 +1180,14 @@ Dickinson, et al.            Standards Track                   [Page 21]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-   |                  |   |   | Bit 13.  query-edns-version            |
    |                  |   |   | Bit 14.  query-udp-size                |
    |                  |   |   | Bit 15.  query-opt-rdata-index         |
    |                  |   |   | Bit 16.  response-rcode                |
    |                  |   |   |                                        |
    | rr-hints         | X | U | Hints indicating which optional "RR"   |
-   |                  |   |   | fields are candidates for capture or   |
-   |                  |   |   | omitted; see Section 7.5.3.4.  If a    |
-   |                  |   |   | bit is unset, the field is omitted     |
-   |                  |   |   | from the capture.                      |
+   |                  |   |   | fields are omitted; see Section        |
+   |                  |   |   | 7.3.2.3.4.  If a bit is unset, the     |
+   |                  |   |   | field is omitted from the capture.     |
    |                  |   |   | Bit 0.  ttl                            |
    |                  |   |   | Bit 1.  rdata-index                    |
    | other-data-hints | X | U | Hints indicating which other datatypes |
@@ -1199,20 +1197,22 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                  |   |   | Bit 1.  address-event-counts           |
    +------------------+---+---+----------------------------------------+
 
-7.4.2.  "CollectionParameters"
+7.3.1.1.2.  "CollectionParameters"
 
    Parameters providing information regarding how data in the file was
    collected (applicable for some, but not all, collection
-   environments).  The values are informational only and serve as hints
-   to downstream analyzers as to the configuration of a collecting
-   implementation.  They can provide context when interpreting what data
-   is present/absent from the capture but cannot necessarily be
-   validated against the data captured.
+   environments).  The values are informational only and serve as
+   metadata to downstream analyzers as to the configuration of a
+   collecting implementation.  They can provide context when
+   interpreting what data is present/absent from the capture but cannot
+   necessarily be validated against the data captured.
 
    These parameters have no default.  If they do not appear, nothing can
    be inferred about their value.
 
    A map containing the following items:
+
+
 
 
 
@@ -1280,9 +1280,9 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                  |   |   | method.                                |
    |                  |   |   |                                        |
    | host-id          |   | T | String identifying the collecting      |
-   |                  |   |   | host.  Empty if converting an existing |
-   |                  |   |   | packet capture file.                   |
+   |                  |   |   | host.                                  |
    +------------------+---+---+----------------------------------------+
+
 
 
 
@@ -1292,7 +1292,7 @@ Dickinson, et al.            Standards Track                   [Page 23]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-7.5.  "Block"
+7.3.2.  "Block"
 
    Container for data with common collection and storage parameters.  A
    map containing the following:
@@ -1302,39 +1302,39 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    +--------------------+---+---+--------------------------------------+
    | block-preamble     | X | M | Overall information for the "Block"  |
    |                    |   |   | item.  Map of type "BlockPreamble";  |
-   |                    |   |   | see Section 7.5.1.                   |
+   |                    |   |   | see Section 7.3.2.1.                 |
    |                    |   |   |                                      |
    | block-statistics   |   | M | Statistics about the "Block" item.   |
    |                    |   |   | Map of type "BlockStatistics"; see   |
-   |                    |   |   | Section 7.5.2.                       |
+   |                    |   |   | Section 7.3.2.2.                     |
    |                    |   |   |                                      |
    | block-tables       |   | M | The arrays containing data           |
    |                    |   |   | referenced by individual             |
    |                    |   |   | "QueryResponse" or                   |
    |                    |   |   | "MalformedMessage" items.  Map of    |
    |                    |   |   | type "BlockTables"; see Section      |
-   |                    |   |   | 7.5.3.                               |
+   |                    |   |   | 7.3.2.3.                             |
    |                    |   |   |                                      |
    | query-responses    |   | A | Details of individual C-DNS Q/R data |
    |                    |   |   | items.  Array of items of type       |
-   |                    |   |   | "QueryResponse"; see Section 7.6.    |
-   |                    |   |   | If present, the array must not be    |
-   |                    |   |   | empty.                               |
+   |                    |   |   | "QueryResponse"; see Section         |
+   |                    |   |   | 7.3.2.4.  If present, the array must |
+   |                    |   |   | not be empty.                        |
    |                    |   |   |                                      |
    | address-event      |   | A | Per-client counts of ICMP messages   |
    | -counts            |   |   | and TCP resets.  Array of items of   |
    |                    |   |   | type "AddressEventCount"; see        |
-   |                    |   |   | Section 7.7.  If present, the array  |
-   |                    |   |   | must not be empty.                   |
+   |                    |   |   | Section 7.3.2.5.  If present, the    |
+   |                    |   |   | array must not be empty.             |
    |                    |   |   |                                      |
    | malformed-messages |   | A | Details of malformed DNS messages.   |
    |                    |   |   | Array of items of type               |
-   |                    |   |   | "MalformedMessage"; see Section 7.8. |
-   |                    |   |   | If present, the array must not be    |
-   |                    |   |   | empty.                               |
+   |                    |   |   | "MalformedMessage"; see Section      |
+   |                    |   |   | 7.3.2.6.  If present, the array must |
+   |                    |   |   | not be empty.                        |
    +--------------------+---+---+--------------------------------------+
 
-7.5.1.  "BlockPreamble"
+7.3.2.1.  "BlockPreamble"
 
    Overall information for a "Block" item.  A map containing the
    following:
@@ -1351,16 +1351,16 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    +------------------+---+---+----------------------------------------+
    | Field            | M | T | Description                            |
    +------------------+---+---+----------------------------------------+
-   | earliest-time    | C | A | A timestamp (two unsigned integers,    |
-   |                  |   |   | "Timestamp") for the earliest record   |
-   |                  |   |   | in the "Block" item.  The first        |
+   | earliest-time    | C | A | A timestamp (two unsigned integers, of |
+   |                  |   |   | type "Timestamp") for the earliest     |
+   |                  |   |   | record in the "Block" item.  The first |
    |                  |   |   | integer is the number of seconds since |
    |                  |   |   | the POSIX epoch [posix-time]           |
    |                  |   |   | ("time_t"), excluding leap seconds.    |
    |                  |   |   | The second integer is the number of    |
-   |                  |   |   | ticks (see Section 7.4.1.1) since the  |
-   |                  |   |   | start of the second.  This field is    |
-   |                  |   |   | mandatory unless all block items       |
+   |                  |   |   | ticks (see Section 7.3.1.1.1) since    |
+   |                  |   |   | the start of the second.  This field   |
+   |                  |   |   | is mandatory unless all block items    |
    |                  |   |   | containing a time offset from the      |
    |                  |   |   | start of the Block also omit that time |
    |                  |   |   | offset.                                |
@@ -1369,10 +1369,10 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | -index           |   |   | parameters" array (in the "file-       |
    |                  |   |   | preamble" item) applicable to this     |
    |                  |   |   | block.  If not present, index 0 is     |
-   |                  |   |   | used.  See Section 7.4.                |
+   |                  |   |   | used.  See Section 7.3.1.              |
    +------------------+---+---+----------------------------------------+
 
-7.5.2.  "BlockStatistics"
+7.3.2.2.  "BlockStatistics"
 
    Basic statistical information about a "Block" item.  A map containing
    the following:
@@ -1432,7 +1432,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                     |   |   | in input for this "Block" item.     |
    +---------------------+---+---+-------------------------------------+
 
-7.5.3.  "BlockTables"
+7.3.2.3.  "BlockTables"
 
    Map of arrays containing data referenced by individual
    "QueryResponse" or "MalformedMessage" items in this "Block".  Each
@@ -1462,11 +1462,11 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    |                   |   |   | to 4 bytes long for an IPv4 address,  |
    |                   |   |   | or up to 16 bytes long for an IPv6    |
-   |                   |   |   | address.  See Section 7.4.1.1.        |
+   |                   |   |   | address.  See Section 7.3.1.1.1.      |
    |                   |   |   |                                       |
    | classtype         |   | A | Array of RR CLASS and TYPE            |
    |                   |   |   | information.  Type is "ClassType".    |
-   |                   |   |   | See Section 7.5.3.1.                  |
+   |                   |   |   | See Section 7.3.2.3.1.                |
    |                   |   |   |                                       |
    | name-rdata        |   | A | Array where each entry is the         |
    |                   |   |   | contents of a single NAME or RDATA in |
@@ -1479,7 +1479,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                   |   |   |                                       |
    | qr-sig            |   | A | Array of Q/R data item signatures.    |
    |                   |   |   | Type is "QueryResponseSignature".     |
-   |                   |   |   | See Section 7.5.3.2.                  |
+   |                   |   |   | See Section 7.3.2.3.2.                |
    |                   |   |   |                                       |
    | qlist             |   | A | Array of type "QuestionList".  A      |
    |                   |   |   | "QuestionList" is an array of         |
@@ -1490,7 +1490,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                   |   |   | is the contents of a single Question, |
    |                   |   |   | where a Question is the second or     |
    |                   |   |   | subsequent Question in a Query.  See  |
-   |                   |   |   | Section 7.5.3.3.                      |
+   |                   |   |   | Section 7.3.2.3.3.                    |
    |                   |   |   |                                       |
    | rrlist            |   | A | Array of type "RRList".  An "RRList"  |
    |                   |   |   | is an array of unsigned integers,     |
@@ -1499,12 +1499,12 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                   |   |   |                                       |
    | rr                |   | A | Array of type "RR".  Each entry is    |
    |                   |   |   | the contents of a single RR.  See     |
-   |                   |   |   | Section 7.5.3.4.                      |
+   |                   |   |   | Section 7.3.2.3.4.                    |
    |                   |   |   |                                       |
    | malformed-message |   | A | Array of the contents of malformed    |
    | -data             |   |   | messages.  Array of type              |
    |                   |   |   | "MalformedMessageData".  See Section  |
-   |                   |   |   | 7.5.3.5.                              |
+   |                   |   |   | 7.3.2.3.5.                            |
    +-------------------+---+---+---------------------------------------+
 
 
@@ -1516,7 +1516,7 @@ Dickinson, et al.            Standards Track                   [Page 27]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-7.5.3.1.  "ClassType"
+7.3.2.3.1.  "ClassType"
 
    RR CLASS and TYPE information.  A map containing the following:
 
@@ -1528,7 +1528,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
                | class | X | U | CLASS value [rrclasses]. |
                +-------+---+---+--------------------------+
 
-7.5.3.2.  "QueryResponseSignature"
+7.3.2.3.2.  "QueryResponseSignature"
 
    Elements of a Q/R data item that are often common between multiple
    individual Q/R data items.  A map containing the following:
@@ -1538,14 +1538,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    +--------------------+---+---+--------------------------------------+
    | server-address     |   | U | The index in the item in the "ip-    |
    | -index             |   |   | address" array of the server IP      |
-   |                    |   |   | address.  See Section 7.5.3.         |
+   |                    |   |   | address.  See Section 7.3.2.3.       |
    |                    |   |   |                                      |
    | server-port        |   | U | The server port.                     |
    |                    |   |   |                                      |
    | qr-transport-flags | C | U | Bit flags describing the transport   |
    |                    |   |   | used to service the Query.  Same     |
    |                    |   |   | definition as "mm-transport-flags"   |
-   |                    |   |   | in Section 7.5.3.5, with an          |
+   |                    |   |   | in Section 7.3.2.3.5, with an        |
    |                    |   |   | additional indicator for trailing    |
    |                    |   |   | bytes.  See Appendix A.              |
    |                    |   |   | Bit 0.  IP version.  0 if IPv4, 1 if |
@@ -1654,7 +1654,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | query-classtype    |   | U | The index to the item in the         |
    | -index             |   |   | "classtype" array of the CLASS and   |
    |                    |   |   | TYPE of the first Question.  See     |
-   |                    |   |   | Section 7.5.3.                       |
+   |                    |   |   | Section 7.3.2.3.                     |
    |                    |   |   |                                      |
    | query-qdcount      |   | U | The QDCOUNT in the Query, or         |
    |                    |   |   | Response if no Query present.        |
@@ -1674,7 +1674,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                    |   |   |                                      |
    | query-opt-rdata    |   | U | The index in the "name-rdata" array  |
    | -index             |   |   | of the OPT RDATA.  See Section       |
-   |                    |   |   | 7.5.3.                               |
+   |                    |   |   | 7.3.2.3.                             |
    |                    |   |   |                                      |
 
 
@@ -1693,15 +1693,15 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    Version 1.0 of C-DNS supports transport values corresponding to DNS
    transports defined in IETF Standards Track documents at the time of
    writing.  There are numerous non-standard methods of sending DNS
-   messages over various transports using a variety of protocols but
+   messages over various transports using a variety of protocols, but
    they are out of scope for this document.  With the current
-   specification these can be generically stored using value 15 (Non-
-   standard transport) or implementations are free to use the negative
-   integer map keys to define their own mappings.  Such non-standard
-   transports may also be the subject of a future extension to the
-   specification.
+   specification, these can be generically stored using value 15
+   (Non-standard transport), or implementations are free to use the
+   negative integer map keys to define their own mappings.  Such
+   non-standard transports may also be the subject of a future extension
+   to the specification.
 
-7.5.3.3.  "Question"
+7.3.2.3.3.  "Question"
 
    Details on individual Questions in a Question section.  A map
    containing the following:
@@ -1710,14 +1710,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | Field           | M | T | Description                             |
    +-----------------+---+---+-----------------------------------------+
    | name-index      | X | U | The index in the "name-rdata" array of  |
-   |                 |   |   | the QNAME.  See Section 7.5.3.          |
+   |                 |   |   | the QNAME.  See Section 7.3.2.3.        |
    |                 |   |   |                                         |
    | classtype-index | X | U | The index in the "classtype" array of   |
    |                 |   |   | the CLASS and TYPE of the Question.     |
-   |                 |   |   | See Section 7.5.3.                      |
+   |                 |   |   | See Section 7.3.2.3.                    |
    +-----------------+---+---+-----------------------------------------+
 
-7.5.3.4.  "RR"
+7.3.2.3.4.  "RR"
 
    Details on individual RRs in RR sections.  A map containing the
    following:
@@ -1744,19 +1744,19 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | Field           | M | T | Description                             |
    +-----------------+---+---+-----------------------------------------+
    | name-index      | X | U | The index in the "name-rdata" array of  |
-   |                 |   |   | the NAME.  See Section 7.5.3.           |
+   |                 |   |   | the NAME.  See Section 7.3.2.3.         |
    |                 |   |   |                                         |
    | classtype-index | X | U | The index in the "classtype" array of   |
    |                 |   |   | the CLASS and TYPE of the RR.  See      |
-   |                 |   |   | Section 7.5.3.                          |
+   |                 |   |   | Section 7.3.2.3.                        |
    |                 |   |   |                                         |
    | ttl             |   | U | The RR Time to Live.                    |
    |                 |   |   |                                         |
    | rdata-index     |   | U | The index in the "name-rdata" array of  |
-   |                 |   |   | the RR RDATA.  See Section 7.5.3.       |
+   |                 |   |   | the RR RDATA.  See Section 7.3.2.3.     |
    +-----------------+---+---+-----------------------------------------+
 
-7.5.3.5.  "MalformedMessageData"
+7.3.2.3.5.  "MalformedMessageData"
 
    Details on malformed DNS messages stored in this "Block" item.  A map
    containing the following:
@@ -1766,7 +1766,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    +--------------------+---+---+--------------------------------------+
    | server-address     |   | U | The index in the "ip-address" array  |
    | -index             |   |   | of the server IP address.  See       |
-   |                    |   |   | Section 7.5.3.                       |
+   |                    |   |   | Section 7.3.2.3.                     |
    |                    |   |   |                                      |
    | server-port        |   | U | The server port.                     |
    |                    |   |   |                                      |
@@ -1796,7 +1796,7 @@ Dickinson, et al.            Standards Track                   [Page 32]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-7.6.  "QueryResponse"
+7.3.2.4.  "QueryResponse"
 
    Details on individual Q/R data items.
 
@@ -1809,14 +1809,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | Field                | M | T | Description                        |
    +----------------------+---+---+------------------------------------+
    | time-offset          |   | U | Q/R timestamp as an offset in      |
-   |                      |   |   | ticks (see Section 7.4.1.1) from   |
+   |                      |   |   | ticks (see Section 7.3.1.1.1) from |
    |                      |   |   | "earliest-time".  The timestamp is |
    |                      |   |   | the timestamp of the Query, or the |
    |                      |   |   | Response if there is no Query.     |
    |                      |   |   |                                    |
    | client-address-index |   | U | The index in the "ip-address"      |
    |                      |   |   | array of the client IP address.    |
-   |                      |   |   | See Section 7.5.3.                 |
+   |                      |   |   | See Section 7.3.2.3.               |
    |                      |   |   |                                    |
    | client-port          |   | U | The client port.                   |
    |                      |   |   |                                    |
@@ -1824,26 +1824,26 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                      |   |   |                                    |
    | qr-signature-index   |   | U | The index in the "qr-sig" array of |
    |                      |   |   | the "QueryResponseSignature" item. |
-   |                      |   |   | See Section 7.5.3.                 |
+   |                      |   |   | See Section 7.3.2.3.               |
    |                      |   |   |                                    |
    | client-hoplimit      |   | U | The IPv4 TTL or IPv6 Hoplimit from |
    |                      |   |   | the Query packet.                  |
    |                      |   |   |                                    |
    | response-delay       |   | I | The time difference between Query  |
    |                      |   |   | and Response, in ticks.  See       |
-   |                      |   |   | Section 7.4.1.1.  Only present if  |
-   |                      |   |   | there is a Query and a Response.   |
-   |                      |   |   | The delay can be negative if the   |
-   |                      |   |   | network stack/capture library      |
-   |                      |   |   | returns packets out of order.      |
+   |                      |   |   | Section 7.3.1.1.1.  Only present   |
+   |                      |   |   | if there is a Query and a          |
+   |                      |   |   | Response.  The delay can be        |
+   |                      |   |   | negative if the network            |
+   |                      |   |   | stack/capture library returns      |
+   |                      |   |   | packets out of order.              |
    |                      |   |   |                                    |
    | query-name-index     |   | U | The index in the "name-rdata"      |
    |                      |   |   | array of the item containing the   |
    |                      |   |   | QNAME for the first Question.  See |
-   |                      |   |   | Section 7.5.3.                     |
+   |                      |   |   | Section 7.3.2.3.                   |
    |                      |   |   |                                    |
    | query-size           |   | U | DNS Query message size (see        |
-   |                      |   |   | below).                            |
 
 
 
@@ -1852,21 +1852,22 @@ Dickinson, et al.            Standards Track                   [Page 33]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+   |                      |   |   | below).                            |
    |                      |   |   |                                    |
    | response-size        |   | U | DNS Response message size (see     |
    |                      |   |   | below).                            |
    |                      |   |   |                                    |
    | response-processing  |   | M | Data on Response processing.  Map  |
    | -data                |   |   | of type "ResponseProcessingData".  |
-   |                      |   |   | See Section 7.6.1.                 |
+   |                      |   |   | See Section 7.3.2.4.1.             |
    |                      |   |   |                                    |
    | query-extended       |   | M | Extended Query data.  Map of type  |
    |                      |   |   | "QueryResponseExtended".  See      |
-   |                      |   |   | Section 7.6.2.                     |
+   |                      |   |   | Section 7.3.2.4.2.                 |
    |                      |   |   |                                    |
    | response-extended    |   | M | Extended Response data.  Map of    |
    |                      |   |   | type "QueryResponseExtended".  See |
-   |                      |   |   | Section 7.6.2.                     |
+   |                      |   |   | Section 7.3.2.4.2.                 |
    +----------------------+---+---+------------------------------------+
 
    The "query-size" and "response-size" fields hold the DNS message
@@ -1877,7 +1878,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    servers, and this value allows a calculation of how many trailing
    bytes were present.
 
-7.6.1.  "ResponseProcessingData"
+7.3.2.4.1.  "ResponseProcessingData"
 
    Information on the server processing that produced the Response.  A
    map containing the following:
@@ -1887,19 +1888,18 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    +------------------+---+---+----------------------------------------+
    | bailiwick-index  |   | U | The index in the "name-rdata" array of |
    |                  |   |   | the owner name for the Response        |
-   |                  |   |   | bailiwick.  See Section 7.5.3.         |
+   |                  |   |   | bailiwick.  See Section 7.3.2.3.       |
    |                  |   |   |                                        |
    | processing-flags |   | U | Flags relating to Response processing. |
    |                  |   |   | Bit 0.  1 if the Response came from    |
    |                  |   |   | cache.                                 |
    +------------------+---+---+----------------------------------------+
 
-7.6.2.  "QueryResponseExtended"
+7.3.2.4.2.  "QueryResponseExtended"
 
    Extended data on the Q/R data item.
 
-   Each item in the map is present only if collection of the relevant
-   details is configured.
+
 
 
 
@@ -1907,6 +1907,9 @@ Dickinson, et al.            Standards Track                   [Page 34]
 
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
+
+   Each item in the map is present only if collection of the relevant
+   details is configured.
 
    A map containing the following items:
 
@@ -1917,33 +1920,30 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                  |   |   | entry listing any second and           |
    |                  |   |   | subsequent Questions in the Question   |
    |                  |   |   | section for the Query or Response.     |
-   |                  |   |   | See Section 7.5.3.                     |
+   |                  |   |   | See Section 7.3.2.3.                   |
    |                  |   |   |                                        |
    | answer-index     |   | U | The index in the "rrlist" array of the |
    |                  |   |   | entry listing the Answer RR sections   |
    |                  |   |   | for the Query or Response.  See        |
-   |                  |   |   | Section 7.5.3.                         |
+   |                  |   |   | Section 7.3.2.3.                       |
    |                  |   |   |                                        |
    | authority-index  |   | U | The index in the "rrlist" array of the |
    |                  |   |   | entry listing the Authority RR         |
    |                  |   |   | sections for the Query or Response.    |
-   |                  |   |   | See Section 7.5.3.                     |
+   |                  |   |   | See Section 7.3.2.3.                   |
    |                  |   |   |                                        |
    | additional-index |   | U | The index in the "rrlist" array of the |
    |                  |   |   | entry listing the Additional RR        |
    |                  |   |   | sections for the Query or Response.    |
-   |                  |   |   | See Section 7.5.3.  Note that Query    |
+   |                  |   |   | See Section 7.3.2.3.  Note that Query  |
    |                  |   |   | OPT RR data can optionally be stored   |
    |                  |   |   | in the QuerySignature.                 |
    +------------------+---+---+----------------------------------------+
 
-7.7.  "AddressEventCount"
+7.3.2.5.  "AddressEventCount"
 
    Counts of various IP-related events relating to traffic with
    individual client addresses.  A map containing the following:
-
-
-
 
 
 
@@ -2000,14 +2000,14 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                    |   |   |                                      |
    | ae-address-index   | X | U | The index in the "ip-address" array  |
    |                    |   |   | of the client address.  See Section  |
-   |                    |   |   | 7.5.3.                               |
+   |                    |   |   | 7.3.2.3.                             |
    |                    |   |   |                                      |
    | ae-count           | X | U | The number of occurrences of this    |
    |                    |   |   | event during the Block collection    |
    |                    |   |   | period.                              |
    +--------------------+---+---+--------------------------------------+
 
-7.8.  "MalformedMessage"
+7.3.2.6.  "MalformedMessage"
 
    Details on Malformed Message data items.  A map containing the
    following:
@@ -2024,19 +2024,19 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | Field                | M | T | Description                        |
    +----------------------+---+---+------------------------------------+
    | time-offset          |   | U | Message timestamp as an offset in  |
-   |                      |   |   | ticks (see Section 7.4.1.1) from   |
+   |                      |   |   | ticks (see Section 7.3.1.1.1) from |
    |                      |   |   | "earliest-time".                   |
    |                      |   |   |                                    |
    | client-address-index |   | U | The index in the "ip-address"      |
    |                      |   |   | array of the client IP address.    |
-   |                      |   |   | See Section 7.5.3.                 |
+   |                      |   |   | See Section 7.3.2.3.               |
    |                      |   |   |                                    |
    | client-port          |   | U | The client port.                   |
    |                      |   |   |                                    |
    | message-data-index   |   | U | The index in the "malformed-       |
    |                      |   |   | message-data" array of the message |
    |                      |   |   | data for this message.  See        |
-   |                      |   |   | Section 7.5.3.                     |
+   |                      |   |   | Section 7.3.2.3.                   |
    +----------------------+---+---+------------------------------------+
 
 8.  Versioning
@@ -2096,8 +2096,9 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    2.  Whether or not at least one field was captured that unambiguously
        identifies the Query/Response data item as containing just a
        Query, just a Response, or a Query/Response pair.  Obviously, the
-       qr-sig-flags defined in Section 7.5.3.2 is such a field; however,
-       this field is optional.  For more details, see Appendix D.2.
+       qr-sig-flags defined in Section 7.3.2.3.2 is such a field;
+       however, this field is optional.  For more details, see
+       Appendix D.2.
 
    It is noted again that simply having hints that indicate that certain
    data fields were not omitted does not guarantee that those data
@@ -2123,7 +2124,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
          segment
 
       *  A DNS payload may have been split across multiple TCP segments
-
 
 
 
@@ -2583,8 +2583,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 11.4.  Timestamps
 
    The preamble to each block includes a timestamp of the earliest
-   record in the Block.  As described in Section 7.5.1, the timestamp is
-   an array of two unsigned integers.  The first is a POSIX "time_t"
+   record in the Block.  As described in Section 7.3.2.1, the timestamp
+   is an array of two unsigned integers.  The first is a POSIX "time_t"
    [posix-time].  Consumers of C-DNS should be aware of this, as it
    excludes leap seconds and therefore may cause minor anomalies in the
    data, e.g., when calculating Query throughput.
@@ -2616,7 +2616,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    transport.  This field is 4 bits in size."
 
    The initial contents of the registry are as follows.  See
-   Sections 7.5.3.2 and 7.5.3.5 and 7.7 of this document:
+   Sections 7.3.2.3.2 and 7.3.2.3.5 and 7.3.2.5 of this document:
 
 
 
@@ -2663,7 +2663,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    flags."
 
    The initial contents of the registry are as follows.  See
-   Section 7.4.1.1 of this document:
+   Section 7.3.1.1.1 of this document:
 
    +------+------------------+-----------------------------+-----------+
    | Bit  | Name             | Description                 | Reference |
@@ -2698,7 +2698,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    holding bit flags."
 
    The initial contents of the registry are as follows.  See
-   Section 7.6.1 of this document:
+   Section 7.3.2.4.1 of this document:
 
      +------+------------+-------------------------------+-----------+
      | Bit  | Name       | Description                   | Reference |
@@ -2722,8 +2722,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    present, holds an additional CBOR unsigned integer giving additional
    information specific to the event type."
 
-   The initial contents of the registry are as follows.  See Section 7.7
-   of this document:
+   The initial contents of the registry are as follows.  See
+   Section 7.3.2.5 of this document:
 
 
 
@@ -2862,8 +2862,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
+              editor.org/info/rfc2119>.
 
    [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
               Resource Identifier (URI): Generic Syntax", STD 66,
@@ -2878,8 +2878,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
               for DNS (EDNS(0))", STD 75, RFC 6891,
-              DOI 10.17487/RFC6891, April 2013,
-              <https://www.rfc-editor.org/info/rfc6891>.
+              DOI 10.17487/RFC6891, April 2013, <https://www.rfc-
+              editor.org/info/rfc6891>.
 
    [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
@@ -2892,8 +2892,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    [RFC8094]  Reddy, T., Wing, D., and P. Patil, "DNS over Datagram
               Transport Layer Security (DTLS)", RFC 8094,
-              DOI 10.17487/RFC8094, February 2017,
-              <https://www.rfc-editor.org/info/rfc8094>.
+              DOI 10.17487/RFC8094, February 2017, <https://www.rfc-
+              editor.org/info/rfc8094>.
 
    [RFC8126]  Cotton, M., Leiba, B., and T. Narten, "Guidelines for
               Writing an IANA Considerations Section in RFCs", BCP 26,
@@ -2927,8 +2927,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    [Avro]     The Apache Software Foundation, "Apache Avro(TM)", 2019,
               <https://avro.apache.org/>.
 
-   [ditl]     DNS-OARC, "DITL", 2018,
-              <https://www.dns-oarc.net/oarc/data/ditl>.
+   [ditl]     DNS-OARC, "DITL", 2018, <https://www.dns-
+              oarc.net/oarc/data/ditl>.
 
    [DNS-Priv-Cons]
               Bortzmeyer, S. and S. Dickinson, "DNS Privacy
@@ -2941,8 +2941,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
               Operators", Work in Progress, draft-ietf-dprive-bcp-op-02,
               March 2019.
 
-   [dnscap]   DNS-OARC, "DNSCAP", 2018,
-              <https://www.dns-oarc.net/tools/dnscap>.
+   [dnscap]   DNS-OARC, "DNSCAP", 2018, <https://www.dns-oarc.net/tools/
+              dnscap>.
 
    [dnstap]   "dnstap", 2016, <https://dnstap.info/>.
 
@@ -2960,8 +2960,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
               <https://www.iana.org/assignments/icmpv6-parameters/>.
 
    [icmpcodes]
-              IANA, "Code Fields",
-              <https://www.iana.org/assignments/icmp-parameters/>.
+              IANA, "Code Fields", <https://www.iana.org/assignments/
+              icmp-parameters/>.
 
 
 
@@ -2987,25 +2987,25 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    [NSD]      NLnet Labs, "NSD", 2019,
               <https://www.nlnetlabs.nl/projects/nsd/about/>.
 
-   [opcodes]  IANA, "DNS OpCodes",
-              <https://www.iana.org/assignments/dns-parameters/>.
+   [opcodes]  IANA, "DNS OpCodes", <https://www.iana.org/assignments/
+              dns-parameters/>.
 
    [packetq]  .SE - The Internet Infrastructure Foundation, "PacketQ",
-              commit c9b2e89, February 2019,
-              <https://github.com/DNS-OARC/PacketQ>.
+              commit c9b2e89, February 2019, <https://github.com/DNS-
+              OARC/PacketQ>.
 
    [pcap]     "PCAP", 2019, <https://www.tcpdump.org/>.
 
    [pcapng]   "pcapng: PCAP next generation file format specification",
-              commit 3c35b6a, March 2019,
-              <https://github.com/pcapng/pcapng>.
+              commit 3c35b6a, March 2019, <https://github.com/pcapng/
+              pcapng>.
 
    [Protocol-Buffers]
               Google LLC, "Protocol Buffers",
               <https://developers.google.com/protocol-buffers/>.
 
-   [rcodes]   IANA, "DNS RCODEs",
-              <https://www.iana.org/assignments/dns-parameters/>.
+   [rcodes]   IANA, "DNS RCODEs", <https://www.iana.org/assignments/dns-
+              parameters/>.
 
    [RFC5077]  Salowey, J., Zhou, H., Eronen, P., and H. Tschofenig,
               "Transport Layer Security (TLS) Session Resumption without
@@ -3018,8 +3018,8 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    [RFC8259]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
               Interchange Format", STD 90, RFC 8259,
-              DOI 10.17487/RFC8259, December 2017,
-              <https://www.rfc-editor.org/info/rfc8259>.
+              DOI 10.17487/RFC8259, December 2017, <https://www.rfc-
+              editor.org/info/rfc8259>.
 
 
 
@@ -3033,22 +3033,22 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
               <https://www.rfc-editor.org/info/rfc8427>.
 
    [rrclasses]
-              IANA, "DNS CLASSes",
-              <https://www.iana.org/assignments/dns-parameters/>.
+              IANA, "DNS CLASSes", <https://www.iana.org/assignments/
+              dns-parameters/>.
 
    [rrtypes]  IANA, "Resource Record (RR) TYPEs",
               <https://www.iana.org/assignments/dns-parameters/>.
 
    [RSSAC04]  ICANN, "Recommendations on Anonymization Processes for
               Source IP Addresses Submitted for Future Analysis", August
-              2018, <https://www.icann.org/en/system/files/files/
-              rssac-040-07aug18-en.pdf>.
+              2018, <https://www.icann.org/en/system/files/files/rssac-
+              040-07aug18-en.pdf>.
 
    [snappy]   "snappy", <https://google.github.io/snappy/>.
 
    [snzip]    "Snzip, a compression/decompression tool based on snappy",
-              commit 809c6f2, October 2018,
-              <https://github.com/kubo/snzip>.
+              commit 809c6f2, October 2018, <https://github.com/kubo/
+              snzip>.
 
    [xz]       "XZ Utils", <https://tukaani.org/xz/>.
 

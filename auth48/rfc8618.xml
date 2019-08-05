@@ -7,6 +7,7 @@
      consensus="yes">
 
 <?rfc toc="yes"?>
+<?rfc tocdepth="4"?>
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
 <?rfc compact="yes"?>
@@ -746,7 +747,6 @@ description.
 <c></c><c></c><c></c><c></c>
 <c>file-blocks</c><c>X</c><c>A</c><c>Array of items of type &quot;Block&quot;; see <xref target="block"/>. &nbsp;The array may be empty if the file contains no data.</c>
 </texttable>
-</section>
 
 <section anchor="filepreamble" title="&quot;FilePreamble&quot;">
 <t>Information about data in the file. A map containing the following:
@@ -880,7 +880,6 @@ A map containing the following:
 </texttable>
 </section>
 </section>
-</section>
 
 <section anchor="collectionparameters" title="&quot;CollectionParameters&quot;">
 <t>Parameters providing information regarding how data in the file was
@@ -923,6 +922,7 @@ captured.
 </texttable>
 </section>
 </section>
+</section>
 
 <section anchor="block" title="&quot;Block&quot;">
 <t>Container for data with common collection and storage parameters. A map containing the following:
@@ -962,7 +962,6 @@ item. &nbsp;The first integer is the number of seconds since the POSIX epoch
 <c></c><c></c><c></c><c></c>
 <c>block-parameters -index</c><c></c><c>U</c><c>The index of the item in the &quot;block-parameters&quot; array (in the &quot;file-preamble&quot; item) applicable to this block. &nbsp;If not present, index 0 is used. &nbsp;See <xref target="filepreamble"/>.</c>
 </texttable>
-
 </section>
 
 <section anchor="blockstatistics" title="&quot;BlockStatistics&quot;">
@@ -1203,7 +1202,6 @@ where</c>
 </texttable>
 </section>
 </section>
-</section>
 
 <section anchor="queryresponse" title="&quot;QueryResponse&quot;">
 <t>Details on individual Q/R data items.
@@ -1351,6 +1349,8 @@ where</c>
 <c></c><c></c><c></c><c></c>
 <c>message-data-index</c><c></c><c>U</c><c>The index in the &quot;malformed-message-data&quot; array of the message data for this message. &nbsp;See <xref target="blocktables"/>.</c>
 </texttable>
+</section>
+</section>
 </section>
 </section>
 

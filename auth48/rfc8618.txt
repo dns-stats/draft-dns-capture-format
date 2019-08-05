@@ -610,7 +610,7 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
    Figure 2 shows some more-detailed relationships within each Block,
    specifically those between the Query/Response data item and the
-   relevant Block Tables.
+   relevant Block Tables.  Some fields have been omitted for clarity.
 
 
 
@@ -624,50 +624,50 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | Query/Response |
    +-------------------------+
    | Time Offset             |
-   +-------------------------+             +------------------+
-   | Client Address          |------------>| IP Address array |
-   +-------------------------+             +------------------+
-   | Client Port             |
-   +-------------------------+             +------------------+
-   | Transaction ID          |     +------>| Name/RDATA array |<------+
-   +-------------------------+     |       +------------------+       |
-   | Query Signature         |--+  |                                  |
-   +-------------------------+  |  |       +-----------------+        |
-   | Client Hoplimit (q)     |  +--)------>| Query Signature |        |
-   +-------------------------+     |       +-----------------+------+ |
-   | Response Delay (r)      |     |       | Server Address         | |
-   +-------------------------+     |       +------------------------+ |
-   | Query Name              |--+--+       | Server Port            | |
-   +-------------------------+  |          +------------------------+ |
-   | Query Size (q)          |  |          | Transport Flags        | |
-   +-------------------------+  |          +------------------------+ |
-   | Response Size (r)       |  |          | QR Type                | |
-   +-------------------------+  |          +------------------------+ |
-   | Response Processing (r) |  |          | QR Signature Flags     | |
-   | +-----------------------+  |          +------------------------+ |
-   | | Bailiwick             |--+          | Query OPCODE (q)       | |
-   | +-----------------------+             +------------------------+ |
-   | | Flags                 |             | QR DNS Flags           | |
-   +-+-----------------------+             +------------------------+ |
-   | Extra Query info (q)    |             | Query RCODE (q)        | |
-   | +-----------------------+             +------------------------+ |
-   | | Question              |--+---+   +--+-Query Class/Type (q)   | |
-   | +-----------------------+      |   |  +------------------------+ |
-   | | Answer                |--+   |   |  | Query QDCOUNT (q)      | |
-   | +-----------------------+  |   |   |  +------------------------+ |
-   | | Authority             |--+   |   |  | Query ANCOUNT (q)      | |
-   | +-----------------------+  |   |   |  +------------------------+ |
-   | | Additional            |--+   |   |  | Query NSCOUNT (q)      | |
-   +-+-----------------------+  |   |   |  +------------------------+ |
-   | Extra Response info (r) |  |-+ |   |  | Query EDNS version (q) | |
-   | +-----------------------+  | | |   |  +------------------------+ |
-   | | Answer                |--+ | |   |  | EDNS UDP Size (q)      | |
-   | +-----------------------+  | | |   |  +------------------------+ |
-   | | Authority             |--+ | |   |  | Query OPT RDATA (q)    | |
-   | +-----------------------+  | | |   |  +------------------------+ |
-   | | Additional            |--+ | |   |  | Response RCODE (r)     | |
-   +-+-----------------------+    | |   |  +------------------------+ |
-                                  | |   |                             |
+   +-------------------------+            +------------------+
+   | Client Address          |---------+->| IP Address array |
+   +-------------------------+         |  +------------------+
+   | Client Port             |         |
+   +-------------------------+         |  +------------------+
+   | Transaction ID          |     +---)->| Name/RDATA array |<--------+
+   +-------------------------+     |   |  +------------------+         |
+   | Query Signature         |--+  |   |                               |
+   +-------------------------+  |  |   |  +-----------------+          |
+   | Client Hoplimit (q)     |  +--)---)->| Query Signature |          |
+   +-------------------------+     |   |  +-----------------+-------+  |
+   | Response Delay (r)      |     |   +--| Server Address          |  |
+   +-------------------------+     |      +-------------------------+  |
+   | Query Name              |--+--+      | Server Port             |  |
+   +-------------------------+  |         +-------------------------+  |
+   | Query Size (q)          |  |         | Transport Flags         |  |
+   +-------------------------+  |         +-------------------------+  |
+   | Response Size (r)       |  |         | QR Type                 |  |
+   +-------------------------+  |         +-------------------------+  |
+   | Response Processing (r) |  |         | QR Signature Flags      |  |
+   | +-----------------------+  |         +-------------------------+  |
+   | | Bailiwick             |--+         | Query OPCODE (q)        |  |
+   | +-----------------------+            +-------------------------+  |
+   | | Flags                 |            | QR DNS Flags            |  |
+   +-+-----------------------+            +-------------------------+  |
+   | Extra Query Info (q)    |            | Query RCODE (q)         |  |
+   | +-----------------------+            +-------------------------+  |
+   | | Question              |--+---+  +--+-Query Class/Type (q)    |  |
+   | +-----------------------+      |  |  +-------------------------+  |
+   | | Answer                |--+   |  |  | Query QDCOUNT (q)       |  |
+   | +-----------------------+  |   |  |  +-------------------------+  |
+   | | Authority             |--+   |  |  | Query ANCOUNT (q)       |  |
+   | +-----------------------+  |   |  |  +-------------------------+  |
+   | | Additional            |--+   |  |  | Query NSCOUNT (q)       |  |
+   +-+-----------------------+  |   |  |  +-------------------------+  |
+   | Extra Response Info (r) |  |-+ |  |  | Query ARCOUNT (q)       |  |
+   | +-----------------------+  | | |  |  +-------------------------+  |
+   | | Answer                |--+ | |  |  | Query EDNS version (q)  |  |
+   | +-----------------------+  | | |  |  +-------------------------+  |
+   | | Authority             |--+ | |  |  | Query EDNS UDP Size (q) |  |
+   | +-----------------------+  | | |  |  +-------------------------+  |
+   | | Additional            |--+ | |  |  | Query OPT RDATA (q)     |--+
+   +-+-----------------------+    | |  |  +-------------------------+  |
+                                  | |  |  | Response RCODE (r)      |  |
 
 
 
@@ -676,23 +676,23 @@ Dickinson, et al.            Standards Track                   [Page 12]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
-                                  | |   |                             |
-   + -----------------------------+ |   +----------+                  |
-   |                                |              |                  |
-   | + -----------------------------+              |                  |
-   | |  +---------------+  +----------+            |                  |
-   | +->| Question list |->| Question |            |                  |
-   |    | array         |  | array    |            |                  |
-   |    +---------------+  +----------+--+         |                  |
-   |                       | Name        |--+------)------------------+
-   |                       +-------------+  |      |  +------------+
-   |                       | Class/Type  |--)---+--+->| Class/Type |
-   |                       +-------------+  |   |     | array      |
-   |                                        |   |     +------------+--+
-   |                                        |   |     | CLASS         |
-   |    +---------------+  +----------+     |   |     +---------------+
-   +--->| RR list array |->| RR array |     |   |     | TYPE          |
-        +---------+-----+  +----------+--+  |   |     +---------------+
+                                  | |  |  +-------------------------+  |
+   + -----------------------------+ |  +----------+                    |
+   |                                |             |                    |
+   | + -----------------------------+             |                    |
+   | |  +---------------+  +----------+           |                    |
+   | +->| Question List |->| Question |           |                    |
+   |    | array         |  | array    |           |                    |
+   |    +---------------+  +----------+--+        |                    |
+   |                       | Name        |--+-----)--------------------+
+   |                       +-------------+  |     |  +------------+
+   |                       | Class/Type  |--)---+-+->| Class/Type |
+   |                       +-------------+  |   |    | array      |
+   |                                        |   |    +------------+--+
+   |                                        |   |    | CLASS         |
+   |    +---------------+  +----------+     |   |    +---------------+
+   +--->| RR List array |->| RR array |     |   |    | TYPE          |
+        +---------+-----+  +----------+--+  |   |    +---------------+
                            | Name        |--+   |
                            +-------------+      |
                            | Class/Type  |------+
@@ -1463,10 +1463,10 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    +---------------------+---+---+-------------------------------------+
    | Field               | M | T | Description                         |
    +---------------------+---+---+-------------------------------------+
-   | processed-messages  |   | U | Total number of DNS messages        |
-   |                     |   |   | processed from the input traffic    |
-   |                     |   |   | stream during collection of data in |
-   |                     |   |   | this "Block" item.                  |
+   | processed-messages  |   | U | Total number of well-formed DNS     |
+   |                     |   |   | messages processed from the input   |
+   |                     |   |   | traffic stream during collection of |
+   |                     |   |   | data in this "Block" item.          |
    |                     |   |   |                                     |
    | qr-data-items       |   | U | Total number of Q/R data items in   |
    |                     |   |   | this "Block" item.                  |
@@ -1484,8 +1484,10 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                     |   |   | because their OPCODE is not in the  |
    |                     |   |   | list to be collected.               |
    |                     |   |   |                                     |
-   | malformed-items     |   | U | Number of malformed messages found  |
-   |                     |   |   | in input for this "Block" item.     |
+   | malformed-items     |   | U | Number of malformed messages        |
+   |                     |   |   | processed from the input traffic    |
+   |                     |   |   | stream during collection of data in |
+   |                     |   |   | this "Block" item.                  |
    +---------------------+---+---+-------------------------------------+
 
 7.3.2.3.  "BlockTables"
@@ -1506,8 +1508,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    | ip-address        |   | A | Array of IP addresses, in network     |
    |                   |   |   | byte order (of type byte string).  If |
    |                   |   |   | client or server address prefixes are |
-   |                   |   |   | set, only the address prefix bits are |
-   |                   |   |   | stored.  Each string is therefore up  |
 
 
 
@@ -1516,6 +1516,8 @@ Dickinson, et al.            Standards Track                   [Page 27]
 RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
 
 
+   |                   |   |   | set, only the address prefix bits are |
+   |                   |   |   | stored.  Each string is therefore up  |
    |                   |   |   | to 4 bytes long for an IPv4 address,  |
    |                   |   |   | or up to 16 bytes long for an IPv6    |
    |                   |   |   | address.  See Section 7.3.1.1.1.      |
@@ -1562,8 +1564,6 @@ RFC 8618         C-DNS: A Format for DNS Packet Capture        July 2019
    |                   |   |   | "MalformedMessageData".  See Section  |
    |                   |   |   | 7.3.2.3.5.                            |
    +-------------------+---+---+---------------------------------------+
-
-
 
 
 

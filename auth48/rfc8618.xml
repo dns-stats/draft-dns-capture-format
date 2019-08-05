@@ -973,7 +973,7 @@ item. &nbsp;The first integer is the number of seconds since the POSIX epoch
 <ttcol align="center">T</ttcol>
 <ttcol align="left">Description</ttcol>
 
-<c>processed-messages</c><c></c><c>U</c><c>Total number of DNS messages processed from the input traffic stream during collection of data in this &quot;Block&quot; item.</c>
+<c>processed-messages</c><c></c><c>U</c><c>Total number of well-formed DNS messages processed from the input traffic stream during collection of data in this &quot;Block&quot; item.</c>
 <c></c><c></c><c></c><c></c>
 <c>qr-data-items</c><c></c><c>U</c><c>Total number of Q/R data items in this &quot;Block&quot; item.</c>
 <c></c><c></c><c></c><c></c>
@@ -983,7 +983,7 @@ item. &nbsp;The first integer is the number of seconds since the POSIX epoch
 <c></c><c></c><c></c><c></c>
 <c>discarded-opcode</c><c></c><c>U</c><c>Number of DNS messages processed from the input traffic stream during collection of data in this &quot;Block&quot; item but not recorded because their OPCODE is not in the list to be collected.</c>
 <c></c><c></c><c></c><c></c>
-<c>malformed-items</c><c></c><c>U</c><c>Number of malformed messages found in input for this &quot;Block&quot; item.</c>
+<c>malformed-items</c><c></c><c>U</c><c>Number of malformed messages processed from the input traffic stream during collection of data in this &quot;Block&quot; item.</c>
 </texttable>
 </section>
 
